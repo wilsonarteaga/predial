@@ -1,0 +1,44 @@
+.cell_center {
+    text-align: center;
+}
+
+.dataTables_filter label>input {
+    border-color: rgb(202, 149, 69);
+}
+
+.dropdown-menu.open {
+    border-color: rgb(40, 172, 161);
+}
+
+textarea.form-control {
+    border: 1px solid rgb(40, 172, 161);
+}
+
+.checkbox label::before {
+    border-color: #ff7676;
+}
+
+.has-error .checkbox,
+.has-error .checkbox-inline,
+.has-error .control-label,
+.has-error .help-block,
+.has-error .radio,
+.has-error .radio-inline,
+.has-error.checkbox label,
+.has-error.checkbox-inline label,
+.has-error.radio label,
+.has-error.radio-inline label {
+    color: #f30c07;
+}
+
+.help-block.error-help-block {
+    color: #f30c07;
+}
+
+.bootstrap-select>.dropdown-toggle {
+    height: 38px;
+}
+
+.datepicker {
+    width: fit-content;
+}
