@@ -41,11 +41,9 @@ class BancosController extends Controller
         }
 
         //$request->session()->put('search', '1');
-        $dt = Carbon::now();
 
         return view('bancos.create', ['opcion' => $opcion,
                                       'bancos' => $bancos,
-                                      'datenow' => $dt->toDateString(),
                                       'tab_current' => $tab_current]);
     }
 
@@ -60,11 +58,12 @@ class BancosController extends Controller
             return redirect('/');
         }
 
-        $descuento = new Banco();
-        $descuento->anio = $request->anio;
-        $descuento->fecha_limite = Carbon::createFromFormat("Y-m-d", $request->fecha_limite)->format('Y-m-d');
-        $descuento->porcentaje = floatval($request->porcentaje);
-        $query = $descuento->save();
+        $banco = new Banco();
+        $banco->codigo = $request->codigo;
+        $banco->nombre = $request->nombre;
+        $banco->cuenta_contable = $request->cuenta_contable;
+        $banco->asobancaria = $request->asobancaria;
+        $query = $banco->save();
         $tab_current = 'li-section-bar-1';
 
         if($query) {
@@ -108,12 +107,13 @@ class BancosController extends Controller
             return redirect('/');
         }
 
-        $descuento = new Banco();
-        $descuento = Banco::find($request->id_edit);
-        //$descuento->anio = $request->anio_edit;
-        $descuento->fecha_limite = Carbon::createFromFormat("Y-m-d", $request->fecha_limite_edit)->format('Y-m-d');
-        $descuento->porcentaje = floatval($request->porcentaje_edit);
-        $query = $descuento->save();
+        $banco = new Banco();
+        $banco = Banco::find($request->id_edit);
+        //$banco->codigo = $request->codigo_edit;
+        $banco->nombre = $request->nombre_edit;
+        $banco->cuenta_contable = $request->cuenta_contable_edit;
+        $banco->asobancaria = $request->asobancaria_edit;
+        $query = $banco->save();
         $tab_current = 'li-section-bar-2';
 
         if($query) {
@@ -141,11 +141,11 @@ class BancosController extends Controller
                             ->where('id', $request->input_delete)->first();
 
         $tab_current = 'li-section-bar-2';
-        $descuento = new Banco();
-        $descuento = Banco::find($request->input_delete);
+        $banco = new Banco();
+        $banco = Banco::find($request->input_delete);
 
         //if($countBancos->cm_count == 0) {
-            $query = $descuento->delete();
+            $query = $banco->delete();
             if($query) {
                 return back()->with(['success' => 'El registro se elimin&oacute; satisfactoriamente.', 'tab_current' => $tab_current]);
             }
@@ -154,7 +154,7 @@ class BancosController extends Controller
             }
         // }
         // else {
-        //     return back()->with(['fail' => 'No se pudo eliminar la informaci&oacute;n. La clase de mutaci&oacute;n <b>' . $descuento->nombre . ' (' . $descuento->codigo . ')</b> ya posee informaci&oacute;n asociada.', 'tab_current' => $tab_current]);
+        //     return back()->with(['fail' => 'No se pudo eliminar la informaci&oacute;n. La clase de mutaci&oacute;n <b>' . $banco->nombre . ' (' . $banco->codigo . ')</b> ya posee informaci&oacute;n asociada.', 'tab_current' => $tab_current]);
         // }
     }
 
