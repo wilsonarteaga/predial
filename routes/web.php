@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AniosController;
+use App\Http\Controllers\BancosController;
 use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\ClasesMutacionController;
 use App\Http\Controllers\ClasesPredioController;
@@ -167,6 +168,14 @@ Route::get('registro_anios', [ErrorRequestController::class, 'error_request'])->
 Route::post('create_anios', [AniosController::class, 'store'])->name('anios.create_anios')->middleware('checkdb');
 Route::post('update_anios', [AniosController::class, 'update'])->name('anios.update_anios')->middleware('checkdb');
 Route::post('delete_anios', [AniosController::class, 'destroy'])->name('anios.delete_anios')->middleware('checkdb');
+
+//BancosController
+Route::get('registro_bancos/{id}', [BancosController::class, 'create'])->middleware('checkdb');
+Route::get('registro_bancos', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
+
+Route::post('create_bancos', [BancosController::class, 'store'])->name('bancos.create_bancos')->middleware('checkdb');
+Route::post('update_bancos', [BancosController::class, 'update'])->name('bancos.update_bancos')->middleware('checkdb');
+Route::post('delete_bancos', [BancosController::class, 'destroy'])->name('bancos.delete_bancos')->middleware('checkdb');
 
 //DescuentosController
 Route::get('registro_descuentos/{id}', [DescuentosController::class, 'create'])->middleware('checkdb');
