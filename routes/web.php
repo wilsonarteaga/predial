@@ -7,6 +7,7 @@ use App\Http\Controllers\BancosController;
 use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\ClasesMutacionController;
 use App\Http\Controllers\ClasesPredioController;
+use App\Http\Controllers\ConceptosPredioController;
 use App\Http\Controllers\DescuentosController;
 use App\Http\Controllers\ErrorRequestController;
 use App\Http\Controllers\LoginController;
@@ -152,6 +153,14 @@ Route::get('registro_clasespredio', [ErrorRequestController::class, 'error_reque
 Route::post('create_clasespredio', [ClasesPredioController::class, 'store'])->name('clasespredio.create_clasespredio')->middleware('checkdb');
 Route::post('update_clasespredio', [ClasesPredioController::class, 'update'])->name('clasespredio.update_clasespredio')->middleware('checkdb');
 Route::post('delete_clasespredio', [ClasesPredioController::class, 'destroy'])->name('clasespredio.delete_clasespredio')->middleware('checkdb');
+
+//ConceptosPredioController
+Route::get('registro_conceptospredio/{id}', [ConceptosPredioController::class, 'create'])->middleware('checkdb');
+Route::get('registro_conceptospredio', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
+
+Route::post('create_conceptospredio', [ConceptosPredioController::class, 'store'])->name('conceptospredio.create_conceptospredio')->middleware('checkdb');
+Route::post('update_conceptospredio', [ConceptosPredioController::class, 'update'])->name('conceptospredio.update_conceptospredio')->middleware('checkdb');
+Route::post('delete_conceptospredio', [ConceptosPredioController::class, 'destroy'])->name('conceptospredio.delete_conceptospredio')->middleware('checkdb');
 
 //TiposPredioController
 Route::get('registro_tipospredio/{id}', [TiposPredioController::class, 'create'])->middleware('checkdb');

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateConceptosPrediosTable extends Migration
+class CreateConceptosPredioTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateConceptosPrediosTable extends Migration
      */
     public function up()
     {
-        Schema::create('conceptos_predios', function (Blueprint $table) {
+        Schema::create('conceptos_predio', function (Blueprint $table) {
             $table->id();
             $table->smallInteger('anio');
             $table->smallInteger('mes_amnistia');
-            $table->char('codigo', 3);
+            $table->smallInteger('codigo');
             $table->string('nombre', 128);
-            $table->string('formula', 128);
+            $table->string('formula', 1024);
             $table->tinyInteger('aplica_interes');
             $table->tinyInteger('prioridad');
             $table->decimal('minimo_urbano', $precision = 12, $scale = 2);
@@ -37,6 +37,6 @@ class CreateConceptosPrediosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('conceptos_predios');
+        Schema::dropIfExists('conceptos_predio');
     }
 }

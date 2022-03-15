@@ -410,6 +410,32 @@ $(document).ready(function() {
         });
     }
 
+    if ($('#interes').length > 0) {
+        new AutoNumeric('#interes', {
+            emptyInputBehavior: "zero",
+            //maximumValue: "100",
+            minimumValue: "0",
+            modifyValueOnWheel: false,
+            //suffixText: "%",
+            unformatOnSubmit: true
+        });
+    }
+
+    if ($('#aplica_interes').length > 0) {
+        $('#aplica_interes').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_aplica_interes').html('SI');
+                $('#interes').attr('disabled', false);
+                $(this).val(1);
+            } else {
+                $('#span_aplica_interes').html('NO');
+                $('#interes').attr('disabled', true);
+                $(this).val(0);
+                $('#interes').parent().removeClass('has-success');
+            }
+        });
+    }
+
     if ($("#create-form").length > 0) {
         $('#create-form').validate().settings.ignore = '';
         $('#create-form').validate().settings.errorPlacement = function(error, element) {
