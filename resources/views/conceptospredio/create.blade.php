@@ -83,7 +83,7 @@
                                                         </div>
                                                         <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                                             <div class="form-group">
-                                                                <label class="control-label">Prioridaad</label>
+                                                                <label class="control-label">Prioridad</label>
                                                                 <input type="text" id="prioridad" name="prioridad" class="form-control onlyNumbers" placeholder="Ingrese prioridad" value="{{ old('prioridad') }}" maxlength="3">
                                                                 <span class="text-danger">@error('prioridad') {{ $message }} @enderror</span>
                                                             </div>
@@ -139,13 +139,15 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                                                            <div class="checkbox checkbox-inverse">
-                                                                <input id="aplica_interes" type="checkbox" checked="" value="0">
-                                                                <label for="aplica_interes"> ¿Aplica inter&eacute;s? </label>
+                                                            <div class="form-group">
+                                                                <input type="checkbox" id="aplica_interes" name="aplica_interes" checked="" value="{{ old('aplica_interes') }}">
+                                                                <label for="aplica_interes" class="control-label" style="padding-left: 10px;">¿Aplica inter&eacute;s?</label>
+                                                                {{-- <span class="text-danger">@error('aplica_interes') {{ $message }} @enderror</span> --}}
                                                             </div>
                                                             <span id="span_aplica_interes" class="text-muted">
                                                                 SI
                                                             </span>
+
                                                         </div>
                                                         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                                             <div class="form-group">
@@ -226,7 +228,10 @@
                                                 <table id="myTable" class="table table-hover table-striped table-bordered">
                                                     <thead>
                                                         <tr>
-                                                            <th class="cell_center">C&oacute;digo</th>
+                                                            <th class="cell_center" style="width: 7%;">A&ntilde;o</th>
+                                                            <th class="cell_center" style="width: 7%;">Meses amnistia</th>
+                                                            <th class="cell_center" style="width: 7%;">Prioridad</th>
+                                                            <th class="cell_center" style="width: 10%;">C&oacute;digo</th>
                                                             <th class="cell_center">Nombre</th>
                                                             <th class="cell_center" style="width: 10%;">Acciones</th>
                                                         </tr>
@@ -237,7 +242,10 @@
                                                             <tr style="cursor: pointer;" json-data='@json($concepto_predio)'>
                                                                 {{-- <td class="cell_center edit_row">{{ $concepto_predio->ide_acu }}</td>
                                                                 <td class="cell_center edit_row">{{ $concepto_predio->tid_acu }}</td> --}}
-                                                                <td class="edit_row">{{ $concepto_predio->codigo }}</td>
+                                                                <td class="edit_row cell_center">{{ $concepto_predio->anio }}</td>
+                                                                <td class="edit_row cell_center">{{ $concepto_predio->mes_amnistia }}</td>
+                                                                <td class="edit_row cell_center">{{ $concepto_predio->prioridad }}</td>
+                                                                <td class="edit_row cell_center">{{ $concepto_predio->codigo }}</td>
                                                                 <td class="edit_row">{{ $concepto_predio->nombre }}</td>
                                                                 {{-- <td class="cell_center edit_row">{{ $concepto_predio->tel_acu }}</td>
                                                                 <td class="edit_row">{{ $concepto_predio->dir_acu }}</td> --}}
@@ -276,18 +284,93 @@
                                                 <div class="form-body">
                                                     <input type="hidden" id="id_edit" name="id_edit" value="{{ old('id_edit') }}">
                                                     <div class="row">
-                                                        <div class="col-md-6">
+                                                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">A&ntilde;o</label>
+                                                                <input type="text" id="anio_edit" name="anio_edit" class="form-control onlyNumbers" placeholder="Ingrese a&ntilde;o" value="{{ old('anio_edit') }}" readonly="" maxlength="4">
+                                                                <span class="text-danger">@error('anio_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Meses aministia</label>
+                                                                <input type="text" id="mes_amnistia_edit" name="mes_amnistia_edit" class="form-control onlyNumbers" placeholder="Ingrese meses aministia" value="{{ old('mes_amnistia_edit') }}" maxlength="3">
+                                                                <span class="text-danger">@error('mes_amnistia_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Prioridad</label>
+                                                                <input type="text" id="prioridad_edit" name="prioridad_edit" class="form-control onlyNumbers" placeholder="Ingrese prioridad" value="{{ old('prioridad_edit') }}" maxlength="3">
+                                                                <span class="text-danger">@error('prioridad_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo</label>
-                                                                <input type="text" id="codigo_edit" name="codigo_edit" class="form-control" placeholder="Ingrese c&oacute;digo" value="{{ old('codigo_edit') }}" readonly="readonly">
+                                                                <input type="text" id="codigo_edit" name="codigo_edit" class="form-control onlyNumbers" placeholder="Ingrese c&oacute;digo" value="{{ old('codigo_edit') }}" maxlength="10">
                                                                 <span class="text-danger">@error('codigo_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Nombre</label>
-                                                                <input type="text" id="nombre_edit" name="nombre_edit" class="form-control" placeholder="Ingrese nombre" value="{{ old('nombre_edit') }}">
+                                                                <input type="text" id="nombre_edit" name="nombre_edit" class="form-control" placeholder="Ingrese nombre" value="{{ old('nombre_edit') }}" maxlength="128">
                                                                 <span class="text-danger">@error('nombre_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Formula</label>
+                                                                <input type="text" id="formula_edit" name="formula_edit" class="form-control" placeholder="Ingrese formula" value="{{ old('formula_edit') }}" maxlength="1024">
+                                                                <span class="text-danger">@error('formula_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Capital:</label>
+                                                                <input type="text" id="capital_edit" name="capital_edit" class="form-control" placeholder="Ingrese capital" value="{{ old('capital_edit') }}">
+                                                                <span class="text-danger">@error('capital_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">M&iacute;nimo urbano:</label>
+                                                                <input type="text" id="minimo_urbano_edit" name="minimo_urbano_edit" class="form-control" placeholder="Ingrese m&iacute;nimo urbano" value="{{ old('minimo_urbano_edit') }}">
+                                                                <span class="text-danger">@error('minimo_urbano_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">M&iacute;nimo rural:</label>
+                                                                <input type="text" id="minimo_rural_edit" name="minimo_rural_edit" class="form-control" placeholder="Ingrese m&iacute;nimo rural" value="{{ old('minimo_rural_edit') }}">
+                                                                <span class="text-danger">@error('minimo_rural_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                                                            <div class="form-group">
+                                                                <input type="checkbox" id="aplica_interes_edit" name="aplica_interes_edit" checked="" value="{{ old('aplica_interes_edit') }}">
+                                                                <label for="aplica_interes_edit" class="control-label" style="padding-left: 10px;">¿Aplica inter&eacute;s?</label>
+                                                                {{-- <span class="text-danger">@error('aplica_interes_edit') {{ $message }} @enderror</span> --}}
+                                                            </div>
+                                                            <span id="span_aplica_interes_edit" class="text-muted">
+                                                                SI
+                                                            </span>
+
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Inter&eacute;s:</label>
+                                                                <input type="text" id="interes_edit" name="interes_edit" class="form-control" placeholder="Ingrese inter&eacute;s" value="{{ old('interes_edit') }}">
+                                                                <span class="text-danger">@error('interes_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                     </div>

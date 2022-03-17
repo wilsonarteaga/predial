@@ -17,7 +17,7 @@ class CreateConceptosPredioTable extends Migration
             $table->id();
             $table->smallInteger('anio');
             $table->smallInteger('mes_amnistia');
-            $table->smallInteger('codigo');
+            $table->integer('codigo');
             $table->string('nombre', 128);
             $table->string('formula', 1024);
             $table->tinyInteger('aplica_interes');
@@ -25,7 +25,7 @@ class CreateConceptosPredioTable extends Migration
             $table->decimal('minimo_urbano', $precision = 12, $scale = 2);
             $table->decimal('minimo_rural', $precision = 12, $scale = 2);
             $table->decimal('capital', $precision = 12, $scale = 2);
-            $table->decimal('interes', $precision = 12, $scale = 2);
+            $table->decimal('interes', $precision = 12, $scale = 2)->nullable();
             $table->timestamps();
         });
     }

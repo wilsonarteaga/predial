@@ -56,9 +56,20 @@ class ConceptosPredioController extends Controller
             return redirect('/');
         }
 
+        //print_r($request);
+
         $concepto_predio = new ConceptoPredio();
+        $concepto_predio->anio = $request->anio;
+        $concepto_predio->mes_amnistia = $request->mes_amnistia;
         $concepto_predio->codigo = $request->codigo;
         $concepto_predio->nombre = $request->nombre;
+        $concepto_predio->formula = $request->formula;
+        $concepto_predio->aplica_interes = $request->filled('aplica_interes') ? $request->aplica_interes : 0;
+        $concepto_predio->prioridad = $request->prioridad;
+        $concepto_predio->minimo_urbano = $request->minimo_urbano;
+        $concepto_predio->minimo_rural = $request->minimo_rural;
+        $concepto_predio->capital = $request->capital;
+        $concepto_predio->interes = $request->filled('interes') ? $request->interes : 0;
         $query = $concepto_predio->save();
         $tab_current = 'li-section-bar-1';
 

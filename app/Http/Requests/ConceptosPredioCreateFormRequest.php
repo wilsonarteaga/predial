@@ -33,8 +33,8 @@ class ConceptosPredioCreateFormRequest extends FormRequest
             'capital'  => 'required',
             'minimo_urbano'  => 'required',
             'minimo_rural'  => 'required',
-            'aplica_interes' => 'required',
-            'interes' => 'exclude_if:aplica_interes,0|required|min:1'
+            'aplica_interes' => 'numeric',
+            'interes' => 'required_if:aplica_interes,0|numeric|min:1'
         ];
     }
 
@@ -53,7 +53,7 @@ class ConceptosPredioCreateFormRequest extends FormRequest
             'capital.required'  => 'El campo capital es obligatorio.',
             'minimo_urbano.required'  => 'El campo mínimo urbano es obligatorio.',
             'minimo_rural.required'  => 'El campo mínimo rural es obligatorio.',
-            'aplica_interes.required' => 'El campo aplica interés es obligatorio.',
+            'aplica_interes.numeric' => 'El campo aplica interés debe ser numerico.',
             'interes.required' => 'El campo interés es obligatorio.',
             'interes.min' => 'Valor mínimo de interés :min.'
         ];

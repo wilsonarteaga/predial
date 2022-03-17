@@ -410,8 +410,61 @@ $(document).ready(function() {
         });
     }
 
+    if ($('#capital').length > 0) {
+        new AutoNumeric('#capital', {
+            emptyInputBehavior: "zero",
+            minimumValue: "0",
+            modifyValueOnWheel: false,
+            unformatOnSubmit: true
+        });
+        new AutoNumeric('#capital_edit', {
+            emptyInputBehavior: "zero",
+            minimumValue: "0",
+            modifyValueOnWheel: false,
+            unformatOnSubmit: true
+        });
+    }
+
+    if ($('#minimo_urbano').length > 0) {
+        new AutoNumeric('#minimo_urbano', {
+            emptyInputBehavior: "zero",
+            minimumValue: "0",
+            modifyValueOnWheel: false,
+            unformatOnSubmit: true
+        });
+        new AutoNumeric('#minimo_urbano_edit', {
+            emptyInputBehavior: "zero",
+            minimumValue: "0",
+            modifyValueOnWheel: false,
+            unformatOnSubmit: true
+        });
+    }
+
+    if ($('#minimo_rural').length > 0) {
+        new AutoNumeric('#minimo_rural', {
+            emptyInputBehavior: "zero",
+            minimumValue: "0",
+            modifyValueOnWheel: false,
+            unformatOnSubmit: true
+        });
+        new AutoNumeric('#minimo_rural_edit', {
+            emptyInputBehavior: "zero",
+            minimumValue: "0",
+            modifyValueOnWheel: false,
+            unformatOnSubmit: true
+        });
+    }
+
     if ($('#interes').length > 0) {
         new AutoNumeric('#interes', {
+            emptyInputBehavior: "zero",
+            //maximumValue: "100",
+            minimumValue: "0",
+            modifyValueOnWheel: false,
+            //suffixText: "%",
+            unformatOnSubmit: true
+        });
+        new AutoNumeric('#interes_edit', {
             emptyInputBehavior: "zero",
             //maximumValue: "100",
             minimumValue: "0",
@@ -427,12 +480,40 @@ $(document).ready(function() {
                 $('#span_aplica_interes').html('SI');
                 $('#interes').attr('disabled', false);
                 $(this).val(1);
+                //$('#interes').closest('div').removeClass('has-success');
+                //$('#interes').closest('div').removeClass('has-error');
             } else {
                 $('#span_aplica_interes').html('NO');
                 $('#interes').attr('disabled', true);
                 $(this).val(0);
-                $('#interes').parent().removeClass('has-success');
+                //$('#interes').closest('div').removeClass('has-success');
+                //$('#interes').closest('div').removeClass('has-error');
             }
+
+            //$('#interes').valid();
+            $("#create-form").validate().element('#interes');
+        });
+    }
+
+    if ($('#aplica_interes_edit').length > 0) {
+        $('#aplica_interes_edit').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_aplica_interes_edit').html('SI');
+                $('#interes_edit').attr('disabled', false);
+                $(this).val(1);
+                //$('#interes_edit').closest('div').removeClass('has-success');
+                //$('#interes_edit').closest('div').removeClass('has-error');
+            } else {
+                console.log($('#interes_edit'));
+                $('#span_aplica_interes_edit').html('NO');
+                $('#interes_edit').attr('disabled', true);
+                $(this).val(0);
+                //$('#interes_edit').closest('div').removeClass('has-success');
+                //$('#interes_edit').closest('div').removeClass('has-error');
+            }
+
+            //$('#interes_edit').valid();
+            $("#update-form").validate().element('#interes_edit');
         });
     }
 
@@ -468,11 +549,15 @@ function setData(jsonObj) {
     $('#div_table').fadeOut(function() {
         $.each(jsonObj, function(i, el) {
             if ($('#' + i + '_edit').length > 0) {
-                // if ($('#' + i + '_edit').hasClass('selectpicker')) {
-                //     $('#' + i + '_edit').selectpicker('val', el);
-                // } else {
-                $('#' + i + '_edit').val(el);
-                // }
+                if ($('#' + i + '_edit').hasClass('selectpicker')) {
+                    $('#' + i + '_edit').selectpicker('val', el);
+                } else {
+                    if (el === '.00') {
+                        $('#' + i + '_edit').val('0');
+                    } else {
+                        $('#' + i + '_edit').val(el);
+                    }
+                }
 
                 if ($('#h1_' + i + '_edit').length > 0) {
                     $('#h1_' + i + '_edit').text(el);
