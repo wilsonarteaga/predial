@@ -140,8 +140,9 @@
                                                     <div class="row">
                                                         <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
                                                             <div class="form-group">
-                                                                <input type="checkbox" id="aplica_interes" name="aplica_interes" checked="" value="{{ old('aplica_interes') }}">
-                                                                <label for="aplica_interes" class="control-label" style="padding-left: 10px;">¿Aplica inter&eacute;s?</label>
+                                                                <input type="hidden" id="aplica_interes" name="aplica_interes" value="{{ old('aplica_interes') }}">
+                                                                <input type="checkbox" id="aplica_interes_check" checked="" value="{{ old('aplica_interes') }}">
+                                                                <label for="aplica_interes_check" class="control-label" style="padding-left: 10px;">¿Aplica inter&eacute;s?</label>
                                                                 {{-- <span class="text-danger">@error('aplica_interes') {{ $message }} @enderror</span> --}}
                                                             </div>
                                                             <span id="span_aplica_interes" class="text-muted">

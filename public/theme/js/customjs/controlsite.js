@@ -474,18 +474,20 @@ $(document).ready(function() {
         });
     }
 
-    if ($('#aplica_interes').length > 0) {
-        $('#aplica_interes').off('click').on('click', function() {
+    if ($('#aplica_interes_check').length > 0) {
+        $('#aplica_interes_check').off('click').on('click', function() {
             if ($(this).is(':checked')) {
                 $('#span_aplica_interes').html('SI');
                 $('#interes').attr('disabled', false);
                 $(this).val(1);
+                $('#aplica_interes').val(1);
                 //$('#interes').closest('div').removeClass('has-success');
                 //$('#interes').closest('div').removeClass('has-error');
             } else {
                 $('#span_aplica_interes').html('NO');
                 $('#interes').attr('disabled', true);
                 $(this).val(0);
+                $('#aplica_interes').val(0);
                 //$('#interes').closest('div').removeClass('has-success');
                 //$('#interes').closest('div').removeClass('has-error');
             }
