@@ -34,7 +34,7 @@ class ConceptosPredioUpdateFormRequest extends FormRequest
             'minimo_urbano_edit'  => 'required',
             'minimo_rural_edit'  => 'required',
             'aplica_interes_edit' => 'numeric',
-            'interes_edit' => 'required_if:aplica_interes_edit,0|numeric|min:1'
+            'interes_edit' => 'required_if:aplica_interes_edit,1|numeric|min:1'
         ];
     }
 
