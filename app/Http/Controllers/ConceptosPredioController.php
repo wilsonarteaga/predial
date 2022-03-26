@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\ConceptosPredioCreateFormRequest;
 use App\Http\Requests\ConceptosPredioUpdateFormRequest;
 use App\Models\ConceptoPredio;
@@ -56,7 +57,20 @@ class ConceptosPredioController extends Controller
             return redirect('/');
         }
 
-        //print_r($request);
+        $rules = [
+            'codigo' => 'unique_with:conceptos_predio,anio',
+            'prioridad' => 'unique_with:conceptos_predio,anio',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages = [
+            'codigo.unique_with' => 'La combinación de año y código ya existe.',
+            'prioridad.unique_with' => 'La combinación de año y prioridad ya existe.',
+        ]);
+
+        if($validator->fails()) {
+            return back()->withErrors($validator)
+                         ->withInput();
+        }
 
         $concepto_predio = new ConceptoPredio();
         $concepto_predio->anio = $request->anio;
@@ -68,7 +82,7 @@ class ConceptosPredioController extends Controller
         $concepto_predio->prioridad = $request->prioridad;
         $concepto_predio->minimo_urbano = $request->minimo_urbano;
         $concepto_predio->minimo_rural = $request->minimo_rural;
-        $concepto_predio->capital = $request->capital;
+        $concepto_predio->capital = $request->filled('capital') ? $request->capital : 0;
         $concepto_predio->interes = $request->filled('interes') ? $request->interes : 0;
         $query = $concepto_predio->save();
         $tab_current = 'li-section-bar-1';
@@ -116,8 +130,17 @@ class ConceptosPredioController extends Controller
 
         $concepto_predio = new ConceptoPredio();
         $concepto_predio = ConceptoPredio::find($request->id_edit);
-        //$concepto_predio->codigo = $request->codigo_edit;
+        $concepto_predio->anio = $request->anio_edit;
+        $concepto_predio->mes_amnistia = $request->mes_amnistia_edit;
+        $concepto_predio->codigo = $request->codigo_edit;
         $concepto_predio->nombre = $request->nombre_edit;
+        $concepto_predio->formula = $request->formula_edit;
+        $concepto_predio->aplica_interes = $request->filled('aplica_interes_edit') ? $request->aplica_interes_edit : 0;
+        $concepto_predio->prioridad = $request->prioridad_edit;
+        $concepto_predio->minimo_urbano = $request->minimo_urbano_edit;
+        $concepto_predio->minimo_rural = $request->minimo_rural_edit;
+        $concepto_predio->capital = $request->filled('capital_edit') ? $request->capital_edit : 0;
+        $concepto_predio->interes = $request->filled('interes_edit') ? $request->interes_edit : 0;
         $query = $concepto_predio->save();
         $tab_current = 'li-section-bar-2';
 

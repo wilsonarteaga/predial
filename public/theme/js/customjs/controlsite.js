@@ -9,72 +9,83 @@ $(document).ready(function() {
 
     if ($('#li-section-bar-1').length > 0) {
         $('#li-section-bar-1').bind('click', function() {
-            $('.result').empty();
-            if ($('#tab').length > 0) {
-                $('#tab').val('li-section-bar-1');
-            }
-            setTimeout(function() {
-                $('#btn_cancel_edit').trigger('click');
-            }, 300);
-
-            if ($("#update-form").length > 0) {
-                var validatorUpdate = $("#update-form").validate();
-                validatorUpdate.resetForm();
-                $("#update-form")[0].reset();
-                if ($("#create-form").length > 0) {
-                    var validatorCreate = $("#create-form").validate();
-                    validatorCreate.resetForm();
-                    $("#create-form")[0].reset();
+            if ($('#tab').val() === 'li-section-bar-2') {
+                $('.result').empty();
+                if ($('#tab').length > 0) {
+                    $('#tab').val('li-section-bar-1');
                 }
-                $.each($(".selectpicker"), function(i, el) {
-                    var val = $(el).find('option:selected').val();
-                    if (val !== undefined)
-                        $(el).val(val).selectpicker("refresh");
-                    else
-                        $(el).val('default').selectpicker("refresh");
-                });
+                setTimeout(function() {
+                    $('#btn_cancel_edit').trigger('click');
+                }, 300);
 
-                $.each($('.has-success'), function(i, el) {
-                    $(el).removeClass('has-success');
-                });
-                $.each($('.has-error'), function(i, el) {
-                    $(el).removeClass('has-error');
-                });
+                if ($("#update-form").length > 0) {
+                    $("#update-form")[0].reset();
+                    $('.text-danger').remove();
+                    clear_form_elements("#update-form");
+                    var validatorUpdate = $("#update-form").validate();
+                    validatorUpdate.resetForm();
+                    if ($("#create-form").length > 0) {
+                        $("#create-form")[0].reset();
+                        clear_form_elements("#create-form");
+                        var validatorCreate = $("#create-form").validate();
+                        validatorCreate.resetForm();
+                    }
+                    $.each($(".selectpicker"), function(i, el) {
+                        var val = $(el).find('option:selected').val();
+                        if (val !== undefined)
+                            $(el).val(val).selectpicker("refresh");
+                        else
+                            $(el).val('default').selectpicker("refresh");
+                    });
+
+                    $.each($('.has-success'), function(i, el) {
+                        $(el).removeClass('has-success');
+                    });
+                    $.each($('.has-error'), function(i, el) {
+                        $(el).removeClass('has-error');
+                    });
+                }
             }
         });
     }
 
     if ($('#li-section-bar-2').length > 0) {
         $('#li-section-bar-2').bind('click', function() {
-            $('.result').empty();
-            if ($('#tab').length > 0) {
-                $('#tab').val('li-section-bar-2');
-            }
-
-            if ($("#create-form").length > 0) {
-                var validatorCreate = $("#create-form").validate();
-                validatorCreate.resetForm();
-                $("#create-form")[0].reset();
-                if ($("#update-form").length > 0) {
-                    var validatorUpdate = $("#update-form").validate();
-                    validatorUpdate.resetForm();
-                    $("#update-form")[0].reset();
+            if ($('#tab').val() === 'li-section-bar-1') {
+                //$('#btn_cancel_edit').trigger('click');
+                //} else {
+                $('.result').empty();
+                if ($('#tab').length > 0) {
+                    $('#tab').val('li-section-bar-2');
                 }
-                $.each($(".selectpicker"), function(i, el) {
-                    var val = $(el).find('option:selected').val();
-                    if (val !== undefined)
-                        $(el).val(val).selectpicker("refresh");
-                    else
-                        $(el).val('default').selectpicker("refresh");
-                });
-                $.each($('.has-success'), function(i, el) {
-                    $(el).removeClass('has-success');
-                });
-                $.each($('.has-error'), function(i, el) {
-                    $(el).removeClass('has-error');
-                });
-            }
 
+                if ($("#create-form").length > 0) {
+                    $("#create-form")[0].reset();
+                    $('.text-danger').remove();
+                    clear_form_elements("#create-form");
+                    var validatorCreate = $("#create-form").validate();
+                    validatorCreate.resetForm();
+                    if ($("#update-form").length > 0) {
+                        $("#update-form")[0].reset();
+                        clear_form_elements("#update-form");
+                        var validatorUpdate = $("#update-form").validate();
+                        validatorUpdate.resetForm();
+                    }
+                    $.each($(".selectpicker"), function(i, el) {
+                        var val = $(el).find('option:selected').val();
+                        if (val !== undefined)
+                            $(el).val(val).selectpicker("refresh");
+                        else
+                            $(el).val('default').selectpicker("refresh");
+                    });
+                    $.each($('.has-success'), function(i, el) {
+                        $(el).removeClass('has-success');
+                    });
+                    $.each($('.has-error'), function(i, el) {
+                        $(el).removeClass('has-error');
+                    });
+                }
+            }
         });
     }
 
@@ -325,6 +336,7 @@ $(document).ready(function() {
                 }
             },
             pick: function() {
+                $('.text-danger').remove();
                 // var control = $(this);
                 // var hour_control = $(control).attr('data-control');
                 // var date = $(control).datepicker('getDate', true);
@@ -410,14 +422,14 @@ $(document).ready(function() {
         });
     }
 
-    if ($('#capital').length > 0) {
-        new AutoNumeric('#capital', {
+    if ($('#mes_amnistia').length > 0) {
+        new AutoNumeric('#mes_amnistia', {
             emptyInputBehavior: "zero",
             minimumValue: "0",
             modifyValueOnWheel: false,
             unformatOnSubmit: true
         });
-        new AutoNumeric('#capital_edit', {
+        new AutoNumeric('#mes_amnistia_edit', {
             emptyInputBehavior: "zero",
             minimumValue: "0",
             modifyValueOnWheel: false,
@@ -455,77 +467,69 @@ $(document).ready(function() {
         });
     }
 
-    if ($('#interes').length > 0) {
-        new AutoNumeric('#interes', {
-            emptyInputBehavior: "zero",
-            //maximumValue: "100",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            //suffixText: "%",
-            unformatOnSubmit: true
-        });
-        new AutoNumeric('#interes_edit', {
-            emptyInputBehavior: "zero",
-            //maximumValue: "100",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            //suffixText: "%",
-            unformatOnSubmit: true
-        });
-    }
-
     if ($('#aplica_interes').length > 0) {
         $('#aplica_interes').off('click').on('click', function() {
             if ($(this).is(':checked')) {
-                console.log($(this).is(':checked'));
                 $('#span_aplica_interes').html('SI');
-                $('#interes').attr('disabled', false);
                 $(this).val(1);
-                $('#aplica_interes').val(1);
-                $("#create-form").validate().element('#interes');
-                // setTimeout(function() {
-                //     $('#interes').parent().removeClass('has-success');
-                //     $('#interes').parent().removeClass('has-error');
-                // }, 20);
             } else {
-                console.log($(this).is(':checked'));
                 $('#span_aplica_interes').html('NO');
-                AutoNumeric.set('#interes', 0);
-                $('#interes').attr('disabled', true);
                 $(this).val(0);
-                $('#aplica_interes').val(0);
-                //$("#create-form").validate().element('#interes');
-                setTimeout(function() {
-                    $('#interes-error').css('display', 'none');
-                    $('#interes').parent().removeClass('has-success');
-                    $('#interes').parent().removeClass('has-error');
-                }, 10);
             }
-
-            //$('#interes').valid();
-            //$("#create-form").validate().element('#interes');
         });
-    }
 
-    if ($('#aplica_interes_edit').length > 0) {
         $('#aplica_interes_edit').off('click').on('click', function() {
             if ($(this).is(':checked')) {
                 $('#span_aplica_interes_edit').html('SI');
-                $('#interes_edit').attr('disabled', false);
                 $(this).val(1);
-                //$('#interes_edit').closest('div').removeClass('has-success');
-                //$('#interes_edit').closest('div').removeClass('has-error');
             } else {
-                console.log($('#interes_edit'));
                 $('#span_aplica_interes_edit').html('NO');
-                $('#interes_edit').attr('disabled', true);
                 $(this).val(0);
-                //$('#interes_edit').closest('div').removeClass('has-success');
-                //$('#interes_edit').closest('div').removeClass('has-error');
             }
+        });
+    }
 
-            //$('#interes_edit').valid();
-            $("#update-form").validate().element('#interes_edit');
+    if ($('#capital').length > 0) {
+        $('#capital').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_capital').html('SI');
+                $(this).val(1);
+            } else {
+                $('#span_capital').html('NO');
+                $(this).val(0);
+            }
+        });
+
+        $('#capital_edit').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_capital_edit').html('SI');
+                $(this).val(1);
+            } else {
+                $('#span_capital_edit').html('NO');
+                $(this).val(0);
+            }
+        });
+    }
+
+    if ($('#interes').length > 0) {
+        $('#interes').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_interes').html('SI');
+                $(this).val(1);
+            } else {
+                $('#span_interes').html('NO');
+                $(this).val(0);
+            }
+        });
+
+        $('#interes_edit').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_interes_edit').html('SI');
+                $(this).val(1);
+            } else {
+                $('#span_interes_edit').html('NO');
+                $(this).val(0);
+            }
         });
     }
 
@@ -565,9 +569,28 @@ function setData(jsonObj) {
                     $('#' + i + '_edit').selectpicker('val', el);
                 } else {
                     if (el === '.00') {
-                        $('#' + i + '_edit').val('0');
+                        if (i === 'porcentaje' || i === 'mes_amnistia' || i === 'minimo_urbano' || i === 'minimo_rural') {
+                            AutoNumeric.set('#' + i + '_edit', 0);
+                        } else {
+                            $('#' + i + '_edit').val('0');
+                        }
                     } else {
-                        $('#' + i + '_edit').val(el);
+                        if (i === 'porcentaje' || i === 'mes_amnistia' || i === 'minimo_urbano' || i === 'minimo_rural') {
+                            AutoNumeric.set('#' + i + '_edit', Number(el));
+                        } else {
+                            $('#' + i + '_edit').val(el);
+                            if ($('#' + i + '_edit').is(':checkbox')) {
+                                if (Number(el) > 0) {
+                                    if (!$('#' + i + '_edit').is(':checked')) {
+                                        $('#' + i + '_edit').trigger('click');
+                                    }
+                                } else {
+                                    if ($('#' + i + '_edit').is(':checked')) {
+                                        $('#' + i + '_edit').trigger('click');
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -590,4 +613,23 @@ function setData(jsonObj) {
         $('#div_edit_form').fadeIn();
 
     });
+}
+
+function clear_form_elements(ele) {
+
+    $(ele).find(':input').each(function() {
+        switch (this.type) {
+            case 'password':
+            case 'select-multiple':
+            case 'select-one':
+            case 'text':
+            case 'textarea':
+                $(this).val('');
+                break;
+            case 'checkbox':
+            case 'radio':
+                this.checked = false;
+        }
+    });
+
 }

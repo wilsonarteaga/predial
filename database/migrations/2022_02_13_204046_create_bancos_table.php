@@ -20,6 +20,9 @@ class CreateBancosTable extends Migration
             $table->string('cuenta_contable', 30);
             $table->string('asobancaria', 30);
             $table->timestamps();
+
+            $table->unique('codigo');
+            $table->unique('asobancaria');
         });
     }
 

@@ -27,14 +27,14 @@ class ConceptosPredioUpdateFormRequest extends FormRequest
             'anio_edit'  => 'required',
             'mes_amnistia_edit'  => 'required',
             'prioridad_edit'  => 'required',
-            'codigo_edit'  => 'required|max:10',
+            'codigo_edit'  => 'required|max:3',
             'nombre_edit'  => 'required|max:128',
             'formula_edit'  => 'required|max:1024',
-            'capital_edit'  => 'required',
+            //'capital_edit'  => 'required',
             'minimo_urbano_edit'  => 'required',
             'minimo_rural_edit'  => 'required',
-            'aplica_interes_edit' => 'numeric',
-            'interes_edit' => 'required_if:aplica_interes_edit,1|numeric|min:1'
+            //'aplica_interes_edit' => 'numeric',
+            //'interes_edit' => 'required_if:aplica_interes_edit,=,1|numeric|min:1'
         ];
     }
 
@@ -50,12 +50,12 @@ class ConceptosPredioUpdateFormRequest extends FormRequest
             'codigo_edit.max' => 'Máximo :max caracteres.',
             'nombre_edit.max' => 'Máximo :max caracteres.',
             'formula_edit.max' => 'Máximo :max caracteres.',
-            'capital_edit.required'  => 'El campo capital es obligatorio.',
+            //'capital_edit.required'  => 'El campo capital es obligatorio.',
             'minimo_urbano_edit.required'  => 'El campo mínimo urbano es obligatorio.',
             'minimo_rural_edit.required'  => 'El campo mínimo rural es obligatorio.',
-            'aplica_interes_edit.numeric' => 'El campo aplica interés debe ser numerico.',
-            'interes_edit.required' => 'El campo interés es obligatorio.',
-            'interes_edit.min' => 'Valor mínimo de interés :min.'
+            //'aplica_interes_edit.numeric' => 'El campo aplica interés debe ser numerico.',
+            //'interes_edit.required' => 'El campo interés es obligatorio.',
+            //'interes_edit.min' => 'Valor mínimo de interés :min.'
         ];
     }
 }

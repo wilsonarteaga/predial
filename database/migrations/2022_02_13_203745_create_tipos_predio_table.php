@@ -18,6 +18,8 @@ class CreateTiposPredioTable extends Migration
             $table->string('codigo', 10);
             $table->string('nombre', 128);
             $table->timestamps();
+
+            $table->unique('codigo');
         });
     }
 

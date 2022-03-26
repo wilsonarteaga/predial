@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\DescuentosCreateFormRequest;
 use App\Http\Requests\DescuentosUpdateFormRequest;
 use App\Models\Descuento;
 use App\Models\Opcion;
 
 use Carbon\Carbon;
+
 
 class DescuentosController extends Controller
 {
@@ -60,6 +62,19 @@ class DescuentosController extends Controller
             return redirect('/');
         }
 
+        $rules = [
+            'anio' => 'unique_with:descuentos,fecha_limite'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages = [
+            'anio.unique_with' => 'La combinación de año y fecha limite ya existe.',
+        ]);
+
+        if($validator->fails()) {
+            return back()->withErrors($validator)
+                         ->withInput();
+        }
+
         $descuento = new Descuento();
         $descuento->anio = $request->anio;
         $descuento->fecha_limite = Carbon::createFromFormat("Y-m-d", $request->fecha_limite)->format('Y-m-d');
@@ -108,10 +123,23 @@ class DescuentosController extends Controller
             return redirect('/');
         }
 
+        // $rules = [
+        //     'fecha_limite_edit = fecha_limite' => 'unique_with:descuentos,anio_edit = anio,' . $request->id_edit
+        // ];
+
+        // $validator = Validator::make($request->all(), $rules, $messages = [
+        //     'fecha_limite_edit.unique_with' => 'La combinacion de año y fecha limite ya existe.',
+        // ]);
+
+        // if($validator->fails()) {
+        //     return back()->withErrors($validator)
+        //                  ->withInput();
+        // }
+
         $descuento = new Descuento();
         $descuento = Descuento::find($request->id_edit);
         //$descuento->anio = $request->anio_edit;
-        $descuento->fecha_limite = Carbon::createFromFormat("Y-m-d", $request->fecha_limite_edit)->format('Y-m-d');
+        //$descuento->fecha_limite = Carbon::createFromFormat("Y-m-d", $request->fecha_limite_edit)->format('Y-m-d');
         $descuento->porcentaje = floatval($request->porcentaje_edit);
         $query = $descuento->save();
         $tab_current = 'li-section-bar-2';

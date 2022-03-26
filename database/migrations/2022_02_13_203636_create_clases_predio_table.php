@@ -15,9 +15,11 @@ class CreateClasesPredioTable extends Migration
     {
         Schema::create('clases_predio', function (Blueprint $table) {
             $table->id();
-            $table->string('codigo', 10);
+            $table->smallInteger('codigo');
             $table->string('nombre', 128);
             $table->timestamps();
+
+            $table->unique('codigo');
         });
     }
 

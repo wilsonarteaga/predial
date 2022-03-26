@@ -24,7 +24,7 @@ class AniosCreateFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'anio'  => 'required',
+            'anio'  => 'required|unique:anios|size:4',
             'id_estado'  => 'required',
             'meses_amnistia'  => 'required'
         ];
@@ -34,6 +34,8 @@ class AniosCreateFormRequest extends FormRequest
     {
         return [
             'anio.required' => 'El campo año es obligatorio.',
+            'anio.unique' => 'El año ya esta registrado.',
+            'anio.size' => 'El campo año debe contener 4 digitos.',
             'id_estado.required' => 'El campo estado es obligatorio.',
             'meses_amnistia.required' => 'El campo meses amnistia es obligatorio.'
         ];

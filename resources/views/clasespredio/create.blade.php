@@ -10,6 +10,8 @@
 @endpush
 @if(Session::get('tab_current'))
 <input type="hidden" id="tab" value="{{ Session::get('tab_current') }}">
+@elseif($tab_current)
+<input type="hidden" id="tab" value="{{ $tab_current }}">
 @endif
 <div class="container-fluid">
     <div class="row bg-title">
@@ -34,7 +36,7 @@
                     <div class="sttabs tabs-style-bar">
                         <nav>
                             <ul>
-                                <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-control-shuffle"><span>Nueva clase de predio</span></a></li>
+                                <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-pulse"><span>Nueva clase de predio</span></a></li>
                                 <li id="li-section-bar-2" class=""><a href="#section-bar-2" class="sticon icon-list"><span>Listado de clases de predio</span></a></li>
                                 <!-- <li class=""><a href="#section-bar-3" class="sticon ti-stats-up"><span>Analytics</span></a></li>
                                 <li class=""><a href="#section-bar-4" class="sticon ti-upload"><span>Upload</span></a></li>
@@ -65,17 +67,17 @@
                                                     <!-- <h3 class="box-title">Informaci&oacute;n de la clase de predio</h3> -->
                                                     <!-- <hr> -->
                                                     <div class="row">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-3">
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo</label>
-                                                                <input type="text" id="codigo" name="codigo" class="form-control" placeholder="Ingrese c&oacute;digo" value="{{ old('codigo') }}" maxlength="10">
+                                                                <input type="text" id="codigo" name="codigo" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo" value="{{ old('codigo') }}">
                                                                 <span class="text-danger">@error('codigo') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-9">
                                                             <div class="form-group">
                                                                 <label class="control-label">Nombre</label>
-                                                                <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingrese nombre" value="{{ old('nombre') }}" maxlength="128">
+                                                                <input type="text" id="nombre" name="nombre" class="form-control" autocomplete="off" placeholder="Ingrese nombre" value="{{ old('nombre') }}" maxlength="128">
                                                                 <span class="text-danger">@error('nombre') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -162,7 +164,7 @@
                                                             <tr style="cursor: pointer;" json-data='@json($clase_predio)'>
                                                                 {{-- <td class="cell_center edit_row">{{ $clase_predio->ide_acu }}</td>
                                                                 <td class="cell_center edit_row">{{ $clase_predio->tid_acu }}</td> --}}
-                                                                <td class="edit_row">{{ $clase_predio->codigo }}</td>
+                                                                <td class="edit_row cell_center">{{ $clase_predio->codigo }}</td>
                                                                 <td class="edit_row">{{ $clase_predio->nombre }}</td>
                                                                 {{-- <td class="cell_center edit_row">{{ $clase_predio->tel_acu }}</td>
                                                                 <td class="edit_row">{{ $clase_predio->dir_acu }}</td> --}}
@@ -201,17 +203,17 @@
                                                 <div class="form-body">
                                                     <input type="hidden" id="id_edit" name="id_edit" value="{{ old('id_edit') }}">
                                                     <div class="row">
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-3">
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo</label>
                                                                 <input type="text" id="codigo_edit" name="codigo_edit" class="form-control" placeholder="Ingrese c&oacute;digo" value="{{ old('codigo_edit') }}" readonly="readonly">
                                                                 <span class="text-danger">@error('codigo_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
+                                                        <div class="col-md-9">
                                                             <div class="form-group">
                                                                 <label class="control-label">Nombre</label>
-                                                                <input type="text" id="nombre_edit" name="nombre_edit" class="form-control" placeholder="Ingrese nombre" value="{{ old('nombre_edit') }}">
+                                                                <input type="text" id="nombre_edit" name="nombre_edit" class="form-control" autocomplete="off" placeholder="Ingrese nombre" value="{{ old('nombre_edit') }}" maxlength="128">
                                                                 <span class="text-danger">@error('nombre_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>

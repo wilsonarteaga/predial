@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DescuentosUpdateFormRequest extends FormRequest
 {
@@ -25,7 +26,7 @@ class DescuentosUpdateFormRequest extends FormRequest
     {
         return [
             //'anio_edit'  => 'required',
-            'fecha_limite_edit'  => 'required',
+            //'fecha_limite_edit'  => 'required',
             'porcentaje_edit'  => 'required|max:100'
         ];
     }
@@ -34,7 +35,7 @@ class DescuentosUpdateFormRequest extends FormRequest
     {
         return [
             //'anio.required_edit' => 'El campo año es obligatorio.',
-            'fecha_limite_edit.required' => 'El campo fecha limite es obligatorio.',
+            //'fecha_limite_edit.required' => 'El campo fecha limite es obligatorio.',
             'porcentaje_edit.required' => 'El campo porcentaje es obligatorio.',
             'porcentaje_edit.max' => 'Valor máximo :max.'
         ];

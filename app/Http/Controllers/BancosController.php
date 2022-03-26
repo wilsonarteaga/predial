@@ -112,7 +112,7 @@ class BancosController extends Controller
         //$banco->codigo = $request->codigo_edit;
         $banco->nombre = $request->nombre_edit;
         $banco->cuenta_contable = $request->cuenta_contable_edit;
-        $banco->asobancaria = $request->asobancaria_edit;
+        //$banco->asobancaria = $request->asobancaria_edit;
         $query = $banco->save();
         $tab_current = 'li-section-bar-2';
 

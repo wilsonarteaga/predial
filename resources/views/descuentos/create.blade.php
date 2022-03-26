@@ -12,6 +12,8 @@
 @endpush
 @if(Session::get('tab_current'))
 <input type="hidden" id="tab" value="{{ Session::get('tab_current') }}">
+@elseif($tab_current)
+<input type="hidden" id="tab" value="{{ $tab_current }}">
 @endif
 <div class="container-fluid">
     <div class="row bg-title">
@@ -36,7 +38,7 @@
                     <div class="sttabs tabs-style-bar">
                         <nav>
                             <ul>
-                                <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-control-shuffle"><span>Nuevo descuento</span></a></li>
+                                <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-pulse"><span>Nuevo descuento</span></a></li>
                                 <li id="li-section-bar-2" class=""><a href="#section-bar-2" class="sticon icon-list"><span>Listado de descuentos</span></a></li>
                                 <!-- <li class=""><a href="#section-bar-3" class="sticon ti-stats-up"><span>Analytics</span></a></li>
                                 <li class=""><a href="#section-bar-4" class="sticon ti-upload"><span>Upload</span></a></li>
@@ -71,7 +73,7 @@
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">A&ntilde;o:</label>
-                                                                <input type="text" id="anio" name="anio" class="form-control onlyNumbers" placeholder="Ingrese a&ntilde;o" value="{{ old('anio') }}" maxlength="4">
+                                                                <input type="text" id="anio" name="anio" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('anio') }}" maxlength="4">
                                                                 <span class="text-danger">@error('anio') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -90,7 +92,7 @@
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Porcentaje:</label>
-                                                                <input type="text" id="porcentaje" name="porcentaje" class="form-control" placeholder="Ingrese porcentaje" value="{{ old('porcentaje') }}">
+                                                                <input type="text" id="porcentaje" name="porcentaje" class="form-control" autocomplete="off" placeholder="Ingrese porcentaje" value="{{ old('porcentaje') }}">
                                                                 <span class="text-danger">@error('porcentaje') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -221,26 +223,27 @@
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">A&ntilde;o:</label>
-                                                                <input type="text" id="anio_edit" name="anio_edit" class="form-control onlyNumbers" placeholder="Ingrese a&ntilde;o" value="{{ old('anio_edit') }}" maxlength="4">
-                                                                <span class="text-danger">@error('anio_edit') {{ $message }} @enderror</span>
+                                                                <input type="text" id="anio_edit" name="anio_edit" class="form-control onlyNumbers" placeholder="Ingrese a&ntilde;o" value="{{ old('anio_edit') }}" readonly="readonly">
+                                                                {{-- <span class="text-danger">@error('anio_edit') {{ $message }} @enderror</span> --}}
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Fecha limite:</label>
                                                                 <div class="input-group" style="margin-bottom: 25px;">
-                                                                    <input type="text" id="fecha_limite_edit" name="fecha_limite_edit" class="form-control datelimite withadon" autocomplete="off" placeholder="yyyy-mm-dd" value="{{ old('fecha_limite_edit') }}">
+                                                                    <input type="text" id="fecha_limite_edit" name="fecha_limite_edit" class="form-control withadon" autocomplete="off" placeholder="yyyy-mm-dd" value="{{ old('fecha_limite_edit') }}"  readonly="readonly">
                                                                     <div class="input-group-addon">
                                                                         <span class="glyphicon glyphicon-th"></span>
                                                                     </div>
                                                                 </div>
+                                                                <span class="text-danger">@error('anio_edit') {{ $message }} @enderror</span>
                                                                 <span class="text-danger">@error('fecha_limite_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Porcentaje:</label>
-                                                                <input type="text" id="porcentaje_edit" name="porcentaje_edit" class="form-control" placeholder="Ingrese porcentaje" value="{{ old('porcentaje_edit') }}">
+                                                                <input type="text" id="porcentaje_edit" name="porcentaje_edit" class="form-control" autocomplete="off" placeholder="Ingrese porcentaje" value="{{ old('porcentaje_edit') }}">
                                                                 <span class="text-danger">@error('porcentaje_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>

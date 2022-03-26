@@ -10,6 +10,8 @@
 @endpush
 @if(Session::get('tab_current'))
 <input type="hidden" id="tab" value="{{ Session::get('tab_current') }}">
+@elseif($tab_current)
+<input type="hidden" id="tab" value="{{ $tab_current }}">
 @endif
 <div class="container-fluid">
     <div class="row bg-title">
@@ -34,7 +36,7 @@
                     <div class="sttabs tabs-style-bar">
                         <nav>
                             <ul>
-                                <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-control-shuffle"><span>Nuevo a&ntilde;o</span></a></li>
+                                <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-pulse"><span>Nuevo a&ntilde;o</span></a></li>
                                 <li id="li-section-bar-2" class=""><a href="#section-bar-2" class="sticon icon-list"><span>Listado de a&ntilde;os</span></a></li>
                                 <!-- <li class=""><a href="#section-bar-3" class="sticon ti-stats-up"><span>Analytics</span></a></li>
                                 <li class=""><a href="#section-bar-4" class="sticon ti-upload"><span>Upload</span></a></li>
@@ -68,7 +70,7 @@
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">A&ntilde;o</label>
-                                                                <input type="text" id="anio" name="anio" class="form-control onlyNumbers" placeholder="Ingrese a&ntilde;o" value="{{ old('anio') }}" maxlength="4">
+                                                                <input type="text" id="anio" name="anio" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('anio') }}" maxlength="4">
                                                                 <span class="text-danger">@error('anio') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -88,7 +90,7 @@
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Meses aministia</label>
-                                                                <input type="text" id="meses_amnistia" name="meses_amnistia" class="form-control onlyNumbers" placeholder="Ingrese meses aministia" value="{{ old('meses_amnistia') }}" maxlength="3">
+                                                                <input type="text" id="meses_amnistia" name="meses_amnistia" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese meses aministia" value="{{ old('meses_amnistia') }}" maxlength="3">
                                                                 <span class="text-danger">@error('meses_amnistia') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -239,7 +241,7 @@
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Meses amnistia</label>
-                                                                <input type="text" id="meses_amnistia_edit" name="meses_amnistia_edit" class="form-control onlyNumbers" placeholder="Ingrese meses amnistia" value="{{ old('meses_amnistia_edit') }}" maxlength="3">
+                                                                <input type="text" id="meses_amnistia_edit" name="meses_amnistia_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese meses amnistia" value="{{ old('meses_amnistia_edit') }}" maxlength="3">
                                                                 <span class="text-danger">@error('meses_amnistia_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>

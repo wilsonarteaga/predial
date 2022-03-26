@@ -19,6 +19,8 @@ class CreateDescuentosTable extends Migration
             $table->date('fecha_limite');
             $table->float('porcentaje', 5, 2);
             $table->timestamps();
+
+            $table->unique(['anio', 'fecha_limite']);
         });
     }
 

@@ -24,7 +24,7 @@ class TiposPredioCreateFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'codigo'  => 'required|max:10',
+            'codigo'  => 'required|max:10|unique:tipos_predio',
             'nombre'  => 'required|max:128'
         ];
     }
@@ -33,6 +33,7 @@ class TiposPredioCreateFormRequest extends FormRequest
     {
         return [
             'codigo.required' => 'El campo código es obligatorio.',
+            'codigo.unique' => 'El código ya existe.',
             'nombre.required' => 'El campo nombre es obligatorio.',
             'codigo.max' => 'Máximo :max caracteres.',
             'nombre.max' => 'Máximo :max caracteres.'

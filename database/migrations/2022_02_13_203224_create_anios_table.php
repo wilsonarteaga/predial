@@ -21,6 +21,8 @@ class CreateAniosTable extends Migration
             $table->timestamps();
 
             $table->foreign('id_estado')->references('id')->on('estados_anio');
+
+            $table->unique('anio');
         });
     }
 

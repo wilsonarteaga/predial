@@ -12,6 +12,8 @@
 @endpush
 @if(Session::get('tab_current'))
 <input type="hidden" id="tab" value="{{ Session::get('tab_current') }}">
+@elseif($tab_current)
+<input type="hidden" id="tab" value="{{ $tab_current }}">
 @endif
 <div class="container-fluid">
     <div class="row bg-title">
@@ -36,7 +38,7 @@
                     <div class="sttabs tabs-style-bar">
                         <nav>
                             <ul>
-                                <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-control-shuffle"><span>Nuevo concepto de predio</span></a></li>
+                                <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-pulse"><span>Nuevo concepto de predio</span></a></li>
                                 <li id="li-section-bar-2" class=""><a href="#section-bar-2" class="sticon icon-list"><span>Listado de conceptos de predio</span></a></li>
                                 <!-- <li class=""><a href="#section-bar-3" class="sticon ti-stats-up"><span>Analytics</span></a></li>
                                 <li class=""><a href="#section-bar-4" class="sticon ti-upload"><span>Upload</span></a></li>
@@ -70,29 +72,29 @@
                                                         <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">A&ntilde;o</label>
-                                                                <input type="text" id="anio" name="anio" class="form-control onlyNumbers" placeholder="Ingrese a&ntilde;o" value="{{ old('anio') }}" maxlength="4">
+                                                                <input type="text" id="anio" name="anio" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('anio') }}" maxlength="4">
                                                                 <span class="text-danger">@error('anio') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                                             <div class="form-group">
-                                                                <label class="control-label">Meses aministia</label>
-                                                                <input type="text" id="mes_amnistia" name="mes_amnistia" class="form-control onlyNumbers" placeholder="Ingrese meses aministia" value="{{ old('mes_amnistia') }}" maxlength="3">
+                                                                <label class="control-label">C&oacute;digo</label>
+                                                                <input type="text" id="codigo" name="codigo" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo" value="{{ old('codigo') }}" maxlength="3">
+                                                                <span class="text-danger">@error('codigo') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Mes aministia</label>
+                                                                <input type="text" id="mes_amnistia" name="mes_amnistia" class="form-control" autocomplete="off" placeholder="Ingrese mes aministia" value="{{ old('mes_amnistia') }}">
                                                                 <span class="text-danger">@error('mes_amnistia') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Prioridad</label>
-                                                                <input type="text" id="prioridad" name="prioridad" class="form-control onlyNumbers" placeholder="Ingrese prioridad" value="{{ old('prioridad') }}" maxlength="3">
+                                                                <input type="text" id="prioridad" name="prioridad" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese prioridad" value="{{ old('prioridad') }}" maxlength="3">
                                                                 <span class="text-danger">@error('prioridad') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">C&oacute;digo</label>
-                                                                <input type="text" id="codigo" name="codigo" class="form-control onlyNumbers" placeholder="Ingrese c&oacute;digo" value="{{ old('codigo') }}" maxlength="10">
-                                                                <span class="text-danger">@error('codigo') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -100,7 +102,7 @@
                                                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Nombre</label>
-                                                                <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingrese nombre" value="{{ old('nombre') }}" maxlength="128">
+                                                                <input type="text" id="nombre" name="nombre" class="form-control" autocomplete="off" placeholder="Ingrese nombre" value="{{ old('nombre') }}" maxlength="128">
                                                                 <span class="text-danger">@error('nombre') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -109,52 +111,72 @@
                                                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Formula</label>
-                                                                <input type="text" id="formula" name="formula" class="form-control" placeholder="Ingrese formula" value="{{ old('formula') }}" maxlength="1024">
+                                                                <input type="text" id="formula" name="formula" class="form-control" autocomplete="off" placeholder="Ingrese formula" value="{{ old('formula') }}" maxlength="1024">
                                                                 <span class="text-danger">@error('formula') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Capital:</label>
-                                                                <input type="text" id="capital" name="capital" class="form-control" placeholder="Ingrese capital" value="{{ old('capital') }}">
-                                                                <span class="text-danger">@error('capital') {{ $message }} @enderror</span>
+                                                            <div class="form-group" style="margin-bottom: 0px;">
+                                                                {{-- <input type="hidden" id="aplica_interes" name="aplica_interes" value="{{ old('aplica_interes') }}"> --}}
+                                                                <input type="checkbox" id="aplica_interes" name="aplica_interes" value="{{ old('aplica_interes') }}">
+                                                                <label for="aplica_interes_check" class="control-label" style="padding-left: 10px;">¿Aplica inter&eacute;s?</label>
+                                                                {{-- <span class="text-danger">@error('aplica_interes') {{ $message }} @enderror</span> --}}
                                                             </div>
+                                                            <span id="span_aplica_interes" class="text-muted">
+                                                                NO
+                                                            </span>
                                                         </div>
+                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                            {{-- <div class="form-group">
+                                                                <label class="control-label">Capital:</label>
+                                                                <input type="text" id="capital" name="capital" class="form-control" autocomplete="off" placeholder="Ingrese capital" value="{{ old('capital') }}">
+                                                                <span class="text-danger">@error('capital') {{ $message }} @enderror</span>
+                                                            </div> --}}
+
+                                                            <div class="form-group" style="margin-bottom: 0px;">
+                                                                {{-- <input type="hidden" id="capital" name="capital" value="{{ old('capital') }}"> --}}
+                                                                <input type="checkbox" id="capital" name="capital" value="{{ old('capital') }}">
+                                                                <label for="capital_check" class="control-label" style="padding-left: 10px;">¿Capital?</label>
+                                                                {{-- <span class="text-danger">@error('capital') {{ $message }} @enderror</span> --}}
+                                                            </div>
+                                                            <span id="span_capital" class="text-muted">
+                                                                NO
+                                                            </span>
+
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                            {{-- <div class="form-group">
+                                                                <label class="control-label">Inter&eacute;s:</label>
+                                                                <input type="text" id="interes" name="interes" class="form-control" autocomplete="off" placeholder="Ingrese inter&eacute;s" value="{{ old('interes') }}">
+                                                                <span class="text-danger">@error('interes') {{ $message }} @enderror</span>
+                                                            </div> --}}
+
+                                                            <div class="form-group" style="margin-bottom: 0px;">
+                                                                {{-- <input type="hidden" id="interes" name="interes" value="{{ old('interes') }}"> --}}
+                                                                <input type="checkbox" id="interes" name="interes" value="{{ old('interes') }}">
+                                                                <label for="interes_check" class="control-label" style="padding-left: 10px;">¿Inter&eacute;s?</label>
+                                                                {{-- <span class="text-danger">@error('interes') {{ $message }} @enderror</span> --}}
+                                                            </div>
+                                                            <span id="span_interes" class="text-muted">
+                                                                NO
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" style="margin-top: 25px;">
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">M&iacute;nimo urbano:</label>
-                                                                <input type="text" id="minimo_urbano" name="minimo_urbano" class="form-control" placeholder="Ingrese m&iacute;nimo urbano" value="{{ old('minimo_urbano') }}">
+                                                                <input type="text" id="minimo_urbano" name="minimo_urbano" class="form-control" autocomplete="off" placeholder="Ingrese m&iacute;nimo urbano" value="{{ old('minimo_urbano') }}">
                                                                 <span class="text-danger">@error('minimo_urbano') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">M&iacute;nimo rural:</label>
-                                                                <input type="text" id="minimo_rural" name="minimo_rural" class="form-control" placeholder="Ingrese m&iacute;nimo rural" value="{{ old('minimo_rural') }}">
+                                                                <input type="text" id="minimo_rural" name="minimo_rural" class="form-control" autocomplete="off" placeholder="Ingrese m&iacute;nimo rural" value="{{ old('minimo_rural') }}">
                                                                 <span class="text-danger">@error('minimo_rural') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                                                            <div class="form-group">
-                                                                {{-- <input type="hidden" id="aplica_interes" name="aplica_interes" value="{{ old('aplica_interes') }}"> --}}
-                                                                <input type="checkbox" id="aplica_interes" name="aplica_interes" checked="" value="{{ old('aplica_interes') }}">
-                                                                <label for="aplica_interes_check" class="control-label" style="padding-left: 10px;">¿Aplica inter&eacute;s?</label>
-                                                                {{-- <span class="text-danger">@error('aplica_interes') {{ $message }} @enderror</span> --}}
-                                                            </div>
-                                                            <span id="span_aplica_interes" class="text-muted">
-                                                                SI
-                                                            </span>
-
-                                                        </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Inter&eacute;s:</label>
-                                                                <input type="text" id="interes" name="interes" class="form-control" placeholder="Ingrese inter&eacute;s" value="{{ old('interes') }}">
-                                                                <span class="text-danger">@error('interes') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -230,9 +252,9 @@
                                                     <thead>
                                                         <tr>
                                                             <th class="cell_center" style="width: 7%;">A&ntilde;o</th>
-                                                            <th class="cell_center" style="width: 7%;">Meses amnistia</th>
+                                                            <th class="cell_center" style="width: 7%;">C&oacute;digo</th>
+                                                            <th class="cell_center" style="width: 7%;">Mes amnistia</th>
                                                             <th class="cell_center" style="width: 7%;">Prioridad</th>
-                                                            <th class="cell_center" style="width: 10%;">C&oacute;digo</th>
                                                             <th class="cell_center">Nombre</th>
                                                             <th class="cell_center" style="width: 10%;">Acciones</th>
                                                         </tr>
@@ -244,9 +266,9 @@
                                                                 {{-- <td class="cell_center edit_row">{{ $concepto_predio->ide_acu }}</td>
                                                                 <td class="cell_center edit_row">{{ $concepto_predio->tid_acu }}</td> --}}
                                                                 <td class="edit_row cell_center">{{ $concepto_predio->anio }}</td>
+                                                                <td class="edit_row cell_center">{{ $concepto_predio->codigo }}</td>
                                                                 <td class="edit_row cell_center">{{ $concepto_predio->mes_amnistia }}</td>
                                                                 <td class="edit_row cell_center">{{ $concepto_predio->prioridad }}</td>
-                                                                <td class="edit_row cell_center">{{ $concepto_predio->codigo }}</td>
                                                                 <td class="edit_row">{{ $concepto_predio->nombre }}</td>
                                                                 {{-- <td class="cell_center edit_row">{{ $concepto_predio->tel_acu }}</td>
                                                                 <td class="edit_row">{{ $concepto_predio->dir_acu }}</td> --}}
@@ -288,29 +310,29 @@
                                                         <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">A&ntilde;o</label>
-                                                                <input type="text" id="anio_edit" name="anio_edit" class="form-control onlyNumbers" placeholder="Ingrese a&ntilde;o" value="{{ old('anio_edit') }}" readonly="" maxlength="4">
+                                                                <input type="text" id="anio_edit" name="anio_edit" class="form-control onlyNumbers" placeholder="Ingrese a&ntilde;o" value="{{ old('anio_edit') }}" readonly="readonly">
                                                                 <span class="text-danger">@error('anio_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                                             <div class="form-group">
-                                                                <label class="control-label">Meses aministia</label>
-                                                                <input type="text" id="mes_amnistia_edit" name="mes_amnistia_edit" class="form-control onlyNumbers" placeholder="Ingrese meses aministia" value="{{ old('mes_amnistia_edit') }}" maxlength="3">
+                                                                <label class="control-label">C&oacute;digo</label>
+                                                                <input type="text" id="codigo_edit" name="codigo_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo" value="{{ old('codigo_edit') }}" readonly="readonly">
+                                                                <span class="text-danger">@error('codigo_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Mes aministia</label>
+                                                                <input type="text" id="mes_amnistia_edit" name="mes_amnistia_edit" class="form-control" autocomplete="off" placeholder="Ingrese mes aministia" value="{{ old('mes_amnistia_edit') }}">
                                                                 <span class="text-danger">@error('mes_amnistia_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Prioridad</label>
-                                                                <input type="text" id="prioridad_edit" name="prioridad_edit" class="form-control onlyNumbers" placeholder="Ingrese prioridad" value="{{ old('prioridad_edit') }}" maxlength="3">
+                                                                <input type="text" id="prioridad_edit" name="prioridad_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese prioridad" value="{{ old('prioridad_edit') }}" maxlength="3">
                                                                 <span class="text-danger">@error('prioridad_edit') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">C&oacute;digo</label>
-                                                                <input type="text" id="codigo_edit" name="codigo_edit" class="form-control onlyNumbers" placeholder="Ingrese c&oacute;digo" value="{{ old('codigo_edit') }}" maxlength="10">
-                                                                <span class="text-danger">@error('codigo_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -318,7 +340,7 @@
                                                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Nombre</label>
-                                                                <input type="text" id="nombre_edit" name="nombre_edit" class="form-control" placeholder="Ingrese nombre" value="{{ old('nombre_edit') }}" maxlength="128">
+                                                                <input type="text" id="nombre_edit" name="nombre_edit" class="form-control" autocomplete="off" placeholder="Ingrese nombre" value="{{ old('nombre_edit') }}" maxlength="128">
                                                                 <span class="text-danger">@error('nombre_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -327,51 +349,72 @@
                                                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Formula</label>
-                                                                <input type="text" id="formula_edit" name="formula_edit" class="form-control" placeholder="Ingrese formula" value="{{ old('formula_edit') }}" maxlength="1024">
+                                                                <input type="text" id="formula_edit" name="formula_edit" class="form-control" autocomplete="off" placeholder="Ingrese formula" value="{{ old('formula_edit') }}" maxlength="1024">
                                                                 <span class="text-danger">@error('formula_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Capital:</label>
-                                                                <input type="text" id="capital_edit" name="capital_edit" class="form-control" placeholder="Ingrese capital" value="{{ old('capital_edit') }}">
-                                                                <span class="text-danger">@error('capital_edit') {{ $message }} @enderror</span>
+                                                            <div class="form-group" style="margin-bottom: 0px;">
+                                                                {{-- <input type="hidden" id="aplica_interes" name="aplica_interes" value="{{ old('aplica_interes') }}"> --}}
+                                                                <input type="checkbox" id="aplica_interes_edit" name="aplica_interes_edit" value="{{ old('aplica_interes_edit') }}">
+                                                                <label for="aplica_interes_check_edit" class="control-label" style="padding-left: 10px;">¿Aplica inter&eacute;s?</label>
+                                                                {{-- <span class="text-danger">@error('aplica_interes') {{ $message }} @enderror</span> --}}
                                                             </div>
+                                                            <span id="span_aplica_interes_edit" class="text-muted">
+                                                                NO
+                                                            </span>
                                                         </div>
+                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                            {{-- <div class="form-group">
+                                                                <label class="control-label">Capital:</label>
+                                                                <input type="text" id="capital" name="capital" class="form-control" autocomplete="off" placeholder="Ingrese capital" value="{{ old('capital') }}">
+                                                                <span class="text-danger">@error('capital') {{ $message }} @enderror</span>
+                                                            </div> --}}
+
+                                                            <div class="form-group" style="margin-bottom: 0px;">
+                                                                {{-- <input type="hidden" id="capital" name="capital" value="{{ old('capital') }}"> --}}
+                                                                <input type="checkbox" id="capital_edit" name="capital_edit" value="{{ old('capital_edit') }}">
+                                                                <label for="capital_check_edit" class="control-label" style="padding-left: 10px;">¿Capital?</label>
+                                                                {{-- <span class="text-danger">@error('capital') {{ $message }} @enderror</span> --}}
+                                                            </div>
+                                                            <span id="span_capital_edit" class="text-muted">
+                                                                NO
+                                                            </span>
+
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                            {{-- <div class="form-group">
+                                                                <label class="control-label">Inter&eacute;s:</label>
+                                                                <input type="text" id="interes" name="interes" class="form-control" autocomplete="off" placeholder="Ingrese inter&eacute;s" value="{{ old('interes') }}">
+                                                                <span class="text-danger">@error('interes') {{ $message }} @enderror</span>
+                                                            </div> --}}
+
+                                                            <div class="form-group" style="margin-bottom: 0px;">
+                                                                {{-- <input type="hidden" id="interes" name="interes" value="{{ old('interes') }}"> --}}
+                                                                <input type="checkbox" id="interes_edit" name="interes_edit" value="{{ old('interes_edit') }}">
+                                                                <label for="interes_check_edit" class="control-label" style="padding-left: 10px;">¿Inter&eacute;s?</label>
+                                                                {{-- <span class="text-danger">@error('interes') {{ $message }} @enderror</span> --}}
+                                                            </div>
+                                                            <span id="span_interes_edit" class="text-muted">
+                                                                NO
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" style="margin-top: 25px;">
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">M&iacute;nimo urbano:</label>
-                                                                <input type="text" id="minimo_urbano_edit" name="minimo_urbano_edit" class="form-control" placeholder="Ingrese m&iacute;nimo urbano" value="{{ old('minimo_urbano_edit') }}">
+                                                                <input type="text" id="minimo_urbano_edit" name="minimo_urbano_edit" class="form-control" autocomplete="off" placeholder="Ingrese m&iacute;nimo urbano" value="{{ old('minimo_urbano_edit') }}">
                                                                 <span class="text-danger">@error('minimo_urbano_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">M&iacute;nimo rural:</label>
-                                                                <input type="text" id="minimo_rural_edit" name="minimo_rural_edit" class="form-control" placeholder="Ingrese m&iacute;nimo rural" value="{{ old('minimo_rural_edit') }}">
+                                                                <input type="text" id="minimo_rural_edit" name="minimo_rural_edit" class="form-control" autocomplete="off" placeholder="Ingrese m&iacute;nimo rural" value="{{ old('minimo_rural_edit') }}">
                                                                 <span class="text-danger">@error('minimo_rural_edit') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                                                            <div class="form-group">
-                                                                <input type="checkbox" id="aplica_interes_edit" name="aplica_interes_edit" checked="" value="{{ old('aplica_interes_edit') }}">
-                                                                <label for="aplica_interes_edit" class="control-label" style="padding-left: 10px;">¿Aplica inter&eacute;s?</label>
-                                                                {{-- <span class="text-danger">@error('aplica_interes_edit') {{ $message }} @enderror</span> --}}
-                                                            </div>
-                                                            <span id="span_aplica_interes_edit" class="text-muted">
-                                                                SI
-                                                            </span>
-
-                                                        </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Inter&eacute;s:</label>
-                                                                <input type="text" id="interes_edit" name="interes_edit" class="form-control" placeholder="Ingrese inter&eacute;s" value="{{ old('interes_edit') }}">
-                                                                <span class="text-danger">@error('interes_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                     </div>

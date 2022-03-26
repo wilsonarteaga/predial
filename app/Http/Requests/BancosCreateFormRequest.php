@@ -24,10 +24,10 @@ class BancosCreateFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'codigo'  => 'required|max:10',
+            'codigo'  => 'required|unique:bancos|max:10',
             'nombre'  => 'required|max:128',
             'cuenta_contable'  => 'required|max:30',
-            'asobancaria'  => 'required|max:30'
+            'asobancaria'  => 'required|unique:bancos|max:30'
         ];
     }
 
@@ -35,6 +35,7 @@ class BancosCreateFormRequest extends FormRequest
     {
         return [
             'codigo.required' => 'El campo código es obligatorio.',
+            'codigo.unique' => 'El código bancario ya existe.',
             'nombre.required' => 'El campo nombre es obligatorio.',
             'codigo.max' => 'Máximo :max caracteres.',
             'nombre.max' => 'Máximo :max caracteres.',
@@ -42,6 +43,7 @@ class BancosCreateFormRequest extends FormRequest
             'asobancaria.required'  => 'El campo asobancaria es obligatorio.',
             'cuenta_contable.max' => 'Máximo :max caracteres.',
             'asobancaria.max' => 'Máximo :max caracteres.',
+            'asobancaria.unique' => 'El código asobancario ya existe.'
         ];
     }
 }

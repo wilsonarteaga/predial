@@ -10,6 +10,8 @@
 @endpush
 @if(Session::get('tab_current'))
 <input type="hidden" id="tab" value="{{ Session::get('tab_current') }}">
+@elseif($tab_current)
+<input type="hidden" id="tab" value="{{ $tab_current }}">
 @endif
 <div class="container-fluid">
     <div class="row bg-title">
@@ -34,7 +36,7 @@
                     <div class="sttabs tabs-style-bar">
                         <nav>
                             <ul>
-                                <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-control-shuffle"><span>Nuevo banco</span></a></li>
+                                <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-pulse"><span>Nuevo banco</span></a></li>
                                 <li id="li-section-bar-2" class=""><a href="#section-bar-2" class="sticon icon-list"><span>Listado de bancos</span></a></li>
                                 <!-- <li class=""><a href="#section-bar-3" class="sticon ti-stats-up"><span>Analytics</span></a></li>
                                 <li class=""><a href="#section-bar-4" class="sticon ti-upload"><span>Upload</span></a></li>
@@ -68,14 +70,14 @@
                                                         <div class="col-md-3">
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo</label>
-                                                                <input type="text" id="codigo" name="codigo" class="form-control" placeholder="Ingrese c&oacute;digo" value="{{ old('codigo') }}" maxlength="10">
+                                                                <input type="text" id="codigo" name="codigo" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo" value="{{ old('codigo') }}" maxlength="3">
                                                                 <span class="text-danger">@error('codigo') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-9">
                                                             <div class="form-group">
                                                                 <label class="control-label">Nombre</label>
-                                                                <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingrese nombre" value="{{ old('nombre') }}" maxlength="128">
+                                                                <input type="text" id="nombre" name="nombre" class="form-control" autocomplete="off" placeholder="Ingrese nombre" value="{{ old('nombre') }}" maxlength="128">
                                                                 <span class="text-danger">@error('nombre') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -84,14 +86,14 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label class="control-label">Cuenta contable</label>
-                                                                <input type="text" id="cuenta_contable" name="cuenta_contable" class="form-control" placeholder="Ingrese cuenta contable" value="{{ old('cuenta_contable') }}" maxlength="30">
+                                                                <input type="text" id="cuenta_contable" name="cuenta_contable" class="form-control" autocomplete="off" placeholder="Ingrese cuenta contable" value="{{ old('cuenta_contable') }}" maxlength="30">
                                                                 <span class="text-danger">@error('cuenta_contable') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label class="control-label">Asobancaria</label>
-                                                                <input type="text" id="asobancaria" name="asobancaria" class="form-control" placeholder="Ingrese asobancaria" value="{{ old('asobancaria') }}" maxlength="30">
+                                                                <input type="text" id="asobancaria" name="asobancaria" class="form-control" autocomplete="off" placeholder="Ingrese asobancaria" value="{{ old('asobancaria') }}" maxlength="30">
                                                                 <span class="text-danger">@error('asobancaria') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -180,10 +182,10 @@
                                                             <tr style="cursor: pointer;" json-data='@json($banco)'>
                                                                 {{-- <td class="cell_center edit_row">{{ $banco->ide_acu }}</td>
                                                                 <td class="cell_center edit_row">{{ $banco->tid_acu }}</td> --}}
-                                                                <td class="edit_row">{{ $banco->codigo }}</td>
+                                                                <td class="edit_row cell_center">{{ $banco->codigo }}</td>
                                                                 <td class="edit_row">{{ $banco->nombre }}</td>
-                                                                <td class="edit_row">{{ $banco->cuenta_contable }}</td>
-                                                                <td class="edit_row">{{ $banco->asobancaria }}</td>
+                                                                <td class="edit_row cell_center">{{ $banco->cuenta_contable }}</td>
+                                                                <td class="edit_row cell_center">{{ $banco->asobancaria }}</td>
                                                                 {{-- <td class="cell_center edit_row">{{ $banco->tel_acu }}</td>
                                                                 <td class="edit_row">{{ $banco->dir_acu }}</td> --}}
                                                                 <td class="cell_center">
@@ -231,7 +233,7 @@
                                                         <div class="col-md-9">
                                                             <div class="form-group">
                                                                 <label class="control-label">Nombre</label>
-                                                                <input type="text" id="nombre_edit" name="nombre_edit" class="form-control" placeholder="Ingrese nombre" value="{{ old('nombre_edit') }}">
+                                                                <input type="text" id="nombre_edit" name="nombre_edit" class="form-control" autocomplete="off" placeholder="Ingrese nombre" value="{{ old('nombre_edit') }}" maxlength="128">
                                                                 <span class="text-danger">@error('nombre_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -240,14 +242,14 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label class="control-label">Cuenta contable</label>
-                                                                <input type="text" id="cuenta_contable_edit" name="cuenta_contable_edit" class="form-control" placeholder="Ingrese cuenta contable" value="{{ old('cuenta_contable_edit') }}" maxlength="30">
+                                                                <input type="text" id="cuenta_contable_edit" name="cuenta_contable_edit" class="form-control" autocomplete="off" placeholder="Ingrese cuenta contable" value="{{ old('cuenta_contable_edit') }}" maxlength="30">
                                                                 <span class="text-danger">@error('cuenta_contable_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label class="control-label">Asobancaria</label>
-                                                                <input type="text" id="asobancaria_edit" name="asobancaria_edit" class="form-control" placeholder="Ingrese asobancaria" value="{{ old('asobancaria_edit') }}" maxlength="30">
+                                                                <input type="text" id="asobancaria_edit" name="asobancaria_edit" class="form-control" autocomplete="off" placeholder="Ingrese asobancaria" value="{{ old('asobancaria_edit') }}" readonly="readonly">
                                                                 <span class="text-danger">@error('asobancaria_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
