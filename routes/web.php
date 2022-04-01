@@ -11,6 +11,7 @@ use App\Http\Controllers\ConceptosPredioController;
 use App\Http\Controllers\DescuentosController;
 use App\Http\Controllers\ErrorRequestController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\TarifasPredialController;
 use App\Http\Controllers\TiposPredioController;
 
 /*
@@ -138,6 +139,22 @@ Route::post('changepass', [ChangePasswordController::class, 'changepass'])->name
 
 // Route::get('jueguito', [JuegoPaciente::class, 'juego']);
 
+//AniosController
+Route::get('registro_anios/{id}', [AniosController::class, 'create'])->middleware('checkdb');
+Route::get('registro_anios', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
+
+Route::post('create_anios', [AniosController::class, 'store'])->name('anios.create_anios')->middleware('checkdb');
+Route::post('update_anios', [AniosController::class, 'update'])->name('anios.update_anios')->middleware('checkdb');
+Route::post('delete_anios', [AniosController::class, 'destroy'])->name('anios.delete_anios')->middleware('checkdb');
+
+//BancosController
+Route::get('registro_bancos/{id}', [BancosController::class, 'create'])->middleware('checkdb');
+Route::get('registro_bancos', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
+
+Route::post('create_bancos', [BancosController::class, 'store'])->name('bancos.create_bancos')->middleware('checkdb');
+Route::post('update_bancos', [BancosController::class, 'update'])->name('bancos.update_bancos')->middleware('checkdb');
+Route::post('delete_bancos', [BancosController::class, 'destroy'])->name('bancos.delete_bancos')->middleware('checkdb');
+
 //ClasesMutacionController
 Route::get('registro_clasesmutacion/{id}', [ClasesMutacionController::class, 'create'])->middleware('checkdb');
 Route::get('registro_clasesmutacion', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
@@ -162,30 +179,6 @@ Route::post('create_conceptospredio', [ConceptosPredioController::class, 'store'
 Route::post('update_conceptospredio', [ConceptosPredioController::class, 'update'])->name('conceptospredio.update_conceptospredio')->middleware('checkdb');
 Route::post('delete_conceptospredio', [ConceptosPredioController::class, 'destroy'])->name('conceptospredio.delete_conceptospredio')->middleware('checkdb');
 
-//TiposPredioController
-Route::get('registro_tipospredio/{id}', [TiposPredioController::class, 'create'])->middleware('checkdb');
-Route::get('registro_tipospredio', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
-
-Route::post('create_tipospredio', [TiposPredioController::class, 'store'])->name('tipospredio.create_tipospredio')->middleware('checkdb');
-Route::post('update_tipospredio', [TiposPredioController::class, 'update'])->name('tipospredio.update_tipospredio')->middleware('checkdb');
-Route::post('delete_tipospredio', [TiposPredioController::class, 'destroy'])->name('tipospredio.delete_tipospredio')->middleware('checkdb');
-
-//AniosController
-Route::get('registro_anios/{id}', [AniosController::class, 'create'])->middleware('checkdb');
-Route::get('registro_anios', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
-
-Route::post('create_anios', [AniosController::class, 'store'])->name('anios.create_anios')->middleware('checkdb');
-Route::post('update_anios', [AniosController::class, 'update'])->name('anios.update_anios')->middleware('checkdb');
-Route::post('delete_anios', [AniosController::class, 'destroy'])->name('anios.delete_anios')->middleware('checkdb');
-
-//BancosController
-Route::get('registro_bancos/{id}', [BancosController::class, 'create'])->middleware('checkdb');
-Route::get('registro_bancos', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
-
-Route::post('create_bancos', [BancosController::class, 'store'])->name('bancos.create_bancos')->middleware('checkdb');
-Route::post('update_bancos', [BancosController::class, 'update'])->name('bancos.update_bancos')->middleware('checkdb');
-Route::post('delete_bancos', [BancosController::class, 'destroy'])->name('bancos.delete_bancos')->middleware('checkdb');
-
 //DescuentosController
 Route::get('registro_descuentos/{id}', [DescuentosController::class, 'create'])->middleware('checkdb');
 Route::get('registro_descuentos', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
@@ -193,3 +186,19 @@ Route::get('registro_descuentos', [ErrorRequestController::class, 'error_request
 Route::post('create_descuentos', [DescuentosController::class, 'store'])->name('descuentos.create_descuentos')->middleware('checkdb');
 Route::post('update_descuentos', [DescuentosController::class, 'update'])->name('descuentos.update_descuentos')->middleware('checkdb');
 Route::post('delete_descuentos', [DescuentosController::class, 'destroy'])->name('descuentos.delete_descuentos')->middleware('checkdb');
+
+//TarifasPredialController
+Route::get('registro_tarifaspredial/{id}', [TarifasPredialController::class, 'create'])->middleware('checkdb');
+Route::get('registro_tarifaspredial', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
+
+Route::post('create_tarifaspredial', [TarifasPredialController::class, 'store'])->name('tarifaspredial.create_tarifaspredial')->middleware('checkdb');
+Route::post('update_tarifaspredial', [TarifasPredialController::class, 'update'])->name('tarifaspredial.update_tarifaspredial')->middleware('checkdb');
+Route::post('delete_tarifaspredial', [TarifasPredialController::class, 'destroy'])->name('tarifaspredial.delete_tarifaspredial')->middleware('checkdb');
+
+//TiposPredioController
+Route::get('registro_tipospredio/{id}', [TiposPredioController::class, 'create'])->middleware('checkdb');
+Route::get('registro_tipospredio', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
+
+Route::post('create_tipospredio', [TiposPredioController::class, 'store'])->name('tipospredio.create_tipospredio')->middleware('checkdb');
+Route::post('update_tipospredio', [TiposPredioController::class, 'update'])->name('tipospredio.update_tipospredio')->middleware('checkdb');
+Route::post('delete_tipospredio', [TiposPredioController::class, 'destroy'])->name('tipospredio.delete_tipospredio')->middleware('checkdb');

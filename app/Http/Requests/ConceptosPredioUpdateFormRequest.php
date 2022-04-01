@@ -24,10 +24,10 @@ class ConceptosPredioUpdateFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'anio_edit'  => 'required',
+            //'anio_edit'  => 'required',
             'mes_amnistia_edit'  => 'required',
             'prioridad_edit'  => 'required',
-            'codigo_edit'  => 'required|max:3',
+            //'codigo_edit'  => 'required|max:3',
             'nombre_edit'  => 'required|max:128',
             'formula_edit'  => 'required|max:1024',
             //'capital_edit'  => 'required',
@@ -41,13 +41,13 @@ class ConceptosPredioUpdateFormRequest extends FormRequest
     public function messages()
     {
         return [
-            'anio_edit.required'  => 'El campo año es obligatorio.',
+            //'anio_edit.required'  => 'El campo año es obligatorio.',
             'mes_amnistia_edit.required'  => 'El campo mes amnistia es obligatorio.',
             'prioridad_edit.required'  => 'El campo prioridad es obligatorio.',
-            'codigo_edit.required' => 'El campo código es obligatorio.',
+            //'codigo_edit.required' => 'El campo código es obligatorio.',
             'nombre_edit.required' => 'El campo nombre es obligatorio.',
             'formula_edit.required' => 'El campo nombre es obligatorio.',
-            'codigo_edit.max' => 'Máximo :max caracteres.',
+            //'codigo_edit.max' => 'Máximo :max caracteres.',
             'nombre_edit.max' => 'Máximo :max caracteres.',
             'formula_edit.max' => 'Máximo :max caracteres.',
             //'capital_edit.required'  => 'El campo capital es obligatorio.',

@@ -1,4 +1,5 @@
 var global_json = null;
+var arr_autonumeric = ['porcentaje', 'mes_amnistia', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car'];
 $(document).ready(function() {
 
     var ROOT_URL = window.location.protocol + "//" + window.location.host;
@@ -533,6 +534,70 @@ $(document).ready(function() {
         });
     }
 
+    if ($('#avaluo_inicial').length > 0) {
+        new AutoNumeric('#avaluo_inicial', {
+            emptyInputBehavior: "zero",
+            minimumValue: "0",
+            modifyValueOnWheel: false,
+            unformatOnSubmit: true
+        });
+        new AutoNumeric('#avaluo_inicial_edit', {
+            emptyInputBehavior: "zero",
+            minimumValue: "0",
+            modifyValueOnWheel: false,
+            unformatOnSubmit: true
+        });
+    }
+
+    if ($('#avaluo_final').length > 0) {
+        new AutoNumeric('#avaluo_final', {
+            emptyInputBehavior: "zero",
+            minimumValue: "0",
+            modifyValueOnWheel: false,
+            unformatOnSubmit: true
+        });
+        new AutoNumeric('#avaluo_final_edit', {
+            emptyInputBehavior: "zero",
+            minimumValue: "0",
+            modifyValueOnWheel: false,
+            unformatOnSubmit: true
+        });
+    }
+
+    if ($('#tarifa').length > 0) {
+        new AutoNumeric('#tarifa', {
+            emptyInputBehavior: "zero",
+            minimumValue: "0",
+            modifyValueOnWheel: false,
+            unformatOnSubmit: true
+        });
+        new AutoNumeric('#tarifa_edit', {
+            emptyInputBehavior: "zero",
+            minimumValue: "0",
+            modifyValueOnWheel: false,
+            unformatOnSubmit: true
+        });
+    }
+
+    if ($('#porcentaje_car').length > 0) {
+        new AutoNumeric('#porcentaje_car', {
+            emptyInputBehavior: "zero",
+            maximumValue: "100",
+            minimumValue: "0",
+            modifyValueOnWheel: false,
+            suffixText: "%",
+            unformatOnSubmit: true
+        });
+        new AutoNumeric('#porcentaje_car_edit', {
+            emptyInputBehavior: "zero",
+            maximumValue: "100",
+            minimumValue: "0",
+            modifyValueOnWheel: false,
+            suffixText: "%",
+            unformatOnSubmit: true
+        });
+    }
+
     if ($("#create-form").length > 0) {
         $('#create-form').validate().settings.ignore = '';
         $('#create-form').validate().settings.errorPlacement = function(error, element) {
@@ -569,13 +634,13 @@ function setData(jsonObj) {
                     $('#' + i + '_edit').selectpicker('val', el);
                 } else {
                     if (el === '.00') {
-                        if (i === 'porcentaje' || i === 'mes_amnistia' || i === 'minimo_urbano' || i === 'minimo_rural') {
+                        if ($.inArray(i, arr_autonumeric) >= 0) {
                             AutoNumeric.set('#' + i + '_edit', 0);
                         } else {
                             $('#' + i + '_edit').val('0');
                         }
                     } else {
-                        if (i === 'porcentaje' || i === 'mes_amnistia' || i === 'minimo_urbano' || i === 'minimo_rural') {
+                        if ($.inArray(i, arr_autonumeric) >= 0) {
                             AutoNumeric.set('#' + i + '_edit', Number(el));
                         } else {
                             $('#' + i + '_edit').val(el);
@@ -616,7 +681,6 @@ function setData(jsonObj) {
 }
 
 function clear_form_elements(ele) {
-
     $(ele).find(':input').each(function() {
         switch (this.type) {
             case 'password':
@@ -632,4 +696,12 @@ function clear_form_elements(ele) {
         }
     });
 
+    $.each(arr_autonumeric, function(i, el) {
+        if ($('#' + el).length > 0) {
+            AutoNumeric.set('#' + el, 0);
+        }
+        if ($('#' + el + '_edit').length > 0) {
+            AutoNumeric.set('#' + el + '_edit', 0);
+        }
+    });
 }
