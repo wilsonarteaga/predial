@@ -25,8 +25,7 @@ class PrediosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         //
     }
 
@@ -41,15 +40,29 @@ class PrediosController extends Controller
         }
         $opcion = Opcion::where('id','=', base64_decode($id))->first();
         $predios = DB::table('predios')->join('zonas', function ($join) {
-                    $join->on('predios.id_zona', '=', 'zonas.id');
-                })
-                ->select('predios.*', 'zonas.descripcion')
-                ->get(); //paginate(5);
+                        $join->on('predios.id_zona', '=', 'zonas.id');
+                    })
+                    ->select('predios.*', 'zonas.descripcion')
+                    ->get(); //paginate(5);
 
-        $zonas = DB::table('zonas')->get();
-        $tipos_predio = DB::table('tipos_predio')->get();
-        $clases_predio = DB::table('clases_predio')->get();
-        $clases_mutacion = DB::table('clases_mutacion')->get();
+        $zonas = DB::table('zonas')
+                    ->select('zonas.id', 'zonas.descripcion')
+                    ->get();
+        $tipos_predio = DB::table('tipos_predio')
+                            ->select('tipos_predio.id', 'tipos_predio.nombre')
+                            ->get();
+        $clases_predio = DB::table('clases_predio')
+                            ->select('clases_predio.id', 'clases_predio.nombre')
+                            ->get();
+        $clases_mutacion = DB::table('clases_mutacion')
+                            ->select('clases_mutacion.id', 'clases_mutacion.nombre')
+                            ->get();
+        $tarifas_predial = DB::table('tarifas_predial')
+                            ->select('tarifas_predial.id', 'tarifas_predial.descripcion', 'tarifas_predial.anio', 'tarifas_predial.codigo', 'tarifas_predial.tarifa')
+                            ->get();
+        $bancos = DB::table('bancos')
+                            ->select('bancos.id', 'bancos.codigo', 'bancos.asobancaria', 'bancos.nombre')
+                            ->get();
 
         $tab_current = 'li-section-bar-1';
         if ($request->has('page')) {
@@ -64,6 +77,8 @@ class PrediosController extends Controller
                                      'tipos_predio' => $tipos_predio,
                                      'clases_predio' => $clases_predio,
                                      'clases_mutacion' => $clases_mutacion,
+                                     'tarifas_predial' => $tarifas_predial,
+                                     'bancos' => $bancos,
                                      'tab_current' => $tab_current]);
     }
 
@@ -110,8 +125,7 @@ class PrediosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id) {
         //
     }
 
@@ -121,8 +135,7 @@ class PrediosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         //
     }
 
@@ -164,8 +177,7 @@ class PrediosController extends Controller
      * @param  Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
-    {
+    public function destroy(Request $request) {
         if (!$request->session()->exists('userid')) {
             return redirect('/');
         }
@@ -193,8 +205,6 @@ class PrediosController extends Controller
     }
 
     public function store_predios_datos_basicos(Request $request) {
-
-        //dd($request->form);
 
         $data = json_decode($request->form);
 
@@ -233,8 +243,6 @@ class PrediosController extends Controller
     }
 
     public function store_predios_datos_propietarios(Request $request) {
-
-        //dd($request->form);
 
         $data = json_decode($request->form);
 
@@ -311,6 +319,116 @@ class PrediosController extends Controller
         }
     }
 
+    public function store_predios_datos_calculo(Request $request) {
+
+        $data = json_decode($request->form);
+
+        $predio_calculo = new PredioCalculo();
+
+        if(array_key_exists('id', $data)) {
+            $predio_calculo = PredioCalculo::find($data->{'id'});
+        }
+        $predio_calculo->id_predio = $data->{'id_predio'};
+        $predio_calculo->estrato = $data->{'estrato'};
+        $predio_calculo->id_tarifa_predial = $data->{'id_tarifa_predial'};
+        $predio_calculo->destino_economico = $data->{'destino_economico'};
+        $predio_calculo->numero_resolucion = $data->{'numero_resolucion'};
+        $predio_calculo->numero_ultima_factura = $data->{'numero_ultima_factura'};
+        $predio_calculo->uso_suelo = array_key_exists('uso_suelo', $data) ? $data->{'uso_suelo'} : '0';
+
+        $query = $predio_calculo->save();
+
+        $result = array("success"=>$query);
+
+        if($query) {
+            $result['message'] = 'Informaci&oacute;n de c&aacute;lculo del predio actualizada satisfactoriamente.';
+            return response()->json([
+                'data' => $result,
+                'obj' => $predio_calculo
+            ]);
+        }
+        else {
+            $result['message'] = 'No se pudo actualizar la informaci&oacute;n de c&aacute;lculo del predio.';
+            return response()->json([
+                'data' => $result
+            ]);
+        }
+    }
+
+    public function store_predios_datos_pagos(Request $request) {
+
+        $data = json_decode($request->form);
+
+        $predio_pago = new PredioPago();
+
+        if(array_key_exists('id', $data)) {
+            $predio_pago = PredioPago::find($data->{'id'});
+        }
+        $predio_pago->id_predio = $data->{'id_predio'};
+        $predio_pago->ultimo_anio_pago = $data->{'ultimo_anio_pago'};
+        $predio_pago->valor_pago = str_replace(",", "", $data->{'valor_pago'});
+        $predio_pago->fecha_pago = Carbon::createFromFormat("Y-m-d", $data->{'fecha_pago'})->format('Y-m-d');
+        $predio_pago->factura_pago = $data->{'factura_pago'};
+        $predio_pago->id_banco = $data->{'id_banco'};
+        $predio_pago->acuerdo_pago = array_key_exists('acuerdo_pago', $data) ? $data->{'acuerdo_pago'} : '0';
+
+        $query = $predio_pago->save();
+
+        $result = array("success"=>$query);
+
+        if($query) {
+            $result['message'] = 'Informaci&oacute;n de pago del predio actualizada satisfactoriamente.';
+            return response()->json([
+                'data' => $result,
+                'obj' => $predio_pago
+            ]);
+        }
+        else {
+            $result['message'] = 'No se pudo actualizar la informaci&oacute;n de pago del predio.';
+            return response()->json([
+                'data' => $result
+            ]);
+        }
+    }
+
+    public function store_predios_datos_abonos(Request $request) {
+
+        $data = json_decode($request->form);
+
+        $predio_abono = new PredioAbono();
+
+        if(array_key_exists('id', $data)) {
+            $predio_abono = PredioAbono::find($data->{'id'});
+        }
+        $predio_abono->id_predio = $data->{'id_predio'};
+        $predio_abono->anio_abono = $data->{'anio_abono'};
+        $predio_abono->factura_abono = $data->{'factura_abono'};
+        $predio_abono->valor_abono = str_replace(",", "", $data->{'valor_abono'});
+
+        $query = $predio_abono->save();
+
+        $result = array("success"=>$query);
+
+        if($query) {
+            $result['message'] = 'Informaci&oacute;n de abono del predio actualizada satisfactoriamente.';
+
+            $predio_abonos = PredioAbono::where('id_predio', $data->{'id_predio'})
+                            ->orderBy('id', 'asc')
+                            ->get();
+
+            return response()->json([
+                'data' => $result,
+                'obj' => $predio_abonos
+            ]);
+        }
+        else {
+            $result['message'] = 'No se pudo actualizar la informaci&oacute;n de abono del predio.';
+            return response()->json([
+                'data' => $result
+            ]);
+        }
+    }
+
     public function show_predios_datos(Request $request) {
         $predio_dato = PredioDato::where('id_predio', $request->id_predio)->first();
 
@@ -323,11 +441,15 @@ class PrediosController extends Controller
 
         $predio_calculo = PredioCalculo::where('id_predio', $request->id_predio)->first();
 
-        $predio_pago = PredioPago::where('id_predio', $request->id_predio)->first();
+        $predio_pago = PredioPago::where('id_predio', $request->id_predio)
+                        ->orderBy('id', 'desc')
+                        ->first();
 
         $predio_acuerdo_pago = PredioAcuerdoPago::where('id_predio', $request->id_predio)->first();
 
-        $predio_abono = PredioAbono::where('id_predio', $request->id_predio)->first();
+        $predio_abonos = PredioAbono::where('id_predio', $request->id_predio)
+                        ->orderBy('id', 'asc')
+                        ->get();
 
         //$predio_proceso_historico = PredioAbono::where('id_predio', $request->id_predio)->first();
 
@@ -337,7 +459,7 @@ class PrediosController extends Controller
             'predio_calculo' => $predio_calculo,
             'predio_pago' => $predio_pago,
             'predio_acuerdo_pago' => $predio_acuerdo_pago,
-            'predio_abono' => $predio_abono
+            'predio_abonos' => $predio_abonos
         ]);
     }
 

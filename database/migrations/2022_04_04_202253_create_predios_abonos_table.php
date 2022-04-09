@@ -16,9 +16,9 @@ class CreatePrediosAbonosTable extends Migration
         Schema::create('predios_abonos', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_predio');
-            $table->smallInteger('anio');
-            $table->string('factura', 15);
-            $table->decimal('valor', $precision = 20, $scale = 2);
+            $table->smallInteger('anio_abono');
+            $table->string('factura_abono', 15);
+            $table->decimal('valor_abono', $precision = 20, $scale = 2);
             $table->timestamps();
 
             $table->foreign('id_predio')->references('id')->on('predios');

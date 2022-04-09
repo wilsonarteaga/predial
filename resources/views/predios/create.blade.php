@@ -655,7 +655,7 @@
             </div>
             <div class="modal-footer">
                 <button id="save_db" type="button" class="btn btn-info"> <i class="fa fa-save"></i> Guardar informaci&oacute;n</button>
-                <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-default waves-effect text-left" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
@@ -744,8 +744,54 @@
                         <form id="form-predios-datos-calculo">
                             <div class="form-body">
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-
+                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Estrato:</label>
+                                            <input type="text" id="estrato" name="estrato" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese estrato" value="{{ old('estrato') }}" maxlength="3">
+                                            {{-- <span class="text-danger">@error('estrato') {{ $message }} @enderror</span> --}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Destino econ&oacute;mico:</label>
+                                            <input type="text" id="destino_economico" name="destino_economico" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese destino econ&oacute;mico" value="{{ old('destino_economico') }}" maxlength="3">
+                                            {{-- <span class="text-danger">@error('destino_economico') {{ $message }} @enderror</span> --}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">N&uacute;mero resoluci&oacute;n:</label>
+                                            <input type="text" id="numero_resolucion" name="numero_resolucion" class="form-control" autocomplete="off" placeholder="Ingrese n&uacute;mero resoluci&oacute;n" value="{{ old('numero_resolucion') }}" maxlength="10">
+                                            {{-- <span class="text-danger">@error('numero_resolucion') {{ $message }} @enderror</span> --}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">N&uacute;mero &uacute;ltima factura:</label>
+                                            <input type="text" id="numero_ultima_factura" name="numero_ultima_factura" class="form-control" autocomplete="off" placeholder="Ingrese n&uacute;mero &uacute;ltima factura" value="{{ old('numero_ultima_factura') }}" maxlength="15">
+                                            {{-- <span class="text-danger">@error('numero_ultima_factura') {{ $message }} @enderror</span> --}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-8 col-md-8 col-sm-9 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">C&oacute;digo tarifa:</label>
+                                            <select id="id_tarifa_predial" name="id_tarifa_predial" class="form-control selectpicker-noval show-tick" data-live-search="true" title="Seleccione..." data-container="#modal-datos-calculo">
+                                                @if(count($tarifas_predial) > 0)
+                                                    @foreach($tarifas_predial as $tarifa_predial)
+                                                    <option data-subtext="<br />a&ntilde;o: {{ $tarifa_predial->anio }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c&oacute;digo: {{ $tarifa_predial->codigo }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tarifa: {{ $tarifa_predial->tarifa }}" value="{{ $tarifa_predial->id }}" {{ old('id_tarifa_predial') == $tarifa_predial->id ? 'selected' : '' }}>{{ $tarifa_predial->descripcion }}</option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-5 col-xs-12">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <label for="uso_suelo_check" class="control-label" style="display: block;">¿Uso de suelo?</label>
+                                            <input type="checkbox" id="uso_suelo" name="uso_suelo" value="{{ old('uso_suelo') }}">
+                                            <span id="span_uso_suelo" class="text-muted" style="padding-left: 10px;">NO</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -773,8 +819,54 @@
                         <form id="form-predios-datos-pagos">
                             <div class="form-body">
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-
+                                    <div class="col-lg-6 col-md-6 col-sm-9 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Banco:</label>
+                                            <select id="id_banco" name="id_banco" class="form-control selectpicker-noval show-tick" data-live-search="true" title="Seleccione..." data-container="#modal-datos-pagos">
+                                                @if(count($bancos) > 0)
+                                                    @foreach($bancos as $banco)
+                                                    <option value="{{ $banco->id }}" {{ old('id_banco') == $banco->id ? 'selected' : '' }}>{{ $banco->codigo }} - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Factura pago:</label>
+                                            <input type="text" id="factura_pago" name="factura_pago" class="form-control" autocomplete="off" placeholder="Ingrese factura pago" value="{{ old('factura_pago') }}" maxlength="15">
+                                            {{-- <span class="text-danger">@error('factura_pago') {{ $message }} @enderror</span> --}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">&Uacute;ltimo a&ntilde;o pago:</label>
+                                            <input type="text" id="ultimo_anio_pago" name="ultimo_anio_pago" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese ultimo a&ntilde;o pago" value="{{ old('ultimo_anio_pago') }}" maxlength="4">
+                                            {{-- <span class="text-danger">@error('ultimo_anio_pago') {{ $message }} @enderror</span> --}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Valor pago:</label>
+                                            <input type="text" id="valor_pago" name="valor_pago" class="form-control" autocomplete="off" placeholder="Ingrese valor pago" value="{{ old('valor_pago') }}">
+                                            {{-- <span class="text-danger">@error('valor_pago') {{ $message }} @enderror</span> --}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Fecha pago:</label>
+                                            <input type="text" id="fecha_pago" name="fecha_pago" class="form-control datepickerforms" autocomplete="off" placeholder="Ingrese fecha pago" value="{{ old('fecha_pago') }}">
+                                            {{-- <span class="text-danger">@error('fecha_pago') {{ $message }} @enderror</span> --}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-5 col-xs-12">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <label for="acuerdo_pago_check" class="control-label" style="display: block;">¿Acuerdo de pago?</label>
+                                            <input type="checkbox" id="acuerdo_pago" name="acuerdo_pago" value="{{ old('acuerdo_pago') }}">
+                                            <span id="span_acuerdo_pago" class="text-muted" style="padding-left: 10px;">NO</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -831,16 +923,44 @@
                         <form id="form-predios-datos-abonos">
                             <div class="form-body">
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-
+                                    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                                        <div class="form-group" style="margin-bottom: 5px;">
+                                            <label class="control-label">A&ntilde;o abono:</label>
+                                            <input type="text" id="anio_abono" name="anio_abono" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese a&ntilde;o abono" value="{{ old('anio_abono') }}" maxlength="4">
+                                            {{-- <span class="text-danger">@error('anio_abono') {{ $message }} @enderror</span> --}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                        <div class="form-group" style="margin-bottom: 5px;">
+                                            <label class="control-label">Factura abono:</label>
+                                            <input type="text" id="factura_abono" name="factura_abono" class="form-control" autocomplete="off" placeholder="Ingrese factura abono" value="{{ old('factura_abono') }}" maxlength="15">
+                                            {{-- <span class="text-danger">@error('factura_abono') {{ $message }} @enderror</span> --}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                        <div class="form-group" style="margin-bottom: 5px;">
+                                            <label class="control-label">Valor abono:</label>
+                                            <input type="text" id="valor_abono" name="valor_abono" class="form-control" autocomplete="off" placeholder="Ingrese valor abono" value="{{ old('valor_abono') }}">
+                                            {{-- <span class="text-danger">@error('valor_abono') {{ $message }} @enderror</span> --}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6" style="font-size: 80%;">
+                                        <span id="text_page" class="text-muted info_abonos">Edici&oacute;n<br />P&aacute;gina: 1</span><br />
+                                        <span id="text_row" class="text-muted info_abonos">Fila: 1</span>
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
+                    <div id="divAbonosTable" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="display: none;">
+                        <h2>Lista de abonos</h2>
+                        <table id="abonosTable" class="table table-hover table-condensed table-striped table-bordered"></table>
+                    </div>
                  </div>
             </div>
             <div class="modal-footer">
+                <button id="new_da" type="button" class="btn btn-success pull-left" style="display: none;"> <i class="fa fa-cogs"></i> Nuevo</button>
+                <button id="cancel_da" type="button" class="btn btn-default pull-left" style="display: none;"> <i class="fa fa-cogs"></i> Cancelar</button>
                 <button id="save_da" type="button" class="btn btn-info"> <i class="fa fa-save"></i> Guardar informaci&oacute;n</button>
                 <button type="button" class="btn btn-default waves-effect text-left" data-dismiss="modal">Cerrar</button>
             </div>

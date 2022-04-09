@@ -1,10 +1,9 @@
 var global_json = null;
 var arr_autonumeric = ['porcentaje', 'mes_amnistia', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
-    'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio'
+    'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_pago', 'valor_abono'
 ];
+var ROOT_URL = window.location.protocol + "//" + window.location.host;
 $(document).ready(function() {
-
-    var ROOT_URL = window.location.protocol + "//" + window.location.host;
 
     if ($('#codigo_predio').length > 0) {
         $('.buttonTareas').css('display', 'none');
@@ -19,6 +18,7 @@ $(document).ready(function() {
             if ($('#tab').val() === 'li-section-bar-2') {
                 if ($('#codigo_predio').length > 0) {
                     $('.buttonTareas').css('display', 'none');
+                    $('.span_predio').html('');
                 }
                 $('.result').empty();
                 if ($('#tab').length > 0) {
@@ -182,29 +182,6 @@ $(document).ready(function() {
             // }
         });
     }
-
-    // if ($('.btn_update_cit').length > 0) {
-    //     $('.btn_update_cit').off('click').on('click', function() {
-    //         var btn = $(this);
-    //         $('.result').empty();
-    //         $('#timeline_citas').fadeOut(function() {
-    //             var jsonObj = JSON.parse($(btn).attr('json-data'));
-    //             $.each(jsonObj, function(i, el) {
-    //                 if ($('#' + i + '_edit').length > 0) {
-    //                     if ($('#' + i + '_edit').hasClass('selectpicker')) {
-    //                         $('#' + i + '_edit').selectpicker('val', el);
-    //                     } else {
-    //                         $('#' + i + '_edit').val(el);
-    //                     }
-    //                 }
-    //             });
-
-    //             $('.selectpicker').selectpicker('refresh');
-    //             $('#div_edit_form').fadeIn();
-
-    //         });
-    //     });
-    // }
 
     if ($('.modify_row').length > 0) {
         $('.modify_row').off('click').on('click', function(evt) {
@@ -693,6 +670,15 @@ function clear_form_elements(ele) {
         if ($('#' + el + '_edit').length > 0) {
             AutoNumeric.set('#' + el + '_edit', 0);
         }
+    });
+
+    $.each($(ele).find('.selectpicker'), function(i, el) {
+        $(el).selectpicker('val', '');
+        $(el).selectpicker('refresh');
+    });
+    $.each($(ele).find('.selectpicker-noval'), function(i, el) {
+        $(el).selectpicker('val', '');
+        $(el).selectpicker('refresh');
     });
 }
 
