@@ -78,6 +78,8 @@ $(document).ready(function() {
                 setFormData('form-predios-datos-propietarios', objJson[last_propietario]);
                 $('#form-predios-datos-propietarios').find('#span_jerarquia').html(objJson[last_propietario].jerarquia);
                 $('.control_propietarios').css('display', '');
+                $('.control_propietarios').attr('disabled', false);
+                $('#prev_dp').attr('disabled', true);
                 if (objJson.length < 2) {
                     $('#next_dp').css('display', 'none');
                     $('#prev_dp').css('display', 'none');
@@ -182,6 +184,8 @@ $(document).ready(function() {
                 if (objJson.length < 2) {
                     $('#next_dp').css('display', 'none');
                     $('#prev_dp').css('display', 'none');
+                } else {
+                    $('#span_de_jererquia').html(' de ' + objJson.length);
                 }
             }
         }
@@ -189,14 +193,42 @@ $(document).ready(function() {
     });
 
     $('#next_dp').off('click').on('click', function() {
-
+        if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dp') !== undefined) {
+            var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dp'));
+            last_propietario++;
+            if (objJson[last_propietario] !== undefined) {
+                if (objJson.length !== undefined) {
+                    setFormData('form-predios-datos-propietarios', objJson[last_propietario]);
+                    $('#form-predios-datos-propietarios').find('#span_jerarquia').html(objJson[last_propietario].jerarquia);
+                    if (objJson.length === (last_propietario + 1)) {
+                        $('#next_dp').attr('disabled', true);
+                    }
+                    $('#prev_dp').attr('disabled', false);
+                }
+            } else {
+                last_propietario--;
+            }
+        }
     });
 
     $('#prev_dp').off('click').on('click', function() {
-
+        if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dp') !== undefined) {
+            var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dp'));
+            last_propietario--;
+            if (objJson[last_propietario] !== undefined) {
+                if (objJson.length !== undefined) {
+                    setFormData('form-predios-datos-propietarios', objJson[last_propietario]);
+                    $('#form-predios-datos-propietarios').find('#span_jerarquia').html(objJson[last_propietario].jerarquia);
+                    if (last_propietario === 0) {
+                        $('#prev_dp').attr('disabled', true);
+                    }
+                    $('#next_dp').attr('disabled', false);
+                }
+            } else {
+                last_propietario++;
+            }
+        }
     });
-
-
 });
 
 function saveDatosPredio(form, modal, path, suffix) {
@@ -221,12 +253,19 @@ function saveDatosPredio(form, modal, path, suffix) {
                             if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dp') !== undefined) {
                                 var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dp'));
                                 if (objJson.length !== undefined) {
-                                    objJson.push(response.obj);
+                                    if (jsonObj.id !== undefined) {
+                                        objJson[last_propietario] = response.obj;
+                                    } else {
+                                        objJson.push(response.obj);
+                                    }
+
                                     $('#tr_predio_' + $('#id_edit').val()).attr('data-' + suffix, JSON.stringify(objJson));
                                     $('#span_de_jererquia').html(' de ' + objJson.length);
                                 }
                             } else {
-                                $('#tr_predio_' + $('#id_edit').val()).attr('data-' + suffix, JSON.stringify(response.obj));
+                                var arr = [];
+                                arr.push(response.obj);
+                                $('#tr_predio_' + $('#id_edit').val()).attr('data-' + suffix, JSON.stringify(arr));
                             }
                         } else {
                             $('#tr_predio_' + $('#id_edit').val()).attr('data-' + suffix, JSON.stringify(response.obj));

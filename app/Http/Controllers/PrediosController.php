@@ -263,7 +263,7 @@ class PrediosController extends Controller
                                    ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
                                    ->select('propietarios.*', 'predios_propietarios.jerarquia')
                                    ->where('propietarios.id', $propietario->id)
-                                   ->get();
+                                   ->first();
 
                 return response()->json([
                     'data' => $result,
@@ -287,7 +287,7 @@ class PrediosController extends Controller
                                    ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
                                    ->select('propietarios.*', 'predios_propietarios.jerarquia')
                                    ->where('propietarios.id', $propietario->id)
-                                   ->get();
+                                   ->first();
 
                     return response()->json([
                         'data' => $result,
