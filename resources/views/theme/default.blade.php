@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link rel="icon" type="image/png" sizes="16x16" href="{!! asset('theme/plugins/images/favicon.png') !!}">
     <title>Plataforma - ERPSoft Predial</title>
     <!-- Bootstrap Core CSS -->
@@ -69,6 +70,7 @@
         <!-- ============================================================== -->
         <nav class="navbar navbar-default navbar-static-top m-b-0">
             @include('theme.header')
+            {{-- @include('theme.header', ['template' => $template]) --}}
         </nav>
         <!-- End Top Navigation -->
         <!-- ============================================================== -->
@@ -85,6 +87,7 @@
         <!-- ============================================================== -->
         <div id="page-wrapper">
             @yield('content')
+            @yield('modales')
             <footer class="footer text-center"> 2021 &copy; Freelance </footer>
         </div>
         <!-- ============================================================== -->

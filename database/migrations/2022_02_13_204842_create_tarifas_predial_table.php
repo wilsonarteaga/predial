@@ -20,10 +20,10 @@ class CreateTarifasPredialTable extends Migration
             $table->string('codigo', 10);
             $table->tinyInteger('rango');
             $table->string('descripcion', 128);
-            $table->decimal('avaluo_inicial', $precision = 12, $scale = 2);
-            $table->decimal('avaluo_final', $precision = 12, $scale = 2);
-            $table->decimal('tarifa', $precision = 6, $scale = 2);
-            $table->tinyInteger('porcentaje_car');
+            $table->decimal('avaluo_inicial', $precision = 20, $scale = 2);
+            $table->decimal('avaluo_final', $precision = 20, $scale = 2);
+            $table->decimal('tarifa', $precision = 12, $scale = 2);
+            $table->decimal('porcentaje_car', $precision = 5, $scale = 2);
             $table->tinyInteger('estrato');
             $table->string('destino', 128);
             $table->tinyInteger('grupo_tarifa');

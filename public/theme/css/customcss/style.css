@@ -71,3 +71,10 @@ textarea.form-control {
     /* Recent browsers */
     text-transform: none;
 }
+
+span.span_predio {
+    display: block;
+    font-size: 170%;
+    font-weight: bold;
+    color: rgb(185, 210, 9);
+}

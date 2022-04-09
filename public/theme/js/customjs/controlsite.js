@@ -1,8 +1,14 @@
 var global_json = null;
-var arr_autonumeric = ['porcentaje', 'mes_amnistia', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car'];
+var arr_autonumeric = ['porcentaje', 'mes_amnistia', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
+    'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio'
+];
 $(document).ready(function() {
 
     var ROOT_URL = window.location.protocol + "//" + window.location.host;
+
+    if ($('#codigo_predio').length > 0) {
+        $('.buttonTareas').css('display', 'none');
+    }
 
     if ($('#tab').length > 0) {
         $('#' + $('#tab').val()).trigger('click');
@@ -11,6 +17,9 @@ $(document).ready(function() {
     if ($('#li-section-bar-1').length > 0) {
         $('#li-section-bar-1').bind('click', function() {
             if ($('#tab').val() === 'li-section-bar-2') {
+                if ($('#codigo_predio').length > 0) {
+                    $('.buttonTareas').css('display', 'none');
+                }
                 $('.result').empty();
                 if ($('#tab').length > 0) {
                     $('#tab').val('li-section-bar-1');
@@ -93,6 +102,9 @@ $(document).ready(function() {
     if ($('#btn_cancel_edit').length > 0) {
         $('#btn_cancel_edit').off('click').on('click', function() {
             $('#div_edit_form').fadeOut(function() {
+                if ($('#codigo_predio').length > 0) {
+                    $('.buttonTareas').css('display', 'none');
+                }
                 if ($('#div_table').length > 0)
                     $('#div_table').fadeIn();
 
@@ -288,6 +300,8 @@ $(document).ready(function() {
     // }
 
     $('.selectpicker').selectpicker();
+    $('.selectpicker-noval').selectpicker();
+
     $('.selectpicker').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
         if ($("#create-form").length > 0) {
             $('#create-form').validate().element($(this));
@@ -404,69 +418,46 @@ $(document).ready(function() {
         });
     }
 
-    if ($('#porcentaje').length > 0) {
-        new AutoNumeric('#porcentaje', {
-            emptyInputBehavior: "zero",
-            maximumValue: "100",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            suffixText: "%",
-            unformatOnSubmit: true
-        });
-        new AutoNumeric('#porcentaje_edit', {
-            emptyInputBehavior: "zero",
-            maximumValue: "100",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            suffixText: "%",
-            unformatOnSubmit: true
-        });
-    }
-
-    if ($('#mes_amnistia').length > 0) {
-        new AutoNumeric('#mes_amnistia', {
-            emptyInputBehavior: "zero",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            unformatOnSubmit: true
-        });
-        new AutoNumeric('#mes_amnistia_edit', {
-            emptyInputBehavior: "zero",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            unformatOnSubmit: true
-        });
-    }
-
-    if ($('#minimo_urbano').length > 0) {
-        new AutoNumeric('#minimo_urbano', {
-            emptyInputBehavior: "zero",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            unformatOnSubmit: true
-        });
-        new AutoNumeric('#minimo_urbano_edit', {
-            emptyInputBehavior: "zero",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            unformatOnSubmit: true
-        });
-    }
-
-    if ($('#minimo_rural').length > 0) {
-        new AutoNumeric('#minimo_rural', {
-            emptyInputBehavior: "zero",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            unformatOnSubmit: true
-        });
-        new AutoNumeric('#minimo_rural_edit', {
-            emptyInputBehavior: "zero",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            unformatOnSubmit: true
-        });
-    }
+    $.each(arr_autonumeric, function(i, el) {
+        if ($('#' + el).length > 0) {
+            if ($('#' + el).hasClass('porcentaje')) {
+                new AutoNumeric('#' + el, {
+                    emptyInputBehavior: "zero",
+                    maximumValue: "100",
+                    minimumValue: "0",
+                    modifyValueOnWheel: false,
+                    suffixText: "%",
+                    unformatOnSubmit: true
+                });
+            } else {
+                new AutoNumeric('#' + el, {
+                    emptyInputBehavior: "zero",
+                    minimumValue: "0",
+                    modifyValueOnWheel: false,
+                    unformatOnSubmit: true
+                });
+            }
+        }
+        if ($('#' + el + '_edit').length > 0) {
+            if ($('#' + el).hasClass('porcentaje')) {
+                new AutoNumeric('#' + el + '_edit', {
+                    emptyInputBehavior: "zero",
+                    maximumValue: "100",
+                    minimumValue: "0",
+                    modifyValueOnWheel: false,
+                    suffixText: "%",
+                    unformatOnSubmit: true
+                });
+            } else {
+                new AutoNumeric('#' + el + '_edit', {
+                    emptyInputBehavior: "zero",
+                    minimumValue: "0",
+                    modifyValueOnWheel: false,
+                    unformatOnSubmit: true
+                });
+            }
+        }
+    });
 
     if ($('#aplica_interes').length > 0) {
         $('#aplica_interes').off('click').on('click', function() {
@@ -534,70 +525,6 @@ $(document).ready(function() {
         });
     }
 
-    if ($('#avaluo_inicial').length > 0) {
-        new AutoNumeric('#avaluo_inicial', {
-            emptyInputBehavior: "zero",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            unformatOnSubmit: true
-        });
-        new AutoNumeric('#avaluo_inicial_edit', {
-            emptyInputBehavior: "zero",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            unformatOnSubmit: true
-        });
-    }
-
-    if ($('#avaluo_final').length > 0) {
-        new AutoNumeric('#avaluo_final', {
-            emptyInputBehavior: "zero",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            unformatOnSubmit: true
-        });
-        new AutoNumeric('#avaluo_final_edit', {
-            emptyInputBehavior: "zero",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            unformatOnSubmit: true
-        });
-    }
-
-    if ($('#tarifa').length > 0) {
-        new AutoNumeric('#tarifa', {
-            emptyInputBehavior: "zero",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            unformatOnSubmit: true
-        });
-        new AutoNumeric('#tarifa_edit', {
-            emptyInputBehavior: "zero",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            unformatOnSubmit: true
-        });
-    }
-
-    if ($('#porcentaje_car').length > 0) {
-        new AutoNumeric('#porcentaje_car', {
-            emptyInputBehavior: "zero",
-            maximumValue: "100",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            suffixText: "%",
-            unformatOnSubmit: true
-        });
-        new AutoNumeric('#porcentaje_car_edit', {
-            emptyInputBehavior: "zero",
-            maximumValue: "100",
-            minimumValue: "0",
-            modifyValueOnWheel: false,
-            suffixText: "%",
-            unformatOnSubmit: true
-        });
-    }
-
     if ($("#create-form").length > 0) {
         $('#create-form').validate().settings.ignore = '';
         $('#create-form').validate().settings.errorPlacement = function(error, element) {
@@ -623,8 +550,67 @@ $(document).ready(function() {
             }
         };
     }
-});
 
+    if ($('.nofocus').length > 0) {
+        $('.nofocus').off('focus').on('focus', function() {
+            $(this).blur();
+        });
+    }
+
+    if ($('#codigo_predio').length > 0) {
+        $('#codigo_predio').off('keyup').on('keyup', function() {
+            if ($('#codigo_predio').val().substr(0, 2) !== undefined && $('#codigo_predio').val().substr(0, 2).length > 0) {
+                $('#tipo').val($('#codigo_predio').val().substr(0, 2));
+                $('#span_tipo').text($('#tipo').val());
+                $('#div_tipo').css('opacity', 1);
+            } else {
+                $('#tipo').val('s');
+                $('#span_tipo').text('');
+                $('#div_tipo').css('opacity', 0);
+            }
+            if ($('#codigo_predio').val().substr(2, 2) !== undefined && $('#codigo_predio').val().substr(2, 2).length > 0) {
+                $('#sector').val($('#codigo_predio').val().substr(2, 2));
+                $('#span_sector').text($('#sector').val());
+                $('#div_sector').css('opacity', 1);
+            } else {
+                $('#sector').val('');
+                $('#span_sector').text('');
+                $('#div_sector').css('opacity', 0);
+            }
+            if ($('#codigo_predio').val().substr(4, 4) !== undefined && $('#codigo_predio').val().substr(4, 4).length > 0) {
+                $('#manzana').val($('#codigo_predio').val().substr(4, 4));
+                $('#span_manzana').text($('#manzana').val());
+                $('#div_manzana').css('opacity', 1);
+            } else {
+                $('#manzana').val('');
+                $('#span_manzana').text('');
+                $('#div_manzana').css('opacity', 0);
+            }
+            if ($('#codigo_predio').val().substr(8, 4) !== undefined && $('#codigo_predio').val().substr(8, 4).length > 0) {
+                $('#predio').val($('#codigo_predio').val().substr(8, 4));
+                $('#span_predio').text($('#predio').val());
+                $('#div_predio').css('opacity', 1);
+            } else {
+                $('#predio').val('');
+                $('#span_predio').text('');
+                $('#div_predio').css('opacity', 0);
+            }
+            if ($('#codigo_predio').val().substr(12) !== undefined && $('#codigo_predio').val().substr(12).length > 0) {
+                $('#mejora').val($('#codigo_predio').val().substr(12));
+                $('#span_mejora').text($('#mejora').val());
+                $('#div_mejora').css('opacity', 1);
+            } else {
+                $('#mejora').val('');
+                $('#span_mejora').text('');
+                $('#div_mejora').css('opacity', 0);
+            }
+        });
+    }
+
+    $('.buttonTareas a').bind('click', function(evt) {
+        evt.preventDefault();
+    });
+});
 
 function setData(jsonObj) {
     $('#div_table').fadeOut(function() {
@@ -677,6 +663,10 @@ function setData(jsonObj) {
         $('.selectpicker').selectpicker('refresh');
         $('#div_edit_form').fadeIn();
 
+        if ($('#codigo_predio').length > 0) {
+            addButtonsPredios();
+        }
+
     });
 }
 
@@ -704,4 +694,58 @@ function clear_form_elements(ele) {
             AutoNumeric.set('#' + el + '_edit', 0);
         }
     });
+}
+
+function calcEditLabels() {
+    if ($('#codigo_predio_edit').val().substr(0, 2) !== undefined && $('#codigo_predio_edit').val().substr(0, 2).length > 0) {
+        $('#tipo_edit').val($('#codigo_predio_edit').val().substr(0, 2));
+        $('#span_tipo_edit').text($('#tipo_edit').val());
+        $('#div_tipo_edit').css('opacity', 1);
+    } else {
+        $('#tipo_edit').val('s');
+        $('#span_tipo_edit').text('');
+        $('#div_tipo_edit').css('opacity', 0);
+    }
+    if ($('#codigo_predio_edit').val().substr(2, 2) !== undefined && $('#codigo_predio_edit').val().substr(2, 2).length > 0) {
+        $('#sector_edit').val($('#codigo_predio_edit').val().substr(2, 2));
+        $('#span_sector_edit').text($('#sector_edit').val());
+        $('#div_sector_edit').css('opacity', 1);
+    } else {
+        $('#sector_edit').val('');
+        $('#span_sector_edit').text('');
+        $('#div_sector_edit').css('opacity', 0);
+    }
+    if ($('#codigo_predio_edit').val().substr(4, 4) !== undefined && $('#codigo_predio_edit').val().substr(4, 4).length > 0) {
+        $('#manzana_edit').val($('#codigo_predio_edit').val().substr(4, 4));
+        $('#span_manzana_edit').text($('#manzana_edit').val());
+        $('#div_manzana_edit').css('opacity', 1);
+    } else {
+        $('#manzana_edit').val('');
+        $('#span_manzana_edit').text('');
+        $('#div_manzana_edit').css('opacity', 0);
+    }
+    if ($('#codigo_predio_edit').val().substr(8, 4) !== undefined && $('#codigo_predio_edit').val().substr(8, 4).length > 0) {
+        $('#predio_edit').val($('#codigo_predio_edit').val().substr(8, 4));
+        $('#span_predio_edit').text($('#predio_edit').val());
+        $('#div_predio_edit').css('opacity', 1);
+    } else {
+        $('#predio_edit').val('');
+        $('#span_predio_edit').text('');
+        $('#div_predio_edit').css('opacity', 0);
+    }
+    if ($('#codigo_predio_edit').val().substr(12) !== undefined && $('#codigo_predio_edit').val().substr(12).length > 0) {
+        $('#mejora_edit').val($('#codigo_predio_edit').val().substr(12));
+        $('#span_mejora_edit').text($('#mejora_edit').val());
+        $('#div_mejora_edit').css('opacity', 1);
+    } else {
+        $('#mejora_edit').val('');
+        $('#span_mejora_edit').text('');
+        $('#div_mejora_edit').css('opacity', 0);
+    }
+}
+
+function addButtonsPredios() {
+    $('.buttonTareas').css('display', '');
+    calcEditLabels();
+    getJsonPrediosDatos();
 }

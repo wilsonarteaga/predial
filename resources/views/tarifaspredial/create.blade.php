@@ -132,7 +132,7 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">% CAR:</label>
-                                                                <input type="text" id="porcentaje_car" name="porcentaje_car" class="form-control" autocomplete="off" placeholder="Ingrese porcentaje CAR" value="{{ old('porcentaje_car') }}">
+                                                                <input type="text" id="porcentaje_car" name="porcentaje_car" class="form-control porcentaje" autocomplete="off" placeholder="Ingrese porcentaje CAR" value="{{ old('porcentaje_car') }}">
                                                                 <span class="text-danger">@error('porcentaje_car') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -278,7 +278,7 @@
                                     </div>
                                 </div>
                                 <div id="div_edit_form" class="panel panel-info" style="display: none;">
-                                    <div class="panel-heading"><i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Actualizar informaci&oacute;n del tarifa predial</div>
+                                    <div class="panel-heading"><i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Actualizar informaci&oacute;n de la tarifa predial</div>
                                     <div class="panel-wrapper collapse in" aria-expanded="true">
                                         <div class="panel-body">
                                             <form action="{{ route('tarifaspredial.update_tarifaspredial') }}" method="post" id="update-form">
@@ -350,7 +350,7 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">% CAR:</label>
-                                                                <input type="text" id="porcentaje_car_edit" name="porcentaje_car_edit" class="form-control" autocomplete="off" placeholder="Ingrese porcentaje CAR" value="{{ old('porcentaje_car_edit') }}">
+                                                                <input type="text" id="porcentaje_car_edit" name="porcentaje_car_edit" class="form-control porcentaje" autocomplete="off" placeholder="Ingrese porcentaje CAR" value="{{ old('porcentaje_car_edit') }}">
                                                                 <span class="text-danger">@error('porcentaje_car_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>

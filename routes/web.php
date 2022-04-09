@@ -11,6 +11,7 @@ use App\Http\Controllers\ConceptosPredioController;
 use App\Http\Controllers\DescuentosController;
 use App\Http\Controllers\ErrorRequestController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PrediosController;
 use App\Http\Controllers\TarifasPredialController;
 use App\Http\Controllers\TiposPredioController;
 
@@ -186,6 +187,31 @@ Route::get('registro_descuentos', [ErrorRequestController::class, 'error_request
 Route::post('create_descuentos', [DescuentosController::class, 'store'])->name('descuentos.create_descuentos')->middleware('checkdb');
 Route::post('update_descuentos', [DescuentosController::class, 'update'])->name('descuentos.update_descuentos')->middleware('checkdb');
 Route::post('delete_descuentos', [DescuentosController::class, 'destroy'])->name('descuentos.delete_descuentos')->middleware('checkdb');
+
+//PrediosController
+Route::get('registro_predios/{id}', [PrediosController::class, 'create'])->middleware('checkdb');
+Route::get('registro_predios', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
+
+Route::post('create_predios', [PrediosController::class, 'store'])->name('predios.create_predios')->middleware('checkdb');
+Route::post('update_predios', [PrediosController::class, 'update'])->name('predios.update_predios')->middleware('checkdb');
+Route::post('delete_predios', [PrediosController::class, 'destroy'])->name('predios.delete_predios')->middleware('checkdb');
+
+Route::get('/show/predios_datos', [PrediosController::class, 'show_predios_datos']);
+
+//datos_basicos
+Route::post('/store/predios_datos_basicos', [PrediosController::class, 'store_predios_datos_basicos']);
+//datos_propietarios
+Route::post('/store/predios_datos_propietarios', [PrediosController::class, 'store_predios_datos_propietarios']);
+//datos_calculo
+Route::post('/store/predios_datos_calculo', [PrediosController::class, 'store_predios_datos_calculo']);
+//datos_pagos
+Route::post('/store/predios_datos_pagos', [PrediosController::class, 'store_predios_datos_pagos']);
+//datos_acuerdos_pago
+Route::post('/store/predios_datos_acuerdos_pago', [PrediosController::class, 'store_predios_datos_acuerdos_pago']);
+//datos_abonos
+Route::post('/store/predios_datos_abonos', [PrediosController::class, 'store_predios_datos_abonos']);
+//procesos_historicos
+Route::post('/store/predios_datos_procesos_historicos', [PrediosController::class, 'store_predios_datos_procesos_historicos']);
 
 //TarifasPredialController
 Route::get('registro_tarifaspredial/{id}', [TarifasPredialController::class, 'create'])->middleware('checkdb');

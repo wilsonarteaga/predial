@@ -3,8 +3,9 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
-class CreateDescuentosTable extends Migration
+class CreateZonasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +14,19 @@ class CreateDescuentosTable extends Migration
      */
     public function up()
     {
-        Schema::create('descuentos', function (Blueprint $table) {
+        Schema::create('zonas', function (Blueprint $table) {
             $table->id();
-            $table->smallInteger('anio');
-            $table->date('fecha_limite');
-            $table->decimal('porcentaje', $precision = 5, $scale = 2);
+            $table->string('descripcion', 30);
             $table->timestamps();
-
-            $table->unique(['anio', 'fecha_limite']);
         });
+
+        // Insert some stuff
+        DB::table('zonas')->insert(
+            array(
+                ['descripcion' => 'Rural' ],
+                ['descripcion' => 'Urbano' ]
+            ),
+        );
     }
 
     /**
@@ -31,6 +36,6 @@ class CreateDescuentosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('descuentos');
+        Schema::dropIfExists('zonas');
     }
 }

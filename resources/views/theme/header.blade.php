@@ -19,10 +19,11 @@
     </div>
     <!-- /Logo -->
     <!-- Search input and Toggle icon -->
-    <ul class="nav navbar-top-links navbar-left">
+    <ul id="buttonsTareas" class="nav navbar-top-links navbar-left">
         <li>
             <a href="javascript:void(0)" class="open-close waves-effect waves-light visible-xs"><i class="ti-close ti-menu"></i></a>
         </li>
+        @yield('buttons')
         <!-- <li class="dropdown">
             <a class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#"> <i class="mdi mdi-gmail"></i>
                 <div class="notify"> <span class="heartbit"></span> <span class="point"></span> </div>
@@ -176,14 +177,14 @@
         <!-- /.Megamenu -->
     </ul>
     <ul class="nav navbar-top-links navbar-right pull-right">
-        @if(Session::get('search'))
+        {{-- @if(Session::get('search'))
         <li id="li_search" style="display: none;">
             <form id="form_search" action="/citas_paciente/{{ base64_encode($opcion->id) }}/" method="get" role="search" class="app-search hidden-sm hidden-xs m-r-10">
                 <input id="search_control" type="text" placeholder="Buscar..." autocomplete="off" class="form-control">
                 <a id="link_search" url="/citas_paciente/{{ base64_encode($opcion->id) }}/" href="javascript:void(0)"><i class="fa fa-search"></i></a>
             </form>
         </li>
-        @endif
+        @endif --}}
         <li class="dropdown">
             <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#">
                 <img src="{!! asset('theme/plugins/images/users/agent2.png') !!}" alt="user-img" width="30" class="img-circle">

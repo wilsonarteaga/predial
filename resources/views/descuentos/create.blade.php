@@ -92,7 +92,7 @@
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Porcentaje:</label>
-                                                                <input type="text" id="porcentaje" name="porcentaje" class="form-control" autocomplete="off" placeholder="Ingrese porcentaje" value="{{ old('porcentaje') }}">
+                                                                <input type="text" id="porcentaje" name="porcentaje" class="form-control porcentaje" autocomplete="off" placeholder="Ingrese porcentaje" value="{{ old('porcentaje') }}">
                                                                 <span class="text-danger">@error('porcentaje') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -243,7 +243,7 @@
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Porcentaje:</label>
-                                                                <input type="text" id="porcentaje_edit" name="porcentaje_edit" class="form-control" autocomplete="off" placeholder="Ingrese porcentaje" value="{{ old('porcentaje_edit') }}">
+                                                                <input type="text" id="porcentaje_edit" name="porcentaje_edit" class="form-control porcentaje" autocomplete="off" placeholder="Ingrese porcentaje" value="{{ old('porcentaje_edit') }}">
                                                                 <span class="text-danger">@error('porcentaje_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>

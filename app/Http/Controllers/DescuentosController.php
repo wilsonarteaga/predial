@@ -78,7 +78,7 @@ class DescuentosController extends Controller
         $descuento = new Descuento();
         $descuento->anio = $request->anio;
         $descuento->fecha_limite = Carbon::createFromFormat("Y-m-d", $request->fecha_limite)->format('Y-m-d');
-        $descuento->porcentaje = floatval($request->porcentaje);
+        $descuento->porcentaje = $request->porcentaje;
         $query = $descuento->save();
         $tab_current = 'li-section-bar-1';
 
@@ -140,7 +140,7 @@ class DescuentosController extends Controller
         $descuento = Descuento::find($request->id_edit);
         //$descuento->anio = $request->anio_edit;
         //$descuento->fecha_limite = Carbon::createFromFormat("Y-m-d", $request->fecha_limite_edit)->format('Y-m-d');
-        $descuento->porcentaje = floatval($request->porcentaje_edit);
+        $descuento->porcentaje = $request->porcentaje_edit;
         $query = $descuento->save();
         $tab_current = 'li-section-bar-2';
 

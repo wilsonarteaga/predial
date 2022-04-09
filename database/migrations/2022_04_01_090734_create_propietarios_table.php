@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDescuentosTable extends Migration
+class CreatePropietariosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,15 @@ class CreateDescuentosTable extends Migration
      */
     public function up()
     {
-        Schema::create('descuentos', function (Blueprint $table) {
+        Schema::create('propietarios', function (Blueprint $table) {
             $table->id();
-            $table->smallInteger('anio');
-            $table->date('fecha_limite');
-            $table->decimal('porcentaje', $precision = 5, $scale = 2);
+            $table->string('identificacion', 30);
+            $table->string('nombre', 128);
+            $table->string('direccion', 128);
+            $table->string('correo_electronico', 128);
             $table->timestamps();
 
-            $table->unique(['anio', 'fecha_limite']);
+            $table->unique('identificacion');
         });
     }
 
@@ -31,6 +32,6 @@ class CreateDescuentosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('descuentos');
+        Schema::dropIfExists('propietarios');
     }
 }
