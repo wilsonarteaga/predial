@@ -282,7 +282,7 @@ class PrediosController extends Controller
                 $predio_propietario = new PredioPropietario();
                 $predio_propietario->id_predio = $data->{'id_predio'};
                 $predio_propietario->id_propietario = $propietario->id;
-                $predio_propietario->jerarquia = $data->{'jerarquia'};
+                $predio_propietario->jerarquia = str_pad(intval($data->{'jerarquia'}), 3, "0", STR_PAD_LEFT);
 
                 $query = $predio_propietario->save();
 
@@ -432,7 +432,7 @@ class PrediosController extends Controller
     public function show_predios_datos(Request $request) {
         $predio_dato = PredioDato::where('id_predio', $request->id_predio)->first();
 
-        $predio_propietario = DB::table('predios_propietarios')
+        $predio_propietarios = DB::table('predios_propietarios')
                                    ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
                                    ->select('propietarios.*', 'predios_propietarios.jerarquia')
                                    ->where('predios_propietarios.id_predio', $request->id_predio)
@@ -455,7 +455,7 @@ class PrediosController extends Controller
 
         return response()->json([
             'predio_dato' => $predio_dato,
-            'predio_propietario' => $predio_propietario,
+            'predio_propietarios' => $predio_propietarios,
             'predio_calculo' => $predio_calculo,
             'predio_pago' => $predio_pago,
             'predio_acuerdo_pago' => $predio_acuerdo_pago,

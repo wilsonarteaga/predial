@@ -25,7 +25,7 @@ class ConceptosPredioUpdateFormRequest extends FormRequest
     {
         return [
             //'anio_edit'  => 'required',
-            'mes_amnistia_edit'  => 'required',
+            'meses_amnistia_edit'  => 'required',
             'prioridad_edit'  => 'required',
             //'codigo_edit'  => 'required|max:3',
             'nombre_edit'  => 'required|max:128',
@@ -42,7 +42,7 @@ class ConceptosPredioUpdateFormRequest extends FormRequest
     {
         return [
             //'anio_edit.required'  => 'El campo año es obligatorio.',
-            'mes_amnistia_edit.required'  => 'El campo mes amnistia es obligatorio.',
+            'meses_amnistia_edit.required'  => 'El campo mes amnistia es obligatorio.',
             'prioridad_edit.required'  => 'El campo prioridad es obligatorio.',
             //'codigo_edit.required' => 'El campo código es obligatorio.',
             'nombre_edit.required' => 'El campo nombre es obligatorio.',

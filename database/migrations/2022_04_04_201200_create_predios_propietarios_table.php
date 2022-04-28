@@ -17,7 +17,7 @@ class CreatePrediosPropietariosTable extends Migration
             $table->id();
             $table->unsignedBigInteger('id_predio');
             $table->unsignedBigInteger('id_propietario');
-            $table->smallInteger('jerarquia'); // numero propietario
+            $table->char('jerarquia', 3); // numero propietario
             $table->timestamps();
 
             $table->foreign('id_predio')->references('id')->on('predios');

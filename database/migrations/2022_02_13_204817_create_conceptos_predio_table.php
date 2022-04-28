@@ -16,7 +16,7 @@ class CreateConceptosPredioTable extends Migration
         Schema::create('conceptos_predio', function (Blueprint $table) {
             $table->id();
             $table->smallInteger('anio');
-            $table->decimal('mes_amnistia', $precision = 5, $scale = 1);
+            $table->smallInteger('meses_amnistia');
             $table->char('codigo', 3);
             $table->string('nombre', 128);
             $table->string('formula', 1024);

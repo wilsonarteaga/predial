@@ -74,7 +74,7 @@ class ConceptosPredioController extends Controller
 
         $concepto_predio = new ConceptoPredio();
         $concepto_predio->anio = $request->anio;
-        $concepto_predio->mes_amnistia = $request->mes_amnistia;
+        $concepto_predio->meses_amnistia = $request->meses_amnistia;
         $concepto_predio->codigo = $request->codigo;
         $concepto_predio->nombre = $request->nombre;
         $concepto_predio->formula = $request->formula;
@@ -131,7 +131,7 @@ class ConceptosPredioController extends Controller
         $concepto_predio = new ConceptoPredio();
         $concepto_predio = ConceptoPredio::find($request->id_edit);
         $concepto_predio->anio = $request->anio_edit;
-        $concepto_predio->mes_amnistia = $request->mes_amnistia_edit;
+        $concepto_predio->meses_amnistia = $request->meses_amnistia_edit;
         $concepto_predio->codigo = $request->codigo_edit;
         $concepto_predio->nombre = $request->nombre_edit;
         $concepto_predio->formula = $request->formula_edit;

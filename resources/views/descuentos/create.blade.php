@@ -70,26 +70,38 @@
                                                     <!-- <h3 class="box-title">Informaci&oacute;n de la clase de mutaci&oacute;n</h3> -->
                                                     <!-- <hr> -->
                                                     <div class="row">
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">A&ntilde;o:</label>
                                                                 <input type="text" id="anio" name="anio" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('anio') }}" maxlength="4">
                                                                 <span class="text-danger">@error('anio') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                                             <div class="form-group">
-                                                                <label class="control-label">Fecha limite:</label>
+                                                                <label class="control-label">Fecha inicio:</label>
                                                                 <div class="input-group" style="margin-bottom: 25px;">
-                                                                    <input type="text" id="fecha_limite" name="fecha_limite" class="form-control datelimite withadon" autocomplete="off" placeholder="yyyy-mm-dd" value="{{ old('fecha_limite') }}">
+                                                                    <input type="text" id="fecha_inicio" name="fecha_inicio" class="form-control datelimite withadon" autocomplete="off" placeholder="yyyy-mm-dd" value="{{ old('fecha_inicio') }}">
                                                                     <div class="input-group-addon">
                                                                         <span class="glyphicon glyphicon-th"></span>
                                                                     </div>
                                                                 </div>
-                                                                <span class="text-danger">@error('fecha_limite') {{ $message }} @enderror</span>
+                                                                <span class="text-danger">@error('fecha_inicio') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Fecha fin:</label>
+                                                                <div class="input-group" style="margin-bottom: 25px;">
+                                                                    <input type="text" id="fecha_fin" name="fecha_fin" class="form-control datelimite withadon" autocomplete="off" placeholder="yyyy-mm-dd" value="{{ old('fecha_fin') }}">
+                                                                    <div class="input-group-addon">
+                                                                        <span class="glyphicon glyphicon-th"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <span class="text-danger">@error('fecha_fin') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Porcentaje:</label>
                                                                 <input type="text" id="porcentaje" name="porcentaje" class="form-control porcentaje" autocomplete="off" placeholder="Ingrese porcentaje" value="{{ old('porcentaje') }}">
@@ -168,27 +180,35 @@
                                                 <table id="myTable" class="table table-hover table-striped table-bordered">
                                                     <thead>
                                                         <tr>
-                                                            <th class="cell_center" style="width: 30%;">A&ntilde;o</th>
-                                                            <th class="cell_center" style="width: 30%;">Fecha limite</th>
-                                                            <th class="cell_center" style="width: 30%;">Porcentaje</th>
+                                                            <th class="cell_center" style="width: 20%;">A&ntilde;o</th>
+                                                            <th class="cell_center" style="width: 25%;">Fecha inicio</th>
+                                                            <th class="cell_center" style="width: 25%;">Fecha fin</th>
+                                                            <th class="cell_center" style="width: 20%;">Porcentaje</th>
                                                             <th class="cell_center" style="width: 10%;">Acciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         @if(count($descuentos) > 0)
                                                             @foreach($descuentos as $descuento)
-                                                            <tr style="cursor: pointer;" json-data='@json($descuento)'>
+                                                            <tr style="cursor: pointer;" json-data='@json($descuento)' {{ strtotime($descuento->fecha_fin) < strtotime($datenow) ? print('class="disabled"') : print('class="descuento_row"') }}>
                                                                 {{-- <td class="cell_center edit_row">{{ $descuento->ide_acu }}</td>
                                                                 <td class="cell_center edit_row">{{ $descuento->tid_acu }}</td> --}}
                                                                 <td class="edit_row cell_center">{{ $descuento->anio }}</td>
-                                                                <td class="edit_row cell_center">{{ $descuento->fecha_limite }}</td>
+                                                                <td class="edit_row cell_center">{{ $descuento->fecha_inicio }}</td>
+                                                                <td class="edit_row cell_center">{{ $descuento->fecha_fin }}</td>
                                                                 <td class="edit_row cell_center">{{ $descuento->porcentaje }}</td>
                                                                 {{-- <td class="cell_center edit_row">{{ $descuento->tel_acu }}</td>
                                                                 <td class="edit_row">{{ $descuento->dir_acu }}</td> --}}
-                                                                <td class="cell_center">
+                                                                <td class="edit_row cell_center">
+                                                                    @if(strtotime($descuento->fecha_fin) < strtotime($datenow))
+                                                                    <button type="button" ide="{{ $descuento->id }}" disabled="disabled" class="modify_row btn btn-default"><i class="fa fa-pencil-square"></i></button>
+                                                                    &nbsp;&nbsp;
+                                                                    <button type="button" ide="{{ $descuento->id }}" disabled="disabled" class="delete_row btn btn-default"><i class="fa fa-trash-o"></i></button>
+                                                                    @else
                                                                     <button type="button" ide="{{ $descuento->id }}" class="modify_row btn btn-info"><i class="fa fa-pencil-square"></i></button>
                                                                     &nbsp;&nbsp;
                                                                     <button type="button" ide="{{ $descuento->id }}" class="delete_row btn btn-inverse"><i class="fa fa-trash-o"></i></button>
+                                                                    @endif
                                                                 </td>
                                                             </tr>
                                                             @endforeach
@@ -220,27 +240,40 @@
                                                 <div class="form-body">
                                                     <input type="hidden" id="id_edit" name="id_edit" value="{{ old('id_edit') }}">
                                                     <div class="row">
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">A&ntilde;o:</label>
                                                                 <input type="text" id="anio_edit" name="anio_edit" class="form-control onlyNumbers" placeholder="Ingrese a&ntilde;o" value="{{ old('anio_edit') }}" readonly="readonly">
                                                                 {{-- <span class="text-danger">@error('anio_edit') {{ $message }} @enderror</span> --}}
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                                             <div class="form-group">
-                                                                <label class="control-label">Fecha limite:</label>
+                                                                <label class="control-label">Fecha inicio:</label>
                                                                 <div class="input-group" style="margin-bottom: 25px;">
-                                                                    <input type="text" id="fecha_limite_edit" name="fecha_limite_edit" class="form-control withadon" autocomplete="off" placeholder="yyyy-mm-dd" value="{{ old('fecha_limite_edit') }}"  readonly="readonly">
+                                                                    <input type="text" id="fecha_inicio_edit" name="fecha_inicio_edit" class="form-control withadon" autocomplete="off" placeholder="yyyy-mm-dd" value="{{ old('fecha_inicio_edit') }}"  readonly="readonly">
                                                                     <div class="input-group-addon">
                                                                         <span class="glyphicon glyphicon-th"></span>
                                                                     </div>
                                                                 </div>
                                                                 <span class="text-danger">@error('anio_edit') {{ $message }} @enderror</span>
-                                                                <span class="text-danger">@error('fecha_limite_edit') {{ $message }} @enderror</span>
+                                                                <span class="text-danger">@error('fecha_inicio_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Fecha fin:</label>
+                                                                <div class="input-group" style="margin-bottom: 25px;">
+                                                                    <input type="text" id="fecha_fin_edit" name="fecha_fin_edit" class="form-control withadon" autocomplete="off" placeholder="yyyy-mm-dd" value="{{ old('fecha_fin_edit') }}"  readonly="readonly">
+                                                                    <div class="input-group-addon">
+                                                                        <span class="glyphicon glyphicon-th"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <span class="text-danger">@error('anio_edit') {{ $message }} @enderror</span>
+                                                                <span class="text-danger">@error('fecha_fin_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Porcentaje:</label>
                                                                 <input type="text" id="porcentaje_edit" name="porcentaje_edit" class="form-control porcentaje" autocomplete="off" placeholder="Ingrese porcentaje" value="{{ old('porcentaje_edit') }}">

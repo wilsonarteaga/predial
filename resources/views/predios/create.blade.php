@@ -673,14 +673,23 @@
                         <form id="form-predios-datos-propietarios">
                             <div class="form-body">
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                    <div class="col-lg-2 col-md-2 col-sm-5 col-xs-6">
+                                        <div class="form-group">
+                                            <label class="control-label">N&uacute;mero:</label><br />
+                                            <input type="hidden" id="jerarquia" name="jerarquia" value="001" />
+                                            <span id="span_jerarquia" class="text-muted" style="font-size: 180%; font-weight: bold;">001</span>
+                                            <span id="span_de_jererquia" class="text-muted"></span>
+                                            {{-- <span class="text-danger">@error('correo_electronico') {{ $message }} @enderror</span> --}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-7 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">Identificaci&oacute;n:</label>
                                             <input type="text" id="identificacion" name="identificacion" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese identificaci&oacute;n" value="{{ old('identificacion') }}" maxlength="30">
                                             {{-- <span class="text-danger">@error('identificacion') {{ $message }} @enderror</span> --}}
                                         </div>
                                     </div>
-                                    <div class="col-lg-9 col-md-9 col-sm-4 col-xs-12">
+                                    <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">Nombre:</label>
                                             <input type="text" id="nombre" name="nombre" class="form-control" autocomplete="off" placeholder="Ingrese nombre" value="{{ old('nombre') }}" maxlength="128">
@@ -689,42 +698,39 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                        <div class="form-group">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                        <div class="form-group" style="margin-bottom: 5px;">
                                             <label class="control-label">Direcci&oacute;n:</label>
                                             <input type="text" id="direccion" name="direccion" class="form-control" autocomplete="off" placeholder="Ingrese direcci&oacute;n" value="{{ old('direccion') }}" maxlength="128">
                                             {{-- <span class="text-danger">@error('direccion') {{ $message }} @enderror</span> --}}
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12">
-                                        <div class="form-group">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                        <div class="form-group" style="margin-bottom: 5px;">
                                             <label class="control-label">Correo electr&oacute;nico:</label>
                                             <input type="text" id="correo_electronico" name="correo_electronico" class="form-control" autocomplete="off" placeholder="Ingrese correo electr&oacute;nico" value="{{ old('correo_electronico') }}" maxlength="128">
                                             {{-- <span class="text-danger">@error('correo_electronico') {{ $message }} @enderror</span> --}}
                                         </div>
                                     </div>
-                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
-                                        <div class="form-group">
-                                            <label class="control-label">N&uacute;mero:</label><br />
-                                            <input type="hidden" id="jerarquia" name="jerarquia" value="1" />
-                                            <span id="span_jerarquia" class="text-muted" style="font-size: 180%; font-weight: bold;">1</span>
-                                            <span id="span_de_jererquia" class="text-muted"></span>
-                                            {{-- <span class="text-danger">@error('correo_electronico') {{ $message }} @enderror</span> --}}
-                                        </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6" style="font-size: 80%; display: none;">
+                                        <span id="text_page_propietarios" class="text-muted info_propietarios">Edici&oacute;n<br />P&aacute;gina: 1</span><br />
+                                        <span id="text_row_propietarios" class="text-muted info_propietarios">Fila: 1</span>
                                     </div>
                                 </div>
                             </div>
                         </form>
+                    </div>
+                    <div id="divPropietariosTable" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="display: none;">
+                        <h2>Lista de propietarios</h2>
+                        <table id="propietariosTable" class="table table-hover table-condensed table-striped table-bordered" style="margin-bottom: 10px;"></table>
                     </div>
                  </div>
             </div>
             <div class="modal-footer">
                 <button id="new_dp" type="button" class="btn btn-success pull-left control_propietarios" style="display: none;"> <i class="fa fa-cogs"></i> Nuevo</button>
                 <button id="cancel_dp" type="button" class="btn btn-default pull-left" style="display: none;"> <i class="fa fa-cogs"></i> Cancelar</button>
-                <button id="prev_dp" type="button" class="btn btn-default pull-left control_propietarios" style="display: none;"> <i class="fa fa-angle-double-left"></i> Anterior</button>
-                <button id="next_dp" type="button" class="btn btn-default pull-left control_propietarios" style="display: none;"> <i class="fa fa-angle-double-right"></i> Siguiente</button>
+                {{-- <button id="prev_dp" type="button" class="btn btn-default pull-left control_propietarios" style="display: none;"> <i class="fa fa-angle-double-left"></i> Anterior</button> --}}
+                {{-- <button id="next_dp" type="button" class="btn btn-default pull-left control_propietarios" style="display: none;"> <i class="fa fa-angle-double-right"></i> Siguiente</button> --}}
                 <button id="save_dp" type="button" class="btn btn-info"> <i class="fa fa-save"></i> Guardar informaci&oacute;n</button>
                 <button type="button" class="btn btn-default waves-effect text-left" data-dismiss="modal">Cerrar</button>
             </div>
@@ -945,8 +951,8 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6" style="font-size: 80%;">
-                                        <span id="text_page" class="text-muted info_abonos">Edici&oacute;n<br />P&aacute;gina: 1</span><br />
-                                        <span id="text_row" class="text-muted info_abonos">Fila: 1</span>
+                                        <span id="text_page_abonos" class="text-muted info_abonos">Edici&oacute;n<br />P&aacute;gina: 1</span><br />
+                                        <span id="text_row_abonos" class="text-muted info_abonos">Fila: 1</span>
                                     </div>
                                 </div>
                             </div>
@@ -954,7 +960,7 @@
                     </div>
                     <div id="divAbonosTable" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="display: none;">
                         <h2>Lista de abonos</h2>
-                        <table id="abonosTable" class="table table-hover table-condensed table-striped table-bordered"></table>
+                        <table id="abonosTable" class="table table-hover table-condensed table-striped table-bordered" style="margin-bottom: 10px;"></table>
                     </div>
                  </div>
             </div>

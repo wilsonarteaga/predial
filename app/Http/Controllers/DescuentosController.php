@@ -62,22 +62,23 @@ class DescuentosController extends Controller
             return redirect('/');
         }
 
-        $rules = [
-            'anio' => 'unique_with:descuentos,fecha_limite'
-        ];
+        // $rules = [
+        //     'anio' => 'unique_with:descuentos,fecha_limite'
+        // ];
 
-        $validator = Validator::make($request->all(), $rules, $messages = [
-            'anio.unique_with' => 'La combinación de año y fecha limite ya existe.',
-        ]);
+        // $validator = Validator::make($request->all(), $rules, $messages = [
+        //     'anio.unique_with' => 'La combinación de año y fecha limite ya existe.',
+        // ]);
 
-        if($validator->fails()) {
-            return back()->withErrors($validator)
-                         ->withInput();
-        }
+        // if($validator->fails()) {
+        //     return back()->withErrors($validator)
+        //                  ->withInput();
+        // }
 
         $descuento = new Descuento();
         $descuento->anio = $request->anio;
-        $descuento->fecha_limite = Carbon::createFromFormat("Y-m-d", $request->fecha_limite)->format('Y-m-d');
+        $descuento->fecha_inicio = Carbon::createFromFormat("Y-m-d", $request->fecha_inicio)->format('Y-m-d');
+        $descuento->fecha_fin = Carbon::createFromFormat("Y-m-d", $request->fecha_fin)->format('Y-m-d');
         $descuento->porcentaje = $request->porcentaje;
         $query = $descuento->save();
         $tab_current = 'li-section-bar-1';

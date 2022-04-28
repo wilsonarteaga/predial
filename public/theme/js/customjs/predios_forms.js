@@ -1,4 +1,5 @@
 var DTAbonos = null;
+var DTPropietarios = null;
 var last_propietario = 0;
 var idx_update = 0;
 var current_page = 0;
@@ -104,32 +105,61 @@ $(document).ready(function() {
 
     /// datos-propietarios
     $('#modal-datos-propietarios').on('show.bs.modal', function() {
+        // if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dp') !== undefined) {
+        //     var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dp'));
+        //     if (objJson.length !== undefined) {
+        //         last_propietario = 0;
+        //         setFormData('form-predios-datos-propietarios', objJson[last_propietario]);
+        //         $('#form-predios-datos-propietarios').find('#span_jerarquia').html(objJson[last_propietario].jerarquia);
+        //         $('.control_propietarios').css('display', '');
+        //         $('.control_propietarios').attr('disabled', false);
+        //         $('#prev_dp').attr('disabled', true);
+        //         if (objJson.length < 2) {
+        //             $('#next_dp').css('display', 'none');
+        //             $('#prev_dp').css('display', 'none');
+        //         } else {
+        //             $('#span_de_jererquia').html(' de ' + objJson.length);
+        //         }
+        //     }
+        // }
         if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dp') !== undefined) {
             var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dp'));
             if (objJson.length !== undefined) {
-                last_propietario = 0;
-                setFormData('form-predios-datos-propietarios', objJson[last_propietario]);
-                $('#form-predios-datos-propietarios').find('#span_jerarquia').html(objJson[last_propietario].jerarquia);
-                $('.control_propietarios').css('display', '');
-                $('.control_propietarios').attr('disabled', false);
-                $('#prev_dp').attr('disabled', true);
-                if (objJson.length < 2) {
-                    $('#next_dp').css('display', 'none');
-                    $('#prev_dp').css('display', 'none');
-                } else {
-                    $('#span_de_jererquia').html(' de ' + objJson.length);
+                if (objJson.length > 0) {
+                    setFormData('form-predios-datos-propietarios', objJson[0]);
+                    $('#jerarquia').val(objJson[0].jerarquia);
+                    $('#form-predios-datos-propietarios').find('#span_jerarquia').html(objJson[0].jerarquia);
+                    $('#span_de_jererquia').html(' de ' + DTPropietarios.rows().data().length);
+                }
+                $('#new_dp').css('display', '');
+                $('#cancel_dp').css('display', 'none');
+                if (DTPropietarios !== null) {
+                    DTPropietarios.page(0).draw('page');
+                    DTPropietarios.search('').columns().search('').draw();
+                    DTPropietarios.$('.row-selected').toggleClass('row-selected');
+                    if (objJson.length > 0) {
+                        var tr = $('#propietariosTable').find('tbody').find('tr:eq(0)');
+                        $(tr).addClass('row-selected');
+                    }
                 }
             }
         }
     });
 
     $('#modal-datos-propietarios').on('hidden.bs.modal', function() {
+        // $('.datohidden').remove();
+        // $('.control_propietarios').css('display', 'none');
+        // $('#cancel_dp').css('display', 'none');
+        // last_propietario = 0;
+        // $('#form-predios-datos-propietarios')[0].reset();
+        // clear_form_elements("#form-predios-datos-propietarios");
         $('.datohidden').remove();
-        $('.control_propietarios').css('display', 'none');
-        $('#cancel_dp').css('display', 'none');
-        last_propietario = 0;
         $('#form-predios-datos-propietarios')[0].reset();
         clear_form_elements("#form-predios-datos-propietarios");
+        idx_update = 0;
+        current_page = 0;
+        $('#text_page_propietarios').html('Edici&oacute;n<br />P&aacute;gina: 1');
+        $('#text_row_propietarios').html('Fila: 1');
     });
 
     /// datos-calculo
@@ -179,18 +209,19 @@ $(document).ready(function() {
         if ($('#tr_predio_' + $('#id_edit').val()).attr('data-da') !== undefined) {
             var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-da'));
             if (objJson.length !== undefined) {
-                setFormData('form-predios-datos-abonos', objJson[0]);
+                if (objJson.length > 0) {
+                    setFormData('form-predios-datos-abonos', objJson[0]);
+                }
                 $('#new_da').css('display', '');
                 $('#cancel_da').css('display', 'none');
                 if (DTAbonos !== null) {
                     DTAbonos.page(0).draw('page');
-                    DTAbonos.search('')
-                        .columns().search('')
-                        .draw();
-
-                    var tr = $('#abonosTable').find('tbody').find('tr:eq(0)');
+                    DTAbonos.search('').columns().search('').draw();
                     DTAbonos.$('.row-selected').toggleClass('row-selected');
-                    $(tr).addClass('row-selected');
+                    if (objJson.length > 0) {
+                        var tr = $('#abonosTable').find('tbody').find('tr:eq(0)');
+                        $(tr).addClass('row-selected');
+                    }
                 }
             }
         }
@@ -202,8 +233,8 @@ $(document).ready(function() {
         clear_form_elements("#form-predios-datos-abonos");
         idx_update = 0;
         current_page = 0;
-        $('#text_page_abono').html('Edici&oacute;n<br />P&aacute;gina: 1');
-        $('#text_row_abono').html('Fila: 1');
+        $('#text_page_abonos').html('Edici&oacute;n<br />P&aacute;gina: 1');
+        $('#text_row_abonos').html('Fila: 1');
     });
 
     /// datos-procesos-historicos
@@ -221,19 +252,29 @@ $(document).ready(function() {
     });
 
     $('#new_dp').off('click').on('click', function() {
-        $('.datohidden').remove();
-        $('.control_propietarios').css('display', 'none');
-        $('#cancel_dp').css('display', '');
-        $('#form-predios-datos-propietarios')[0].reset();
-        clear_form_elements("#form-predios-datos-propietarios");
+        // $('.datohidden').remove();
+        // $('.control_propietarios').css('display', 'none');
+        // $('#cancel_dp').css('display', '');
+        // $('#form-predios-datos-propietarios')[0].reset();
+        // clear_form_elements("#form-predios-datos-propietarios");
 
         if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dp') !== undefined) {
             var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dp'));
             if (objJson.length !== undefined) {
                 $('#form-predios-datos-propietarios').find('#jerarquia').val(objJson.length + 1);
-                $('#form-predios-datos-propietarios').find('#span_jerarquia').html(objJson.length + 1);
+                $('#form-predios-datos-propietarios').find('#span_jerarquia').html(String(objJson.length + 1).padStart(3, '0'));
                 $('#span_de_jererquia').html('');
             }
+        }
+        $('.datohidden').remove();
+        $(this).css('display', 'none');
+        $('#cancel_dp').css('display', '');
+        $('.info_propietarios').css('display', 'none');
+        $('#form-predios-datos-propietarios')[0].reset();
+        clear_form_elements("#form-predios-datos-propietarios");
+        $('#divPropietariosTable').css('display', 'none');
+        if (DTPropietarios !== null) {
+            DTPropietarios.$('.row-selected').toggleClass('row-selected');
         }
     });
 
@@ -251,21 +292,42 @@ $(document).ready(function() {
     });
 
     $('#cancel_dp').off('click').on('click', function() {
-        $('.control_propietarios').css('display', '');
-        if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dp') !== undefined) {
-            var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dp'));
-            if (objJson.length !== undefined) {
-                setFormData('form-predios-datos-propietarios', objJson[last_propietario]);
-                $('#form-predios-datos-propietarios').find('#span_jerarquia').html(objJson[last_propietario].jerarquia);
-                if (objJson.length < 2) {
-                    $('#next_dp').css('display', 'none');
-                    $('#prev_dp').css('display', 'none');
-                } else {
-                    $('#span_de_jererquia').html(' de ' + objJson.length);
+        // $('.control_propietarios').css('display', '');
+        // if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dp') !== undefined) {
+        //     var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dp'));
+        //     if (objJson.length !== undefined) {
+        //         setFormData('form-predios-datos-propietarios', objJson[last_propietario]);
+        //         $('#form-predios-datos-propietarios').find('#span_jerarquia').html(objJson[last_propietario].jerarquia);
+        //         if (objJson.length < 2) {
+        //             $('#next_dp').css('display', 'none');
+        //             $('#prev_dp').css('display', 'none');
+        //         } else {
+        //             $('#span_de_jererquia').html(' de ' + objJson.length);
+        //         }
+        //     }
+        // }
+        // $('#cancel_dp').css('display', 'none');
+        $('#new_dp').css('display', '');
+        $(this).css('display', 'none');
+        $('.info_propietarios').css('display', '');
+        if (DTPropietarios !== null) {
+            var data = DTPropietarios.rows().data();
+            if (data.length > 1) {
+                if (idx_update >= 0) {
+                    DTPropietarios.page(current_page).draw('page');
+                    DTPropietarios.$('tr:eq(' + idx_update + ')').toggleClass('row-selected');
+                    DTPropietarios.$('tr:eq(' + idx_update + ')').find('.editPropietario').trigger('click');
+                }
+                $('#divPropietariosTable').css('display', '');
+            }
+        } else {
+            if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dp') !== undefined) {
+                var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dp'));
+                if (objJson.length !== undefined) {
+                    setFormData('form-predios-datos-propietarios', objJson[0]);
                 }
             }
         }
-        $('#cancel_dp').css('display', 'none');
     });
 
     $('#cancel_da').off('click').on('click', function() {
@@ -292,43 +354,43 @@ $(document).ready(function() {
         }
     });
 
-    $('#next_dp').off('click').on('click', function() {
-        if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dp') !== undefined) {
-            var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dp'));
-            last_propietario++;
-            if (objJson[last_propietario] !== undefined) {
-                if (objJson.length !== undefined) {
-                    setFormData('form-predios-datos-propietarios', objJson[last_propietario]);
-                    $('#form-predios-datos-propietarios').find('#span_jerarquia').html(objJson[last_propietario].jerarquia);
-                    if (objJson.length === (last_propietario + 1)) {
-                        $('#next_dp').attr('disabled', true);
-                    }
-                    $('#prev_dp').attr('disabled', false);
-                }
-            } else {
-                last_propietario--;
-            }
-        }
-    });
+    // $('#next_dp').off('click').on('click', function() {
+    //     if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dp') !== undefined) {
+    //         var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dp'));
+    //         last_propietario++;
+    //         if (objJson[last_propietario] !== undefined) {
+    //             if (objJson.length !== undefined) {
+    //                 setFormData('form-predios-datos-propietarios', objJson[last_propietario]);
+    //                 $('#form-predios-datos-propietarios').find('#span_jerarquia').html(objJson[last_propietario].jerarquia);
+    //                 if (objJson.length === (last_propietario + 1)) {
+    //                     $('#next_dp').attr('disabled', true);
+    //                 }
+    //                 $('#prev_dp').attr('disabled', false);
+    //             }
+    //         } else {
+    //             last_propietario--;
+    //         }
+    //     }
+    // });
 
-    $('#prev_dp').off('click').on('click', function() {
-        if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dp') !== undefined) {
-            var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dp'));
-            last_propietario--;
-            if (objJson[last_propietario] !== undefined) {
-                if (objJson.length !== undefined) {
-                    setFormData('form-predios-datos-propietarios', objJson[last_propietario]);
-                    $('#form-predios-datos-propietarios').find('#span_jerarquia').html(objJson[last_propietario].jerarquia);
-                    if (last_propietario === 0) {
-                        $('#prev_dp').attr('disabled', true);
-                    }
-                    $('#next_dp').attr('disabled', false);
-                }
-            } else {
-                last_propietario++;
-            }
-        }
-    });
+    // $('#prev_dp').off('click').on('click', function() {
+    //     if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dp') !== undefined) {
+    //         var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dp'));
+    //         last_propietario--;
+    //         if (objJson[last_propietario] !== undefined) {
+    //             if (objJson.length !== undefined) {
+    //                 setFormData('form-predios-datos-propietarios', objJson[last_propietario]);
+    //                 $('#form-predios-datos-propietarios').find('#span_jerarquia').html(objJson[last_propietario].jerarquia);
+    //                 if (last_propietario === 0) {
+    //                     $('#prev_dp').attr('disabled', true);
+    //                 }
+    //                 $('#next_dp').attr('disabled', false);
+    //             }
+    //         } else {
+    //             last_propietario++;
+    //         }
+    //     }
+    // });
 
     DTAbonos = $('#abonosTable').DataTable({
         initComplete: function(settings, json) {
@@ -384,9 +446,79 @@ $(document).ready(function() {
                 idx_update = DTAbonos.row(tr).index();
                 var info = DTAbonos.page.info();
                 current_page = info.page;
-                $('#text_page').html('Edici&oacute;n<br />P&aacute;gina: ' + (current_page + 1));
+                $('#text_page_abonos').html('Edici&oacute;n<br />P&aacute;gina: ' + (current_page + 1));
                 var row = ((idx_update + 1) % PAGE_LENGTH) === 0 ? PAGE_LENGTH : (idx_update + 1) % PAGE_LENGTH;
-                $('#text_row').html('Fila: ' + row);
+                $('#text_row_abonos').html('Fila: ' + row);
+            });
+        },
+        columnDefs: [
+            { className: 'text-center', "targets": [1, 2, 3, 4] }
+            //{ className: 'text-center', "targets": [6] },
+            //{ className: 'text-right money', targets: [1, 2] },
+            //{ className: 'text-center stock_selected', targets: [4] },
+            //, { "visible": false, "targets": [2] }
+        ]
+    });
+
+    DTPropietarios = $('#propietariosTable').DataTable({
+        initComplete: function(settings, json) {
+            $('#divPropietariosTable').css('display', '');
+        },
+        "destroy": true,
+        "ordering": false,
+        //"filter": false,
+        "order": [],
+        "lengthChange": false,
+        "info": false,
+        "pageLength": PAGE_LENGTH,
+        "select": false,
+        "autoWidth": false,
+        "language": {
+            "url": ROOT_URL + "/theme/plugins/bower_components/datatables/spanish.json"
+        },
+        'data': [],
+        'columns': [{
+            data: 'id',
+            title: 'id',
+            visible: false
+        }, {
+            data: 'jerarquia',
+            title: 'N&uacute;mero',
+            defaultContent: ''
+        }, {
+            data: 'identificacion',
+            title: 'Identificaci&oacute;n',
+            defaultContent: ''
+        }, {
+            data: 'nombre',
+            title: 'Nombre'
+        }, {
+            title: 'Acción',
+            "render": function(data, type, row, meta) {
+                return '<a href="#" data-toggle="tooltip" data-placement="top" title="Editar propietario" class="editPropietario"> <i class="fa fa-edit"></i> </a>';
+            }
+        }],
+        drawCallback: function(settings) {
+            $('.editPropietario').off('click').on('click', function() {
+                var tr = $(this).closest('tr');
+                var data = DTPropietarios.row(tr).data();
+                $('.datohidden').remove();
+                setFormData('form-predios-datos-propietarios', data);
+
+                $('#jerarquia').val(data.jerarquia);
+                $('#form-predios-datos-propietarios').find('#span_jerarquia').html(data.jerarquia);
+                $('#span_de_jererquia').html(' de ' + DTPropietarios.rows().data().length);
+
+                $('#new_dp').css('display', '');
+                $('#cancel_dp').css('display', 'none');
+                DTPropietarios.$('.row-selected').toggleClass('row-selected');
+                $(tr).addClass('row-selected');
+                idx_update = DTPropietarios.row(tr).index();
+                var info = DTPropietarios.page.info();
+                current_page = info.page;
+                $('#text_page_propietarios').html('Edici&oacute;n<br />P&aacute;gina: ' + (current_page + 1));
+                var row = ((idx_update + 1) % PAGE_LENGTH) === 0 ? PAGE_LENGTH : (idx_update + 1) % PAGE_LENGTH;
+                $('#text_row_propietarios').html('Fila: ' + row);
             });
         },
         columnDefs: [
@@ -418,50 +550,73 @@ function saveDatosPredio(form, modal, path, suffix) {
                 if (response.data.success) {
                     //$('#' + modal).modal('hide');
                     if (response.obj !== undefined) {
-                        var objJson = null;
-                        var arr = [];
-                        if (suffix === 'dp') {
-                            if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dp') !== undefined) {
-                                objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dp'));
-                                if (objJson.length !== undefined) {
-                                    if (jsonObj.id !== undefined) {
-                                        objJson[last_propietario] = response.obj;
-                                    } else {
-                                        objJson.push(response.obj);
-                                    }
+                        //var objJson = null;
+                        // var arr = [];
+                        // if (suffix === 'dp') {
+                        //     if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dp') !== undefined) {
+                        //         objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dp'));
+                        //         if (objJson.length !== undefined) {
+                        //             if (jsonObj.id !== undefined) {
+                        //                 objJson[last_propietario] = response.obj;
+                        //             } else {
+                        //                 objJson.push(response.obj);
+                        //             }
 
-                                    $('#tr_predio_' + $('#id_edit').val()).attr('data-' + suffix, JSON.stringify(objJson));
-                                    $('#span_de_jererquia').html(' de ' + objJson.length);
-                                }
-                            } else {
-                                arr.push(response.obj);
-                                $('#tr_predio_' + $('#id_edit').val()).attr('data-' + suffix, JSON.stringify(arr));
-                            }
-                        } else {
-                            $('#tr_predio_' + $('#id_edit').val()).attr('data-' + suffix, JSON.stringify(response.obj));
-                            if (suffix === 'da') {
-                                if (DTAbonos !== null) {
-                                    DTAbonos.clear().draw();
-                                    DTAbonos.rows.add(response.obj).draw();
-                                    if (jsonObj.id !== undefined) { // actualizando reg
-                                        if (idx_update >= 0) {
-                                            DTAbonos.page(current_page).draw('page');
-                                            DTAbonos.$('tr:eq(' + idx_update + ')').toggleClass('row-selected');
-                                        }
-                                    } else {
-                                        var info = DTAbonos.page.info();
-                                        DTAbonos.page(info.pages - 1).draw('page');
-                                        var last_row = DTAbonos.row(':last').index();
-                                        DTAbonos.$('tr:eq(' + last_row + ')').toggleClass('row-selected');
-                                        DTAbonos.$('tr:last').find('.editAbono').trigger('click');
-                                        $('#divAbonosTable').css('display', '');
-                                        $('#new_da').css('display', '');
-                                        $('#cancel_da').css('display', 'none');
-                                        $('.info_abonos').css('display', '');
+                        //             $('#tr_predio_' + $('#id_edit').val()).attr('data-' + suffix, JSON.stringify(objJson));
+                        //             $('#span_de_jererquia').html(' de ' + objJson.length);
+                        //         }
+                        //     } else {
+                        //         arr.push(response.obj);
+                        //         $('#tr_predio_' + $('#id_edit').val()).attr('data-' + suffix, JSON.stringify(arr));
+                        //     }
+                        // } else {
+                        $('#tr_predio_' + $('#id_edit').val()).attr('data-' + suffix, JSON.stringify(response.obj));
+                        var info = null;
+                        var last_row = null;
+                        if (suffix === 'dp') {
+                            if (DTPropietarios !== null) {
+                                DTPropietarios.clear().draw();
+                                DTPropietarios.rows.add(response.obj).draw();
+                                if (jsonObj.id !== undefined) { // actualizando reg
+                                    if (idx_update >= 0) {
+                                        DTPropietarios.page(current_page).draw('page');
+                                        DTPropietarios.$('tr:eq(' + idx_update + ')').toggleClass('row-selected');
                                     }
+                                } else {
+                                    info = DTPropietarios.page.info();
+                                    DTPropietarios.page(info.pages - 1).draw('page');
+                                    last_row = DTPropietarios.row(':last').index();
+                                    DTPropietarios.$('tr:eq(' + last_row + ')').toggleClass('row-selected');
+                                    DTPropietarios.$('tr:last').find('.editPropietario').trigger('click');
+                                    $('#divPropietariosTable').css('display', '');
+                                    $('#new_dp').css('display', '');
+                                    $('#cancel_dp').css('display', 'none');
+                                    $('.info_propietarios').css('display', '');
+                                }
+                            }
+                        } else if (suffix === 'da') {
+                            if (DTAbonos !== null) {
+                                DTAbonos.clear().draw();
+                                DTAbonos.rows.add(response.obj).draw();
+                                if (jsonObj.id !== undefined) { // actualizando reg
+                                    if (idx_update >= 0) {
+                                        DTAbonos.page(current_page).draw('page');
+                                        DTAbonos.$('tr:eq(' + idx_update + ')').toggleClass('row-selected');
+                                    }
+                                } else {
+                                    info = DTAbonos.page.info();
+                                    DTAbonos.page(info.pages - 1).draw('page');
+                                    last_row = DTAbonos.row(':last').index();
+                                    DTAbonos.$('tr:eq(' + last_row + ')').toggleClass('row-selected');
+                                    DTAbonos.$('tr:last').find('.editAbono').trigger('click');
+                                    $('#divAbonosTable').css('display', '');
+                                    $('#new_da').css('display', '');
+                                    $('#cancel_da').css('display', 'none');
+                                    $('.info_abonos').css('display', '');
                                 }
                             }
                         }
+                        //}
                     }
                 }
 
@@ -499,9 +654,16 @@ function getJsonPrediosDatos() {
                 $('#tr_predio_' + $('#id_edit').val()).attr('data-db', JSON.stringify(response.predio_dato));
             }
 
-            if (response.predio_propietario !== undefined && response.predio_propietario !== null) {
-                if (response.predio_propietario.length > 0) {
-                    $('#tr_predio_' + $('#id_edit').val()).attr('data-dp', JSON.stringify(response.predio_propietario));
+            if (response.predio_propietarios !== undefined && response.predio_propietarios !== null) {
+                // if (response.predio_propietario.length > 0) {
+                //     $('#tr_predio_' + $('#id_edit').val()).attr('data-dp', JSON.stringify(response.predio_propietarios));
+                // }
+                $('#tr_predio_' + $('#id_edit').val()).attr('data-dp', JSON.stringify(response.predio_propietarios));
+                if (response.predio_propietarios.length > 1) {
+                    if (DTPropietarios !== null) {
+                        DTPropietarios.clear().draw();
+                        DTPropietarios.rows.add(response.predio_propietarios).draw();
+                    }
                 }
             }
 

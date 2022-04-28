@@ -16,7 +16,7 @@ class CreateTarifasPredialTable extends Migration
         Schema::create('tarifas_predial', function (Blueprint $table) {
             $table->id();
             $table->smallInteger('anio');
-            $table->decimal('mes_amnistia', $precision = 5, $scale = 1);
+            //$table->smallInteger('meses_amnistia');
             $table->string('codigo', 10);
             $table->tinyInteger('rango');
             $table->string('descripcion', 128);

@@ -25,7 +25,7 @@ class ConceptosPredioCreateFormRequest extends FormRequest
     {
         return [
             'anio'  => 'required|size:4',
-            'mes_amnistia'  => 'required',
+            'meses_amnistia'  => 'required',
             'prioridad'  => 'required',
             'codigo'  => 'required|max:3',
             'nombre'  => 'required|max:128',
@@ -43,7 +43,7 @@ class ConceptosPredioCreateFormRequest extends FormRequest
         return [
             'anio.required'  => 'El campo año es obligatorio.',
             'anio.size' => 'El campo año debe contener 4 digitos.',
-            'mes_amnistia.required'  => 'El campo mes amnistia es obligatorio.',
+            'meses_amnistia.required'  => 'El campo mes amnistia es obligatorio.',
             'prioridad.required'  => 'El campo prioridad es obligatorio.',
             'codigo.required' => 'El campo código es obligatorio.',
             'nombre.required' => 'El campo nombre es obligatorio.',

@@ -74,7 +74,7 @@ class TarifasPredialController extends Controller
 
         $tarifa_predial = new TarifaPredial();
         $tarifa_predial->anio = $request->anio;
-        $tarifa_predial->mes_amnistia = $request->mes_amnistia;
+        //$tarifa_predial->meses_amnistia = $request->meses_amnistia;
         $tarifa_predial->codigo = $request->codigo;
         $tarifa_predial->rango = $request->rango;
         $tarifa_predial->descripcion = $request->descripcion;
@@ -132,7 +132,7 @@ class TarifasPredialController extends Controller
         $tarifa_predial = new TarifaPredial();
         $tarifa_predial = TarifaPredial::find($request->id_edit);
         //$tarifa_predial->anio = $request->anio_edit;
-        $tarifa_predial->mes_amnistia = $request->mes_amnistia_edit;
+        //$tarifa_predial->meses_amnistia = $request->meses_amnistia_edit;
         //$tarifa_predial->codigo = $request->codigo_edit;
         //$tarifa_predial->rango = $request->rango_edit;
         $tarifa_predial->descripcion = $request->descripcion_edit;

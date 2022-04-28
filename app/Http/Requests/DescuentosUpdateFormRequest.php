@@ -27,6 +27,8 @@ class DescuentosUpdateFormRequest extends FormRequest
         return [
             //'anio_edit'  => 'required',
             //'fecha_limite_edit'  => 'required',
+            'fecha_inicio_edit'  => 'required',
+            'fecha_fin_edit'  => 'required',
             'porcentaje_edit'  => 'required|max:100'
         ];
     }
@@ -36,6 +38,8 @@ class DescuentosUpdateFormRequest extends FormRequest
         return [
             //'anio.required_edit' => 'El campo año es obligatorio.',
             //'fecha_limite_edit.required' => 'El campo fecha limite es obligatorio.',
+            'fecha_inicio_edit.required' => 'El campo fecha inicio es obligatorio.',
+            'fecha_fin_edit.required' => 'El campo fecha fin es obligatorio.',
             'porcentaje_edit.required' => 'El campo porcentaje es obligatorio.',
             'porcentaje_edit.max' => 'Valor máximo :max.'
         ];

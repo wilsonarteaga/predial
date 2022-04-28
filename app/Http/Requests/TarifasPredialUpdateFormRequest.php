@@ -25,7 +25,7 @@ class TarifasPredialUpdateFormRequest extends FormRequest
     {
         return [
             //'anio_edit'  => 'required|size:4',
-            'mes_amnistia_edit'  => 'required',
+            //'meses_amnistia_edit'  => 'required',
             //'codigo_edit'  => 'required|max:10',
             //'rango_edit'  => 'required',
             'descripcion_edit'  => 'required|max:128',
@@ -41,7 +41,7 @@ class TarifasPredialUpdateFormRequest extends FormRequest
         return [
             //'anio_edit.required'  => 'El campo año es obligatorio.',
             //'anio_edit.size' => 'El campo año debe contener :size digitos.',
-            'mes_amnistia_edit.required'  => 'El campo mes amnistia es obligatorio.',
+            //'meses_amnistia_edit.required'  => 'El campo mes amnistia es obligatorio.',
             //'codigo_edit.required' => 'El campo código es obligatorio.',
             //'codigo_edit.max' => 'Máximo :max caracteres.',
             //'rango_edit.required'  => 'El campo rango es obligatorio.',

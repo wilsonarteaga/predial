@@ -35,7 +35,8 @@ class DescuentosCreateFormRequest extends FormRequest
             //     })
             // ],
             // //'anio'  => 'required|size:4|unique:descuentos,anio,' . $this->anio . ',id,fecha_limite,' . $this->fecha_limite,
-            'fecha_limite'  => 'required',
+            'fecha_inicio'  => 'required',
+            'fecha_fin'  => 'required',
             'porcentaje'  => 'required|max:100'
         ];
     }
@@ -46,7 +47,8 @@ class DescuentosCreateFormRequest extends FormRequest
             'anio.required' => 'El campo año es obligatorio.',
             'anio.size' => 'El campo año debe contener 4 digitos.',
             //'anio.unique' => 'Combinacion de Año y Fecha limite debe ser unica.',
-            'fecha_limite.required' => 'El campo fecha limite es obligatorio.',
+            'fecha_inicio.required' => 'El campo fecha inicio es obligatorio.',
+            'fecha_fin.required' => 'El campo fecha fin es obligatorio.',
             'porcentaje.required' => 'El campo porcentaje es obligatorio.',
             'porcentaje.max' => 'Valor máximo :max.'
         ];

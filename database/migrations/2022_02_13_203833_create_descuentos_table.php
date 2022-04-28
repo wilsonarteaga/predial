@@ -16,11 +16,12 @@ class CreateDescuentosTable extends Migration
         Schema::create('descuentos', function (Blueprint $table) {
             $table->id();
             $table->smallInteger('anio');
-            $table->date('fecha_limite');
+            $table->date('fecha_inicio');
+            $table->date('fecha_fin');
             $table->decimal('porcentaje', $precision = 5, $scale = 2);
             $table->timestamps();
 
-            $table->unique(['anio', 'fecha_limite']);
+            //$table->unique(['anio', 'fecha_limite']);
         });
     }
 

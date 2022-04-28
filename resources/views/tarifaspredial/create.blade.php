@@ -83,13 +83,13 @@
                                                                 <span class="text-danger">@error('codigo') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                                                        {{-- <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                                             <div class="form-group">
-                                                                <label class="control-label">Mes aministia</label>
-                                                                <input type="text" id="mes_amnistia" name="mes_amnistia" class="form-control" autocomplete="off" placeholder="Ingrese mes aministia" value="{{ old('mes_amnistia') }}">
-                                                                <span class="text-danger">@error('mes_amnistia') {{ $message }} @enderror</span>
+                                                                <label class="control-label">Meses aministia</label>
+                                                                <input type="text" id="meses_amnistia" name="meses_amnistia" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese mes aministia" value="{{ old('meses_amnistia') }}">
+                                                                <span class="text-danger">@error('meses_amnistia') {{ $message }} @enderror</span>
                                                             </div>
-                                                        </div>
+                                                        </div> --}}
                                                         <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Rango</label>
@@ -137,7 +137,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="row">
+                                                    <div class="row" style="display: none;">
                                                         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Estrato:</label>
@@ -233,7 +233,7 @@
                                                         <tr>
                                                             <th class="cell_center" style="width: 7%;">A&ntilde;o</th>
                                                             <th class="cell_center" style="width: 7%;">C&oacute;digo</th>
-                                                            <th class="cell_center" style="width: 7%;">Mes amnistia</th>
+                                                            {{-- <th class="cell_center" style="width: 7%;">Meses amnistia</th> --}}
                                                             <th class="cell_center" style="width: 7%;">Rango</th>
                                                             <th class="cell_center">Descripci&oacute;n</th>
                                                             <th class="cell_center" style="width: 10%;">Acciones</th>
@@ -247,7 +247,7 @@
                                                                 <td class="cell_center edit_row">{{ $tarifa_predial->tid_acu }}</td> --}}
                                                                 <td class="edit_row cell_center">{{ $tarifa_predial->anio }}</td>
                                                                 <td class="edit_row cell_center">{{ $tarifa_predial->codigo }}</td>
-                                                                <td class="edit_row cell_center">{{ $tarifa_predial->mes_amnistia }}</td>
+                                                                {{-- <td class="edit_row cell_center">{{ $tarifa_predial->meses_amnistia }}</td> --}}
                                                                 <td class="edit_row cell_center">{{ $tarifa_predial->rango }}</td>
                                                                 <td class="edit_row">{{ $tarifa_predial->descripcion }}</td>
                                                                 {{-- <td class="cell_center edit_row">{{ $tarifa_predial->tel_acu }}</td>
@@ -301,13 +301,13 @@
                                                                 <span class="text-danger">@error('codigo_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                                                        {{-- <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                                             <div class="form-group">
-                                                                <label class="control-label">Mes aministia</label>
-                                                                <input type="text" id="mes_amnistia_edit" name="mes_amnistia_edit" class="form-control" autocomplete="off" placeholder="Ingrese mes aministia" value="{{ old('mes_amnistia_edit') }}">
-                                                                <span class="text-danger">@error('mes_amnistia_edit') {{ $message }} @enderror</span>
+                                                                <label class="control-label">Meses aministia</label>
+                                                                <input type="text" id="meses_amnistia_edit" name="meses_amnistia_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese mes aministia" value="{{ old('meses_amnistia_edit') }}">
+                                                                <span class="text-danger">@error('meses_amnistia_edit') {{ $message }} @enderror</span>
                                                             </div>
-                                                        </div>
+                                                        </div> --}}
                                                         <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Rango</label>
@@ -355,7 +355,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="row">
+                                                    <div class="row" style="display: none;">
                                                         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Estrato:</label>
