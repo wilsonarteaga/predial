@@ -316,7 +316,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="div_edit_form" class="panel panel-info" style="display: none;">
+                                <div id="div_edit_form" class="panel panel-info" style="display: none; margin-bottom: 0px">
                                     <div class="panel-heading"><i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Actualizar informaci&oacute;n del predio</div>
                                     <div class="panel-wrapper collapse in" aria-expanded="true">
                                         <div class="panel-body">
@@ -503,6 +503,65 @@
                                                     <button id="btn_cancel_edit" type="button" class="btn btn-default"> <i class="fa fa-thumbs-down"></i> Cancelar</button>
                                                 </div>
                                             </form>
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12">
+                                                    <hr />
+                                                    <h3 class="box-title">Informaci&oacute;n adicional - <span>&Uacute;ltimo pago</h3>
+                                                    <blockquote style="font-size: 97%; border-left: 5px solid #c9f018 !important;">
+                                                        <form id="form-predios-datos-pagos">
+                                                            <div class="form-body">
+                                                                <div class="row">
+                                                                    <div class="col-lg-6 col-md-6 col-sm-9 col-xs-12">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Banco:</label>
+                                                                            <select id="id_banco" name="id_banco" class="form-control selectpicker-noval show-tick" data-live-search="true" title="Sin informaci&oacute;n..." readonly="true">
+                                                                                @if(count($bancos) > 0)
+                                                                                    @foreach($bancos as $banco)
+                                                                                    <option value="{{ $banco->id }}" {{ old('id_banco') == $banco->id ? 'selected' : '' }}>{{ $banco->codigo }} - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>
+                                                                                    @endforeach
+                                                                                @endif
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Factura pago:</label>
+                                                                            <input type="text" id="factura_pago" name="factura_pago" class="form-control" autocomplete="off" placeholder="-" value="" maxlength="15" readonly="readonly">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">&Uacute;ltimo a&ntilde;o pago:</label>
+                                                                            <input type="text" id="ultimo_anio_pago" name="ultimo_anio_pago" class="form-control onlyNumbers" autocomplete="off" placeholder="-" value="" maxlength="4" readonly="readonly">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Valor pago:</label>
+                                                                            <input type="text" id="valor_pago" name="valor_pago" class="form-control" autocomplete="off" placeholder="-" value="" readonly="readonly">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Fecha pago:</label>
+                                                                            <input type="text" id="fecha_pago" name="fecha_pago" class="form-control" autocomplete="off" placeholder="-" value="" readonly="readonly">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-4 col-md-4 col-sm-5 col-xs-12">
+                                                                        <div class="form-group" style="margin-bottom: 0px;">
+                                                                            <label for="acuerdo_pago_check" class="control-label" style="display: block;">¿Acuerdo de pago?</label>
+                                                                            <input type="checkbox" id="acuerdo_pago" name="acuerdo_pago" value="">
+                                                                            <span id="span_acuerdo_pago" class="text-muted" style="padding-left: 10px;">NO</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </blockquote>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -538,11 +597,11 @@
         <span class="hidden-xs">DC</span> <i class="icon-calculator"></i>
     </a>
 </li>
-<li class="mega-dropdown buttonTareas">
+{{-- <li class="mega-dropdown buttonTareas">
     <a class="waves-effect waves-light" data-toggle="modal" data-target="#modal-datos-pagos" data-backdrop="static" data-keyboard="false" href="#">
         <span class="hidden-xs">DPA</span> <i class="icon-wallet"></i>
     </a>
-</li>
+</li> --}}
 <li class="mega-dropdown buttonTareas">
     <a class="waves-effect waves-light" data-toggle="modal" data-target="#modal-datos-acuerdos-pago" data-backdrop="static" data-keyboard="false" href="#">
         <span class="hidden-xs">DAP</span> <i class="icon-book-open"></i>
@@ -626,7 +685,7 @@
                                             {{-- <span class="text-danger">@error('avaluo_presente_anio') {{ $message }} @enderror</span> --}}
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                    {{-- <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                         <div class="form-group" style="margin-bottom: 0px;">
                                             <label for="excento_impuesto_check" class="control-label" style="display: block;">¿Excento impuesto?</label>
                                             <input type="checkbox" id="excento_impuesto" name="excento_impuesto" value="{{ old('excento_impuesto') }}">
@@ -646,7 +705,7 @@
                                             <input type="checkbox" id="aplica_ley44" name="aplica_ley44" value="{{ old('aplica_ley44') }}">
                                             <span id="span_aplica_ley44" class="text-muted" style="padding-left: 10px;">NO</span>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </form>
@@ -812,11 +871,10 @@
         </div>
     </div>
 </div>
-<div id="modal-datos-pagos" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-datos-pagos-label" aria-hidden="true" style="display: none;">
+{{-- <div id="modal-datos-pagos" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-datos-pagos-label" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                {{-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> --}}
                 <h4 class="modal-title" id="modal-datos-pagos-label">Informaci&oacute;n adicional - <span>Datos pagos</h4>
             </div>
             <div class="modal-body">
@@ -841,14 +899,12 @@
                                         <div class="form-group">
                                             <label class="control-label">Factura pago:</label>
                                             <input type="text" id="factura_pago" name="factura_pago" class="form-control" autocomplete="off" placeholder="Ingrese factura pago" value="{{ old('factura_pago') }}" maxlength="15">
-                                            {{-- <span class="text-danger">@error('factura_pago') {{ $message }} @enderror</span> --}}
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">&Uacute;ltimo a&ntilde;o pago:</label>
                                             <input type="text" id="ultimo_anio_pago" name="ultimo_anio_pago" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese ultimo a&ntilde;o pago" value="{{ old('ultimo_anio_pago') }}" maxlength="4">
-                                            {{-- <span class="text-danger">@error('ultimo_anio_pago') {{ $message }} @enderror</span> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -857,14 +913,12 @@
                                         <div class="form-group">
                                             <label class="control-label">Valor pago:</label>
                                             <input type="text" id="valor_pago" name="valor_pago" class="form-control" autocomplete="off" placeholder="Ingrese valor pago" value="{{ old('valor_pago') }}">
-                                            {{-- <span class="text-danger">@error('valor_pago') {{ $message }} @enderror</span> --}}
                                         </div>
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">Fecha pago:</label>
                                             <input type="text" id="fecha_pago" name="fecha_pago" class="form-control datepickerforms" autocomplete="off" placeholder="Ingrese fecha pago" value="{{ old('fecha_pago') }}">
-                                            {{-- <span class="text-danger">@error('fecha_pago') {{ $message }} @enderror</span> --}}
                                         </div>
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-sm-5 col-xs-12">
@@ -878,7 +932,7 @@
                             </div>
                         </form>
                     </div>
-                 </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button id="save_dpa" type="button" class="btn btn-info"> <i class="fa fa-save"></i> Guardar informaci&oacute;n</button>
@@ -886,7 +940,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 <div id="modal-datos-acuerdos-pago" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-datos-acuerdos-pago-label" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

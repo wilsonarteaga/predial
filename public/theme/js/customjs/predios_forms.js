@@ -78,9 +78,9 @@ $(document).ready(function() {
     $('#save_dc').off('click').on('click', function() {
         saveDatosPredio('form-predios-datos-calculo', 'modal-datos-calculo', 'predios_datos_calculo', 'dc');
     });
-    $('#save_dpa').off('click').on('click', function() {
-        saveDatosPredio('form-predios-datos-pagos', 'modal-datos-pagos', 'predios_datos_pagos', 'dpa');
-    });
+    // $('#save_dpa').off('click').on('click', function() {
+    //     saveDatosPredio('form-predios-datos-pagos', 'modal-datos-pagos', 'predios_datos_pagos', 'dpa');
+    // });
     $('#save_dap').off('click').on('click', function() {
         saveDatosPredio('form-predios-datos-acuerdos-pago', 'modal-datos-acuerdos-pago', 'predios_datos_acuerdos_pago', 'dap');
     });
@@ -177,18 +177,18 @@ $(document).ready(function() {
     });
 
     /// datos-pagos
-    $('#modal-datos-pagos').on('show.bs.modal', function() {
-        if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dpa') !== undefined) {
-            var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dpa'));
-            setFormData('form-predios-datos-pagos', objJson);
-        }
-    });
+    // $('#modal-datos-pagos').on('show.bs.modal', function() {
+    //     if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dpa') !== undefined) {
+    //         var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dpa'));
+    //         setFormData('form-predios-datos-pagos', objJson);
+    //     }
+    // });
 
-    $('#modal-datos-pagos').on('hidden.bs.modal', function() {
-        $('.datohidden').remove();
-        $('#form-predios-datos-pagos')[0].reset();
-        clear_form_elements("#form-predios-datos-pagos");
-    });
+    // $('#modal-datos-pagos').on('hidden.bs.modal', function() {
+    //     $('.datohidden').remove();
+    //     $('#form-predios-datos-pagos')[0].reset();
+    //     clear_form_elements("#form-predios-datos-pagos");
+    // });
 
     /// datos-acuerdos-pago
     $('#modal-datos-acuerdos-pago').on('show.bs.modal', function() {
@@ -671,9 +671,18 @@ function getJsonPrediosDatos() {
                 $('#tr_predio_' + $('#id_edit').val()).attr('data-dc', JSON.stringify(response.predio_calculo));
             }
 
+            ///
+            $('.datohidden').remove();
+            $('#acuerdo_pago').attr('disabled', false);
+            $('#form-predios-datos-pagos')[0].reset();
+            clear_form_elements("#form-predios-datos-pagos");
+            $('#span_acuerdo_pago').html('NO');
             if (response.predio_pago !== undefined && response.predio_pago !== null) {
                 $('#tr_predio_' + $('#id_edit').val()).attr('data-dpa', JSON.stringify(response.predio_pago));
+                var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dpa'));
+                setFormData('form-predios-datos-pagos', objJson);
             }
+            $('#acuerdo_pago').attr('disabled', true);
 
             if (response.predio_acuerdo_pago !== undefined && response.predio_acuerdo_pago !== null) {
                 $('#tr_predio_' + $('#id_edit').val()).attr('data-dap', JSON.stringify(response.predio_acuerdo_pago));

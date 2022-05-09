@@ -219,9 +219,9 @@ class PrediosController extends Controller
         $predio_dato->avaluo_presente_anio = str_replace(",", "", $data->{'avaluo_presente_anio'});
         $predio_dato->excento_impuesto = array_key_exists('excento_impuesto', $data) ? $data->{'excento_impuesto'} : '0';
         $predio_dato->id_clase_predio = $data->{'id_clase_predio'};
-        $predio_dato->id_clase_mutacion = $data->{'id_clase_mutacion'};
-        $predio_dato->predio_incautado = array_key_exists('predio_incautado', $data) ? $data->{'predio_incautado'} : '0';
-        $predio_dato->aplica_ley44 = array_key_exists('aplica_ley44', $data) ? $data->{'aplica_ley44'} : '0';
+        //$predio_dato->id_clase_mutacion = $data->{'id_clase_mutacion'};
+        //$predio_dato->predio_incautado = array_key_exists('predio_incautado', $data) ? $data->{'predio_incautado'} : '0';
+        //$predio_dato->aplica_ley44 = array_key_exists('aplica_ley44', $data) ? $data->{'aplica_ley44'} : '0';
 
         $query = $predio_dato->save();
 
