@@ -6,6 +6,10 @@ var current_page = 0;
 var PAGE_LENGTH = 3;
 $(document).ready(function() {
 
+    $('.tips').powerTip({
+        placement: 's' // north-east tooltip position
+    });
+
     if ($('#excento_impuesto').length > 0) {
         $('#excento_impuesto').off('click').on('click', function() {
             if ($(this).is(':checked')) {

@@ -583,37 +583,37 @@
 
 @section('buttons')
 <li class="mega-dropdown buttonTareas">
-    <a class="waves-effect waves-light" data-toggle="modal" data-target="#modal-datos-basicos" data-backdrop="static" data-keyboard="false" href="#">
+    <a class="waves-effect waves-light tips" data-toggle="modal" data-target="#modal-datos-basicos" data-backdrop="static" data-keyboard="false" href="#" title="Datos b&aacute;sicos predios">
         <span class="hidden-xs">DBP</span> <i class="icon-home"></i>
     </a>
 </li>
 <li class="mega-dropdown buttonTareas">
-    <a class="waves-effect waves-light" data-toggle="modal" data-target="#modal-datos-propietarios" data-backdrop="static" data-keyboard="false" href="#">
+    <a class="waves-effect waves-light tips" data-toggle="modal" data-target="#modal-datos-propietarios" data-backdrop="static" data-keyboard="false" href="#" title="Datos propietarios">
         <span class="hidden-xs">DP</span> <i class="icon-people"></i>
     </a>
 </li>
 <li class="mega-dropdown buttonTareas">
-    <a class="waves-effect waves-light" data-toggle="modal" data-target="#modal-datos-calculo" data-backdrop="static" data-keyboard="false" href="#">
+    <a class="waves-effect waves-light tips" data-toggle="modal" data-target="#modal-datos-calculo" data-backdrop="static" data-keyboard="false" href="#" title="Datos c&aacute;lculo">
         <span class="hidden-xs">DC</span> <i class="icon-calculator"></i>
     </a>
 </li>
 {{-- <li class="mega-dropdown buttonTareas">
-    <a class="waves-effect waves-light" data-toggle="modal" data-target="#modal-datos-pagos" data-backdrop="static" data-keyboard="false" href="#">
+    <a class="waves-effect waves-light tips" data-toggle="modal" data-target="#modal-datos-pagos" data-backdrop="static" data-keyboard="false" href="#" title="Datos pagos">
         <span class="hidden-xs">DPA</span> <i class="icon-wallet"></i>
     </a>
 </li> --}}
 <li class="mega-dropdown buttonTareas">
-    <a class="waves-effect waves-light" data-toggle="modal" data-target="#modal-datos-acuerdos-pago" data-backdrop="static" data-keyboard="false" href="#">
+    <a class="waves-effect waves-light tips" data-toggle="modal" data-target="#modal-datos-acuerdos-pago" data-backdrop="static" data-keyboard="false" href="#" title="Datos acuerdos de pago">
         <span class="hidden-xs">DAP</span> <i class="icon-book-open"></i>
     </a>
 </li>
 <li class="mega-dropdown buttonTareas">
-    <a class="waves-effect waves-light" data-toggle="modal" data-target="#modal-datos-abonos" data-backdrop="static" data-keyboard="false" href="#">
+    <a class="waves-effect waves-light tips" data-toggle="modal" data-target="#modal-datos-abonos" data-backdrop="static" data-keyboard="false" href="#" title="Datos abonos">
         <span class="hidden-xs">DA</span> <i class="icon-flag"></i>
     </a>
 </li>
 <li class="mega-dropdown buttonTareas">
-    <a class="waves-effect waves-light" data-toggle="modal" data-target="#modal-datos-procesos-historicos" data-backdrop="static" data-keyboard="false" href="#">
+    <a class="waves-effect waves-light tips" data-toggle="modal" data-target="#modal-datos-procesos-historicos" data-backdrop="static" data-keyboard="false" href="#" title="Procesos e hist&oacute;ricos">
         <span class="hidden-xs">P&H</span> <i class="icon-layers"></i>
     </a>
 </li>
@@ -954,10 +954,42 @@
                         <form id="form-predios-datos-acuerdos-pago">
                             <div class="form-body">
                                 <div class="row">
+                                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Acuerdo n&uacute;mero:</label>
+                                            <input type="text" id="acuerdo_numero" name="acuerdo_numero" class="form-control" autocomplete="off" placeholder="Numero del acuerdo" value="{{ old('acuerdo_numero') }}" maxlength="15" readonly="readonly">
+                                            {{-- <span class="text-danger">@error('acuerdo_numero') {{ $message }} @enderror</span> --}}
+                                        </div>
+                                    </div>
                                     <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-
+                                        <div class="form-group">
+                                            <label class="control-label">Cuota:</label>
+                                            <input type="text" id="cuota_acuerdo_pago" name="cuota_acuerdo_pago" class="form-control" autocomplete="off" placeholder="Valor cuota" value="{{ old('cuota_acuerdo_pago') }}" maxlength="15" readonly="readonly">
+                                            {{-- <span class="text-danger">@error('cuota_acuerdo_pago') {{ $message }} @enderror</span> --}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Fecha:</label>
+                                            <input type="text" id="fecha_acuerdo_pago" name="fecha_acuerdo_pago" class="form-control" autocomplete="off" placeholder="Fecha cuota" value="{{ old('fecha_acuerdo_pago') }}" maxlength="15" readonly="readonly">
+                                            {{-- <span class="text-danger">@error('fecha_acuerdo_pago') {{ $message }} @enderror</span> --}}
+                                        </div>
                                     </div>
                                 </div>
+                                {{-- <div class="row">
+                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Valor pago:</label>
+                                            <input type="text" id="valor_pago" name="valor_pago" class="form-control" autocomplete="off" placeholder="Ingrese valor pago" value="{{ old('valor_pago') }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Fecha pago:</label>
+                                            <input type="text" id="fecha_pago" name="fecha_pago" class="form-control datepickerforms" autocomplete="off" placeholder="Ingrese fecha pago" value="{{ old('fecha_pago') }}">
+                                        </div>
+                                    </div>
+                                </div> --}}
                             </div>
                         </form>
                     </div>

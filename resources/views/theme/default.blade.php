@@ -50,6 +50,8 @@
     {{-- <link href="{!! asset('theme/plugins/bower_components/calendar/dist/fullcalendar.css') !!}" rel="stylesheet" /> --}}
     <link href="{!! asset('theme/plugins/bower_components/fullcalendar3.9/fullcalendar.min.css') !!}" rel="stylesheet" />
 
+    <link href="{!! asset('theme/css/jquery.powertip.min.css') !!}" rel="stylesheet" />
+
 </head>
 
 <body class="fix-header">
@@ -169,6 +171,7 @@
     <!-- Horizontal-timeline JavaScript -->
     <script src="{!! asset('theme/plugins/bower_components/horizontal-timeline/js/horizontal-timeline.js') !!}"></script>
 
+    <script src="{!! asset('theme/js/jquery.powertip.min.js') !!}" type="text/javascript" ></script>
     <script src="{!! asset('theme/js/customjs/site.js') !!}"></script>
     @stack('scripts')
 </body>
