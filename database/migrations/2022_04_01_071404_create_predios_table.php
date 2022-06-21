@@ -15,7 +15,7 @@ class CreatePrediosTable extends Migration
     {
         Schema::create('predios', function (Blueprint $table) {
             $table->id();
-            $table->string('codigo_predio', 20);
+            $table->string('codigo_predio', 40);
             $table->string('direccion', 512);
             $table->decimal('avaluo', $precision = 20, $scale = 2);
             $table->smallInteger('ultimo_anio_pago');

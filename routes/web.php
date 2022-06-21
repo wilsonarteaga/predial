@@ -11,6 +11,7 @@ use App\Http\Controllers\ConceptosPredioController;
 use App\Http\Controllers\DescuentosController;
 use App\Http\Controllers\ErrorRequestController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PagosController;
 use App\Http\Controllers\PrediosController;
 use App\Http\Controllers\TarifasPredialController;
 use App\Http\Controllers\TiposPredioController;
@@ -188,6 +189,14 @@ Route::post('create_descuentos', [DescuentosController::class, 'store'])->name('
 Route::post('update_descuentos', [DescuentosController::class, 'update'])->name('descuentos.update_descuentos')->middleware('checkdb');
 Route::post('delete_descuentos', [DescuentosController::class, 'destroy'])->name('descuentos.delete_descuentos')->middleware('checkdb');
 
+//PagosController
+Route::get('registro_pagos/{id}', [PagosController::class, 'create'])->middleware('checkdb');
+Route::get('registro_pagos', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
+
+Route::post('create_pagos', [PagosController::class, 'store'])->name('pagos.create_pagos')->middleware('checkdb');
+Route::post('update_pagos', [PagosController::class, 'update'])->name('pagos.update_pagos')->middleware('checkdb');
+Route::post('delete_pagos', [PagosController::class, 'destroy'])->name('pagos.delete_pagos')->middleware('checkdb');
+
 //PrediosController
 Route::get('registro_predios/{id}', [PrediosController::class, 'create'])->middleware('checkdb');
 Route::get('registro_predios', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
@@ -205,7 +214,7 @@ Route::post('/store/predios_datos_propietarios', [PrediosController::class, 'sto
 //datos_calculo
 Route::post('/store/predios_datos_calculo', [PrediosController::class, 'store_predios_datos_calculo']);
 //datos_pagos
-Route::post('/store/predios_datos_pagos', [PrediosController::class, 'store_predios_datos_pagos']);
+//Route::post('/store/predios_datos_pagos', [PrediosController::class, 'store_predios_datos_pagos']);
 //datos_acuerdos_pago
 Route::post('/store/predios_datos_acuerdos_pago', [PrediosController::class, 'store_predios_datos_acuerdos_pago']);
 //datos_abonos

@@ -75,7 +75,7 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo predio:</label>
-                                                                <input type="text" id="codigo_predio" name="codigo_predio" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo predio" value="{{ old('codigo_predio') }}" maxlength="15">
+                                                                <input type="text" id="codigo_predio" name="codigo_predio" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo predio" value="{{ old('codigo_predio') }}" maxlength="30">
                                                                 <span class="text-danger">@error('codigo_predio') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
