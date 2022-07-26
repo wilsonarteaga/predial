@@ -24,7 +24,6 @@
             </button> -->
             <!-- <a href="#" target="" class="btn btn-danger pull-right m-l-20 hidden-xs hidden-sm waves-effect waves-light">Buy Admin Now</a> -->
             <ol class="breadcrumb">
-                <!-- <li><a href="#">Dashboard</a></li> -->
                 <li class="active">{{ Session::get('desc_role') }}</li>
             </ol>
         </div>
