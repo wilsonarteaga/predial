@@ -15,6 +15,8 @@ use App\Models\PredioDato;
 use App\Models\PredioPago;
 use App\Models\PredioPropietario;
 use App\Models\Propietario;
+use App\Models\Resolucion;
+use App\Models\ResolucionPredio;
 
 use Carbon\Carbon;
 
@@ -43,6 +45,7 @@ class PrediosController extends Controller
                         $join->on('predios.id_zona', '=', 'zonas.id');
                     })
                     ->select('predios.*', 'zonas.descripcion')
+                    ->where('estado', 1)
                     ->get(); //paginate(5);
 
         $zonas = DB::table('zonas')
@@ -184,21 +187,50 @@ class PrediosController extends Controller
 
         $countPredios = DB::table('predios')
                             ->select(DB::raw('count(*) as cm_count')) // verificar si ya esta relacionada con otras tablas
-                            ->where('id', $request->input_delete)->first();
+                            ->where('id', $request->input_delete)
+                            ->where('estado', 1)->first();
 
         $tab_current = 'li-section-bar-2';
         $predio = new Predio();
         $predio = Predio::find($request->input_delete);
 
-        //if($countPredios->cm_count == 0) {
-            $query = $predio->delete();
+        if($countPredios->cm_count > 0) {
+            $predio->estado = 0;
+            $query = $predio->save();
             if($query) {
-                return back()->with(['success' => 'El registro se elimin&oacute; satisfactoriamente.', 'tab_current' => $tab_current]);
+                $resolucion = new Resolucion();
+                $resolucion->numero_resolucion = $request->numero_resolucion;
+                $resolucion->fecha_resolucion = Carbon::createFromFormat("Y-m-d", $request->fecha_resolucion)->format('Y-m-d');
+                $resolucion->firma_resolucion = strtoupper($request->firma_resolucion);
+                $query = $resolucion->save();
+                if($query) {
+                    $resolucion_predio = new ResolucionPredio();
+                    $resolucion_predio->id_predio = $predio->id;
+                    $resolucion_predio->id_resolucion = $resolucion->id;
+                    $resolucion_predio->id_usuario = $request->session()->get('userid');
+                    $resolucion_predio->descripcion = 'Anulación predio ' . $predio->codigo_predio;
+
+                    $query = $resolucion_predio->save();
+                    if($query) {
+                        return back()->with(['success' => 'El registro se anulo satisfactoriamente.', 'tab_current' => $tab_current]);
+                    }
+                    else {
+                        $resolucion->delete();
+                        $predio->estado = 1;
+                        $query = $predio->save();
+                        return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n predio. Intente nuevamente.', 'tab_current' => $tab_current]);
+                    }
+                }
+                else {
+                    $predio->estado = 1;
+                    $query = $predio->save();
+                    return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
+                }
             }
             else {
-                return back()->with(['fail' => 'No se pudo eliminar la informaci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
+                return back()->with(['fail' => 'No se pudo anular el predio. Intente nuevamente.', 'tab_current' => $tab_current]);
             }
-        // }
+        }
         // else {
         //     return back()->with(['fail' => 'No se pudo eliminar la informaci&oacute;n. La clase de mutaci&oacute;n <b>' . $predio->nombre . ' (' . $predio->codigo . ')</b> ya posee informaci&oacute;n asociada.', 'tab_current' => $tab_current]);
         // }

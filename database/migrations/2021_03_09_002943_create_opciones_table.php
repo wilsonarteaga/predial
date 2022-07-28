@@ -22,6 +22,8 @@ class CreateOpcionesTable extends Migration
             $table->string('color', 20);
             $table->char('estado', 1)->default('A');
             $table->string('descripcion', 1024);
+            $table->boolean('resolucion_elimina')->nullable();
+            $table->boolean('resolucion_edita')->nullable();
             $table->timestamps();
         });
     }

@@ -90,6 +90,7 @@
         <div id="page-wrapper">
             @yield('content')
             @yield('modales')
+            @yield('resolucion')
             <footer class="footer text-center"> 2021 &copy; Freelance </footer>
         </div>
         <!-- ============================================================== -->

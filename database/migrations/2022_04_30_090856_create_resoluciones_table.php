@@ -15,9 +15,9 @@ class CreateResolucionesTable extends Migration
     {
         Schema::create('resoluciones', function (Blueprint $table) {
             $table->id();
-            $table->string('numero', 20);
-            $table->date('fecha');
-            $table->string('firma', 128);
+            $table->string('numero_resolucion', 20);
+            $table->date('fecha_resolucion');
+            $table->string('firma_resolucion', 128);
             $table->timestamps();
         });
     }
