@@ -58,7 +58,18 @@ class ResolucionesIgacController extends Controller
         }
 
         $resoluciones_igac = new ResolucionesIgac();
+        $resoluciones_igac->ano = $request->ano;
         $resoluciones_igac->resolucion = $request->resolucion;
+        $resoluciones_igac->fecha = $request->fecha;
+        $resoluciones_igac->consecutivo = $request->consecutivo;
+        $resoluciones_igac->codigo = $request->codigo;
+        $resoluciones_igac->codigoanterior = $request->codigoanterior;
+        $resoluciones_igac->tipo = $request->tipo;
+        $resoluciones_igac->tiporegistro = $request->tiporegistro;
+        $resoluciones_igac->numeroorden = $request->numeroorden;
+        $resoluciones_igac->avaluoigac = $request->avaluoigac;
+        $resoluciones_igac->area = $request->area;
+        $resoluciones_igac->nombre = $request->nombre;
         $query = $resoluciones_igac->save();
         $tab_current = 'li-section-bar-1';
 

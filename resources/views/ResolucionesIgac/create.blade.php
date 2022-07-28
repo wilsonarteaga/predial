@@ -139,8 +139,8 @@
                                                     <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label class="control-label">Avaluo</label>
-                                                                <input type="text" id="area" name="area" class="form-control" autocomplete="off" placeholder="Ingrese Avaluo" value="{{ old('area') }}" maxlength="30">
-                                                                <span class="text-danger">@error('area') {{ $message }} @enderror</span>
+                                                                <input type="text" id="avaluoigac" name="avaluoigac" class="form-control" autocomplete="off" placeholder="Ingrese Avaluo" value="{{ old('avaluoigac') }}" maxlength="30">
+                                                                <span class="text-danger">@error('avaluoigac') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                          <div class="col-md-4">
@@ -192,7 +192,7 @@
                                                 <table id="myTable" class="table table-hover table-striped table-bordered">
                                                     <thead>
                                                         <tr>
-                                                            <th class="cell_center">Año</th>
+                                                            <th class="cell_center">Ano</th>
                                                             <th class="cell_center">Resolucion</th>
                                                             <th class="cell_center">Fecha</th>
                                                             <th class="cell_center">Consecutivo</th>
@@ -204,13 +204,14 @@
                                                             <th class="cell_center">Avaluo</th>
                                                             <th class="cell_center">Area</th>
                                                             <th class="cell_center">Nombre</th>
+                                                            <th class="cell_center">opciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         @if(count($resoluciones_igac) > 0)
                                                             @foreach($resoluciones_igac as $resoluciones_igac)
                                                             <tr style="cursor: pointer;" json-data='@json($resoluciones_igac)'>
-                                                                {{-- <td class="cell_center edit_row">{{ $resoluciones_igac->año }}</td>
+                                                                <td class="cell_center edit_row">{{ $resoluciones_igac->ano }}</td> 
                                                                 <td class="cell_center edit_row">{{ $resoluciones_igac->resolucion }}</td> --}}
                                                                 <td class="edit_row cell_center">{{ $resoluciones_igac->fecha }}</td>
                                                                 <td class="edit_row">{{ $resoluciones_igac->consecutivo }}</td>
@@ -219,7 +220,7 @@
                                                                 <td class="edit_row">{{ $resoluciones_igac->tipo }}</td>
                                                                 <td class="edit_row">{{ $resoluciones_igac->tiporegistro }}</td>
                                                                 <td class="edit_row">{{ $resoluciones_igac->numeroorden }}</td>
-                                                                <td class="edit_row">{{ $resoluciones_igac->avaluo }}</td>
+                                                                <td class="edit_row">{{ $resoluciones_igac->avaluoigac }}</td>
                                                                 <td class="edit_row">{{ $resoluciones_igac->area }}</td>
                                                                 <td class="edit_row">{{ $resoluciones_igac->nombre }}</td> --}}
                                                                 <td class="cell_center">

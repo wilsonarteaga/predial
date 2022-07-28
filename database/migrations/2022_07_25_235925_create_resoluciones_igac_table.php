@@ -24,7 +24,7 @@ class CreateResolucionesIgacTable extends Migration
             $table->string('tipo', 50);
             $table->string('tiporegistro', 50);
             $table->integer('numeroorden');
-            $table->string('avaluo', 50);
+            $table->string('avaluoigac', 50);
             $table->string('area', 50);
             $table->string('nombre', 50);
             $table->timestamps();
