@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Validator::extend('15o30', function ($attribute, $value, $parameters, $validator) {
+            return strlen($value) == 15 || strlen($value) == 30;
+        });
+
         Blade::directive('money', function ($amount) {
                 return "<?php
                     if($amount < 0) {

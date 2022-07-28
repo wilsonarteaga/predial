@@ -128,7 +128,9 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-lg-offset-1 col-lg-2 col-md-offset-1 col-md-2 col-sm-offset-1 col-sm-3 col-xs-12">
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Zona:</label>
                                                                 <select id="id_zona" name="id_zona" class="form-control selectpicker show-tick" data-live-search="true" title="Seleccione...">
@@ -141,15 +143,13 @@
                                                                 <span class="text-danger">@error('id_zona') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="row">
                                                         {{-- <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" style="display: none;">
                                                             <div class="form-group">
                                                                 <label class="control-label">Nombre propietario:</label>
                                                                 <input type="text" id="nombre_propietario" name="nombre_propietario" class="form-control" autocomplete="off" value="{{ old('nombre_propietario') }}" maxlength="128">
                                                             </div>
                                                         </div> --}}
-                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-10 col-md-10 col-sm-9 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Direcci&oacute;n:</label>
                                                                 <input type="text" id="direccion" name="direccion" class="form-control" autocomplete="off" placeholder="Ingrese direcci&oacute;n" value="{{ old('direccion') }}" maxlength="128">
@@ -292,9 +292,9 @@
                                                                 {{-- <td class="cell_center edit_row">{{ $predio->tel_acu }}</td>
                                                                 <td class="edit_row">{{ $predio->dir_acu }}</td> --}}
                                                                 <td class="cell_center">
-                                                                    <button type="button" ide="{{ $predio->id }}" class="modify_row btn btn-info"><i class="fa fa-pencil-square"></i></button>
+                                                                    <button type="button" ide="{{ $predio->id }}" class="modify_row btn btn-info" req_res="{{ $opcion->resolucion_edita }}"><i class="fa fa-pencil-square"></i></button>
                                                                     &nbsp;&nbsp;
-                                                                    <button type="button" ide="{{ $predio->id }}" class="delete_row btn btn-inverse"><i class="fa fa-trash-o"></i></button>
+                                                                    <button type="button" ide="{{ $predio->id }}" class="delete_row btn btn-inverse" req_res="{{ $opcion->resolucion_elimina }}"><i class="fa fa-trash-o"></i></button>
                                                                 </td>
                                                             </tr>
                                                             @endforeach
@@ -329,7 +329,8 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo predio:</label>
-                                                                <input type="text" id="codigo_predio_edit" name="codigo_predio_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo predio" value="{{ old('codigo_predio_edit') }}" readonly="readonly">
+                                                                <input type="hidden" id="codigo_predio_prev" name="codigo_predio_prev" value="" />
+                                                                <input type="text" id="codigo_predio_edit" name="codigo_predio_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo predio" value="{{ old('codigo_predio_edit') }}" maxlength="30">
                                                                 <span class="text-danger">@error('codigo_predio_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -381,8 +382,9 @@
                                                                 <span class="text-danger">@error('mejora_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-
-                                                        <div class="col-lg-offset-1 col-lg-2 col-md-offset-1 col-md-2 col-sm-offset-1 col-sm-3 col-xs-12">
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Zona:</label>
                                                                 <select id="id_zona_edit" name="id_zona_edit" class="form-control selectpicker show-tick" data-live-search="true" title="Seleccione...">
@@ -395,15 +397,13 @@
                                                                 <span class="text-danger">@error('id_zona_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="row">
                                                         {{-- <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" style="display: none;">
                                                             <div class="form-group">
                                                                 <label class="control-label">Nombre propietario:</label>
                                                                 <input type="text" id="nombre_propietario" name="nombre_propietario" class="form-control" autocomplete="off" value="{{ old('nombre_propietario') }}" maxlength="128">
                                                             </div>
                                                         </div> --}}
-                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-10 col-md-10 col-sm-9 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Direcci&oacute;n:</label>
                                                                 <input type="text" id="direccion_edit" name="direccion_edit" class="form-control" autocomplete="off" placeholder="Ingrese direcci&oacute;n" value="{{ old('direccion_edit') }}" maxlength="128">
@@ -1088,4 +1088,10 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('resolucion')
+    @if($opcion->resolucion_elimina == 1 || $opcion->resolucion_edita == 1)
+        @include('resoluciones.modal')
+    @endif
 @endsection

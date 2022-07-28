@@ -96,3 +96,8 @@ span.span_predio {
     background-color: #ec7b61 !important;
     color: white;
 }
+
+.error {
+    color: #f30c07;
+    font-weight: normal;
+}

@@ -32,6 +32,8 @@ class CreatePrediosTable extends Migration
             $table->decimal('area_hectareas', $precision = 12, $scale = 2);
             $table->decimal('tarifa_actual', $precision = 12, $scale = 2);
 
+            $table->boolean('estado')->default(1);
+
             $table->timestamps();
 
             $table->foreign('id_zona')->references('id')->on('zonas');

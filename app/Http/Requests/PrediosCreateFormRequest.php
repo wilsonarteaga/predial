@@ -24,7 +24,7 @@ class PrediosCreateFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'codigo_predio'  => 'required|unique:predios|size:15',
+            'codigo_predio'  => 'required|unique:predios|15o30',
             'tipo'  => 'required|size:2',
             'sector'  => 'required|size:2',
             'manzana'  => 'required|size:4',
@@ -46,7 +46,7 @@ class PrediosCreateFormRequest extends FormRequest
         return [
             'codigo_predio.required' => 'El campo codigo predio es obligatorio.',
             'codigo_predio.unique' => 'El codigo de predio ya esta registrado.',
-            'codigo_predio.size' => 'El campo codigo predio debe contener :size digitos.',
+            'codigo_predio.15o30' => 'El campo codigo predio debe contener 15 o 30 digitos.',
             'tipo.required' => 'El campo tipo es obligatorio.',
             'tipo.size' => 'El campo tipo debe contener :size digitos.',
             'sector.required' => 'El campo sector es obligatorio.',

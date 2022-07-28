@@ -227,7 +227,7 @@ $(document).ready(function() {
 
     if ($('.delete_row').length > 0) {
         $('.delete_row').off('click').on('click', function(evt) {
-            var row = $(this);
+            var btn = $(this);
             swal({
                 title: "Atención",
                 text: "¿Está seguro/a que desea eliminar el registro?",
@@ -240,8 +240,12 @@ $(document).ready(function() {
                 closeOnCancel: true
             }, function(isConfirm) {
                 if (isConfirm) {
-                    $('#input_delete').val($(row).attr('ide'));
-                    $('#form_delete').first().submit();
+                    $('#input_delete').val($(btn).attr('ide'));
+                    if ($(btn).attr('req_res') !== undefined) {
+                        $('#modal-resolucion').modal('show');
+                    } else {
+                        $('#form_delete').first().submit();
+                    }
                 }
             });
         });
@@ -333,13 +337,17 @@ $(document).ready(function() {
                 if ($('#' + $(this).attr('id') + '-error').length > 0)
                     $('#' + $(this).attr('id') + '-error').remove();
 
-                $('#create-form').validate().element($(this));
+                if ($('#create-form').is(':visible')) {
+                    $('#create-form').validate().element($(this));
+                }
             }
             if ($("#update-form").length > 0) {
                 if ($('#' + $(this).attr('id') + '-error').length > 0)
                     $('#' + $(this).attr('id') + '-error').remove();
 
-                $('#update-form').validate().element($(this));
+                if ($('#update-form').is(':visible')) {
+                    $('#update-form').validate().element($(this));
+                }
             }
         }
     });
@@ -354,13 +362,17 @@ $(document).ready(function() {
                     if ($('#' + $(this).attr('id') + '-error').length > 0)
                         $('#' + $(this).attr('id') + '-error').remove();
 
-                    $('#create-form').validate().element($(this));
+                    if ($('#create-form').is(':visible')) {
+                        $('#create-form').validate().element($(this));
+                    }
                 }
                 if ($("#update-form").length > 0) {
                     if ($('#' + $(this).attr('id') + '-error').length > 0)
                         $('#' + $(this).attr('id') + '-error').remove();
 
-                    $('#update-form').validate().element($(this));
+                    if ($('#update-form').is(':visible')) {
+                        $('#update-form').validate().element($(this));
+                    }
                 }
             },
             pick: function() {
@@ -570,56 +582,6 @@ $(document).ready(function() {
         });
     }
 
-    if ($('#codigo_predio').length > 0) {
-        $('#codigo_predio').off('keyup').on('keyup', function() {
-            if ($('#codigo_predio').val().substr(0, 2) !== undefined && $('#codigo_predio').val().substr(0, 2).length > 0) {
-                $('#tipo').val($('#codigo_predio').val().substr(0, 2));
-                $('#span_tipo').text($('#tipo').val());
-                $('#div_tipo').css('opacity', 1);
-            } else {
-                $('#tipo').val('s');
-                $('#span_tipo').text('');
-                $('#div_tipo').css('opacity', 0);
-            }
-            if ($('#codigo_predio').val().substr(2, 2) !== undefined && $('#codigo_predio').val().substr(2, 2).length > 0) {
-                $('#sector').val($('#codigo_predio').val().substr(2, 2));
-                $('#span_sector').text($('#sector').val());
-                $('#div_sector').css('opacity', 1);
-            } else {
-                $('#sector').val('');
-                $('#span_sector').text('');
-                $('#div_sector').css('opacity', 0);
-            }
-            if ($('#codigo_predio').val().substr(4, 4) !== undefined && $('#codigo_predio').val().substr(4, 4).length > 0) {
-                $('#manzana').val($('#codigo_predio').val().substr(4, 4));
-                $('#span_manzana').text($('#manzana').val());
-                $('#div_manzana').css('opacity', 1);
-            } else {
-                $('#manzana').val('');
-                $('#span_manzana').text('');
-                $('#div_manzana').css('opacity', 0);
-            }
-            if ($('#codigo_predio').val().substr(8, 4) !== undefined && $('#codigo_predio').val().substr(8, 4).length > 0) {
-                $('#predio').val($('#codigo_predio').val().substr(8, 4));
-                $('#span_predio').text($('#predio').val());
-                $('#div_predio').css('opacity', 1);
-            } else {
-                $('#predio').val('');
-                $('#span_predio').text('');
-                $('#div_predio').css('opacity', 0);
-            }
-            if ($('#codigo_predio').val().substr(12) !== undefined && $('#codigo_predio').val().substr(12).length > 0) {
-                $('#mejora').val($('#codigo_predio').val().substr(12));
-                $('#span_mejora').text($('#mejora').val());
-                $('#div_mejora').css('opacity', 1);
-            } else {
-                $('#mejora').val('');
-                $('#span_mejora').text('');
-                $('#div_mejora').css('opacity', 0);
-            }
-        });
-    }
-
     $('.buttonTareas a').bind('click', function(evt) {
         evt.preventDefault();
     });
@@ -763,6 +725,9 @@ function calcEditLabels() {
         $('#mejora_edit').val('');
         $('#span_mejora_edit').text('');
         $('#div_mejora_edit').css('opacity', 0);
+    }
+    if ($('#codigo_predio_edit').val() !== undefined && $('#codigo_predio_edit').val().length > 0) {
+        $('#codigo_predio_prev').val($('#codigo_predio_edit').val());
     }
 }
 
