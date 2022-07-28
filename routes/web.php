@@ -15,7 +15,7 @@ use App\Http\Controllers\PagosController;
 use App\Http\Controllers\PrediosController;
 use App\Http\Controllers\TarifasPredialController;
 use App\Http\Controllers\TiposPredioController;
-
+use App\Http\Controllers\ResolucionesIgacController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -237,3 +237,11 @@ Route::get('registro_tipospredio', [ErrorRequestController::class, 'error_reques
 Route::post('create_tipospredio', [TiposPredioController::class, 'store'])->name('tipospredio.create_tipospredio')->middleware('checkdb');
 Route::post('update_tipospredio', [TiposPredioController::class, 'update'])->name('tipospredio.update_tipospredio')->middleware('checkdb');
 Route::post('delete_tipospredio', [TiposPredioController::class, 'destroy'])->name('tipospredio.delete_tipospredio')->middleware('checkdb');
+
+//ResolucionesIgacController
+Route::get('registros_resoluciones_igac/{id}', [ResolucionesIgacController::class, 'create'])->middleware('checkdb');
+Route::get('registros_resoluciones_igac', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
+
+Route::post('create_registros_resoluciones_igac', [ResolucionesIgacController::class, 'store'])->name('resoluciones_igac.create_resoluciones_igac')->middleware('checkdb');
+Route::post('update_registros_resoluciones_igac', [ResolucionesIgacController::class, 'update'])->name('resoluciones_igac.update_resoluciones_igac')->middleware('checkdb');
+Route::post('delete_registros_resoluciones_igac', [ResolucionesIgacController::class, 'destroy'])->name('resoluciones_igac.delete_resoluciones_igac')->middleware('checkdb');
