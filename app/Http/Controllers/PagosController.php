@@ -44,7 +44,7 @@ class PagosController extends Controller
                     $join->on('pagos.id_banco_factura', '=', 'bancos.id');
                 })
                 ->select('pagos.*', 'bancos.nombre as banco')
-                ->get(); //paginate(5);
+                ->get();
 
         $tab_current = 'li-section-bar-1';
         if ($request->has('page')) {
