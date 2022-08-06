@@ -1,17 +1,18 @@
+var global_form_to_send = '';
 $(document).ready(function() {
     $('#save_resolucion').off('click').on('click', function() {
         var form = $("#resolucion-form");
         if (form.valid()) {
             var input_numero_resolucion = $('<input class="datohidden" id="numero_resolucion" name="numero_resolucion" type="hidden" value="' + $('#numero_resolucion_modal').val() + '"  />');
-            $('#form_delete').prepend(input_numero_resolucion);
+            $('#' + global_form_to_send).prepend(input_numero_resolucion);
 
             var input_fecha_resolucion = $('<input class="datohidden" id="fecha_resolucion" name="fecha_resolucion" type="hidden" value="' + $('#fecha_resolucion_modal').val() + '"  />');
-            $('#form_delete').prepend(input_fecha_resolucion);
+            $('#' + global_form_to_send).prepend(input_fecha_resolucion);
 
             var input_firma_resolucion = $('<input class="datohidden" id="firma_resolucion" name="firma_resolucion" type="hidden" value="' + $('#firma_resolucion_modal').val() + '"  />');
-            $('#form_delete').prepend(input_firma_resolucion);
+            $('#' + global_form_to_send).prepend(input_firma_resolucion);
 
-            $('#form_delete').first().submit();
+            $('#' + global_form_to_send).first().submit();
         }
     });
 

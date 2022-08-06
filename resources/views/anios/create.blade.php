@@ -67,14 +67,14 @@
                                                     <!-- <h3 class="box-title">Informaci&oacute;n de la clase de mutaci&oacute;n</h3> -->
                                                     <!-- <hr> -->
                                                     <div class="row">
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">A&ntilde;o</label>
                                                                 <input type="text" id="anio" name="anio" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('anio') }}" maxlength="4">
                                                                 <span class="text-danger">@error('anio') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Estado</label>
                                                                 <select id="id_estado" name="id_estado" class="form-control selectpicker show-tick" data-live-search="true" title="Seleccione...">
@@ -87,11 +87,24 @@
                                                                 <span class="text-danger">@error('id_estado') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Meses aministia</label>
                                                                 <input type="text" id="meses_amnistia" name="meses_amnistia" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese meses aministia" value="{{ old('meses_amnistia') }}" maxlength="3">
                                                                 <span class="text-danger">@error('meses_amnistia') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Tipo tasa inter&eacute;s</label>
+                                                                <select id="id_tipo_tasa_interes" name="id_tipo_tasa_interes" class="form-control selectpicker show-tick" data-live-search="true" title="Seleccione...">
+                                                                    @if(count($tipos_tasas) > 0)
+                                                                        @foreach($tipos_tasas as $tipo_tasa)
+                                                                        <option value="{{ $tipo_tasa->id }}" {{ old('id_tipo_tasa_interes') == $tipo_tasa->id ? 'selected' : '' }}>{{ $tipo_tasa->descripcion }}</option>
+                                                                        @endforeach
+                                                                    @endif
+                                                                </select>
+                                                                <span class="text-danger">@error('id_tipo_tasa_interes') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -218,14 +231,14 @@
                                                 <div class="form-body">
                                                     <input type="hidden" id="id_edit" name="id_edit" value="{{ old('id_edit') }}">
                                                     <div class="row">
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">A&ntilde;o</label>
                                                                 <input type="text" id="anio_edit" name="anio_edit" class="form-control onlyNumbers" placeholder="Ingrese a&ntilde;o" value="{{ old('anio_edit') }}" readonly="readonly">
                                                                 <span class="text-danger">@error('anio_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Estado</label>
                                                                 <select id="id_estado_edit" name="id_estado_edit" class="form-control selectpicker show-tick" data-live-search="true" title="Seleccione...">
@@ -238,11 +251,24 @@
                                                                 <span class="text-danger">@error('id_estado_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Meses amnistia</label>
                                                                 <input type="text" id="meses_amnistia_edit" name="meses_amnistia_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese meses amnistia" value="{{ old('meses_amnistia_edit') }}" maxlength="3">
                                                                 <span class="text-danger">@error('meses_amnistia_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Tipo tasa inter&eacute;s</label>
+                                                                <select id="id_tipo_tasa_interes_edit" name="id_tipo_tasa_interes_edit" class="form-control selectpicker show-tick" data-live-search="true" title="Seleccione...">
+                                                                    @if(count($tipos_tasas) > 0)
+                                                                        @foreach($tipos_tasas as $tipo_tasa)
+                                                                        <option value="{{ $tipo_tasa->id }}" {{ old('id_tipo_tasa_interes_edit') == $tipo_tasa->id ? 'selected' : '' }}>{{ $tipo_tasa->descripcion }}</option>
+                                                                        @endforeach
+                                                                    @endif
+                                                                </select>
+                                                                <span class="text-danger">@error('id_tipo_tasa_interes_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                     </div>

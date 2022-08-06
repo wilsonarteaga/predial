@@ -24,12 +24,12 @@ class PrediosCreateFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'codigo_predio'  => 'required|unique:predios|15o30',
+            'codigo_predio'  => 'required|unique:predios|15o25',
             'tipo'  => 'required|size:2',
             'sector'  => 'required|size:2',
             'manzana'  => 'required|size:4',
             'predio'  => 'required|size:4',
-            'mejora'  => 'required|size:3',
+            'mejora'  => 'required|3o18',
             'id_zona'  => 'required',
             'direccion'  => 'required|max:128',
             'area_metros'  => 'required',
@@ -46,7 +46,7 @@ class PrediosCreateFormRequest extends FormRequest
         return [
             'codigo_predio.required' => 'El campo codigo predio es obligatorio.',
             'codigo_predio.unique' => 'El codigo de predio ya esta registrado.',
-            'codigo_predio.15o30' => 'El campo codigo predio debe contener 15 o 30 digitos.',
+            'codigo_predio.15o25' => 'El campo codigo predio debe contener 15 o 25 digitos.',
             'tipo.required' => 'El campo tipo es obligatorio.',
             'tipo.size' => 'El campo tipo debe contener :size digitos.',
             'sector.required' => 'El campo sector es obligatorio.',
@@ -56,7 +56,7 @@ class PrediosCreateFormRequest extends FormRequest
             'predio.required' => 'El campo predio es obligatorio.',
             'predio.size' => 'El campo predio debe contener :size digitos.',
             'mejora.required' => 'El campo mejora es obligatorio.',
-            'mejora.size' => 'El campo mejora debe contener :size digitos.',
+            'mejora.3o18' => 'El campo mejora debe contener 3 o 18 digitos.',
             'id_zona.required'  => 'El campo zona es obligatorio.',
             'direccion.required' => 'El campo direccion es obligatorio.',
             'area_metros.required'  => 'El campo area metros es obligatorio.',

@@ -7,7 +7,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 {{-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> --}}
-                <h4 class="modal-title" id="modal-resolucion-label">Informaci&oacute;n de Resoluci&oacute;n</h4>
+                <h4 class="modal-title" id="modal-resolucion-label">Informaci&oacute;n de resoluci&oacute;n</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -42,7 +42,11 @@
                             </div>
                         </form>
                     </div>
-                 </div>
+                </div>
+                <div class="row">
+                    <div id="txt_operacion_resolucion" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button id="save_resolucion" type="button" class="btn btn-info"> <i class="fa fa-save"></i> Guardar informaci&oacute;n</button>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 use App\Http\Requests\PrediosCreateFormRequest;
 use App\Http\Requests\PrediosUpdateFormRequest;
 use App\Models\Predio;
@@ -17,6 +18,7 @@ use App\Models\PredioPropietario;
 use App\Models\Propietario;
 use App\Models\Resolucion;
 use App\Models\ResolucionPredio;
+use App\Models\PrescripcionPredio;
 
 use Carbon\Carbon;
 
@@ -47,6 +49,31 @@ class PrediosController extends Controller
                     ->select('predios.*', 'zonas.descripcion')
                     ->where('estado', 1)
                     ->get(); //paginate(5);
+
+        $propietarios = DB::table('predios')->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                                     ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                                     ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
+                ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(CONCAT(propietarios.nombre, \' - \', propietarios.identificacion), \'<br />\') AS propietarios'))
+                ->where('predios.estado', 1)
+                ->groupBy('predios_propietarios.id_predio')
+                ->get();
+
+        if($propietarios) {
+            foreach ($predios as $key => $predio) {
+                $desired_object = self::findInCollection($propietarios, 'id_predio', $predio->id);
+                if($desired_object) {
+                    $predio->propietarios = $desired_object->propietarios;
+                }
+                else {
+                    $predio->propietarios = 'Sin asignar';
+                }
+            }
+        }
+        else {
+            foreach ($predios as $key => $predio) {
+                $predio->propietarios = 'Sin asignar';
+            }
+        }
 
         $zonas = DB::table('zonas')
                     ->select('zonas.id', 'zonas.descripcion')
@@ -83,6 +110,15 @@ class PrediosController extends Controller
                                      'tarifas_predial' => $tarifas_predial,
                                      'bancos' => $bancos,
                                      'tab_current' => $tab_current]);
+    }
+
+    public static function findInCollection(Collection $collection, $key, $value) {
+        foreach ($collection as $item) {
+            if (isset($item->$key) && $item->$key == $value) {
+                return $item;
+            }
+        }
+        return FALSE;
     }
 
     /**
@@ -153,21 +189,48 @@ class PrediosController extends Controller
             return redirect('/');
         }
 
+        $tab_current = 'li-section-bar-2';
         $predio = new Predio();
+        $predio_tmp = new Predio();
         $predio = Predio::find($request->id_edit);
+        $predio->codigo_predio = $request->codigo_predio_edit;
         $predio->id_zona = $request->id_zona_edit;
         $predio->direccion = $request->direccion_edit;
         $predio->area_metros = $request->area_metros_edit;
         $predio->area_construida = $request->area_construida_edit;
         $predio->area_hectareas = $request->area_hectareas_edit;
-        $predio->tarifa_actual = $request->tarifa_actual_edit;
-        $predio->avaluo = $request->avaluo_edit;
+        $predio->tarifa_actual = str_replace(",", "", $request->tarifa_actual_edit);
+        $predio->avaluo = str_replace(",", "", $request->avaluo_edit);
         $predio->ultimo_anio_pago = $request->ultimo_anio_pago_edit;
         $query = $predio->save();
-        $tab_current = 'li-section-bar-2';
 
         if($query) {
-            return back()->with(['success' => 'La informaci&oacute;n se actualiz&oacute; satisfactoriamente.', 'tab_current' => $tab_current]);
+            $resolucion = new Resolucion();
+            $resolucion->numero_resolucion = $request->numero_resolucion;
+            $resolucion->fecha_resolucion = Carbon::createFromFormat("Y-m-d", $request->fecha_resolucion)->format('Y-m-d');
+            $resolucion->firma_resolucion = strtoupper($request->firma_resolucion);
+            $query = $resolucion->save();
+            if($query) {
+                $resolucion_predio = new ResolucionPredio();
+                $resolucion_predio->id_predio = $predio->id;
+                $resolucion_predio->id_resolucion = $resolucion->id;
+                $resolucion_predio->id_usuario = $request->session()->get('userid');
+                $resolucion_predio->descripcion = 'Actualización predio ' . $predio->codigo_predio;
+
+                $query = $resolucion_predio->save();
+                if($query) {
+                    return back()->with(['success' => 'La informaci&oacute;n se actualiz&oacute; satisfactoriamente.', 'tab_current' => $tab_current]);
+                }
+                else {
+                    $resolucion->delete();
+                    $query = $predio_tmp->save();
+                    return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n predio. Intente nuevamente.', 'tab_current' => $tab_current]);
+                }
+            }
+            else {
+                $query = $predio_tmp->save();
+                return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
+            }
         }
         else {
             return back()->with(['fail' => 'No se pudo actualizar la informaci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
@@ -234,6 +297,58 @@ class PrediosController extends Controller
         // else {
         //     return back()->with(['fail' => 'No se pudo eliminar la informaci&oacute;n. La clase de mutaci&oacute;n <b>' . $predio->nombre . ' (' . $predio->codigo . ')</b> ya posee informaci&oacute;n asociada.', 'tab_current' => $tab_current]);
         // }
+    }
+
+    /**
+     * Prescribe the specified resource from storage.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function prescribe(Request $request) {
+        if (!$request->session()->exists('userid')) {
+            return redirect('/');
+        }
+
+        $tab_current = 'li-section-bar-2';
+        $predio = new Predio();
+        $predio = Predio::find($request->input_prescribe);
+        $prescripcion_predio = new PrescripcionPredio();
+
+        $prescripcion_predio->id_predio = $predio->id;
+        $prescripcion_predio->prescibe_hasta = Carbon::createFromFormat("Y-m-d", $request->prescribe_hasta)->format('Y-m-d');;
+        $query = $prescripcion_predio->save();
+        if($query) {
+            $resolucion = new Resolucion();
+            $resolucion->numero_resolucion = $request->numero_resolucion;
+            $resolucion->fecha_resolucion = Carbon::createFromFormat("Y-m-d", $request->fecha_resolucion)->format('Y-m-d');
+            $resolucion->firma_resolucion = strtoupper($request->firma_resolucion);
+            $query = $resolucion->save();
+            if($query) {
+                $resolucion_predio = new ResolucionPredio();
+                $resolucion_predio->id_predio = $predio->id;
+                $resolucion_predio->id_resolucion = $resolucion->id;
+                $resolucion_predio->id_usuario = $request->session()->get('userid');
+                $resolucion_predio->descripcion = 'Prescripción predio ' . $predio->codigo_predio;
+
+                $query = $resolucion_predio->save();
+                if($query) {
+                    return back()->with(['success' => 'El predio se prescribio satisfactoriamente.', 'tab_current' => $tab_current]);
+                }
+                else {
+                    $resolucion->delete();
+                    $prescripcion_predio->delete();
+                    return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n predio. Intente nuevamente.', 'tab_current' => $tab_current]);
+                }
+            }
+            else {
+                $prescripcion_predio->delete();
+                return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
+            }
+        }
+        else {
+            return back()->with(['fail' => 'No se pudo prescribir el predio. Intente nuevamente.', 'tab_current' => $tab_current]);
+        }
     }
 
     public function store_predios_datos_basicos(Request $request) {

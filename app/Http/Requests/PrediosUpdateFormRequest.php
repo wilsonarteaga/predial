@@ -24,12 +24,12 @@ class PrediosUpdateFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'codigo_predio_edit'  => 'required|15o30', // unique:predios|
+            'codigo_predio_edit'  => 'required|15o25', // unique:predios|
             'tipo_edit'  => 'required|size:2',
             'sector_edit'  => 'required|size:2',
             'manzana_edit'  => 'required|size:4',
             'predio_edit'  => 'required|size:4',
-            'mejora_edit'  => 'required|size:3',
+            'mejora_edit'  => 'required|3o18',
             'id_zona_edit'  => 'required',
             'direccion_edit'  => 'required|max:128',
             'area_metros_edit'  => 'required',
@@ -46,7 +46,7 @@ class PrediosUpdateFormRequest extends FormRequest
         return [
             'codigo_predio_edit.required' => 'El campo codigo predio es obligatorio.',
             //'codigo_predio_edit.unique' => 'El codigo de predio ya esta registrado.',
-            'codigo_predio_edit.15o30' => 'El campo codigo predio debe contener 15 o 30 digitos.',
+            'codigo_predio_edit.15o25' => 'El campo codigo predio debe contener 15 o 25 digitos.',
             'tipo_edit.required' => 'El campo tipo es obligatorio.',
             'tipo_edit.size' => 'El campo tipo debe contener :size digitos.',
             'sector_edit.required' => 'El campo sector es obligatorio.',
@@ -56,7 +56,7 @@ class PrediosUpdateFormRequest extends FormRequest
             'predio_edit.required' => 'El campo predio es obligatorio.',
             'predio_edit.size' => 'El campo predio debe contener :size digitos.',
             'mejora_edit.required' => 'El campo mejora es obligatorio.',
-            'mejora_edit.size' => 'El campo mejora debe contener :size digitos.',
+            'mejora_edit.3o18' => 'El campo mejora debe contener 3 o 18 digitos.',
             'id_zona_edit.required'  => 'El campo zona es obligatorio.',
             'direccion_edit.required' => 'El campo direccion es obligatorio.',
             'area_metros_edit.required'  => 'El campo area metros es obligatorio.',

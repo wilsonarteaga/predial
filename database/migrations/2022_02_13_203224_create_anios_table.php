@@ -18,9 +18,11 @@ class CreateAniosTable extends Migration
             $table->smallInteger('anio');
             $table->unsignedBigInteger('id_estado');
             $table->smallInteger('meses_amnistia');
+            $table->unsignedBigInteger('id_tipo_tasa_interes');
             $table->timestamps();
 
             $table->foreign('id_estado')->references('id')->on('estados_anio');
+            $table->foreign('id_tipo_tasa_interes')->references('id')->on('tipos_tasas_interes');
 
             $table->unique('anio');
         });

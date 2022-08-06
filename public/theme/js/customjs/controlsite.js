@@ -100,6 +100,27 @@ $(document).ready(function() {
         });
     }
 
+    if ($('#btn_save_edit').length > 0) {
+        $('#btn_save_edit').off('click').on('click', function() {
+            var show_resoluciones_modal = false;
+            if ($('.resolucion_validate_field_level').length > 0) {
+                $.each($('.resolucion_validate_field_level'), function(i, el) {
+                    if ($('#' + $(el).attr('field')).attr('prev-val') !== $('#' + $(el).attr('field')).val()) {
+                        show_resoluciones_modal = true;
+                        return false;
+                    }
+                });
+            }
+            if (show_resoluciones_modal) {
+                $('#txt_operacion_resolucion').html('<span class="text-danger">Operaci&oacute;n:&nbsp;</span>Actualizaci&oacuten de predio');
+                global_form_to_send = 'update-form';
+                $('#modal-resolucion').modal('show');
+            } else {
+                $('#update-form').first().submit();
+            }
+        });
+    }
+
     if ($('#btn_cancel_edit').length > 0) {
         $('#btn_cancel_edit').off('click').on('click', function() {
             $('#div_edit_form').fadeOut(function() {
@@ -225,12 +246,22 @@ $(document).ready(function() {
         });
     }
 
+    if ($('.prescribe_row').length > 0) {
+        $('.prescribe_row').off('click').on('click', function(evt) {
+            var btn = $(this);
+            alert('Prescribe');
+        });
+    }
     if ($('.delete_row').length > 0) {
         $('.delete_row').off('click').on('click', function(evt) {
             var btn = $(this);
+            var msg = "¿Está seguro/a que desea eliminar el registro?";
+            if ($(btn).is('[msg]')) {
+                msg = $(btn).attr('msg');
+            }
             swal({
                 title: "Atención",
-                text: "¿Está seguro/a que desea eliminar el registro?",
+                text: msg,
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
@@ -242,6 +273,8 @@ $(document).ready(function() {
                 if (isConfirm) {
                     $('#input_delete').val($(btn).attr('ide'));
                     if ($(btn).attr('req_res') !== undefined) {
+                        $('#txt_operacion_resolucion').html('<span class="text-danger">Operaci&oacute;n:&nbsp;</span>Anulaci&oacuten de predio');
+                        global_form_to_send = 'form_delete';
                         $('#modal-resolucion').modal('show');
                     } else {
                         $('#form_delete').first().submit();
@@ -593,6 +626,7 @@ function setData(jsonObj) {
             if ($('#' + i + '_edit').length > 0) {
                 if ($('#' + i + '_edit').hasClass('selectpicker')) {
                     $('#' + i + '_edit').selectpicker('val', el);
+                    $('#' + i + '_edit').attr('prev-val', el);
                 } else {
                     if (el === '.00') {
                         if ($.inArray(i, arr_autonumeric) >= 0) {
@@ -600,11 +634,14 @@ function setData(jsonObj) {
                         } else {
                             $('#' + i + '_edit').val('0');
                         }
+                        $('#' + i + '_edit').attr('prev-val', '0');
                     } else {
                         if ($.inArray(i, arr_autonumeric) >= 0) {
                             AutoNumeric.set('#' + i + '_edit', Number(el));
+                            $('#' + i + '_edit').attr('prev-val', Number(el));
                         } else {
                             $('#' + i + '_edit').val(el);
+                            $('#' + i + '_edit').attr('prev-val', el);
                             if ($('#' + i + '_edit').is(':checkbox')) {
                                 if (Number(el) > 0) {
                                     if (!$('#' + i + '_edit').is(':checked')) {
@@ -659,20 +696,30 @@ function clear_form_elements(ele) {
             case 'radio':
                 this.checked = false;
         }
+
+        if ($('#' + $(this).attr('id') + '_edit').is('[prev-val]')) {
+            $('#' + $(this).attr('id') + '_edit').removeAttr('prev-val');
+        }
     });
 
     $.each(arr_autonumeric, function(i, el) {
-        if ($('#' + el).length > 0) {
+        if ($(ele).find('#' + el).length > 0) {
             AutoNumeric.set('#' + el, 0);
         }
-        if ($('#' + el + '_edit').length > 0) {
+        if ($(ele).find('#' + el + '_edit').length > 0) {
             AutoNumeric.set('#' + el + '_edit', 0);
+            if ($(ele).find('#' + el + '_edit').is('[prev-val]')) {
+                $(ele).find('#' + el + '_edit').removeAttr('prev-val');
+            }
         }
     });
 
     $.each($(ele).find('.selectpicker'), function(i, el) {
         $(el).selectpicker('val', '');
         $(el).selectpicker('refresh');
+        if ($('#' + $(el).attr('id') + '_edit').is('[prev-val]')) {
+            $('#' + $(el).attr('id') + '_edit').removeAttr('prev-val');
+        }
     });
     $.each($(ele).find('.selectpicker-noval'), function(i, el) {
         $(el).selectpicker('val', '');
@@ -725,9 +772,6 @@ function calcEditLabels() {
         $('#mejora_edit').val('');
         $('#span_mejora_edit').text('');
         $('#div_mejora_edit').css('opacity', 0);
-    }
-    if ($('#codigo_predio_edit').val() !== undefined && $('#codigo_predio_edit').val().length > 0) {
-        $('#codigo_predio_prev').val($('#codigo_predio_edit').val());
     }
 }
 

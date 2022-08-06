@@ -75,7 +75,7 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo predio:</label>
-                                                                <input type="text" id="codigo_predio" name="codigo_predio" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo predio" value="{{ old('codigo_predio') }}" maxlength="30">
+                                                                <input type="text" id="codigo_predio" name="codigo_predio" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo predio" value="{{ old('codigo_predio') }}" maxlength="25">
                                                                 <span class="text-danger">@error('codigo_predio') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -278,6 +278,7 @@
                                                         <tr>
                                                             <th class="cell_center" style="width: 7%;">C&oacute;digo predio</th>
                                                             <th class="cell_center" style="width: 7%;">Direcci&oacute;n</th>
+                                                            <th class="cell_center" style="width: 7%;">Propietario/s</th>
                                                             <th class="cell_center" style="width: 10%;">Acciones</th>
                                                         </tr>
                                                     </thead>
@@ -289,12 +290,15 @@
                                                                 <td class="cell_center edit_row">{{ $predio->tid_acu }}</td> --}}
                                                                 <td class="edit_row cell_center">{{ $predio->codigo_predio }}</td>
                                                                 <td class="edit_row cell_center">{{ $predio->direccion }}</td>
+                                                                <td class="edit_row cell_center">{!! $predio->propietarios !!}</td>
                                                                 {{-- <td class="cell_center edit_row">{{ $predio->tel_acu }}</td>
                                                                 <td class="edit_row">{{ $predio->dir_acu }}</td> --}}
                                                                 <td class="cell_center">
                                                                     <button type="button" ide="{{ $predio->id }}" class="modify_row btn btn-info" req_res="{{ $opcion->resolucion_edita }}"><i class="fa fa-pencil-square"></i></button>
                                                                     &nbsp;&nbsp;
-                                                                    <button type="button" ide="{{ $predio->id }}" class="delete_row btn btn-inverse" req_res="{{ $opcion->resolucion_elimina }}"><i class="fa fa-trash-o"></i></button>
+                                                                    <button type="button" ide="{{ $predio->id }}" class="prescribe_row btn btn-warning"><i class="fa fa-clock-o"></i></button>
+                                                                    &nbsp;&nbsp;
+                                                                    <button type="button" ide="{{ $predio->id }}" class="delete_row btn btn-inverse" req_res="{{ $opcion->resolucion_elimina }}" msg="¿Está seguro/a que desea anular el predio?"><i class="fa fa-trash-o"></i></button>
                                                                 </td>
                                                             </tr>
                                                             @endforeach
@@ -312,6 +316,10 @@
                                                     @csrf
                                                     <input type="hidden" id="input_delete" name="input_delete">
                                                 </form>
+                                                <form id="form_prescribe" action="{{ route('predios.prescribe_predios') }}" method="post" style="display: none;">
+                                                    @csrf
+                                                    <input type="hidden" id="input_prescribe" name="input_prescribe">
+                                                </form>
                                             @endif
                                         </div>
                                     </div>
@@ -320,6 +328,24 @@
                                     <div class="panel-heading"><i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Actualizar informaci&oacute;n del predio</div>
                                     <div class="panel-wrapper collapse in" aria-expanded="true">
                                         <div class="panel-body">
+                                            @if($opcion->resolucion_edita == 1)
+                                            {{--
+                                                Aqui se establecen todos los campos que se desee validar antes de enviar el formulario.
+                                                Esto aplica solo para los formularios que necesitan una resolucion para edicion.
+                                            --}}
+                                            {{-- Campos --}}
+                                            <input class="resolucion_validate_field_level" type="hidden" field="codigo_predio_edit" value="" />
+
+                                            {{--
+                                                Aqui se establece el id del formulario que se desea validar.
+                                                Esto aplica solo para los formularios que necesitan una resolucion para edicion.
+                                                Si se usa validacion de formulario no se deben usar campos aislados.
+                                                En caso de que se use validacion de campos y formulario, se ignora los campos aislados
+                                                y se hace una validcion completa del formulario.
+                                            --}}
+                                            {{-- Formulario --}}
+                                            {{-- <input class="resolucion_validate_form_level" type="hidden" field="update-form" value="" /> --}}
+                                            @endif
                                             <form action="{{ route('predios.update_predios') }}" method="post" id="update-form">
                                                 @csrf
 
@@ -329,8 +355,7 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo predio:</label>
-                                                                <input type="hidden" id="codigo_predio_prev" name="codigo_predio_prev" value="" />
-                                                                <input type="text" id="codigo_predio_edit" name="codigo_predio_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo predio" value="{{ old('codigo_predio_edit') }}" maxlength="30">
+                                                                <input type="text" id="codigo_predio_edit" name="codigo_predio_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo predio" value="{{ old('codigo_predio_edit') }}" maxlength="25">
                                                                 <span class="text-danger">@error('codigo_predio_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -499,7 +524,7 @@
                                                     </div> --}}
                                                 </div>
                                                 <div class="form-actions m-t-20">
-                                                    <button type="submit" class="btn btn-info"> <i class="fa fa-save"></i> Actualizar informaci&oacute;n</button>
+                                                    <button id="btn_save_edit" type="button" class="btn btn-info"> <i class="fa fa-save"></i> Actualizar informaci&oacute;n</button>
                                                     <button id="btn_cancel_edit" type="button" class="btn btn-default"> <i class="fa fa-thumbs-down"></i> Cancelar</button>
                                                 </div>
                                             </form>

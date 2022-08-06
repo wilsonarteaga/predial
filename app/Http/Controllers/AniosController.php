@@ -38,6 +38,7 @@ class AniosController extends Controller
                 ->get(); //paginate(5);
 
         $estados_anio = DB::table('estados_anio')->get();
+        $tipos_tasas = DB::table('tipos_tasas_interes')->get();
 
         $tab_current = 'li-section-bar-1';
         if ($request->has('page')) {
@@ -49,6 +50,7 @@ class AniosController extends Controller
         return view('anios.create', ['opcion' => $opcion,
                                      'anios' => $anios,
                                      'estados_anio' => $estados_anio,
+                                     'tipos_tasas' => $tipos_tasas,
                                      'tab_current' => $tab_current]);
     }
 
@@ -67,6 +69,7 @@ class AniosController extends Controller
         $anio->anio = $request->anio;
         $anio->id_estado = $request->id_estado;
         $anio->meses_amnistia = $request->meses_amnistia;
+        $anio->id_tipo_tasa_interes = $request->id_tipo_tasa_interes;
         $query = $anio->save();
         $tab_current = 'li-section-bar-1';
 
@@ -116,6 +119,7 @@ class AniosController extends Controller
         //$anio->anio = $request->anio_edit;
         $anio->id_estado = $request->id_estado_edit;
         $anio->meses_amnistia = $request->meses_amnistia_edit;
+        $anio->id_tipo_tasa_interes = $request->id_tipo_tasa_interes_edit;
         $query = $anio->save();
         $tab_current = 'li-section-bar-2';
 

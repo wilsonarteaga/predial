@@ -204,6 +204,7 @@ Route::get('registro_predios', [ErrorRequestController::class, 'error_request'])
 Route::post('create_predios', [PrediosController::class, 'store'])->name('predios.create_predios')->middleware('checkdb');
 Route::post('update_predios', [PrediosController::class, 'update'])->name('predios.update_predios')->middleware('checkdb');
 Route::post('delete_predios', [PrediosController::class, 'destroy'])->name('predios.delete_predios')->middleware('checkdb');
+Route::post('prescribe_predios', [PrediosController::class, 'prescribe'])->name('predios.prescribe_predios')->middleware('checkdb');
 
 Route::get('/show/predios_datos', [PrediosController::class, 'show_predios_datos']);
 

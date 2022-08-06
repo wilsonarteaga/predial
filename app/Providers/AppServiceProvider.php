@@ -25,8 +25,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Validator::extend('15o30', function ($attribute, $value, $parameters, $validator) {
-            return strlen($value) == 15 || strlen($value) == 30;
+        Validator::extend('15o25', function ($attribute, $value, $parameters, $validator) {
+            return strlen($value) == 15 || strlen($value) == 25;
+        });
+
+        Validator::extend('3o18', function ($attribute, $value, $parameters, $validator) {
+            return strlen($value) == 3 || strlen($value) == 18;
         });
 
         Blade::directive('money', function ($amount) {
