@@ -334,7 +334,7 @@
                                                 Esto aplica solo para los formularios que necesitan una resolucion para edicion.
                                             --}}
                                             {{-- Campos --}}
-                                            <input class="resolucion_validate_field_level" type="hidden" field="codigo_predio_edit" value="" />
+                                            {{-- <input class="resolucion_validate_field_level" type="hidden" field="codigo_predio_edit" value="" /> --}}
 
                                             {{--
                                                 Aqui se establece el id del formulario que se desea validar.
@@ -344,7 +344,7 @@
                                                 y se hace una validcion completa del formulario.
                                             --}}
                                             {{-- Formulario --}}
-                                            {{-- <input class="resolucion_validate_form_level" type="hidden" field="update-form" value="" /> --}}
+                                            <input class="resolucion_validate_form_level" type="hidden" value="update-form" />
                                             @endif
                                             <form action="{{ route('predios.update_predios') }}" method="post" id="update-form">
                                                 @csrf
@@ -355,10 +355,11 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo predio:</label>
-                                                                <input type="text" id="codigo_predio_edit" name="codigo_predio_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo predio" value="{{ old('codigo_predio_edit') }}" maxlength="25">
+                                                                <input type="text" id="codigo_predio_edit" name="codigo_predio_edit" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="Ingrese c&oacute;digo predio" value="{{ old('codigo_predio_edit') }}" maxlength="25">
                                                                 <span class="text-danger">@error('codigo_predio_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
+
                                                         <div id="div_tipo_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6" style="opacity: 0;">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tipo:</label>
@@ -368,6 +369,7 @@
                                                                 <span class="text-danger">@error('tipo_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
+
                                                         <div id="div_sector_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6" style="opacity: 0;">
                                                             <div class="form-group">
                                                                 <label class="control-label">Sector:</label>
@@ -408,11 +410,12 @@
                                                             </div>
                                                         </div>
                                                     </div>
+
                                                     <div class="row">
                                                         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Zona:</label>
-                                                                <select id="id_zona_edit" name="id_zona_edit" class="form-control selectpicker show-tick" data-live-search="true" title="Seleccione...">
+                                                                <select id="id_zona_edit" name="id_zona_edit" class="form-control selectpicker show-tick res-validate" data-live-search="true" title="Seleccione...">
                                                                     @if(count($zonas) > 0)
                                                                         @foreach($zonas as $zona)
                                                                         <option value="{{ $zona->id }}" {{ old('id_zona_edit') == $zona->id ? 'selected' : '' }}>{{ $zona->descripcion }}</option>
@@ -431,7 +434,7 @@
                                                         <div class="col-lg-10 col-md-10 col-sm-9 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Direcci&oacute;n:</label>
-                                                                <input type="text" id="direccion_edit" name="direccion_edit" class="form-control" autocomplete="off" placeholder="Ingrese direcci&oacute;n" value="{{ old('direccion_edit') }}" maxlength="128">
+                                                                <input type="text" id="direccion_edit" name="direccion_edit" class="form-control res-validate" autocomplete="off" placeholder="Ingrese direcci&oacute;n" value="{{ old('direccion_edit') }}" maxlength="128">
                                                                 <span class="text-danger">@error('direccion_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -441,28 +444,28 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">&Aacute;rea metros:</label>
-                                                                <input type="text" id="area_metros_edit" name="area_metros_edit" class="form-control" autocomplete="off" placeholder="Ingrese &aacute;rea metros" value="{{ old('area_metros_edit') }}">
+                                                                <input type="text" id="area_metros_edit" name="area_metros_edit" class="form-control res-validate" autocomplete="off" placeholder="Ingrese &aacute;rea metros" value="{{ old('area_metros_edit') }}">
                                                                 <span class="text-danger">@error('area_metros_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">&Aacute;rea construida:</label>
-                                                                <input type="text" id="area_construida_edit" name="area_construida_edit" class="form-control" autocomplete="off" placeholder="Ingrese &aacute;rea construida" value="{{ old('area_construida_edit') }}">
+                                                                <input type="text" id="area_construida_edit" name="area_construida_edit" class="form-control res-validate" autocomplete="off" placeholder="Ingrese &aacute;rea construida" value="{{ old('area_construida_edit') }}">
                                                                 <span class="text-danger">@error('area_construida_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">&Aacute;rea hect&aacute;reas:</label>
-                                                                <input type="text" id="area_hectareas_edit" name="area_hectareas_edit" class="form-control" autocomplete="off" placeholder="Ingrese &aacute;rea hect&aacute;reas" value="{{ old('area_hectareas_edit') }}">
+                                                                <input type="text" id="area_hectareas_edit" name="area_hectareas_edit" class="form-control res-validate" autocomplete="off" placeholder="Ingrese &aacute;rea hect&aacute;reas" value="{{ old('area_hectareas_edit') }}">
                                                                 <span class="text-danger">@error('area_hectareas_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tarifa actual:</label>
-                                                                <input type="text" id="tarifa_actual_edit" name="tarifa_actual_edit" class="form-control" autocomplete="off" placeholder="Ingrese tarifa actual" value="{{ old('tarifa_actual_edit') }}">
+                                                                <input type="text" id="tarifa_actual_edit" name="tarifa_actual_edit" class="form-control res-validate" autocomplete="off" placeholder="Ingrese tarifa actual" value="{{ old('tarifa_actual_edit') }}">
                                                                 <span class="text-danger">@error('tarifa_actual_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -472,14 +475,14 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Aval&uacute;o:</label>
-                                                                <input type="text" id="avaluo_edit" name="avaluo_edit" class="form-control" autocomplete="off" placeholder="Ingrese aval&uacute;o" value="{{ old('avaluo_edit') }}">
+                                                                <input type="text" id="avaluo_edit" name="avaluo_edit" class="form-control res-validate" autocomplete="off" placeholder="Ingrese aval&uacute;o" value="{{ old('avaluo_edit') }}">
                                                                 <span class="text-danger">@error('avaluo_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">&Uacute;ltimo a&ntilde;o pago:</label>
-                                                                <input type="text" id="ultimo_anio_pago_edit" name="ultimo_anio_pago_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('ultimo_anio_pago_edit') }}" maxlength="4">
+                                                                <input type="text" id="ultimo_anio_pago_edit" name="ultimo_anio_pago_edit" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('ultimo_anio_pago_edit') }}" maxlength="4">
                                                                 <span class="text-danger">@error('ultimo_anio_pago_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -557,7 +560,7 @@
                                                                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                                         <div class="form-group">
                                                                             <label class="control-label">&Uacute;ltimo a&ntilde;o pago:</label>
-                                                                            <input type="text" id="ultimo_anio_pago" name="ultimo_anio_pago" class="form-control onlyNumbers" autocomplete="off" placeholder="-" value="" maxlength="4" readonly="readonly">
+                                                                            <input type="text" id="ultimo_anio" name="ultimo_anio" class="form-control onlyNumbers" autocomplete="off" placeholder="-" value="" maxlength="4" readonly="readonly">
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -929,7 +932,7 @@
                                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">&Uacute;ltimo a&ntilde;o pago:</label>
-                                            <input type="text" id="ultimo_anio_pago" name="ultimo_anio_pago" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese ultimo a&ntilde;o pago" value="{{ old('ultimo_anio_pago') }}" maxlength="4">
+                                            <input type="text" id="ultimo_anio" name="ultimo_anio" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese ultimo a&ntilde;o pago" value="{{ old('ultimo_anio') }}" maxlength="4">
                                         </div>
                                     </div>
                                 </div>

@@ -103,11 +103,35 @@ $(document).ready(function() {
     if ($('#btn_save_edit').length > 0) {
         $('#btn_save_edit').off('click').on('click', function() {
             var show_resoluciones_modal = false;
-            if ($('.resolucion_validate_field_level').length > 0) {
+            if ($('.resolucion_validate_field_level').length > 0) { // Validacion a nivel de campos individuales
                 $.each($('.resolucion_validate_field_level'), function(i, el) {
                     if ($('#' + $(el).attr('field')).attr('prev-val') !== $('#' + $(el).attr('field')).val()) {
                         show_resoluciones_modal = true;
                         return false;
+                    }
+                });
+            } else if ($('.resolucion_validate_form_level').length > 0) { // Validacion a nivel de formulario
+                $.each($('.res-validate'), function(i, el) {
+                    if (!$(el).is("div")) {
+                        if (!$(el).hasClass('selectpicker')) {
+                            console.log('************* ', $(el).attr('id'));
+                            console.log('************* ', $.inArray($(el).attr('id').replace('_edit', ''), arr_autonumeric));
+                            if ($.inArray($(el).attr('id').replace('_edit', ''), arr_autonumeric) >= 0) {
+                                if (Number($(el).attr('prev-val')) !== AutoNumeric.getNumber('#' + $(el).attr('id'))) {
+                                    show_resoluciones_modal = true;
+                                    return false;
+                                }
+
+                            } else if ($(el).attr('prev-val') !== $(el).val()) {
+                                show_resoluciones_modal = true;
+                                return false;
+                            }
+                        } else {
+                            if ($(el).attr('prev-val') !== $(el).selectpicker('val')) {
+                                show_resoluciones_modal = true;
+                                return false;
+                            }
+                        }
                     }
                 });
             }
@@ -116,7 +140,10 @@ $(document).ready(function() {
                 global_form_to_send = 'update-form';
                 $('#modal-resolucion').modal('show');
             } else {
-                $('#update-form').first().submit();
+                if ($('.resolucion_validate_field_level').length === 0 && $('.resolucion_validate_form_level').length === 0) {
+                    $('#update-form').first().submit();
+                }
+                console.log('Todo igual');
             }
         });
     }

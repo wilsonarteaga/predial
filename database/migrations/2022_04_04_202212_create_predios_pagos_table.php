@@ -16,7 +16,7 @@ class CreatePrediosPagosTable extends Migration
         Schema::create('predios_pagos', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_predio');
-            $table->smallInteger('ultimo_anio_pago');
+            $table->smallInteger('ultimo_anio');
             $table->decimal('valor_pago', $precision = 20, $scale = 2);
             $table->date('fecha_pago');
             $table->string('factura_pago', 15);
