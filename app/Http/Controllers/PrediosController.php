@@ -50,8 +50,6 @@ class PrediosController extends Controller
                     ->where('estado', 1)
                     ->get(); //paginate(5);
 
-        //dd($predios);
-
         $propietarios = DB::table('predios')->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
                                      ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
                                      ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
