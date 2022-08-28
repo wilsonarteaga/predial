@@ -273,12 +273,6 @@ $(document).ready(function() {
         });
     }
 
-    if ($('.prescribe_row').length > 0) {
-        $('.prescribe_row').off('click').on('click', function(evt) {
-            var btn = $(this);
-            alert('Prescribe');
-        });
-    }
     if ($('.delete_row').length > 0) {
         $('.delete_row').off('click').on('click', function(evt) {
             var btn = $(this);

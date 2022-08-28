@@ -288,7 +288,12 @@
                                                             <tr style="cursor: pointer;" id="tr_predio_{{ $predio->id }}" json-data='@json($predio)'>
                                                                 {{-- <td class="cell_center edit_row">{{ $predio->ide_acu }}</td>
                                                                 <td class="cell_center edit_row">{{ $predio->tid_acu }}</td> --}}
-                                                                <td class="edit_row cell_center">{{ $predio->codigo_predio }}</td>
+                                                                <td class="edit_row cell_center">
+                                                                    {{ $predio->codigo_predio }}
+                                                                    {{-- @if($predio->prescrito > 0)
+                                                                    &nbsp;&nbsp;<span class="tips" style="color: #25ca59;" title="Prescrito hasta {{ $predio->prescribe_hasta }}"><i class="fa fa-info-circle"></i></span>
+                                                                    @endif --}}
+                                                                </td>
                                                                 <td class="edit_row cell_center">{{ $predio->direccion }}</td>
                                                                 <td class="edit_row cell_center">{!! $predio->propietarios !!}</td>
                                                                 {{-- <td class="cell_center edit_row">{{ $predio->tel_acu }}</td>
@@ -296,9 +301,13 @@
                                                                 <td class="cell_center">
                                                                     <button type="button" ide="{{ $predio->id }}" class="modify_row btn btn-info" req_res="{{ $opcion->resolucion_edita }}"><i class="fa fa-pencil-square"></i></button>
                                                                     &nbsp;&nbsp;
-                                                                    <button type="button" ide="{{ $predio->id }}" class="prescribe_row btn btn-warning"><i class="fa fa-clock-o"></i></button>
+                                                                    <button type="button" ide="{{ $predio->id }}" class="prescribe_row btn {{ $predio->prescrito > 0 ? 'btn-default tips' : 'btn-warning' }}" {{ $predio->prescrito > 0 ? 'disabled="disabled"' : '' }}><i class="fa fa-clock-o"></i></button>
                                                                     &nbsp;&nbsp;
                                                                     <button type="button" ide="{{ $predio->id }}" class="delete_row btn btn-inverse" req_res="{{ $opcion->resolucion_elimina }}" msg="¿Está seguro/a que desea anular el predio?"><i class="fa fa-trash-o"></i></button>
+                                                                    @if($predio->prescrito > 0)
+                                                                    <br />
+                                                                    <code><mark class="text-danger" style="font-weight: bold;">Prescrito hasta {{ $predio->prescribe_hasta }}</mark></code>
+                                                                    @endif
                                                                 </td>
                                                             </tr>
                                                             @endforeach
@@ -648,6 +657,39 @@
 @endsection
 
 @section('modales')
+<div id="modal-prescripciones" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-prescripciones-label" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                {{-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> --}}
+                <h4 class="modal-title" id="modal-prescripciones-label">Prescribir predio</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12">
+                        <form id="form-predios-prescripcion">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <label class="control-label">Prescripci&oacute;n hasta...</label>
+                                            <input type="text" id="prescribe_hasta_modal" name="prescribe_hasta_modal" class="form-control onlyNumbers input-center" autocomplete="off" placeholder="A&ntilde;o" value="{{ old('prescribe_hasta_modal') }}" maxlength="4" style="font-size: 30px; font-weight: bold; height: auto;">
+                                            {{-- <span class="text-danger">@error('prescribe_hasta_modal') {{ $message }} @enderror</span> --}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save_prescripcion" type="button" class="btn btn-info"> <i class="fa fa-save"></i> Prescribir</button>
+                <button type="button" class="btn btn-default waves-effect text-left" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="modal-datos-basicos" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-datos-basicos-label" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

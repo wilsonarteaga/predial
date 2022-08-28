@@ -46,11 +46,14 @@ class PrediosController extends Controller
         $predios = DB::table('predios')->join('zonas', function ($join) {
                         $join->on('predios.id_zona', '=', 'zonas.id');
                     })
-                    ->select('predios.*', 'zonas.descripcion')
+                    ->leftJoin('prescripciones_predios', 'predios.id', '=', 'prescripciones_predios.id_predio')
+                    //->select('predios.*', 'zonas.descripcion')
+                    ->select(DB::raw('predios.*, zonas.descripcion, COALESCE(prescripciones_predios.id_predio, 0) AS prescrito, prescripciones_predios.prescribe_hasta'))
                     ->where('estado', 1)
                     ->get(); //paginate(5);
-
-        $propietarios = DB::table('predios')->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+        //dd($predios);
+        $propietarios = DB::table('predios')
+                                     ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
                                      ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
                                      ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
                 ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(CONCAT(propietarios.nombre, \' - \', propietarios.identificacion), \'<br />\') AS propietarios'))
@@ -316,7 +319,7 @@ class PrediosController extends Controller
         $prescripcion_predio = new PrescripcionPredio();
 
         $prescripcion_predio->id_predio = $predio->id;
-        $prescripcion_predio->prescibe_hasta = Carbon::createFromFormat("Y-m-d", $request->prescribe_hasta)->format('Y-m-d');;
+        $prescripcion_predio->prescribe_hasta = $request->prescribe_hasta;
         $query = $prescripcion_predio->save();
         if($query) {
             $resolucion = new Resolucion();
