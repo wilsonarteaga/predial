@@ -70,7 +70,7 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label class="control-label">Año</label>
-                                                                <input type="text" id="ano" name="ano" class="form-control uppercase" autocomplete="off" placeholder="Ingrese Año" value="{{ old('ano') }}" maxlength="10">
+                                                                <input type="text" id="ano" name="ano" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese Año" value="{{ old('ano') }}" maxlength="4">
                                                                 <span class="text-danger">@error('ano') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -84,7 +84,7 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label class="control-label">Fecha</label>
-                                                                <input type="text" id="fecha" name="fecha" class="form-control" autocomplete="off" placeholder="Ingrese fecha" value="{{ old('fecha') }}" maxlength="30">
+                                                                <input type="text" id="fecha" name="fecha" class="form-control datepicker" autocomplete="off" placeholder="Ingrese fecha" value="{{ old('fecha') }}" maxlength="30">
                                                                 <span class="text-danger">@error('fecha') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -158,9 +158,9 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                        
 
-                                                      
+
+
                                                 </div>
                                                 <div class="form-actions m-t-20">
                                                     <button type="submit" class="btn btn-info"> <i class="fa fa-save"></i> Guardar informaci&oacute;n</button>
@@ -211,7 +211,7 @@
                                                         @if(count($resoluciones_igac) > 0)
                                                             @foreach($resoluciones_igac as $resoluciones_igac)
                                                             <tr style="cursor: pointer;" json-data='@json($resoluciones_igac)'>
-                                                                <td class="cell_center edit_row">{{ $resoluciones_igac->ano }}</td> 
+                                                                <td class="cell_center edit_row">{{ $resoluciones_igac->ano }}</td>
                                                                 <td class="cell_center edit_row">{{ $resoluciones_igac->resolucion }}</td> --}}
                                                                 <td class="edit_row cell_center">{{ $resoluciones_igac->fecha }}</td>
                                                                 <td class="edit_row">{{ $resoluciones_igac->consecutivo }}</td>
@@ -253,7 +253,7 @@
                                     <div class="panel-wrapper collapse in" aria-expanded="true">
                                         <div class="panel-body">
                                             <form action="{{ route('resoluciones_igac.update_resoluciones_igac') }}" method="post" id="update-form">
-                                            
+
 
                                                 <div class="form-body">
                                                     <input type="hidden" id="id_edit" name="id_edit" value="{{ old('id_edit') }}">

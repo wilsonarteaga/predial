@@ -10,7 +10,10 @@
     <script src="{!! asset('theme/js/accounting.min.js') !!}"></script>
     <script src="{!! asset('theme/js/autonumeric.min.js') !!}"></script>
     <script src="{!! asset('theme/plugins/bower_components/jquery.serializeJSON/jquery.serializejson.min.js') !!}"></script>
+    <script src="{!! asset('theme/plugins/bower_components/jquery-validation-1.19.5/jquery.validate.min.js') !!}"></script>
+            <div class="modal-header">
     <script src="{!! asset('theme/js/customjs/controlsite.js') !!}"></script>
+   <script src="{!! asset('theme/js/customjs/pagos.js') !!}"></script>
     {{-- <script src="{!! asset('theme/js/customjs/pagos_forms.js') !!}"></script> --}}
 @endpush
 @if(Session::get('tab_current'))
@@ -192,40 +195,37 @@
                                                     @endif
                                                 </div>
                                                 <h2>Lista de pagos</h2>
-                                                <table id="myTable" class="table table-hover table-striped table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="cell_center" style="width: 7%;">N&uacute;mero recibo</th>
-                                                            <th class="cell_center" style="width: 7%;">Valor facturado</th>
-                                                            <th class="cell_center" style="width: 7%;">A&ntilde;o pago</th>
-                                                            <th class="cell_center" style="width: 7%;">Fecha factura</th>
-                                                            <th class="cell_center" style="width: 7%;">Banco</th>
-                                                            <th class="cell_center" style="width: 10%;">Acciones</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @if(count($pagos) > 0)
-                                                            @foreach($pagos as $pago)
-                                                            <tr style="cursor: pointer;" id="tr_pago_{{ $pago->id }}" json-data='@json($pago)'>
-                                                                <td class="cell_center edit_row">{{ $pago->numero_recibo }}</td>
-                                                                <td class="cell_center edit_row">@money($pago->valor_facturado)</td>
-                                                                <td class="edit_row cell_center">{{ $pago->anio_pago }}</td>
-                                                                <td class="edit_row cell_center">{{ $pago->fecha_factura }}</td>
-                                                                <td class="cell_center edit_row">{{ $pago->banco }}</td>
-                                                                {{-- <td class="edit_row">{{ $pago->dir_acu }}</td> --}}
-                                                                <td class="cell_center">
-                                                                    <button type="button" ide="{{ $pago->id }}" class="modify_row btn btn-info"><i class="fa fa-pencil-square"></i></button>
-                                                                    &nbsp;&nbsp;
-                                                                    <button type="button" ide="{{ $pago->id }}" class="delete_row btn btn-inverse"><i class="fa fa-trash-o"></i></button>
-                                                                </td>
-                                                            </tr>
-                                                            @endforeach
-                                                        {{-- @else
-                                                        <tr>
-                                                            <td colspan="7">No hay informaci&oacute;n para mostrar</td>
-                                                        </tr> --}}
-                                                        @endif
-                                                    </tbody>
+                                                <form id="pagos-filtro-form">
+                                                    <div class="row">
+                                                        <div class="col-lg-3 col-md-3 col-sm-5 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Seleccione fecha pago:</label>
+                                                                <input type="text" id="fecha_pago_listar" name="fecha_pago_listar" class="form-control datepicker" autocomplete="off" placeholder="Selecione  fecha pago" value="{{ old('fecha_pago_listar') }}">
+                                                                {{-- <span class="text-danger">@error('fecha_pago_listar') {{ $message }} @enderror</span> --}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-6 col-sm-7 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Seleccione banco:</label>
+                                                                <select id="id_banco" name="id_banco" class="form-control selectpicker-noval show-tick" data-live-search="true" title="Sin informaci&oacute;n...">
+                                                                    @if(count($bancos) > 0)
+                                                                        @foreach($bancos as $banco)
+                                                                        <option value="{{ $banco->id }}" {{ old('id_banco') == $banco->id ? 'selected' : '' }}>{{ $banco->codigo }} - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>
+                                                                        @endforeach
+                                                                    @endif
+                                                                </select>
+                                                                {{-- <span class="text-danger">@error('id_banco') {{ $message }} @enderror</span> --}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label" style="display: block;"><br /></label>
+                                                                <button type="button"  id="btn_buscar_pagos" class="btn btn-info"><i class="fa fa-save"></i> Filtrar pagos</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                <table id="pagosTable" class="table table-hover table-striped table-bordered">
                                                 </table>
                                                 {{-- <div class="pagination-blobk">
                                                     {{ $pagos->links('layouts.paginationlinks') }}

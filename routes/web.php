@@ -197,6 +197,9 @@ Route::post('create_pagos', [PagosController::class, 'store'])->name('pagos.crea
 Route::post('update_pagos', [PagosController::class, 'update'])->name('pagos.update_pagos')->middleware('checkdb');
 Route::post('delete_pagos', [PagosController::class, 'destroy'])->name('pagos.delete_pagos')->middleware('checkdb');
 
+//lista de pagos
+Route::post('/list/pagos_fecha', [PagosController::class, 'list_pagos_fecha']);
+
 //PrediosController
 Route::get('registro_predios/{id}', [PrediosController::class, 'create'])->middleware('checkdb');
 Route::get('registro_predios', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');

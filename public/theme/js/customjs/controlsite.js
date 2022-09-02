@@ -1,7 +1,7 @@
 var global_json = null;
 var arr_autonumeric = ['porcentaje', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
     'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_pago', 'valor_abono',
-    'valor_facturado'
+    'valor_facturado', 'avaluoigac', 'area'
 ];
 var ROOT_URL = window.location.protocol + "//" + window.location.host;
 $(document).ready(function() {
@@ -20,6 +20,14 @@ $(document).ready(function() {
                 if ($('#codigo_predio').length > 0) {
                     $('.buttonTareas').css('display', 'none');
                     $('.span_predio').html('');
+                }
+
+                if ($("#pagosTable").length > 0) {
+                    if (DTPagos !== null) {
+                        DTPagos.clear().draw();
+                        $("#pagos-filtro-form")[0].reset();
+                        clear_form_elements("#pagos-filtro-form");
+                    }
                 }
                 $('.result').empty();
                 if ($('#tab').length > 0) {
@@ -114,8 +122,8 @@ $(document).ready(function() {
                 $.each($('.res-validate'), function(i, el) {
                     if (!$(el).is("div")) {
                         if (!$(el).hasClass('selectpicker')) {
-                            console.log('************* ', $(el).attr('id'));
-                            console.log('************* ', $.inArray($(el).attr('id').replace('_edit', ''), arr_autonumeric));
+                            //console.log('************* ', $(el).attr('id'));
+                            //console.log('************* ', $.inArray($(el).attr('id').replace('_edit', ''), arr_autonumeric));
                             if ($.inArray($(el).attr('id').replace('_edit', ''), arr_autonumeric) >= 0) {
                                 if (Number($(el).attr('prev-val')) !== AutoNumeric.getNumber('#' + $(el).attr('id'))) {
                                     show_resoluciones_modal = true;
@@ -642,6 +650,8 @@ $(document).ready(function() {
 });
 
 function setData(jsonObj) {
+    console.log(jsonObj);
+
     $('#div_table').fadeOut(function() {
         $.each(jsonObj, function(i, el) {
             if ($('#' + i + '_edit').length > 0) {
@@ -697,6 +707,14 @@ function setData(jsonObj) {
         $('#div_edit_form').fadeIn();
 
         if ($('#codigo_predio').length > 0) {
+            if(jsonObj.prescrito > 0) {
+                $('#span_prescribe_hasta').html(jsonObj.prescribe_hasta);
+                $('#span_prescribe_hasta').parent().fadeIn();
+            }
+            else {
+                $('#span_prescribe_hasta').empty();
+                $('#span_prescribe_hasta').parent().fadeOut();
+            }
             addButtonsPredios();
         }
 

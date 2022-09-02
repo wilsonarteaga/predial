@@ -9,6 +9,8 @@ use App\Http\Requests\PagosUpdateFormRequest;
 use App\Models\Pago;
 use App\Models\Opcion;
 
+use Carbon\Carbon;
+
 class PagosController extends Controller
 {
     /**
@@ -46,12 +48,22 @@ class PagosController extends Controller
                 ->select('pagos.*', 'bancos.nombre as banco')
                 ->get();
 
+        //dd($pagos);
+        // $pagos = DB::table('pagos')->join('bancos', function ($join) use($request){
+        //             $join->on('pagos.id_banco_factura', '=', 'bancos.id')
+        //            ->where ('pagos.fecha_pago','=',$request->fecha_pago)
+        //            ->where('pagos.id_banco_factura','=',$request->id_banco);
+        //         })
+        //         ->select('pagos.*', 'bancos.nombre as banco')
+        //         ->get();
+
         $tab_current = 'li-section-bar-1';
         if ($request->has('page')) {
             $tab_current = 'li-section-bar-2';
         }
 
-        //$request->session()->put('search', '1');
+         //$request->session()->put('search', '1');
+
 
         return view('pagos.create', ['opcion' => $opcion,
                                     'pagos' => $pagos,
@@ -181,6 +193,21 @@ class PagosController extends Controller
         // else {
         //     return back()->with(['fail' => 'No se pudo eliminar la informaci&oacute;n. La clase de mutaci&oacute;n <b>' . $pago->nombre . ' (' . $pago->codigo . ')</b> ya posee informaci&oacute;n asociada.', 'tab_current' => $tab_current]);
         // }
+    }
+
+    public function list_pagos_fecha(Request $request) {
+        $pagos = DB::table('pagos')->join('bancos', function ($join) {
+                            $join->on('pagos.id_banco_factura', '=', 'bancos.id');
+                        })
+                        ->where('fecha_pago', Carbon::createFromFormat("Y-m-d", $request->fecha_pago)->format('Y-m-d'))
+                        ->where('id_banco_factura', $request->id_banco_factura)
+                        ->select('pagos.*', 'bancos.nombre as banco')
+                        ->orderBy('fecha_pago', 'asc')
+                        ->get();
+
+        return response()->json([
+            'pagos' => $pagos
+        ]);
     }
 
     /**

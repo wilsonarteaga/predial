@@ -35,6 +35,7 @@ $(document).ready(function() {
                 var input_prescribe_hasta = $('<input class="datohidden" id="prescribe_hasta" name="prescribe_hasta" type="hidden" value="' + $('#prescribe_hasta_modal').val() + '"  />');
                 $('#' + global_form_to_send).prepend(input_prescribe_hasta);
                 $('#modal-resolucion').modal('show');
+                $('#modal-prescripciones').modal('hide');
             }
         });
 

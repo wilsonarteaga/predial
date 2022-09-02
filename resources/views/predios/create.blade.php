@@ -290,8 +290,12 @@
                                                                 <td class="cell_center edit_row">{{ $predio->tid_acu }}</td> --}}
                                                                 <td class="edit_row cell_center">
                                                                     {{ $predio->codigo_predio }}
-                                                                    {{-- @if($predio->prescrito > 0)
+                                                                    @if($predio->prescrito > 0)
                                                                     &nbsp;&nbsp;<span class="tips" style="color: #25ca59;" title="Prescrito hasta {{ $predio->prescribe_hasta }}"><i class="fa fa-info-circle"></i></span>
+                                                                    @endif
+                                                                    {{-- @if($predio->prescrito > 0)
+                                                                    <br />
+                                                                    <small class="text-danger" style="font-weight: bold;">Prescrito hasta {{ $predio->prescribe_hasta }}</small>
                                                                     @endif --}}
                                                                 </td>
                                                                 <td class="edit_row cell_center">{{ $predio->direccion }}</td>
@@ -303,11 +307,9 @@
                                                                     &nbsp;&nbsp;
                                                                     <button type="button" ide="{{ $predio->id }}" class="prescribe_row btn {{ $predio->prescrito > 0 ? 'btn-default tips' : 'btn-warning' }}" {{ $predio->prescrito > 0 ? 'disabled="disabled"' : '' }}><i class="fa fa-clock-o"></i></button>
                                                                     &nbsp;&nbsp;
+                                                                    <button type="button" ide="{{ $predio->id }}" class="btn btn-success" msg="¿Está seguro/a que desea ejecutar el cálculo?"><i class="fa fa-cogs"></i></button>
+                                                                    &nbsp;&nbsp;
                                                                     <button type="button" ide="{{ $predio->id }}" class="delete_row btn btn-inverse" req_res="{{ $opcion->resolucion_elimina }}" msg="¿Está seguro/a que desea anular el predio?"><i class="fa fa-trash-o"></i></button>
-                                                                    @if($predio->prescrito > 0)
-                                                                    <br />
-                                                                    <code><mark class="text-danger" style="font-weight: bold;">Prescrito hasta {{ $predio->prescribe_hasta }}</mark></code>
-                                                                    @endif
                                                                 </td>
                                                             </tr>
                                                             @endforeach
@@ -334,7 +336,10 @@
                                     </div>
                                 </div>
                                 <div id="div_edit_form" class="panel panel-info" style="display: none; margin-bottom: 0px">
-                                    <div class="panel-heading"><i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Actualizar informaci&oacute;n del predio</div>
+                                    <div class="panel-heading">
+                                        <i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Actualizar informaci&oacute;n del predio
+                                        <small class="text-danger pull-right" style="font-weight: bold; text-decoration: blink; display: none; color: #000; font-size: 20px;">Predio prescrito hasta <span id="span_prescribe_hasta"></span></small>
+                                    </div>
                                     <div class="panel-wrapper collapse in" aria-expanded="true">
                                         <div class="panel-body">
                                             @if($opcion->resolucion_edita == 1)
