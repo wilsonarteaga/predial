@@ -21,6 +21,8 @@ use App\Models\ResolucionPredio;
 use App\Models\PrescripcionPredio;
 
 use Carbon\Carbon;
+use PDF;
+use \stdClass;
 
 class PrediosController extends Controller
 {
@@ -113,15 +115,6 @@ class PrediosController extends Controller
                                      'tarifas_predial' => $tarifas_predial,
                                      'bancos' => $bancos,
                                      'tab_current' => $tab_current]);
-    }
-
-    public static function findInCollection(Collection $collection, $key, $value) {
-        foreach ($collection as $item) {
-            if (isset($item->$key) && $item->$key == $value) {
-                return $item;
-            }
-        }
-        return FALSE;
     }
 
     /**
@@ -579,38 +572,190 @@ class PrediosController extends Controller
         }
     }
 
-    public function show_predios_datos(Request $request) {
-        $predio_dato = PredioDato::where('id_predio', $request->id_predio)->first();
+    public function generateFacturaPDF(Request $request) {
+        if (!$request->session()->exists('userid')) {
+            return redirect('/');
+        }
 
-        $predio_propietarios = DB::table('predios_propietarios')
-                                   ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
-                                   ->select('propietarios.*', 'predios_propietarios.jerarquia')
-                                   ->where('predios_propietarios.id_predio', $request->id_predio)
-                                   ->orderBy('predios_propietarios.jerarquia', 'asc')
-                                   ->get();
+        $predios = DB::table('predios')->join('zonas', function ($join) {
+            $join->on('predios.id_zona', '=', 'zonas.id');
+        })
+        ->leftJoin('prescripciones_predios', 'predios.id', '=', 'prescripciones_predios.id_predio')
+        ->select(DB::raw('predios.*, zonas.descripcion, COALESCE(prescripciones_predios.id_predio, 0) AS prescrito, prescripciones_predios.prescribe_hasta'))
+        ->where('estado', 1)
+        ->get();
 
-        $predio_calculo = PredioCalculo::where('id_predio', $request->id_predio)->first();
+        $propietarios = DB::table('predios')
+                                ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                                ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                                ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
+            ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(CONCAT(propietarios.nombre, \' - \', propietarios.identificacion), \'<br />\') AS propietarios'))
+            ->where('predios.estado', 1)
+            ->groupBy('predios_propietarios.id_predio')
+            ->get();
 
-        $predio_pago = PredioPago::where('id_predio', $request->id_predio)
+        if($propietarios) {
+            foreach ($predios as $key => $predio) {
+                $desired_object = self::findInCollection($propietarios, 'id_predio', $predio->id);
+                if($desired_object) {
+                    $predio->propietarios = $desired_object->propietarios;
+                }
+                else {
+                    $predio->propietarios = 'Sin asignar';
+                }
+            }
+        }
+        else {
+            foreach ($predios as $key => $predio) {
+                $predio->propietarios = 'Sin asignar';
+            }
+        }
+
+        $dt = Carbon::now();
+
+        $data = [
+            'title' => 'Predio',
+            'fecha' => $dt->toDateString(),
+            'hora' => $dt->isoFormat('h:mm:ss a'),
+            'predios' => $predios
+        ];
+
+        $pdf = PDF::loadView('predios.facturaPDF', $data);
+        return $pdf->download($dt->toDateString() . '_' . str_replace(':', '-', $dt->toTimeString()) . '.pdf');
+    }
+
+    public function generateFacturaPDFByIdPredio(Request $request, $id) {
+        if (!$request->session()->exists('userid')) {
+            return redirect('/');
+        }
+
+        $predios = DB::table('predios')->join('zonas', function ($join) {
+            $join->on('predios.id_zona', '=', 'zonas.id');
+        })
+        ->leftJoin('prescripciones_predios', 'predios.id', '=', 'prescripciones_predios.id_predio')
+        ->select(DB::raw('predios.*, zonas.descripcion, COALESCE(prescripciones_predios.id_predio, 0) AS prescrito, prescripciones_predios.prescribe_hasta'))
+        ->where('estado', 1)
+        ->where('predios.id', $id)
+        ->get();
+
+        //dd($predios);
+
+        $propietarios = DB::table('predios')
+                                ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                                ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                                ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
+            ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(propietarios.nombre, \'<br />\') AS propietarios, STRING_AGG(propietarios.identificacion, \'<br />\') AS identificaciones'))
+            ->where('predios.estado', 1)
+            ->where('predios.id', $id)
+            ->groupBy('predios_propietarios.id_predio')
+            ->get();
+
+        if($propietarios) {
+            foreach ($predios as $key => $predio) {
+                $desired_object = self::findInCollection($propietarios, 'id_predio', $predio->id);
+                if($desired_object) {
+                    $predio->propietarios = $desired_object->propietarios;
+                    $predio->identificaciones = $desired_object->identificaciones;
+                }
+                else {
+                    $predio->propietarios = 'Sin asignar';
+                    $predio->identificaciones = 'Sin asignar';
+                }
+            }
+        }
+        else {
+            foreach ($predios as $key => $predio) {
+                $predio->propietarios = 'Sin asignar';
+                $predio->identificaciones = 'Sin asignar';
+            }
+        }
+
+        $dt = Carbon::now();
+
+        $currentYear = $dt->year;
+        $lista_pagos = new Collection();
+        $ultimo_pago = new Collection();
+        if($predio->ultimo_anio_pago < $currentYear) { // validar tambien si el año no esta pagado
+
+            //establecer años a pagar
+            if($predio->ultimo_anio_pago + 1 == $currentYear) {
+                $predio->anios_a_pagar = $currentYear;
+            }
+            else {
+                $predio->anios_a_pagar = $predio->ultimo_anio_pago . ' A ' . $currentYear;
+            }
+            // Obtener informacion de los pagos pendientes por año
+            $obj = new StdClass();
+            $obj->anio = '<2018';
+            $obj->m_tar = 3.5;
+            $obj->avaluo = 4108000;
+            $obj->impuesto = 17160;
+            $obj->interes = 25191;
+            $obj->descuento_interes = 0;
+            $obj->catorce = 0;
+            $obj->desctuento_14 = 0;
+            $obj->blanco = 0;
+            $obj->otros = 0;
+            $obj->total = 42351;
+
+            // $obj = (object)array('anio' => '<2018',
+            //                     'm_tar' => 3.5,
+            //                     'avaluo' => 4108000, .....);
+
+            $lista_pagos->push($obj);
+
+            $obj = new StdClass();
+            $obj->anio = '2018';
+            $obj->m_tar = 4.5;
+            $obj->avaluo = 4121000;
+            $obj->impuesto = 18545;
+            $obj->interes = 19594;
+            $obj->descuento_interes = 0;
+            $obj->catorce = 0;
+            $obj->desctuento_14 = 0;
+            $obj->blanco = 0;
+            $obj->otros = 0;
+            $obj->total = 38139;
+
+            $lista_pagos->push($obj);
+
+            // Obtener informacion del ultimo año pagado
+            $ultimo_pago = DB::table('predios_pagos')
+                       ->where('id_predio', $id)
                         ->orderBy('id', 'desc')
                         ->first();
+        }
+        else {
+            $obj = new StdClass();
+            $obj->ultimo_anio = '';
+            $obj->fecha_pago = '';
+            $obj->valor_pago = 0;
+            $ultimo_pago = $obj;
+        }
 
-        $predio_acuerdo_pago = PredioAcuerdoPago::where('id_predio', $request->id_predio)->first();
+        //dd($lista_pagos);
 
-        $predio_abonos = PredioAbono::where('id_predio', $request->id_predio)
-                        ->orderBy('id', 'asc')
-                        ->get();
+        $data = [
+            'title' => 'Predio',
+            'fecha' => $dt->toDateString(),
+            'hora' => $dt->isoFormat('h:mm:ss a'),
+            'numero' => '1',
+            'predio' => $predio,
+            'ultimo_pago' => $ultimo_pago,
+            'lista_pagos' => $lista_pagos
+        ];
 
-        //$predio_proceso_historico = PredioAbono::where('id_predio', $request->id_predio)->first();
+        $pdf = PDF::loadView('predios.facturaPDF', $data);
+        return $pdf->download($dt->toDateString() . '_' . str_replace(':', '-', $dt->toTimeString()) . '.pdf');
+    }
 
-        return response()->json([
-            'predio_dato' => $predio_dato,
-            'predio_propietarios' => $predio_propietarios,
-            'predio_calculo' => $predio_calculo,
-            'predio_pago' => $predio_pago,
-            'predio_acuerdo_pago' => $predio_acuerdo_pago,
-            'predio_abonos' => $predio_abonos
-        ]);
+    public static function findInCollection(Collection $collection, $key, $value) {
+        foreach ($collection as $item) {
+            if (isset($item->$key) && $item->$key == $value) {
+                return $item;
+            }
+        }
+        return FALSE;
     }
 
 }

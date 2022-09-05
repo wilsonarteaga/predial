@@ -78,14 +78,14 @@
     'normal' => $rootDir . '/lib/fonts/DejaVuSerif',
   ),
   'latam sans' => array(
-    'normal' => $fontDir . '/latam_sans_normal_d9b5f1e6f10c21e7aaff90b33395a6ca',
-    'italic' => $fontDir . '/latam_sans_italic_76a02c6f8c7af698bb094c306e2c6b8c',
-    '300' => $fontDir . '/latam_sans_300_0963def95faebc5feca21db8ce8724c4',
-    '300_italic' => $fontDir . '/latam_sans_300_italic_acdbb759d602cfae78cd094ba0dc8650',
-    'bold' => $fontDir . '/latam_sans_bold_a9d1e1d83985459871e963eadc5d5147',
-    'bold_italic' => $fontDir . '/latam_sans_bold_italic_f7d3995cf70c653fb8add687d38b4458',
+    'normal' => $fontDir . '/latam_sans_normal_58c566bcc031dbf73ec2fdf57e71e772',
+    'italic' => $fontDir . '/latam_sans_italic_5551ac10bfa714396a168984edd44194',
+    '300' => $fontDir . '/latam_sans_300_52346031e90708ce4d570cbcc90f2693',
+    '300_italic' => $fontDir . '/latam_sans_300_italic_74cc6731cde7c4d52954b4c10ceb7b1b',
+    'bold' => $fontDir . '/latam_sans_bold_97e80a2159907bb9d2422ba5c57218f6',
+    'bold_italic' => $fontDir . '/latam_sans_bold_italic_eeb5b8c8968efd6d98b4e579e9ae7160',
   ),
   'latam sans extended' => array(
-    'normal' => $fontDir . '/latam_sans_extended_normal_d4bc766d355410e7a6d375d3961eaec9',
+    'normal' => $fontDir . '/latam_sans_extended_normal_ca74134940ae062c24cbf3a7cdd0ecca',
   ),
 ) ?>

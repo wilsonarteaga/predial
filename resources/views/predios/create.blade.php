@@ -307,7 +307,7 @@
                                                                     &nbsp;&nbsp;
                                                                     <button type="button" ide="{{ $predio->id }}" class="prescribe_row btn {{ $predio->prescrito > 0 ? 'btn-default tips' : 'btn-warning' }}" {{ $predio->prescrito > 0 ? 'disabled="disabled"' : '' }}><i class="fa fa-clock-o"></i></button>
                                                                     &nbsp;&nbsp;
-                                                                    <button type="button" ide="{{ $predio->id }}" class="btn btn-success" msg="¿Está seguro/a que desea ejecutar el cálculo?"><i class="fa fa-cogs"></i></button>
+                                                                    <button type="button" ide="{{ $predio->id }}" class="download_row btn btn-success" url="{{ route('predios.generarfacturapredio', ['id' => $predio->id]) }}" msg="¿Está seguro/a que desea ejecutar el cálculo?"><i class="fa fa-cogs"></i></button>
                                                                     &nbsp;&nbsp;
                                                                     <button type="button" ide="{{ $predio->id }}" class="delete_row btn btn-inverse" req_res="{{ $opcion->resolucion_elimina }}" msg="¿Está seguro/a que desea anular el predio?"><i class="fa fa-trash-o"></i></button>
                                                                 </td>

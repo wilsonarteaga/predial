@@ -210,6 +210,7 @@ Route::post('delete_predios', [PrediosController::class, 'destroy'])->name('pred
 Route::post('prescribe_predios', [PrediosController::class, 'prescribe'])->name('predios.prescribe_predios')->middleware('checkdb');
 
 Route::get('/show/predios_datos', [PrediosController::class, 'show_predios_datos']);
+Route::get('generate_factura_pdf/{id}', [PrediosController::class, 'generateFacturaPDFByIdPredio'])->name('predios.generarfacturapredio')->middleware('checkdb');
 
 //datos_basicos
 Route::post('/store/predios_datos_basicos', [PrediosController::class, 'store_predios_datos_basicos']);

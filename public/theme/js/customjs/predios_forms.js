@@ -10,6 +10,15 @@ $(document).ready(function() {
         placement: 's' // north-east tooltip position
     });
 
+    $('.download_row').off('click').on('click', function(evt) {
+        if ($('#iframe_reporte').length > 0)
+            $('#iframe_reporte').remove();
+
+        var iframe = $('<iframe id="iframe_reporte" style="display:none;"></iframe>');
+        iframe.attr('src', $(this).attr('url'));
+        $('body').append(iframe);
+    });
+
     if ($('.prescribe_row').length > 0) {
 
         $('.prescribe_row').off('click').on('click', function(evt) {
