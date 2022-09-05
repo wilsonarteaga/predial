@@ -675,6 +675,7 @@ class PrediosController extends Controller
         $currentYear = $dt->year;
         $lista_pagos = new Collection();
         $ultimo_pago = new Collection();
+        $suma_total = 0;
         if($predio->ultimo_anio_pago < $currentYear) { // validar tambien si el año no esta pagado
 
             //establecer años a pagar
@@ -703,6 +704,7 @@ class PrediosController extends Controller
             //                     'avaluo' => 4108000, .....);
 
             $lista_pagos->push($obj);
+            $suma_total += $obj->total;
 
             $obj = new StdClass();
             $obj->anio = '2018';
@@ -718,6 +720,7 @@ class PrediosController extends Controller
             $obj->total = 38139;
 
             $lista_pagos->push($obj);
+            $suma_total += $obj->total;
 
             // Obtener informacion del ultimo año pagado
             $ultimo_pago = DB::table('predios_pagos')
@@ -733,16 +736,23 @@ class PrediosController extends Controller
             $ultimo_pago = $obj;
         }
 
-        //dd($lista_pagos);
+        $nit = '7709998776913';
+        $numero_factura = '202203807';
+        $valor_factura = intval($suma_total);
+
+        $barras = '415' . $nit . '8020' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '3900' . str_pad($valor_factura , 14, "0", STR_PAD_LEFT) . '96' . str_replace('-', '', $dt->toDateString());
+        $barras_texto = '(415)' . $nit . '(8020)' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valor_factura , 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $dt->toDateString());
 
         $data = [
             'title' => 'Predio',
             'fecha' => $dt->toDateString(),
             'hora' => $dt->isoFormat('h:mm:ss a'),
-            'numero' => '1',
+            'numero' => $numero_factura,
             'predio' => $predio,
             'ultimo_pago' => $ultimo_pago,
-            'lista_pagos' => $lista_pagos
+            'lista_pagos' => $lista_pagos,
+            'codigo_barras' => $barras,
+            'codigo_barras_texto' => $barras_texto
         ];
 
         $pdf = PDF::loadView('predios.facturaPDF', $data);
