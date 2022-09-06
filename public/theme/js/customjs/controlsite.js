@@ -650,8 +650,6 @@ $(document).ready(function() {
 });
 
 function setData(jsonObj) {
-    console.log(jsonObj);
-
     $('#div_table').fadeOut(function() {
         $.each(jsonObj, function(i, el) {
             if ($('#' + i + '_edit').length > 0) {

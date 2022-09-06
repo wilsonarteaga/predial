@@ -143,7 +143,7 @@
                         <h3 class="title">Fecha emisi&oacute;n:</h3>
                     </td>
                     <td>
-                        {{ $fecha }} {{ $hora }}
+                        {{ $fecha }}, {{ $hora }}
                     </td>
                 </tr>
                 <tr>
@@ -151,7 +151,7 @@
                         <h3 class="title">No. factura:</h3>
                     </td>
                     <td>
-                        {{ $numero }}
+                        {{ $numero_factura }}
                     </td>
                 </tr>
             </table>
@@ -282,7 +282,7 @@
                     <th>A&ntilde;os a pagar</th>
                     <td>{{ $predio->anios_a_pagar }}</td>
                     <th>N&uacute;mero factura</th>
-                    <td class="negrilla" style="font-size: 130%;">{{ $numero }}</td>
+                    <td class="negrilla" style="font-size: 130%;">{{ $numero_factura }}</td>
                 </tr>
                 <tr>
                     <th>Propietario</th>
@@ -303,15 +303,17 @@
             <table class="info-codigo-barras" style="width: 100%; margin-top: 40px;">
                 <tr>
                     <td style="width: 50%;">
-                        {!! DNS1D::getBarcodeHTML($codigo_barras, 'C128', 1, 100) !!}
+                        {!! DNS1D::getBarcodeHTML($codigo_barras, 'C128', 1, 80) !!}
                         <br />
                         <span style="width: 100%; font-size: 90%;">{{ $codigo_barras_texto }}</span>
                     </td>
                     <td>
                         <table style="width: 100%; font-size: 120%;">
-                            <tr><td class="negrilla">Pague hasta 30/03/2022</td></tr>
-                            <tr><td>Descuento 15%</td></tr>
-                            <tr><td class="negrilla">@money($suma_total)</td></tr>
+                            <tr><td class="negrilla">Pague hasta {{ $fecha_pago_hasta }}</td></tr>
+                            @if($porcentaje_descuento > 0)
+                            <tr><td>Descuento {{ $porcentaje_descuento }}%</td></tr>
+                            @endif
+                            <tr><td class="negrilla">@money($valor_factura)</td></tr>
                         </table>
                     </td>
                     <td class="marca-agua">SELLO BANCO</td>

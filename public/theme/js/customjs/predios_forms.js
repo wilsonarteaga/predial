@@ -11,12 +11,41 @@ $(document).ready(function() {
     });
 
     $('.download_row').off('click').on('click', function(evt) {
-        if ($('#iframe_reporte').length > 0)
-            $('#iframe_reporte').remove();
+        var btn = $(this);
 
-        var iframe = $('<iframe id="iframe_reporte" style="display:none;"></iframe>');
-        iframe.attr('src', $(this).attr('url'));
-        $('body').append(iframe);
+        $(btn).attr('disabled', true);
+
+        $.toast({
+            heading: 'Atención',
+            text: 'Iniciando ejecución de cálculo predial. Espere un momento por favor.',
+            position: 'top-right',
+            loaderBg: '#fff',
+            icon: 'warning',
+            hideAfter: 10000,
+            stack: 6
+        });
+
+        setTimeout(function() {
+            $.toast({
+                heading: 'Información',
+                text: 'El cálculo predial ha sido ejecutado satisfactoriamente. Inicia descarga de factura.',
+                position: 'top-right',
+                loaderBg: '#fff',
+                icon: 'success',
+                hideAfter: 3000,
+                stack: 6
+            });
+            setTimeout(function() {
+                if ($('#iframe_reporte').length > 0) {
+                    $('#iframe_reporte').remove();
+                }
+                var iframe = $('<iframe id="iframe_reporte" style="display:none;"></iframe>');
+                iframe.attr('src', $(btn).attr('url'));
+                $('body').append(iframe);
+                $(btn).attr('disabled', false);
+            }, 2000);
+        }, 10000);
+
     });
 
     if ($('.prescribe_row').length > 0) {

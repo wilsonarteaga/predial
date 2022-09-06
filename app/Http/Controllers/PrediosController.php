@@ -23,6 +23,7 @@ use App\Models\PrescripcionPredio;
 use Carbon\Carbon;
 use PDF;
 use \stdClass;
+use Illuminate\Support\Str;
 
 class PrediosController extends Controller
 {
@@ -629,6 +630,9 @@ class PrediosController extends Controller
             return redirect('/');
         }
 
+        $nit = '7709998776913';
+        $numero_factura = '202203807';
+
         $predios = DB::table('predios')->join('zonas', function ($join) {
             $join->on('predios.id_zona', '=', 'zonas.id');
         })
@@ -671,11 +675,19 @@ class PrediosController extends Controller
         }
 
         $dt = Carbon::now();
-
         $currentYear = $dt->year;
+
         $lista_pagos = new Collection();
         $ultimo_pago = new Collection();
+        $lista_descuentos = new Collection();
+        $descuentos = new Collection();
+
         $suma_total = 0;
+        $fecha_pago_hasta = '';
+        $barras = '';
+        $barras_texto = '';
+        $suma_porcentaje_descuento = 0;
+
         if($predio->ultimo_anio_pago < $currentYear) { // validar tambien si el año no esta pagado
 
             //establecer años a pagar
@@ -685,9 +697,25 @@ class PrediosController extends Controller
             else {
                 $predio->anios_a_pagar = $predio->ultimo_anio_pago . ' A ' . $currentYear;
             }
+
+            // Calcular fecha pago hasta
+            $tipo_tasa_interes = DB::table('anios')
+                                ->join('tipos_tasas_interes', 'anios.id_tipo_tasa_interes', '=', 'tipos_tasas_interes.id')
+                                ->select('tipos_tasas_interes.descripcion')
+                                ->where('anios.anio', $currentYear)
+                                ->first();
+
+            if(Str::lower($tipo_tasa_interes->descripcion) == 'diaria') {
+                $fecha_pago_hasta = $dt->format('d/m/Y');
+            }
+            else {
+                $fecha_pago_hasta = $dt->lastOfMonth()->format('d/m/Y');
+            }
+
             // Obtener informacion de los pagos pendientes por año
+            // PAGO # 1
             $obj = new StdClass();
-            $obj->anio = '<2018';
+            $obj->anio = '2022';
             $obj->m_tar = 3.5;
             $obj->avaluo = 4108000;
             $obj->impuesto = 17160;
@@ -706,27 +734,52 @@ class PrediosController extends Controller
             $lista_pagos->push($obj);
             $suma_total += $obj->total;
 
-            $obj = new StdClass();
-            $obj->anio = '2018';
-            $obj->m_tar = 4.5;
-            $obj->avaluo = 4121000;
-            $obj->impuesto = 18545;
-            $obj->interes = 19594;
-            $obj->descuento_interes = 0;
-            $obj->catorce = 0;
-            $obj->desctuento_14 = 0;
-            $obj->blanco = 0;
-            $obj->otros = 0;
-            $obj->total = 38139;
-
-            $lista_pagos->push($obj);
-            $suma_total += $obj->total;
+            // PAGO # 2
+            // $obj = new StdClass();
+            // $obj->anio = '2018';
+            // $obj->m_tar = 4.5;
+            // $obj->avaluo = 4121000;
+            // $obj->impuesto = 18545;
+            // $obj->interes = 19594;
+            // $obj->descuento_interes = 0;
+            // $obj->catorce = 0;
+            // $obj->desctuento_14 = 0;
+            // $obj->blanco = 0;
+            // $obj->otros = 0;
+            // $obj->total = 38139;
+            // $lista_pagos->push($obj);
+            // $suma_total += $obj->total;
 
             // Obtener informacion del ultimo año pagado
             $ultimo_pago = DB::table('predios_pagos')
                        ->where('id_predio', $id)
                         ->orderBy('id', 'desc')
                         ->first();
+
+            $ultimo_pago->fecha_pago = Carbon::createFromFormat("Y-m-d", $ultimo_pago->fecha_pago)->format('d/m/Y');
+
+            // Obtener lista de descuentos
+            $descuentos = DB::table('descuentos')
+                        ->where('descuentos.fecha_inicio', '<=', Carbon::createFromFormat("Y-m-d", $dt->toDateString())->format('Y-m-d'))
+                        ->where('descuentos.fecha_fin', '>=', Carbon::createFromFormat("Y-m-d", $dt->toDateString())->format('Y-m-d'))
+                        ->where('descuentos.anio', $currentYear)
+                        ->select('descuentos.anio', 'descuentos.porcentaje')
+                        ->get();
+
+            foreach ($descuentos as $descuento) {
+                $obj = (object)array($descuento->anio => $descuento->porcentaje);
+                $suma_porcentaje_descuento += $descuento->porcentaje;
+                $lista_descuentos->push($obj);
+            }
+
+            $suma_total_con_descuento = round($suma_total);
+            if($suma_porcentaje_descuento > 0){
+                $suma_total_con_descuento = round($suma_total - ($suma_total * ($suma_porcentaje_descuento / 100)));
+            }
+
+            $valor_factura = intval($suma_total_con_descuento);
+            $barras = '415' . $nit . '8020' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '3900' . str_pad($valor_factura , 14, "0", STR_PAD_LEFT) . '96' . str_replace('-', '', $dt->toDateString());
+            $barras_texto = '(415)' . $nit . '(8020)' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valor_factura , 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $dt->toDateString());
         }
         else {
             $obj = new StdClass();
@@ -736,23 +789,20 @@ class PrediosController extends Controller
             $ultimo_pago = $obj;
         }
 
-        $nit = '7709998776913';
-        $numero_factura = '202203807';
-        $valor_factura = intval($suma_total);
-
-        $barras = '415' . $nit . '8020' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '3900' . str_pad($valor_factura , 14, "0", STR_PAD_LEFT) . '96' . str_replace('-', '', $dt->toDateString());
-        $barras_texto = '(415)' . $nit . '(8020)' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valor_factura , 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $dt->toDateString());
-
         $data = [
             'title' => 'Predio',
-            'fecha' => $dt->toDateString(),
+            'fecha' => $dt->format('d/m/Y'),
             'hora' => $dt->isoFormat('h:mm:ss a'),
-            'numero' => $numero_factura,
+            'numero_factura' => $numero_factura,
             'predio' => $predio,
             'ultimo_pago' => $ultimo_pago,
             'lista_pagos' => $lista_pagos,
+            'lista_descuentos' => $lista_descuentos,
             'codigo_barras' => $barras,
-            'codigo_barras_texto' => $barras_texto
+            'codigo_barras_texto' => $barras_texto,
+            'fecha_pago_hasta' => $fecha_pago_hasta,
+            'porcentaje_descuento' => $suma_porcentaje_descuento,
+            'valor_factura' => $valor_factura
         ];
 
         $pdf = PDF::loadView('predios.facturaPDF', $data);
