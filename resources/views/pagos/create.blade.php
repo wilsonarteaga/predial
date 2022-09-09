@@ -84,7 +84,7 @@
                                                         <div class="col-lg-6 col-md-6 col-sm-7 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Banco archivo:</label>
-                                                                <select id="id_banco_archivo" name="id_banco_archivo" class="form-control selectpicker-noval show-tick" data-live-search="true" title="Sin informaci&oacute;n...">
+                                                                <select id="id_banco_archivo" name="id_banco_archivo" class="form-control selectpicker-noval show-tick" data-live-search="true" data-size="5" title="Sin informaci&oacute;n...">
                                                                     @if(count($bancos) > 0)
                                                                         @foreach($bancos as $banco)
                                                                         <option value="{{ $banco->id }}" {{ old('id_banco_archivo') == $banco->id ? 'selected' : '' }}>{{ $banco->codigo }} - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>
@@ -120,7 +120,7 @@
                                                         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo predio:</label>
-                                                                <select id="id_predio" name="id_predio" class="form-control selectpicker show-tick" data-live-search="true" title="Sin informaci&oacute;n...">
+                                                                <select id="id_predio" name="id_predio" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" title="Sin informaci&oacute;n...">
                                                                     @if(count($predios) > 0)
                                                                         @foreach($predios as $predio)
                                                                         <option value="{{ $predio->id }}" {{ old('id_predio') == $predio->id ? 'selected' : '' }}>{{ $predio->codigo_predio }}</option>
@@ -149,7 +149,7 @@
                                                         <div class="col-lg-6 col-md-6 col-sm-7 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Banco factura:</label>
-                                                                <select id="id_banco_factura" name="id_banco_factura" class="form-control selectpicker show-tick" data-live-search="true" title="Sin informaci&oacute;n...">
+                                                                <select id="id_banco_factura" name="id_banco_factura" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" title="Sin informaci&oacute;n...">
                                                                     @if(count($bancos) > 0)
                                                                         @foreach($bancos as $banco)
                                                                         <option value="{{ $banco->id }}" {{ old('id_banco_factura') == $banco->id ? 'selected' : '' }}>{{ $banco->codigo }} - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>
@@ -207,7 +207,7 @@
                                                         <div class="col-lg-6 col-md-6 col-sm-7 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Seleccione banco:</label>
-                                                                <select id="id_banco" name="id_banco" class="form-control selectpicker-noval show-tick" data-live-search="true" title="Sin informaci&oacute;n...">
+                                                                <select id="id_banco" name="id_banco" class="form-control selectpicker-noval show-tick" data-live-search="true" data-size="5" title="Sin informaci&oacute;n...">
                                                                     @if(count($bancos) > 0)
                                                                         @foreach($bancos as $banco)
                                                                         <option value="{{ $banco->id }}" {{ old('id_banco') == $banco->id ? 'selected' : '' }}>{{ $banco->codigo }} - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>
@@ -258,7 +258,7 @@
                                                         <div class="col-lg-6 col-md-6 col-sm-7 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Banco archivo:</label>
-                                                                <select id="id_banco_archivo_edit" name="id_banco_archivo_edit" class="form-control selectpicker-noval show-tick" data-live-search="true" title="Sin informaci&oacute;n..." disabled="true">
+                                                                <select id="id_banco_archivo_edit" name="id_banco_archivo_edit" class="form-control selectpicker-noval show-tick" data-live-search="true" data-size="5" title="Sin informaci&oacute;n..." disabled="true">
                                                                     @if(count($bancos) > 0)
                                                                         @foreach($bancos as $banco)
                                                                         <option value="{{ $banco->id }}" {{ old('id_banco_archivo_edit') == $banco->id ? 'selected' : '' }}>{{ $banco->codigo }} - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>
@@ -294,7 +294,7 @@
                                                         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo predio:</label>
-                                                                <select id="id_predio_edit" name="id_predio_edit" class="form-control selectpicker show-tick" data-live-search="true" title="Sin informaci&oacute;n...">
+                                                                <select id="id_predio_edit" name="id_predio_edit" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" title="Sin informaci&oacute;n...">
                                                                     @if(count($predios) > 0)
                                                                         @foreach($predios as $predio)
                                                                         <option value="{{ $predio->id }}" {{ old('id_predio_edit') == $predio->id ? 'selected' : '' }}>{{ $predio->codigo_predio }}</option>
@@ -323,7 +323,7 @@
                                                         <div class="col-lg-6 col-md-6 col-sm-7 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Banco factura:</label>
-                                                                <select id="id_banco_factura_edit" name="id_banco_factura_edit" class="form-control selectpicker show-tick" data-live-search="true" title="Sin informaci&oacute;n...">
+                                                                <select id="id_banco_factura_edit" name="id_banco_factura_edit" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" title="Sin informaci&oacute;n...">
                                                                     @if(count($bancos) > 0)
                                                                         @foreach($bancos as $banco)
                                                                         <option value="{{ $banco->id }}" {{ old('id_banco_factura_edit') == $banco->id ? 'selected' : '' }}>{{ $banco->codigo }} - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>
@@ -397,7 +397,7 @@
                                                         <div class="col-lg-offset-1 col-lg-2 col-md-offset-1 col-md-2 col-sm-offset-1 col-sm-3 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Zona:</label>
-                                                                <select id="id_zona_edit" name="id_zona_edit" class="form-control selectpicker show-tick" data-live-search="true" title="Seleccione...">
+                                                                <select id="id_zona_edit" name="id_zona_edit" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" title="Seleccione...">
                                                                     @if(count($zonas) > 0)
                                                                         @foreach($zonas as $zona)
                                                                         <option value="{{ $zona->id }}" {{ old('id_zona_edit') == $zona->id ? 'selected' : '' }}>{{ $zona->descripcion }}</option>

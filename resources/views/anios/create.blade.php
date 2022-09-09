@@ -77,7 +77,7 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Estado</label>
-                                                                <select id="id_estado" name="id_estado" class="form-control selectpicker show-tick" data-live-search="true" title="Seleccione...">
+                                                                <select id="id_estado" name="id_estado" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" title="Seleccione...">
                                                                     @if(count($estados_anio) > 0)
                                                                         @foreach($estados_anio as $estado)
                                                                         <option value="{{ $estado->id }}" {{ old('id_estado') == $estado->id ? 'selected' : '' }}>{{ $estado->descripcion }}</option>
@@ -97,7 +97,7 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tipo tasa inter&eacute;s</label>
-                                                                <select id="id_tipo_tasa_interes" name="id_tipo_tasa_interes" class="form-control selectpicker show-tick" data-live-search="true" title="Seleccione...">
+                                                                <select id="id_tipo_tasa_interes" name="id_tipo_tasa_interes" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" title="Seleccione...">
                                                                     @if(count($tipos_tasas) > 0)
                                                                         @foreach($tipos_tasas as $tipo_tasa)
                                                                         <option value="{{ $tipo_tasa->id }}" {{ old('id_tipo_tasa_interes') == $tipo_tasa->id ? 'selected' : '' }}>{{ $tipo_tasa->descripcion }}</option>
@@ -241,7 +241,7 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Estado</label>
-                                                                <select id="id_estado_edit" name="id_estado_edit" class="form-control selectpicker show-tick" data-live-search="true" title="Seleccione...">
+                                                                <select id="id_estado_edit" name="id_estado_edit" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" title="Seleccione...">
                                                                     @if(count($estados_anio) > 0)
                                                                         @foreach($estados_anio as $estado)
                                                                         <option value="{{ $estado->id }}" {{ old('id_estado_edit') == $estado->id ? 'selected' : '' }}>{{ $estado->descripcion }}</option>
@@ -261,7 +261,7 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tipo tasa inter&eacute;s</label>
-                                                                <select id="id_tipo_tasa_interes_edit" name="id_tipo_tasa_interes_edit" class="form-control selectpicker show-tick" data-live-search="true" title="Seleccione...">
+                                                                <select id="id_tipo_tasa_interes_edit" name="id_tipo_tasa_interes_edit" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" title="Seleccione...">
                                                                     @if(count($tipos_tasas) > 0)
                                                                         @foreach($tipos_tasas as $tipo_tasa)
                                                                         <option value="{{ $tipo_tasa->id }}" {{ old('id_tipo_tasa_interes_edit') == $tipo_tasa->id ? 'selected' : '' }}>{{ $tipo_tasa->descripcion }}</option>

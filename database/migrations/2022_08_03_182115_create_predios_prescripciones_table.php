@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePrescripcionesPrediosTable extends Migration
+class CreatePrediosPrescripcionesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreatePrescripcionesPrediosTable extends Migration
      */
     public function up()
     {
-        Schema::create('prescripciones_predios', function (Blueprint $table) {
+        Schema::create('predios_prescripciones', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_predio');
             $table->smallInteger('prescribe_hasta');
@@ -30,6 +30,6 @@ class CreatePrescripcionesPrediosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('prescripciones_predios');
+        Schema::dropIfExists('predios_prescripciones');
     }
 }

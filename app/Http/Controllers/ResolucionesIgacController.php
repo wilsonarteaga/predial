@@ -6,12 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ResolucionesIgacCreateFormRequest;
 use App\Http\Requests\ResolucionesIgacUpdateFormRequest;
-use App\Models\ResolucionesIgac;
+use App\Models\ResolucionIgac;
 use App\Models\Opcion;
 
 class ResolucionesIgacController extends Controller
 {
- 
+
     /**
      * Display a listing of the resource.
      *
@@ -33,7 +33,7 @@ class ResolucionesIgacController extends Controller
         }
         $opcion = Opcion::where('id','=', base64_decode($id))->first();
         $resoluciones_igac = DB::table('resoluciones_igac')->get(); //paginate(5);
-        //$acudientes->appends($request->all());
+
         $tab_current = 'li-section-bar-1';
         if ($request->has('page')) {
             $tab_current = 'li-section-bar-2';
@@ -41,7 +41,7 @@ class ResolucionesIgacController extends Controller
 
         //$request->session()->put('search', '1');
 
-        return view('ResolucionesIgac.create', ['opcion' => $opcion,
+        return view('resolucionesigac.create', ['opcion' => $opcion,
                                              'resoluciones_igac' => $resoluciones_igac,
                                              'tab_current' => $tab_current]);
     }
@@ -57,20 +57,20 @@ class ResolucionesIgacController extends Controller
             return redirect('/');
         }
 
-        $resoluciones_igac = new ResolucionesIgac();
-        $resoluciones_igac->ano = $request->ano;
-        $resoluciones_igac->resolucion = $request->resolucion;
-        $resoluciones_igac->fecha = $request->fecha;
-        $resoluciones_igac->consecutivo = $request->consecutivo;
-        $resoluciones_igac->codigo = $request->codigo;
-        $resoluciones_igac->codigoanterior = $request->codigoanterior;
-        $resoluciones_igac->tipo = $request->tipo;
-        $resoluciones_igac->tiporegistro = $request->tiporegistro;
-        $resoluciones_igac->numeroorden = $request->numeroorden;
-        $resoluciones_igac->avaluoigac = $request->avaluoigac;
-        $resoluciones_igac->area = $request->area;
-        $resoluciones_igac->nombre = $request->nombre;
-        $query = $resoluciones_igac->save();
+        $resolucion_igac = new ResolucionIgac();
+        $resolucion_igac->ano = $request->ano;
+        $resolucion_igac->resolucion = $request->resolucion;
+        $resolucion_igac->fecha = $request->fecha;
+        $resolucion_igac->consecutivo = $request->consecutivo;
+        $resolucion_igac->codigo = $request->codigo;
+        $resolucion_igac->codigoanterior = $request->codigoanterior;
+        $resolucion_igac->tipo = $request->tipo;
+        $resolucion_igac->tiporegistro = $request->tiporegistro;
+        $resolucion_igac->numeroorden = $request->numeroorden;
+        $resolucion_igac->avaluoigac = $request->avaluoigac;
+        $resolucion_igac->area = $request->area;
+        $resolucion_igac->nombre = $request->nombre;
+        $query = $resolucion_igac->save();
         $tab_current = 'li-section-bar-1';
 
         if($query) {
@@ -114,11 +114,11 @@ class ResolucionesIgacController extends Controller
             return redirect('/');
         }
 
-        $resoluciones_igac = new ResolucionesIgac();
-        $resoluciones_igac = ResolucionesIgac::find($request->id_edit);
-        
-        $resoluciones_igac->resolucion = $request->resolucion_edit;
-        $query = $resoluciones_igac->save();
+        $resolucion_igac = new ResolucionIgac();
+        $resolucion_igac = ResolucionIgac::find($request->id_edit);
+
+        $resolucion_igac->resolucion = $request->resolucion_edit;
+        $query = $resolucion_igac->save();
         $tab_current = 'li-section-bar-2';
 
         if($query) {
@@ -146,11 +146,11 @@ class ResolucionesIgacController extends Controller
                             ->where('id', $request->input_delete)->first();
 
         $tab_current = 'li-section-bar-2';
-        $resoluciones_igac = new ResolucionesIgac();
-        $resoluciones_igac = ResolucionesIgac::find($request->input_delete);
+        $resolucion_igac = new ResolucionIgac();
+        $resolucion_igac = ResolucionIgac::find($request->input_delete);
 
         //if($countResolucionesIgac->cm_count == 0) {
-            $query = $resoluciones_igac->delete();
+            $query = $resolucion_igac->delete();
             if($query) {
                 return back()->with(['success' => 'El registro se elimin&oacute; satisfactoriamente.', 'tab_current' => $tab_current]);
             }
@@ -163,5 +163,5 @@ class ResolucionesIgacController extends Controller
         // }
     }
 
-   
+
 }

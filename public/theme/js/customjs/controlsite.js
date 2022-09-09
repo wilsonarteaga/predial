@@ -110,48 +110,14 @@ $(document).ready(function() {
 
     if ($('#btn_save_edit').length > 0) {
         $('#btn_save_edit').off('click').on('click', function() {
-            var show_resoluciones_modal = false;
-            if ($('.resolucion_validate_field_level').length > 0) { // Validacion a nivel de campos individuales
-                $.each($('.resolucion_validate_field_level'), function(i, el) {
-                    if ($('#' + $(el).attr('field')).attr('prev-val') !== $('#' + $(el).attr('field')).val()) {
-                        show_resoluciones_modal = true;
-                        return false;
-                    }
-                });
-            } else if ($('.resolucion_validate_form_level').length > 0) { // Validacion a nivel de formulario
-                $.each($('.res-validate'), function(i, el) {
-                    if (!$(el).is("div")) {
-                        if (!$(el).hasClass('selectpicker')) {
-                            //console.log('************* ', $(el).attr('id'));
-                            //console.log('************* ', $.inArray($(el).attr('id').replace('_edit', ''), arr_autonumeric));
-                            if ($.inArray($(el).attr('id').replace('_edit', ''), arr_autonumeric) >= 0) {
-                                if (Number($(el).attr('prev-val')) !== AutoNumeric.getNumber('#' + $(el).attr('id'))) {
-                                    show_resoluciones_modal = true;
-                                    return false;
-                                }
+            checkSaveResolucion($(this).closest('form'), $(this).attr('desc'));
+        });
+    }
 
-                            } else if ($(el).attr('prev-val') !== $(el).val()) {
-                                show_resoluciones_modal = true;
-                                return false;
-                            }
-                        } else {
-                            if ($(el).attr('prev-val') !== $(el).selectpicker('val')) {
-                                show_resoluciones_modal = true;
-                                return false;
-                            }
-                        }
-                    }
-                });
-            }
-            if (show_resoluciones_modal) {
-                $('#txt_operacion_resolucion').html('<span class="text-danger">Operaci&oacute;n:&nbsp;</span>Actualizaci&oacuten de predio');
-                global_form_to_send = 'update-form';
-                $('#modal-resolucion').modal('show');
-            } else {
-                if ($('.resolucion_validate_field_level').length === 0 && $('.resolucion_validate_form_level').length === 0) {
-                    $('#update-form').first().submit();
-                }
-                console.log('Todo igual');
+    if ($('#btn_save_create').length > 0) {
+        $('#btn_save_create').off('click').on('click', function() {
+            if($('#create-form').valid()) {
+                checkSaveResolucion($(this).closest('form'), $(this).attr('desc'));
             }
         });
     }
@@ -316,20 +282,20 @@ $(document).ready(function() {
     // if ($('#generar_reporte').length > 0) {
     //     $('#search_control').attr('placeholder', 'Buscar paciente...');
     //     $('#li_search').fadeIn();
-
+    //
     //     $('#generar_reporte').off('click').on('click', function(evt) {
     //         if ($('#iframe_reporte').length > 0)
     //             $('#iframe_reporte').remove();
-
+    //
     //         var iframe = $('<iframe id="iframe_reporte" style="display:none;"></iframe>');
     //         iframe.attr('src', $(this).attr('url'));
     //         $('body').append(iframe);
     //     });
-
+    //
     //     $('.download_row').off('click').on('click', function(evt) {
     //         if ($('#iframe_reporte').length > 0)
     //             $('#iframe_reporte').remove();
-
+    //
     //         var iframe = $('<iframe id="iframe_reporte" style="display:none;"></iframe>');
     //         iframe.attr('src', $(this).attr('url'));
     //         $('body').append(iframe);
@@ -647,6 +613,59 @@ $(document).ready(function() {
     $('.buttonTareas a').bind('click', function(evt) {
         evt.preventDefault();
     });
+
+    // if($('#matricula').length > 0) {
+    //     $('#matricula').inputmask('999-99999999');
+    // }
+
+    if($('#exoneracion_desde').length > 0) {
+        $('#exoneracion_desde').off('keyup blur change').on('keyup blur change', function() {
+            if($(this).val().length === 4) {
+                if($('#exoneracion_hasta').val().length === 4) {
+                    var validatorCreate = $("#create-form").validate();
+                    validatorCreate.resetForm();
+                    $.each($('.has-success'), function(i, el) {
+                        $(el).removeClass('has-success');
+                    });
+                    $.each($('.has-error'), function(i, el) {
+                        $(el).removeClass('has-error');
+                    });
+                    $('#create-form').validate().element($('#exoneracion_hasta'));
+                }
+            }
+        });
+        $('#exoneracion_hasta').off('keyup blur change').on('keyup blur change', function() {
+            if($(this).val().length === 4) {
+                if($('#exoneracion_desde').val().length === 4) {
+                    $('#create-form').validate().element($('#exoneracion_desde'));
+                    $('#exoneracion_desde').trigger('blur');
+                }
+            }
+        });
+        $('#exoneracion_desde_edit').off('keyup blur change').on('keyup blur change', function() {
+            if($(this).val().length === 4) {
+                if($('#exoneracion_hasta_edit').val().length === 4) {
+                    var validatorUpdate = $("#update-form").validate();
+                    validatorUpdate.resetForm();
+                    $.each($('.has-success'), function(i, el) {
+                        $(el).removeClass('has-success');
+                    });
+                    $.each($('.has-error'), function(i, el) {
+                        $(el).removeClass('has-error');
+                    });
+                    $('#create-form').validate().element($('#exoneracion_hasta_edit'));
+                }
+            }
+        });
+        $('#exoneracion_hasta_edit').off('keyup blur change').on('keyup blur change', function() {
+            if($(this).val().length === 4) {
+                if($('#exoneracion_desde_edit').val().length === 4) {
+                    $('#update-form').validate().element($('#exoneracion_desde_edit'));
+                    $('#exoneracion_desde_edit').trigger('blur');
+                }
+            }
+        });
+    }
 });
 
 function setData(jsonObj) {
@@ -816,4 +835,54 @@ function addButtonsPredios() {
     $('.buttonTareas').css('display', '');
     calcEditLabels();
     getJsonPrediosDatos();
+}
+
+function checkSaveResolucion(form, desc_operacion) {
+    console.log($('.resolucion_validate_form_level-' + $(form).attr('id')).length);
+    var show_resoluciones_modal = false;
+    if ($('.resolucion_validate_form_level-' + $(form).attr('id')).length > 0) { // Validacion a nivel de formulario
+        $.each($('.res-validate'), function(i, el) {
+            if (!$(el).is("div")) {
+                if (!$(el).hasClass('selectpicker')) {
+                    if ($.inArray($(el).attr('id').replace('_edit', ''), arr_autonumeric) >= 0) {
+                        if (Number($(el).attr('prev-val')) !== AutoNumeric.getNumber('#' + $(el).attr('id'))) {
+                            show_resoluciones_modal = true;
+                            return false;
+                        }
+                    } else if ($(el).attr('prev-val') !== $(el).val()) {
+                        show_resoluciones_modal = true;
+                        return false;
+                    }
+                } else {
+                    if ($(el).attr('prev-val') !== $(el).selectpicker('val')) {
+                        show_resoluciones_modal = true;
+                        return false;
+                    }
+                }
+            }
+        });
+    }
+    else if ($('.resolucion_validate_field_level-' + $(form).attr('id')).length > 0) { // Validacion a nivel de campos individuales
+        $.each($('.resolucion_validate_field_level-' + $(form).attr('id')), function(i, el) {
+            if ($('#' + $(el).attr('field')).attr('prev-val') !== $('#' + $(el).attr('field')).val()) {
+                show_resoluciones_modal = true;
+                return false;
+            }
+        });
+    }
+
+    if (show_resoluciones_modal) {
+        if($(form).attr('id').includes('create')) {
+            $('#txt_operacion_resolucion').html('<span class="text-danger">Operaci&oacute;n:&nbsp;</span>Creaci&oacuten de ' + desc_operacion);
+        }
+        else {
+            $('#txt_operacion_resolucion').html('<span class="text-danger">Operaci&oacute;n:&nbsp;</span>Actualizaci&oacuten de ' + desc_operacion);
+        }
+        global_form_to_send = $(form).attr('id');
+        $('#modal-resolucion').modal('show');
+    } else {
+        if ($('.resolucion_validate_field_level-' + $(form).attr('id')).length === 0 && $('.resolucion_validate_form_level-' + $(form).attr('id')).length === 0) {
+            $('#' + $(form).attr('id')).first().submit();
+        }
+    }
 }

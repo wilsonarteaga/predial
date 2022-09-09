@@ -683,7 +683,7 @@ class ComposerStaticInit2253682c9e2db5c23f0c95ff720ba99e
         'App\\Models\\PredioDato' => __DIR__ . '/../..' . '/app/Models/PredioDato.php',
         'App\\Models\\PredioPago' => __DIR__ . '/../..' . '/app/Models/PredioPago.php',
         'App\\Models\\PredioPropietario' => __DIR__ . '/../..' . '/app/Models/PredioPropietario.php',
-        'App\\Models\\PrescripcionPredio' => __DIR__ . '/../..' . '/app/Models/PrescripcionPredio.php',
+        'App\\Models\\PredioPrescripcion' => __DIR__ . '/../..' . '/app/Models/PredioPrescripcion.php',
         'App\\Models\\Propietario' => __DIR__ . '/../..' . '/app/Models/Propietario.php',
         'App\\Models\\Remision' => __DIR__ . '/../..' . '/app/Models/Remision.php',
         'App\\Models\\Resolucion' => __DIR__ . '/../..' . '/app/Models/Resolucion.php',

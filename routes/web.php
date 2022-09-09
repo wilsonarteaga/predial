@@ -203,11 +203,17 @@ Route::post('/list/pagos_fecha', [PagosController::class, 'list_pagos_fecha']);
 //PrediosController
 Route::get('registro_predios/{id}', [PrediosController::class, 'create'])->middleware('checkdb');
 Route::get('registro_predios', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
+Route::get('registro_exoneracion/{id}', [PrediosController::class, 'create_exoneraciones'])->middleware('checkdb');
+Route::get('registro_exoneracion', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
 
 Route::post('create_predios', [PrediosController::class, 'store'])->name('predios.create_predios')->middleware('checkdb');
 Route::post('update_predios', [PrediosController::class, 'update'])->name('predios.update_predios')->middleware('checkdb');
 Route::post('delete_predios', [PrediosController::class, 'destroy'])->name('predios.delete_predios')->middleware('checkdb');
 Route::post('prescribe_predios', [PrediosController::class, 'prescribe'])->name('predios.prescribe_predios')->middleware('checkdb');
+
+Route::post('create_exoneraciones', [PrediosController::class, 'store_exoneraciones'])->name('predios.create_exoneraciones')->middleware('checkdb');
+Route::post('update_exoneraciones', [PrediosController::class, 'update_exoneraciones'])->name('predios.update_exoneraciones')->middleware('checkdb');
+Route::post('delete_exoneraciones', [PrediosController::class, 'destroy_exoneraciones'])->name('predios.delete_exoneraciones')->middleware('checkdb');
 
 Route::get('/show/predios_datos', [PrediosController::class, 'show_predios_datos']);
 Route::get('generate_factura_pdf/{id}', [PrediosController::class, 'generateFacturaPDFByIdPredio'])->name('predios.generarfacturapredio')->middleware('checkdb');
@@ -244,9 +250,9 @@ Route::post('update_tipospredio', [TiposPredioController::class, 'update'])->nam
 Route::post('delete_tipospredio', [TiposPredioController::class, 'destroy'])->name('tipospredio.delete_tipospredio')->middleware('checkdb');
 
 //ResolucionesIgacController
-Route::get('registros_resoluciones_igac/{id}', [ResolucionesIgacController::class, 'create'])->middleware('checkdb');
-Route::get('registros_resoluciones_igac', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
+Route::get('registro_resolucion_igac/{id}', [ResolucionesIgacController::class, 'create'])->middleware('checkdb');
+Route::get('registro_resolucion_igac', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
 
-Route::post('create_registros_resoluciones_igac', [ResolucionesIgacController::class, 'store'])->name('resoluciones_igac.create_resoluciones_igac')->middleware('checkdb');
-Route::post('update_registros_resoluciones_igac', [ResolucionesIgacController::class, 'update'])->name('resoluciones_igac.update_resoluciones_igac')->middleware('checkdb');
-Route::post('delete_registros_resoluciones_igac', [ResolucionesIgacController::class, 'destroy'])->name('resoluciones_igac.delete_resoluciones_igac')->middleware('checkdb');
+Route::post('create_resolucion_igac', [ResolucionesIgacController::class, 'store'])->name('resoluciones_igac.create_resolucion_igac')->middleware('checkdb');
+Route::post('update_resolucion_igac', [ResolucionesIgacController::class, 'update'])->name('resoluciones_igac.update_resolucion_igac')->middleware('checkdb');
+Route::post('delete_resolucion_igac', [ResolucionesIgacController::class, 'destroy'])->name('resoluciones_igac.delete_resolucion_igac')->middleware('checkdb');

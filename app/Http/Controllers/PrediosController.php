@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use App\Http\Requests\PrediosCreateFormRequest;
+use App\Http\Requests\PrediosExoneracionesVigenciaCreateFormRequest;
+use App\Http\Requests\PrediosExoneracionesVigenciaUpdateFormRequest;
 use App\Http\Requests\PrediosUpdateFormRequest;
 use App\Models\Predio;
 use App\Models\Opcion;
@@ -13,12 +15,13 @@ use App\Models\PredioAbono;
 use App\Models\PredioAcuerdoPago;
 use App\Models\PredioCalculo;
 use App\Models\PredioDato;
+use App\Models\PredioExoneracionVigencia;
 use App\Models\PredioPago;
 use App\Models\PredioPropietario;
 use App\Models\Propietario;
 use App\Models\Resolucion;
 use App\Models\ResolucionPredio;
-use App\Models\PrescripcionPredio;
+use App\Models\PredioPrescripcion;
 
 use Carbon\Carbon;
 use PDF;
@@ -49,12 +52,12 @@ class PrediosController extends Controller
         $predios = DB::table('predios')->join('zonas', function ($join) {
                         $join->on('predios.id_zona', '=', 'zonas.id');
                     })
-                    ->leftJoin('prescripciones_predios', 'predios.id', '=', 'prescripciones_predios.id_predio')
+                    ->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
                     //->select('predios.*', 'zonas.descripcion')
-                    ->select(DB::raw('predios.*, zonas.descripcion, COALESCE(prescripciones_predios.id_predio, 0) AS prescrito, prescripciones_predios.prescribe_hasta'))
+                    ->select(DB::raw('predios.*, zonas.descripcion, COALESCE(predios_prescripciones.id_predio, 0) AS prescrito, predios_prescripciones.prescribe_hasta'))
                     ->where('estado', 1)
                     ->get(); //paginate(5);
-        //dd($predios);
+
         $propietarios = DB::table('predios')
                                      ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
                                      ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
@@ -190,6 +193,7 @@ class PrediosController extends Controller
         $predio = new Predio();
         $predio_tmp = new Predio();
         $predio = Predio::find($request->id_edit);
+        $predio_tmp = Predio::find($request->id_edit);
         $predio->codigo_predio = $request->codigo_predio_edit;
         $predio->id_zona = $request->id_zona_edit;
         $predio->direccion = $request->direccion_edit;
@@ -220,12 +224,12 @@ class PrediosController extends Controller
                 }
                 else {
                     $resolucion->delete();
-                    $query = $predio_tmp->save();
+                    $predio_tmp->save();
                     return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n predio. Intente nuevamente.', 'tab_current' => $tab_current]);
                 }
             }
             else {
-                $query = $predio_tmp->save();
+                $predio_tmp->save();
                 return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
             }
         }
@@ -248,7 +252,8 @@ class PrediosController extends Controller
         $countPredios = DB::table('predios')
                             ->select(DB::raw('count(*) as cm_count')) // verificar si ya esta relacionada con otras tablas
                             ->where('id', $request->input_delete)
-                            ->where('estado', 1)->first();
+                            ->where('estado', 1)
+                            ->first();
 
         $tab_current = 'li-section-bar-2';
         $predio = new Predio();
@@ -277,13 +282,13 @@ class PrediosController extends Controller
                     else {
                         $resolucion->delete();
                         $predio->estado = 1;
-                        $query = $predio->save();
+                        $predio->save();
                         return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n predio. Intente nuevamente.', 'tab_current' => $tab_current]);
                     }
                 }
                 else {
                     $predio->estado = 1;
-                    $query = $predio->save();
+                    $predio->save();
                     return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
                 }
             }
@@ -310,11 +315,11 @@ class PrediosController extends Controller
         $tab_current = 'li-section-bar-2';
         $predio = new Predio();
         $predio = Predio::find($request->input_prescribe);
-        $prescripcion_predio = new PrescripcionPredio();
+        $predio_prescripcion = new PredioPrescripcion();
 
-        $prescripcion_predio->id_predio = $predio->id;
-        $prescripcion_predio->prescribe_hasta = $request->prescribe_hasta;
-        $query = $prescripcion_predio->save();
+        $predio_prescripcion->id_predio = $predio->id;
+        $predio_prescripcion->prescribe_hasta = $request->prescribe_hasta;
+        $query = $predio_prescripcion->save();
         if($query) {
             $resolucion = new Resolucion();
             $resolucion->numero_resolucion = $request->numero_resolucion;
@@ -334,12 +339,12 @@ class PrediosController extends Controller
                 }
                 else {
                     $resolucion->delete();
-                    $prescripcion_predio->delete();
+                    $predio_prescripcion->delete();
                     return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n predio. Intente nuevamente.', 'tab_current' => $tab_current]);
                 }
             }
             else {
-                $prescripcion_predio->delete();
+                $predio_prescripcion->delete();
                 return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
             }
         }
@@ -573,56 +578,38 @@ class PrediosController extends Controller
         }
     }
 
-    public function generateFacturaPDF(Request $request) {
-        if (!$request->session()->exists('userid')) {
-            return redirect('/');
-        }
+    public function show_predios_datos(Request $request) {
+        $predio_dato = PredioDato::where('id_predio', $request->id_predio)->first();
 
-        $predios = DB::table('predios')->join('zonas', function ($join) {
-            $join->on('predios.id_zona', '=', 'zonas.id');
-        })
-        ->leftJoin('prescripciones_predios', 'predios.id', '=', 'prescripciones_predios.id_predio')
-        ->select(DB::raw('predios.*, zonas.descripcion, COALESCE(prescripciones_predios.id_predio, 0) AS prescrito, prescripciones_predios.prescribe_hasta'))
-        ->where('estado', 1)
-        ->get();
+        $predio_propietarios = DB::table('predios_propietarios')
+                                   ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
+                                   ->select('propietarios.*', 'predios_propietarios.jerarquia')
+                                   ->where('predios_propietarios.id_predio', $request->id_predio)
+                                   ->orderBy('predios_propietarios.jerarquia', 'asc')
+                                   ->get();
 
-        $propietarios = DB::table('predios')
-                                ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
-                                ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
-                                ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
-            ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(CONCAT(propietarios.nombre, \' - \', propietarios.identificacion), \'<br />\') AS propietarios'))
-            ->where('predios.estado', 1)
-            ->groupBy('predios_propietarios.id_predio')
-            ->get();
+        $predio_calculo = PredioCalculo::where('id_predio', $request->id_predio)->first();
 
-        if($propietarios) {
-            foreach ($predios as $key => $predio) {
-                $desired_object = self::findInCollection($propietarios, 'id_predio', $predio->id);
-                if($desired_object) {
-                    $predio->propietarios = $desired_object->propietarios;
-                }
-                else {
-                    $predio->propietarios = 'Sin asignar';
-                }
-            }
-        }
-        else {
-            foreach ($predios as $key => $predio) {
-                $predio->propietarios = 'Sin asignar';
-            }
-        }
+        $predio_pago = PredioPago::where('id_predio', $request->id_predio)
+                        ->orderBy('id', 'desc')
+                        ->first();
 
-        $dt = Carbon::now();
+        $predio_acuerdo_pago = PredioAcuerdoPago::where('id_predio', $request->id_predio)->first();
 
-        $data = [
-            'title' => 'Predio',
-            'fecha' => $dt->toDateString(),
-            'hora' => $dt->isoFormat('h:mm:ss a'),
-            'predios' => $predios
-        ];
+        $predio_abonos = PredioAbono::where('id_predio', $request->id_predio)
+                        ->orderBy('id', 'asc')
+                        ->get();
 
-        $pdf = PDF::loadView('predios.facturaPDF', $data);
-        return $pdf->download($dt->toDateString() . '_' . str_replace(':', '-', $dt->toTimeString()) . '.pdf');
+        //$predio_proceso_historico = PredioAbono::where('id_predio', $request->id_predio)->first();
+
+        return response()->json([
+            'predio_dato' => $predio_dato,
+            'predio_propietarios' => $predio_propietarios,
+            'predio_calculo' => $predio_calculo,
+            'predio_pago' => $predio_pago,
+            'predio_acuerdo_pago' => $predio_acuerdo_pago,
+            'predio_abonos' => $predio_abonos
+        ]);
     }
 
     public function generateFacturaPDFByIdPredio(Request $request, $id) {
@@ -636,8 +623,8 @@ class PrediosController extends Controller
         $predios = DB::table('predios')->join('zonas', function ($join) {
             $join->on('predios.id_zona', '=', 'zonas.id');
         })
-        ->leftJoin('prescripciones_predios', 'predios.id', '=', 'prescripciones_predios.id_predio')
-        ->select(DB::raw('predios.*, zonas.descripcion, COALESCE(prescripciones_predios.id_predio, 0) AS prescrito, prescripciones_predios.prescribe_hasta'))
+        ->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
+        ->select(DB::raw('predios.*, zonas.descripcion, COALESCE(predios_prescripciones.id_predio, 0) AS prescrito, predios_prescripciones.prescribe_hasta'))
         ->where('estado', 1)
         ->where('predios.id', $id)
         ->get();
@@ -818,4 +805,248 @@ class PrediosController extends Controller
         return FALSE;
     }
 
+    /**
+     * Show the form for exoneracion de vigencia of a resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create_exoneraciones(Request $request, $id) {
+        if (!$request->session()->exists('userid')) {
+            return redirect('/');
+        }
+        $opcion = Opcion::where('id','=', base64_decode($id))->first();
+
+        $exoneraciones = DB::table('predios_exoneraciones_vigencia')
+                    ->join('predios', 'predios_exoneraciones_vigencia.id_predio', '=', 'predios.id')
+                    ->select('predios_exoneraciones_vigencia.*', 'predios.codigo_predio')
+                    ->where('predios_exoneraciones_vigencia.estado', 1)
+                    ->get();
+
+        $predios = DB::table('predios')
+                    ->leftJoin('predios_exoneraciones_vigencia', function ($join) {
+                        $join->on('predios.id', '=', 'predios_exoneraciones_vigencia.id_predio');
+                        $join->on('predios_exoneraciones_vigencia.estado', DB::raw(1));
+                    })
+                    ->select('predios.id', 'predios.codigo_predio')
+                    ->whereNull('predios_exoneraciones_vigencia.id')
+                    ->where('predios.estado', 1)
+                    ->get();
+
+        $conceptos_predios = DB::table('conceptos_predio')
+                                ->select('conceptos_predio.id', 'conceptos_predio.codigo', 'conceptos_predio.nombre')
+                                ->get();
+
+        $tab_current = 'li-section-bar-1';
+        if ($request->has('page')) {
+            $tab_current = 'li-section-bar-2';
+        }
+
+        //$request->session()->put('display_buttons', '1');
+
+        return view('predios.exoneraciones', ['opcion' => $opcion,
+                                            'exoneraciones' => $exoneraciones,
+                                            'predios' => $predios,
+                                            'conceptos_predios' => $conceptos_predios,
+                                            'tab_current' => $tab_current]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  PrediosExoneracionesVigenciaCreateFormRequest  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store_exoneraciones(PrediosExoneracionesVigenciaCreateFormRequest $request) {
+        if (!$request->session()->exists('userid')) {
+            return redirect('/');
+        }
+
+        $predio_exoneracion = new PredioExoneracionVigencia();
+        $predio_exoneracion->id_predio = $request->id_predio;
+        $predio_exoneracion->id_concepto_predio = $request->id_concepto_predio;
+        $predio_exoneracion->exoneracion_desde = $request->exoneracion_desde;
+        $predio_exoneracion->exoneracion_hasta = $request->exoneracion_hasta;
+        $predio_exoneracion->escritura = $request->escritura;
+        $predio_exoneracion->matricula = $request->matricula;
+        $predio_exoneracion->certificado_libertad = $request->certificado_libertad;
+        $query = $predio_exoneracion->save();
+        $tab_current = 'li-section-bar-1';
+
+        if($query) {
+            $resolucion = new Resolucion();
+            $resolucion->numero_resolucion = $request->numero_resolucion;
+            $resolucion->fecha_resolucion = Carbon::createFromFormat("Y-m-d", $request->fecha_resolucion)->format('Y-m-d');
+            $resolucion->firma_resolucion = strtoupper($request->firma_resolucion);
+            $query = $resolucion->save();
+            if($query) {
+                $resolucion_predio = new ResolucionPredio();
+                $predio = new Predio();
+                $predio = Predio::find($predio_exoneracion->id_predio);
+                $resolucion_predio->id_predio = $predio->id;
+                $resolucion_predio->id_resolucion = $resolucion->id;
+                $resolucion_predio->id_usuario = $request->session()->get('userid');
+                $resolucion_predio->descripcion = 'Registro de exoneración de vigencia predio ' . $predio->codigo_predio . ', desde: ' . $predio_exoneracion->exoneracion_desde . ', hasta: '. $predio_exoneracion->exoneracion_hasta;
+
+                $query = $resolucion_predio->save();
+                if($query) {
+                    return back()->with(['success' => 'La informaci&oacute;n se guard&oacute; satisfactoriamente.', 'tab_current' => $tab_current]);
+                }
+                else {
+                    $resolucion->delete();
+                    $predio_exoneracion->delete();
+                    return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n predio. Intente nuevamente.', 'tab_current' => $tab_current]);
+                }
+            }
+            else {
+                $predio_exoneracion->delete();
+                return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
+            }
+        }
+        else {
+            return back()->with(['fail' => 'No se pudo guardar la informaci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show_exoneraciones($id) {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit_exoneraciones($id) {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  PrediosExoneracionesVigenciaUpdateFormRequest  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update_exoneraciones(PrediosExoneracionesVigenciaUpdateFormRequest $request) {
+        if (!$request->session()->exists('userid')) {
+            return redirect('/');
+        }
+
+        $tab_current = 'li-section-bar-2';
+        $predio_exoneracion = new PredioExoneracionVigencia();
+        $predio_exoneracion_tmp = new PredioExoneracionVigencia();
+        $predio_exoneracion = PredioExoneracionVigencia::find($request->id_edit);
+        $predio_exoneracion_tmp = PredioExoneracionVigencia::find($request->id_edit);
+        $predio_exoneracion->id_predio = $request->id_predio_edit;
+        $predio_exoneracion->id_concepto_predio = $request->id_concepto_predio_edit;
+        $predio_exoneracion->exoneracion_desde = $request->exoneracion_desde_edit;
+        $predio_exoneracion->exoneracion_hasta = $request->exoneracion_hasta_edit;
+        $predio_exoneracion->escritura = $request->escritura_edit;
+        $predio_exoneracion->matricula = $request->matricula_edit;
+        $predio_exoneracion->certificado_libertad = $request->certificado_libertad_edit;
+        $query = $predio_exoneracion->save();
+
+        if($query) {
+            $resolucion = new Resolucion();
+            $resolucion->numero_resolucion = $request->numero_resolucion;
+            $resolucion->fecha_resolucion = Carbon::createFromFormat("Y-m-d", $request->fecha_resolucion)->format('Y-m-d');
+            $resolucion->firma_resolucion = strtoupper($request->firma_resolucion);
+            $query = $resolucion->save();
+            if($query) {
+                $resolucion_predio = new ResolucionPredio();
+                $predio = new Predio();
+                $predio = Predio::find($predio_exoneracion->id_predio);
+                $resolucion_predio->id_predio = $predio->id;
+                $resolucion_predio->id_resolucion = $resolucion->id;
+                $resolucion_predio->id_usuario = $request->session()->get('userid');
+                $resolucion_predio->descripcion = 'Actualización de exoneración de vigencia predio ' . $predio->codigo_predio;
+
+                $query = $resolucion_predio->save();
+                if($query) {
+                    return back()->with(['success' => 'La informaci&oacute;n se actualiz&oacute; satisfactoriamente.', 'tab_current' => $tab_current]);
+                }
+                else {
+                    $resolucion->delete();
+                    $predio_exoneracion_tmp->save();
+                    return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n predio. Intente nuevamente.', 'tab_current' => $tab_current]);
+                }
+            }
+            else {
+                $predio_exoneracion_tmp->save();
+                return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
+            }
+        }
+        else {
+            return back()->with(['fail' => 'No se pudo actualizar la informaci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy_exoneraciones(Request $request) {
+        if (!$request->session()->exists('userid')) {
+            return redirect('/');
+        }
+
+        $countPredios = DB::table('predios_exoneraciones_vigencia')
+                            ->select(DB::raw('count(*) as cm_count')) // verificar si ya esta relacionada con otras tablas
+                            ->where('id', $request->input_delete)
+                            ->where('estado', 1)
+                            ->first();
+
+        $tab_current = 'li-section-bar-2';
+        $predio_exoneracion = new PredioExoneracionVigencia();
+        $predio_exoneracion = PredioExoneracionVigencia::find($request->input_delete);
+
+        if($countPredios->cm_count > 0) {
+            $predio_exoneracion->estado = 0;
+            $query = $predio_exoneracion->save();
+            if($query) {
+                // $resolucion = new Resolucion();
+                // $resolucion->numero_resolucion = $request->numero_resolucion;
+                // $resolucion->fecha_resolucion = Carbon::createFromFormat("Y-m-d", $request->fecha_resolucion)->format('Y-m-d');
+                // $resolucion->firma_resolucion = strtoupper($request->firma_resolucion);
+                // $query = $resolucion->save();
+                // if($query) {
+                //     $resolucion_predio = new ResolucionPredio();
+                //     $resolucion_predio->id_predio = $predio_exoneracion->id;
+                //     $resolucion_predio->id_resolucion = $resolucion->id;
+                //     $resolucion_predio->id_usuario = $request->session()->get('userid');
+                //     $resolucion_predio->descripcion = 'Anulación de exoneraci&oacute;n del predio ' . $predio_exoneracion->codigo_predio;
+
+                //     $query = $resolucion_predio->save();
+                //     if($query) {
+                        return back()->with(['success' => 'El registro se anulo satisfactoriamente.', 'tab_current' => $tab_current]);
+                //     }
+                //     else {
+                //         $resolucion->delete();
+                //         $predio_exoneracion->estado = 1;
+                //         $query = $predio_exoneracion->save();
+                //         return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n de exoneraci&oacute;n del predio. Intente nuevamente.', 'tab_current' => $tab_current]);
+                //     }
+                // }
+                // else {
+                //     $predio_exoneracion->estado = 1;
+                //     $query = $predio_exoneracion->save();
+                //     return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
+                // }
+            }
+            else {
+                return back()->with(['fail' => 'No se pudo anular la exoneraci&oacute;n del predio. Intente nuevamente.', 'tab_current' => $tab_current]);
+            }
+        }
+        // else {
+        //     return back()->with(['fail' => 'No se pudo eliminar la informaci&oacute;n. La clase de mutaci&oacute;n <b>' . $predio->nombre . ' (' . $predio->codigo . ')</b> ya posee informaci&oacute;n asociada.', 'tab_current' => $tab_current]);
+        // }
+    }
 }

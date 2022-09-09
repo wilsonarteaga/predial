@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PrescripcionPredio extends Model
+class PredioPrescripcion extends Model
 {
     use HasFactory;
-    protected $table = 'prescripciones_predios';
+    protected $table = 'predios_prescripciones';
 }

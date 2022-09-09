@@ -36,8 +36,8 @@
                     <div class="sttabs tabs-style-bar">
                         <nav>
                             <ul>
-                            <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-pulse"><span>Nueva Resolución Igac</span></a></li>
-                                <li id="li-section-bar-2" class=""><a href="#section-bar-2" class="sticon icon-list"><span>Listado Resoluciones Igac</span></a></li>
+                            <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-pulse"><span>Nueva resoluci&oacute;n Igac</span></a></li>
+                                <li id="li-section-bar-2" class=""><a href="#section-bar-2" class="sticon icon-list"><span>Lista resoluciones Igac</span></a></li>
                                 <!-- <li class=""><a href="#section-bar-3" class="sticon ti-stats-up"><span>Analytics</span></a></li>
                                 <li class=""><a href="#section-bar-4" class="sticon ti-upload"><span>Upload</span></a></li>
                                 <li class=""><a href="#section-bar-5" class="sticon ti-settings"><span>Settings</span></a></li> -->
@@ -46,10 +46,10 @@
                         <div class="content-wrap">
                             <section id="section-bar-1" class="content-current">
                                 <div class="panel panel-inverse">
-                                <div class="panel-heading"><i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Informaci&oacute;n de Resoluciones Igac</div>
+                                <div class="panel-heading"><i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Informaci&oacute;n de resoluci&oacute;n Igac</div>
                                     <div class="panel-wrapper collapse in" aria-expanded="true">
                                         <div class="panel-body">
-                                        <form action="{{ route('resoluciones_igac.create_resoluciones_igac') }}" method="post" id="create-form">
+                                        <form action="{{ route('resoluciones_igac.create_resolucion_igac') }}" method="post" id="create-form">
                                                 @csrf
                                                 <div class="result">
                                                     @if(Session::get('success'))
@@ -69,15 +69,15 @@
                                                     <div class="row">
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                <label class="control-label">Año</label>
-                                                                <input type="text" id="ano" name="ano" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese Año" value="{{ old('ano') }}" maxlength="4">
+                                                                <label class="control-label">A&ntilde;o</label>
+                                                                <input type="text" id="ano" name="ano" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('ano') }}" maxlength="4">
                                                                 <span class="text-danger">@error('ano') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                <label class="control-label">Resolucion</label>
-                                                                <input type="text" id="resolucion" name="resolucion" class="form-control" autocomplete="off" placeholder="Ingrese resolucion" value="{{ old('resolucion') }}" maxlength="30">
+                                                                <label class="control-label">Resoluci&oacute;n</label>
+                                                                <input type="text" id="resolucion" name="resolucion" class="form-control" autocomplete="off" placeholder="Ingrese resoluci&oacute;n" value="{{ old('resolucion') }}" maxlength="30">
                                                                 <span class="text-danger">@error('resolucion') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -99,15 +99,15 @@
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                <label class="control-label">Codigo</label>
-                                                                <input type="text" id="codigo" name="codigo" class="form-control" autocomplete="off" placeholder="Ingrese codigo" value="{{ old('codigo') }}" maxlength="30">
+                                                                <label class="control-label">C&oacute;digo</label>
+                                                                <input type="text" id="codigo" name="codigo" class="form-control" autocomplete="off" placeholder="Ingrese c&oacute;digo" value="{{ old('codigo') }}" maxlength="30">
                                                                 <span class="text-danger">@error('codigo') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                <label class="control-label">Codigo Anterior</label>
-                                                                <input type="text" id="codigoanterio" name="codigoanterior" class="form-control" autocomplete="off" placeholder="Ingrese codigo anterior" value="{{ old('codigoanterior') }}" maxlength="30">
+                                                                <label class="control-label">C&oacute;digo anterior</label>
+                                                                <input type="text" id="codigoanterio" name="codigoanterior" class="form-control" autocomplete="off" placeholder="Ingrese c&oacute;digo anterior" value="{{ old('codigoanterior') }}" maxlength="30">
                                                                 <span class="text-danger">@error('codigoanterior') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -116,21 +116,21 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tipo</label>
-                                                                <input type="text" id="tipo" name="tipo" class="form-control uppercase" autocomplete="off" placeholder="Ingrese Tipo" value="{{ old('tipo') }}" maxlength="30">
+                                                                <input type="text" id="tipo" name="tipo" class="form-control uppercase" autocomplete="off" placeholder="Ingrese tipo" value="{{ old('tipo') }}" maxlength="30">
                                                                 <span class="text-danger">@error('tipo') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                <label class="control-label">Tipo Registro</label>
-                                                                <input type="text" id="tiporegistro" name="tiporegistro" class="form-control" autocomplete="off" placeholder="Ingrese Tipo Registro" value="{{ old('tiporegistro') }}" maxlength="30">
+                                                                <label class="control-label">Tipo registro</label>
+                                                                <input type="text" id="tiporegistro" name="tiporegistro" class="form-control" autocomplete="off" placeholder="Ingrese tipo registro" value="{{ old('tiporegistro') }}" maxlength="30">
                                                                 <span class="text-danger">@error('tiporegistro') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                <label class="control-label">N&uacute;mero Orden</label>
-                                                                <input type="text" id="numeroorden" name="numeroorden" class="form-control" autocomplete="off" placeholder="Ingrese Número Orden" value="{{ old('numeroorden') }}" maxlength="30">
+                                                                <label class="control-label">N&uacute;mero orden</label>
+                                                                <input type="text" id="numeroorden" name="numeroorden" class="form-control" autocomplete="off" placeholder="Ingrese n&uacute;mero orden" value="{{ old('numeroorden') }}" maxlength="30">
                                                                 <span class="text-danger">@error('numeroorden') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -138,22 +138,22 @@
                                                     <div class="row">
                                                     <div class="col-md-4">
                                                             <div class="form-group">
-                                                                <label class="control-label">Avaluo</label>
-                                                                <input type="text" id="avaluoigac" name="avaluoigac" class="form-control" autocomplete="off" placeholder="Ingrese Avaluo" value="{{ old('avaluoigac') }}" maxlength="30">
+                                                                <label class="control-label">Aval&uacute;o</label>
+                                                                <input type="text" id="avaluoigac" name="avaluoigac" class="form-control" autocomplete="off" placeholder="Ingrese aval&uacute;o" value="{{ old('avaluoigac') }}" maxlength="30">
                                                                 <span class="text-danger">@error('avaluoigac') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                          <div class="col-md-4">
                                                             <div class="form-group">
-                                                                <label class="control-label">Area</label>
-                                                                <input type="text" id="area" name="area" class="form-control" autocomplete="off" placeholder="Ingrese Area" value="{{ old('area') }}" maxlength="30">
+                                                                <label class="control-label">&Aacute;rea</label>
+                                                                <input type="text" id="area" name="area" class="form-control" autocomplete="off" placeholder="Ingrese &aacute;rea" value="{{ old('area') }}" maxlength="30">
                                                                 <span class="text-danger">@error('area') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label class="control-label">Nombre</label>
-                                                                <input type="text" id="nombre" name="nombre" class="form-control" autocomplete="off" placeholder="Ingrese Nombre" value="{{ old('nombre') }}" maxlength="30">
+                                                                <input type="text" id="nombre" name="nombre" class="form-control" autocomplete="off" placeholder="Ingrese nombre" value="{{ old('nombre') }}" maxlength="30">
                                                                 <span class="text-danger">@error('nombre') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -188,45 +188,45 @@
                                                         </div>
                                                     @endif
                                                 </div>
-                                                <h2>Lista de tipos de Resoluciones igac</h2>
+                                                <h2>Lista de resoluciones Igac</h2>
                                                 <table id="myTable" class="table table-hover table-striped table-bordered">
                                                     <thead>
                                                         <tr>
-                                                            <th class="cell_center">Ano</th>
-                                                            <th class="cell_center">Resolucion</th>
+                                                            <th class="cell_center">A&ntilde;o</th>
+                                                            <th class="cell_center">Resoluci&oacute;n</th>
                                                             <th class="cell_center">Fecha</th>
                                                             <th class="cell_center">Consecutivo</th>
-                                                            <th class="cell_center">Codigo</th>
-                                                            <th class="cell_center">Codigo Anterior</th>
+                                                            <th class="cell_center">C&oacute;digo</th>
+                                                            <th class="cell_center">C&oacute;digo nnterior</th>
                                                             <th class="cell_center">Tipo</th>
-                                                            <th class="cell_center">Tipo Registro</th>
-                                                            <th class="cell_center">Numero Orden</th>
-                                                            <th class="cell_center">Avaluo</th>
-                                                            <th class="cell_center">Area</th>
+                                                            <th class="cell_center">Tipo registro</th>
+                                                            <th class="cell_center">N&uacute;mero orden</th>
+                                                            <th class="cell_center">Aval&uacute;o</th>
+                                                            <th class="cell_center">&Aacute;rea</th>
                                                             <th class="cell_center">Nombre</th>
-                                                            <th class="cell_center">opciones</th>
+                                                            <th class="cell_center">Opciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         @if(count($resoluciones_igac) > 0)
-                                                            @foreach($resoluciones_igac as $resoluciones_igac)
-                                                            <tr style="cursor: pointer;" json-data='@json($resoluciones_igac)'>
-                                                                <td class="cell_center edit_row">{{ $resoluciones_igac->ano }}</td>
-                                                                <td class="cell_center edit_row">{{ $resoluciones_igac->resolucion }}</td> --}}
-                                                                <td class="edit_row cell_center">{{ $resoluciones_igac->fecha }}</td>
-                                                                <td class="edit_row">{{ $resoluciones_igac->consecutivo }}</td>
-                                                                <td class="edit_row">{{ $resoluciones_igac->codigo }}</td>
-                                                                <td class="edit_row">{{ $resoluciones_igac->codigoanterior }}</td>
-                                                                <td class="edit_row">{{ $resoluciones_igac->tipo }}</td>
-                                                                <td class="edit_row">{{ $resoluciones_igac->tiporegistro }}</td>
-                                                                <td class="edit_row">{{ $resoluciones_igac->numeroorden }}</td>
-                                                                <td class="edit_row">{{ $resoluciones_igac->avaluoigac }}</td>
-                                                                <td class="edit_row">{{ $resoluciones_igac->area }}</td>
-                                                                <td class="edit_row">{{ $resoluciones_igac->nombre }}</td> --}}
+                                                            @foreach($resoluciones_igac as $resolucion_igac)
+                                                            <tr style="cursor: pointer;" json-data='@json($resolucion_igac)'>
+                                                                <td class="cell_center edit_row">{{ $resolucion_igac->ano }}</td>
+                                                                <td class="cell_center edit_row">{{ $resolucion_igac->resolucion }}</td>
+                                                                <td class="edit_row cell_center">{{ $resolucion_igac->fecha }}</td>
+                                                                <td class="edit_row">{{ $resolucion_igac->consecutivo }}</td>
+                                                                <td class="edit_row">{{ $resolucion_igac->codigo }}</td>
+                                                                <td class="edit_row">{{ $resolucion_igac->codigoanterior }}</td>
+                                                                <td class="edit_row">{{ $resolucion_igac->tipo }}</td>
+                                                                <td class="edit_row">{{ $resolucion_igac->tiporegistro }}</td>
+                                                                <td class="edit_row">{{ $resolucion_igac->numeroorden }}</td>
+                                                                <td class="edit_row">{{ $resolucion_igac->avaluoigac }}</td>
+                                                                <td class="edit_row">{{ $resolucion_igac->area }}</td>
+                                                                <td class="edit_row">{{ $resolucion_igac->nombre }}</td>
                                                                 <td class="cell_center">
-                                                                    <button type="button" ide="{{ $resoluciones_igac->id }}" class="modify_row btn btn-info"><i class="fa fa-pencil-square"></i></button>
+                                                                    <button type="button" ide="{{ $resolucion_igac->id }}" class="modify_row btn btn-info"><i class="fa fa-pencil-square"></i></button>
                                                                     &nbsp;&nbsp;
-                                                                    <button type="button" ide="{{ $resoluciones_igac->id }}" class="delete_row btn btn-inverse"><i class="fa fa-trash-o"></i></button>
+                                                                    <button type="button" ide="{{ $resolucion_igac->id }}" class="delete_row btn btn-inverse"><i class="fa fa-trash-o"></i></button>
                                                                 </td>
                                                             </tr>
                                                             @endforeach
@@ -240,7 +240,7 @@
                                                 {{-- <div class="pagination-blobk">
                                                     {{ $resoluciones_igac->links('layouts.paginationlinks') }}
                                                 </div> --}}
-                                                <form id="form_delete" action="{{ route('resoluciones_igac.delete_resoluciones_igac') }}" method="post" style="display: none;">
+                                                <form id="form_delete" action="{{ route('resoluciones_igac.delete_resolucion_igac') }}" method="post" style="display: none;">
                                                     @csrf
                                                     <input type="hidden" id="input_delete" name="input_delete">
                                                 </form>
@@ -249,10 +249,10 @@
                                     </div>
                                 </div>
                                 <div id="div_edit_form" class="panel panel-info" style="display: none;">
-                                    <div class="panel-heading"><i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Actualizar informaci&oacute;n de la Resolucion Igac</div>
+                                    <div class="panel-heading"><i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Actualizar informaci&oacute;n de resoluci&oacute;n Igac</div>
                                     <div class="panel-wrapper collapse in" aria-expanded="true">
                                         <div class="panel-body">
-                                            <form action="{{ route('resoluciones_igac.update_resoluciones_igac') }}" method="post" id="update-form">
+                                            <form action="{{ route('resoluciones_igac.update_resolucion_igac') }}" method="post" id="update-form">
 
 
                                                 <div class="form-body">
@@ -260,15 +260,15 @@
                                                     <div class="row">
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                <label class="control-label">Año</label>
-                                                                <input type="text" id="ano_edit" name="ano_edit" class="form-control uppercase" autocomplete="off" placeholder="Ingrese Año" value="{{ old('ano_edit') }}" maxlength="10">
+                                                                <label class="control-label">A&ntilde;o</label>
+                                                                <input type="text" id="ano_edit" name="ano_edit" class="form-control uppercase" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('ano_edit') }}" maxlength="10">
                                                                 <span class="text-danger">@error('ano_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                <label class="control-label">Resolucion</label>
-                                                                <input type="text" id="resolucion_edit" name="resolucion_edit" class="form-control" autocomplete="off" placeholder="Ingrese resolucion" value="{{ old('resolucion_edit') }}" maxlength="30">
+                                                                <label class="control-label">Resoluci&oacute;n</label>
+                                                                <input type="text" id="resolucion_edit" name="resolucion_edit" class="form-control" autocomplete="off" placeholder="Ingrese resoluci&oacute;n" value="{{ old('resolucion_edit') }}" maxlength="30">
                                                                 <span class="text-danger">@error('resolucion_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -290,15 +290,15 @@
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                <label class="control-label">Codigo</label>
-                                                                <input type="text" id="codigo_edit" name="codigo_edit" class="form-control" autocomplete="off" placeholder="Ingrese codigo" value="{{ old('codigo_edit') }}" maxlength="30">
+                                                                <label class="control-label">C&oacute;digo</label>
+                                                                <input type="text" id="codigo_edit" name="codigo_edit" class="form-control" autocomplete="off" placeholder="Ingrese c&oacute;digo" value="{{ old('codigo_edit') }}" maxlength="30">
                                                                 <span class="text-danger">@error('codigo_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                <label class="control-label">Codigo Anterior</label>
-                                                                <input type="text" id="codigoanterio_edit" name="codigoanterior_edit" class="form-control" autocomplete="off" placeholder="Ingrese codigo anterior" value="{{ old('codigoanterior_edit') }}" maxlength="30">
+                                                                <label class="control-label">C&oacute;digo anterior</label>
+                                                                <input type="text" id="codigoanterio_edit" name="codigoanterior_edit" class="form-control" autocomplete="off" placeholder="Ingrese c&oacute;digo anterior" value="{{ old('codigoanterior_edit') }}" maxlength="30">
                                                                 <span class="text-danger">@error('codigoanterior_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -307,21 +307,21 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tipo</label>
-                                                                <input type="text" id="tipo_edit" name="tipo_edit" class="form-control uppercase" autocomplete="off" placeholder="Ingrese Tipo" value="{{ old('tipo_edit') }}" maxlength="30">
+                                                                <input type="text" id="tipo_edit" name="tipo_edit" class="form-control uppercase" autocomplete="off" placeholder="Ingrese tipo" value="{{ old('tipo_edit') }}" maxlength="30">
                                                                 <span class="text-danger">@error('tipo_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                <label class="control-label">Tipo Registro</label>
-                                                                <input type="text" id="tiporegistro_edit" name="tiporegistro_edit" class="form-control" autocomplete="off" placeholder="Ingrese Tipo Registro" value="{{ old('tiporegistro_edit') }}" maxlength="30">
+                                                                <label class="control-label">Tipo registro</label>
+                                                                <input type="text" id="tiporegistro_edit" name="tiporegistro_edit" class="form-control" autocomplete="off" placeholder="Ingrese tipo registro" value="{{ old('tiporegistro_edit') }}" maxlength="30">
                                                                 <span class="text-danger">@error('tiporegistro_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                <label class="control-label">N&uacute;mero Orden</label>
-                                                                <input type="text" id="numeroorden_edit" name="numeroorden_edit" class="form-control" autocomplete="off" placeholder="Ingrese Número Orden" value="{{ old('numeroorden_edit') }}" maxlength="30">
+                                                                <label class="control-label">N&uacute;mero orden</label>
+                                                                <input type="text" id="numeroorden_edit" name="numeroorden_edit" class="form-control" autocomplete="off" placeholder="Ingrese n&uacute;mero orden" value="{{ old('numeroorden_edit') }}" maxlength="30">
                                                                 <span class="text-danger">@error('numeroorden_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -329,22 +329,22 @@
                                                     <div class="row">
                                                     <div class="col-md-4">
                                                             <div class="form-group">
-                                                                <label class="control-label">Avaluo</label>
-                                                                <input type="text" id="area_edit" name="area_edit" class="form-control" autocomplete="off" placeholder="Ingrese Avaluo" value="{{ old('area_edit') }}" maxlength="30">
-                                                                <span class="text-danger">@error('area_edit') {{ $message }} @enderror</span>
+                                                                <label class="control-label">Aval&uacute;o</label>
+                                                                <input type="text" id="avaluoigac_edit" name="avaluoigac_edit" class="form-control" autocomplete="off" placeholder="Ingrese aval&uacute;o" value="{{ old('avaluoigac_edit') }}" maxlength="30">
+                                                                <span class="text-danger">@error('avaluoigac_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                          <div class="col-md-4">
                                                             <div class="form-group">
-                                                                <label class="control-label">Area</label>
-                                                                <input type="text" id="area_edit" name="area_edit" class="form-control" autocomplete="off" placeholder="Ingrese Area" value="{{ old('area_edit') }}" maxlength="30">
+                                                                <label class="control-label">&Aacute;rea</label>
+                                                                <input type="text" id="area_edit" name="area_edit" class="form-control" autocomplete="off" placeholder="Ingrese &aacute;rea" value="{{ old('area_edit') }}" maxlength="30">
                                                                 <span class="text-danger">@error('area_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label class="control-label">Nombre</label>
-                                                                <input type="text" id="nombre_edit" name="nombre_edit" class="form-control" autocomplete="off" placeholder="Ingrese Nombre" value="{{ old('nombre_edit') }}" maxlength="30">
+                                                                <input type="text" id="nombre_edit" name="nombre_edit" class="form-control" autocomplete="off" placeholder="Ingrese nombre" value="{{ old('nombre_edit') }}" maxlength="30">
                                                                 <span class="text-danger">@error('nombre_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -358,7 +358,6 @@
                                     </div>
                                 </div>
                             </section>
-
                         </div>
                     </div>
                 </section>

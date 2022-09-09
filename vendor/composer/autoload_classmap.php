@@ -108,7 +108,7 @@ return array(
     'App\\Models\\PredioDato' => $baseDir . '/app/Models/PredioDato.php',
     'App\\Models\\PredioPago' => $baseDir . '/app/Models/PredioPago.php',
     'App\\Models\\PredioPropietario' => $baseDir . '/app/Models/PredioPropietario.php',
-    'App\\Models\\PrescripcionPredio' => $baseDir . '/app/Models/PrescripcionPredio.php',
+    'App\\Models\\PredioPrescripcion' => $baseDir . '/app/Models/PredioPrescripcion.php',
     'App\\Models\\Propietario' => $baseDir . '/app/Models/Propietario.php',
     'App\\Models\\Remision' => $baseDir . '/app/Models/Remision.php',
     'App\\Models\\Resolucion' => $baseDir . '/app/Models/Resolucion.php',

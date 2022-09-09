@@ -133,7 +133,7 @@
                                                         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Zona:</label>
-                                                                <select id="id_zona" name="id_zona" class="form-control selectpicker show-tick" data-live-search="true" title="Seleccione...">
+                                                                <select id="id_zona" name="id_zona" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" title="Seleccione...">
                                                                     @if(count($zonas) > 0)
                                                                         @foreach($zonas as $zona)
                                                                         <option value="{{ $zona->id }}" {{ old('id_zona') == $zona->id ? 'selected' : '' }}>{{ $zona->descripcion }}</option>
@@ -338,7 +338,7 @@
                                 <div id="div_edit_form" class="panel panel-info" style="display: none; margin-bottom: 0px">
                                     <div class="panel-heading">
                                         <i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Actualizar informaci&oacute;n del predio
-                                        <small class="text-danger pull-right" style="font-weight: bold; text-decoration: blink; display: none; color: #000; font-size: 20px;">Predio prescrito hasta <span id="span_prescribe_hasta"></span></small>
+                                        <small class="text-danger pull-right" style="font-weight: bold; display: none; color: rgb(12, 130, 188); font-size: 20px;">Predio prescrito hasta <span id="span_prescribe_hasta"></span></small>
                                     </div>
                                     <div class="panel-wrapper collapse in" aria-expanded="true">
                                         <div class="panel-body">
@@ -348,17 +348,18 @@
                                                 Esto aplica solo para los formularios que necesitan una resolucion para edicion.
                                             --}}
                                             {{-- Campos --}}
-                                            {{-- <input class="resolucion_validate_field_level" type="hidden" field="codigo_predio_edit" value="" /> --}}
+                                            {{-- <input class="resolucion_validate_field_level-update-form" type="hidden" field="codigo_predio_edit" value="" /> --}}
 
                                             {{--
                                                 Aqui se establece el id del formulario que se desea validar.
                                                 Esto aplica solo para los formularios que necesitan una resolucion para edicion.
                                                 Si se usa validacion de formulario no se deben usar campos aislados.
                                                 En caso de que se use validacion de campos y formulario, se ignora los campos aislados
-                                                y se hace una validcion completa del formulario.
+                                                y se hace una validacion completa del formulario.
+                                                Cada campo dentro del formulario necesita llevar la clase res-validate.
                                             --}}
                                             {{-- Formulario --}}
-                                            <input class="resolucion_validate_form_level" type="hidden" value="update-form" />
+                                            <input class="resolucion_validate_form_level-update-form" type="hidden" value="update-form" />
                                             @endif
                                             <form action="{{ route('predios.update_predios') }}" method="post" id="update-form">
                                                 @csrf
@@ -429,7 +430,7 @@
                                                         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Zona:</label>
-                                                                <select id="id_zona_edit" name="id_zona_edit" class="form-control selectpicker show-tick res-validate" data-live-search="true" title="Seleccione...">
+                                                                <select id="id_zona_edit" name="id_zona_edit" class="form-control selectpicker show-tick res-validate" data-live-search="true" data-size="5" title="Seleccione...">
                                                                     @if(count($zonas) > 0)
                                                                         @foreach($zonas as $zona)
                                                                         <option value="{{ $zona->id }}" {{ old('id_zona_edit') == $zona->id ? 'selected' : '' }}>{{ $zona->descripcion }}</option>
@@ -541,7 +542,7 @@
                                                     </div> --}}
                                                 </div>
                                                 <div class="form-actions m-t-20">
-                                                    <button id="btn_save_edit" type="button" class="btn btn-info"> <i class="fa fa-save"></i> Actualizar informaci&oacute;n</button>
+                                                    <button id="btn_save_edit" type="button" class="btn btn-info" desc="predio"> <i class="fa fa-save"></i> Actualizar informaci&oacute;n</button>
                                                     <button id="btn_cancel_edit" type="button" class="btn btn-default"> <i class="fa fa-thumbs-down"></i> Cancelar</button>
                                                 </div>
                                             </form>
@@ -556,7 +557,7 @@
                                                                     <div class="col-lg-6 col-md-6 col-sm-9 col-xs-12">
                                                                         <div class="form-group">
                                                                             <label class="control-label">Banco:</label>
-                                                                            <select id="id_banco" name="id_banco" class="form-control selectpicker-noval show-tick" data-live-search="true" title="Sin informaci&oacute;n..." readonly="true">
+                                                                            <select id="id_banco" name="id_banco" class="form-control selectpicker-noval show-tick" data-live-search="true" data-size="5" title="Sin informaci&oacute;n..." readonly="true">
                                                                                 @if(count($bancos) > 0)
                                                                                     @foreach($bancos as $banco)
                                                                                     <option value="{{ $banco->id }}" {{ old('id_banco') == $banco->id ? 'selected' : '' }}>{{ $banco->codigo }} - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>
@@ -718,7 +719,7 @@
                                     <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">Tipo predio:</label>
-                                            <select id="id_tipo_predio" name="id_tipo_predio" class="form-control selectpicker-noval show-tick" data-live-search="true" title="Seleccione..." data-container="#modal-datos-basicos">
+                                            <select id="id_tipo_predio" name="id_tipo_predio" class="form-control selectpicker-noval show-tick" data-live-search="true" data-size="5" title="Seleccione..." data-container="#modal-datos-basicos">
                                                 @if(count($tipos_predio) > 0)
                                                     @foreach($tipos_predio as $tipo_predio)
                                                     <option value="{{ $tipo_predio->id }}" {{ old('id_tipo_predio') == $tipo_predio->id ? 'selected' : '' }}>{{ $tipo_predio->nombre }}</option>
@@ -730,7 +731,7 @@
                                     <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">Clase predio:</label>
-                                            <select id="id_clase_predio" name="id_clase_predio" class="form-control selectpicker-noval show-tick" data-live-search="true" title="Seleccione..." data-container="#modal-datos-basicos">
+                                            <select id="id_clase_predio" name="id_clase_predio" class="form-control selectpicker-noval show-tick" data-live-search="true" data-size="5" title="Seleccione..." data-container="#modal-datos-basicos">
                                                 @if(count($clases_predio) > 0)
                                                     @foreach($clases_predio as $clase_predio)
                                                     <option value="{{ $clase_predio->id }}" {{ old('id_clase_predio') == $clase_predio->id ? 'selected' : '' }}>{{ $clase_predio->nombre }}</option>
@@ -742,7 +743,7 @@
                                     <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">Clase mutaci&oacute;n:</label>
-                                            <select id="id_clase_mutacion" name="id_clase_mutacion" class="form-control selectpicker-noval show-tick" data-live-search="true" title="Seleccione..." data-container="#modal-datos-basicos">
+                                            <select id="id_clase_mutacion" name="id_clase_mutacion" class="form-control selectpicker-noval show-tick" data-live-search="true" data-size="5" title="Seleccione..." data-container="#modal-datos-basicos">
                                                 @if(count($clases_mutacion) > 0)
                                                     @foreach($clases_mutacion as $clase_mutacion)
                                                     <option value="{{ $clase_mutacion->id }}" {{ old('id_clase_mutacion') == $clase_mutacion->id ? 'selected' : '' }}>{{ $clase_mutacion->nombre }}</option>
@@ -917,7 +918,7 @@
                                     <div class="col-lg-8 col-md-8 col-sm-9 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">C&oacute;digo tarifa:</label>
-                                            <select id="id_tarifa_predial" name="id_tarifa_predial" class="form-control selectpicker-noval show-tick" data-live-search="true" title="Seleccione..." data-container="#modal-datos-calculo">
+                                            <select id="id_tarifa_predial" name="id_tarifa_predial" class="form-control selectpicker-noval show-tick" data-live-search="true" data-size="5" title="Seleccione..." data-container="#modal-datos-calculo">
                                                 @if(count($tarifas_predial) > 0)
                                                     @foreach($tarifas_predial as $tarifa_predial)
                                                     <option data-subtext="<br />a&ntilde;o: {{ $tarifa_predial->anio }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c&oacute;digo: {{ $tarifa_predial->codigo }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tarifa: {{ $tarifa_predial->tarifa }}" value="{{ $tarifa_predial->id }}" {{ old('id_tarifa_predial') == $tarifa_predial->id ? 'selected' : '' }}>{{ $tarifa_predial->descripcion }}</option>
@@ -961,7 +962,7 @@
                                     <div class="col-lg-6 col-md-6 col-sm-9 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">Banco:</label>
-                                            <select id="id_banco" name="id_banco" class="form-control selectpicker-noval show-tick" data-live-search="true" title="Seleccione..." data-container="#modal-datos-pagos">
+                                            <select id="id_banco" name="id_banco" class="form-control selectpicker-noval show-tick" data-live-search="true" data-size="5" title="Seleccione..." data-container="#modal-datos-pagos">
                                                 @if(count($bancos) > 0)
                                                     @foreach($bancos as $banco)
                                                     <option value="{{ $banco->id }}" {{ old('id_banco') == $banco->id ? 'selected' : '' }}>{{ $banco->codigo }} - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>
