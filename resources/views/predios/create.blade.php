@@ -361,7 +361,7 @@
                                             {{-- Formulario --}}
                                             <input class="resolucion_validate_form_level-update-form" type="hidden" value="update-form" />
                                             @endif
-                                            <form action="{{ route('predios.update_predios') }}" method="post" id="update-form">
+                                            <form action="{{ route('predios.update_predios') }}" method="post" id="update-form" desc-to-resolucion-modal="predio">
                                                 @csrf
 
                                                 <div class="form-body">
@@ -542,7 +542,7 @@
                                                     </div> --}}
                                                 </div>
                                                 <div class="form-actions m-t-20">
-                                                    <button id="btn_save_edit" type="button" class="btn btn-info" desc="predio"> <i class="fa fa-save"></i> Actualizar informaci&oacute;n</button>
+                                                    <button id="btn_save_edit" type="button" class="btn btn-info"> <i class="fa fa-save"></i> Actualizar informaci&oacute;n</button>
                                                     <button id="btn_cancel_edit" type="button" class="btn btn-default"> <i class="fa fa-thumbs-down"></i> Cancelar</button>
                                                 </div>
                                             </form>

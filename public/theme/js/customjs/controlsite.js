@@ -110,14 +110,16 @@ $(document).ready(function() {
 
     if ($('#btn_save_edit').length > 0) {
         $('#btn_save_edit').off('click').on('click', function() {
-            checkSaveResolucion($(this).closest('form'), $(this).attr('desc'));
+            if($('#update-form').valid()) {
+                checkSaveResolucion($(this).closest('form'), $(this).closest('form').attr('desc-to-resolucion-modal'));
+            }
         });
     }
 
     if ($('#btn_save_create').length > 0) {
         $('#btn_save_create').off('click').on('click', function() {
             if($('#create-form').valid()) {
-                checkSaveResolucion($(this).closest('form'), $(this).attr('desc'));
+                checkSaveResolucion($(this).closest('form'), $(this).closest('form').attr('desc-to-resolucion-modal'));
             }
         });
     }
@@ -618,54 +620,54 @@ $(document).ready(function() {
     //     $('#matricula').inputmask('999-99999999');
     // }
 
-    if($('#exoneracion_desde').length > 0) {
-        $('#exoneracion_desde').off('keyup blur change').on('keyup blur change', function() {
-            if($(this).val().length === 4) {
-                if($('#exoneracion_hasta').val().length === 4) {
-                    var validatorCreate = $("#create-form").validate();
-                    validatorCreate.resetForm();
-                    $.each($('.has-success'), function(i, el) {
-                        $(el).removeClass('has-success');
-                    });
-                    $.each($('.has-error'), function(i, el) {
-                        $(el).removeClass('has-error');
-                    });
-                    $('#create-form').validate().element($('#exoneracion_hasta'));
-                }
-            }
-        });
-        $('#exoneracion_hasta').off('keyup blur change').on('keyup blur change', function() {
-            if($(this).val().length === 4) {
-                if($('#exoneracion_desde').val().length === 4) {
-                    $('#create-form').validate().element($('#exoneracion_desde'));
-                    $('#exoneracion_desde').trigger('blur');
-                }
-            }
-        });
-        $('#exoneracion_desde_edit').off('keyup blur change').on('keyup blur change', function() {
-            if($(this).val().length === 4) {
-                if($('#exoneracion_hasta_edit').val().length === 4) {
-                    var validatorUpdate = $("#update-form").validate();
-                    validatorUpdate.resetForm();
-                    $.each($('.has-success'), function(i, el) {
-                        $(el).removeClass('has-success');
-                    });
-                    $.each($('.has-error'), function(i, el) {
-                        $(el).removeClass('has-error');
-                    });
-                    $('#create-form').validate().element($('#exoneracion_hasta_edit'));
-                }
-            }
-        });
-        $('#exoneracion_hasta_edit').off('keyup blur change').on('keyup blur change', function() {
-            if($(this).val().length === 4) {
-                if($('#exoneracion_desde_edit').val().length === 4) {
-                    $('#update-form').validate().element($('#exoneracion_desde_edit'));
-                    $('#exoneracion_desde_edit').trigger('blur');
-                }
-            }
-        });
-    }
+    // if($('#exoneracion_desde').length > 0) {
+    //     $('#exoneracion_desde').off('keyup blur change').on('keyup blur change', function() {
+    //         if($(this).val().length === 4) {
+    //             if($('#exoneracion_hasta').val().length === 4) {
+    //                 var validatorCreate = $("#create-form").validate();
+    //                 validatorCreate.resetForm();
+    //                 $.each($('.has-success'), function(i, el) {
+    //                     $(el).removeClass('has-success');
+    //                 });
+    //                 $.each($('.has-error'), function(i, el) {
+    //                     $(el).removeClass('has-error');
+    //                 });
+    //                 $('#create-form').validate().element($('#exoneracion_hasta'));
+    //             }
+    //         }
+    //     });
+    //     $('#exoneracion_hasta').off('keyup blur change').on('keyup blur change', function() {
+    //         if($(this).val().length === 4) {
+    //             if($('#exoneracion_desde').val().length === 4) {
+    //                 $('#create-form').validate().element($('#exoneracion_desde'));
+    //                 $('#exoneracion_desde').trigger('blur');
+    //             }
+    //         }
+    //     });
+    //     $('#exoneracion_desde_edit').off('keyup blur change').on('keyup blur change', function() {
+    //         if($(this).val().length === 4) {
+    //             if($('#exoneracion_hasta_edit').val().length === 4) {
+    //                 var validatorUpdate = $("#update-form").validate();
+    //                 validatorUpdate.resetForm();
+    //                 $.each($('.has-success'), function(i, el) {
+    //                     $(el).removeClass('has-success');
+    //                 });
+    //                 $.each($('.has-error'), function(i, el) {
+    //                     $(el).removeClass('has-error');
+    //                 });
+    //                 $('#update-form').validate().element($('#exoneracion_hasta_edit'));
+    //             }
+    //         }
+    //     });
+    //     $('#exoneracion_hasta_edit').off('keyup blur change').on('keyup blur change', function() {
+    //         if($(this).val().length === 4) {
+    //             if($('#exoneracion_desde_edit').val().length === 4) {
+    //                 $('#update-form').validate().element($('#exoneracion_desde_edit'));
+    //                 $('#exoneracion_desde_edit').trigger('blur');
+    //             }
+    //         }
+    //     });
+    // }
 });
 
 function setData(jsonObj) {
@@ -838,7 +840,7 @@ function addButtonsPredios() {
 }
 
 function checkSaveResolucion(form, desc_operacion) {
-    console.log($('.resolucion_validate_form_level-' + $(form).attr('id')).length);
+    //console.log($('.resolucion_validate_form_level-' + $(form).attr('id')).length);
     var show_resoluciones_modal = false;
     if ($('.resolucion_validate_form_level-' + $(form).attr('id')).length > 0) { // Validacion a nivel de formulario
         $.each($('.res-validate'), function(i, el) {

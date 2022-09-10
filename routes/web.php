@@ -16,6 +16,8 @@ use App\Http\Controllers\PrediosController;
 use App\Http\Controllers\TarifasPredialController;
 use App\Http\Controllers\TiposPredioController;
 use App\Http\Controllers\ResolucionesIgacController;
+use App\Http\Controllers\PrediosExoneracionesController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -203,17 +205,11 @@ Route::post('/list/pagos_fecha', [PagosController::class, 'list_pagos_fecha']);
 //PrediosController
 Route::get('registro_predios/{id}', [PrediosController::class, 'create'])->middleware('checkdb');
 Route::get('registro_predios', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
-Route::get('registro_exoneracion/{id}', [PrediosController::class, 'create_exoneraciones'])->middleware('checkdb');
-Route::get('registro_exoneracion', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
 
 Route::post('create_predios', [PrediosController::class, 'store'])->name('predios.create_predios')->middleware('checkdb');
 Route::post('update_predios', [PrediosController::class, 'update'])->name('predios.update_predios')->middleware('checkdb');
 Route::post('delete_predios', [PrediosController::class, 'destroy'])->name('predios.delete_predios')->middleware('checkdb');
 Route::post('prescribe_predios', [PrediosController::class, 'prescribe'])->name('predios.prescribe_predios')->middleware('checkdb');
-
-Route::post('create_exoneraciones', [PrediosController::class, 'store_exoneraciones'])->name('predios.create_exoneraciones')->middleware('checkdb');
-Route::post('update_exoneraciones', [PrediosController::class, 'update_exoneraciones'])->name('predios.update_exoneraciones')->middleware('checkdb');
-Route::post('delete_exoneraciones', [PrediosController::class, 'destroy_exoneraciones'])->name('predios.delete_exoneraciones')->middleware('checkdb');
 
 Route::get('/show/predios_datos', [PrediosController::class, 'show_predios_datos']);
 Route::get('generate_factura_pdf/{id}', [PrediosController::class, 'generateFacturaPDFByIdPredio'])->name('predios.generarfacturapredio')->middleware('checkdb');
@@ -232,6 +228,17 @@ Route::post('/store/predios_datos_acuerdos_pago', [PrediosController::class, 'st
 Route::post('/store/predios_datos_abonos', [PrediosController::class, 'store_predios_datos_abonos']);
 //procesos_historicos
 Route::post('/store/predios_datos_procesos_historicos', [PrediosController::class, 'store_predios_datos_procesos_historicos']);
+
+//PrediosExoneracionesController
+Route::get('registro_exoneracion/{id}', [PrediosExoneracionesController::class, 'create'])->middleware('checkdb');
+Route::get('registro_exoneracion', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
+
+Route::post('create_exoneraciones', [PrediosExoneracionesController::class, 'store'])->name('prediosexoneraciones.create_exoneraciones')->middleware('checkdb');
+//Route::post('update_exoneraciones', [PrediosExoneracionesController::class, 'update'])->name('prediosexoneraciones.update_exoneraciones')->middleware('checkdb');
+Route::post('update_exoneraciones', function(){
+    dd('ruta OK');
+});
+Route::post('delete_exoneraciones', [PrediosExoneracionesController::class, 'destroy'])->name('prediosexoneraciones.delete_exoneraciones')->middleware('checkdb');
 
 //TarifasPredialController
 Route::get('registro_tarifaspredial/{id}', [TarifasPredialController::class, 'create'])->middleware('checkdb');

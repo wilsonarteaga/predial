@@ -3,6 +3,7 @@ $(document).ready(function() {
     $('#save_resolucion').off('click').on('click', function() {
         var form = $("#resolucion-form");
         if (form.valid()) {
+            $('.datohidden').remove();
             var input_numero_resolucion = $('<input class="datohidden" id="numero_resolucion" name="numero_resolucion" type="hidden" value="' + $('#numero_resolucion_modal').val() + '"  />');
             $('#' + global_form_to_send).prepend(input_numero_resolucion);
 
@@ -34,7 +35,6 @@ $(document).ready(function() {
                 }*/
         },
         messages: {
-            name: "Please specify your name",
             numero_resolucion_modal: "N&uacute;mero de resoluci&oacute;n requerido.",
             fecha_resolucion_modal: "Fecha de resoluci&oacute;n requerida",
             firma_resolucion_modal: "Elaborado por requerido."

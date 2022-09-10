@@ -255,7 +255,7 @@
                                                 <div class="form-body">
                                                     <input type="hidden" id="id_edit" name="id_edit" value="{{ old('id_edit') }}">
                                                     <div class="row">
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo predio:</label>
                                                                 <input type="hidden" id="id_predio_edit" name="id_predio_edit" value="{{ old('id_predio_edit') }}">
@@ -263,14 +263,27 @@
                                                                 {{-- <span class="text-danger">@error('id_predio_edit') {{ $message }} @enderror</span> --}}
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Concepto predio:</label>
+                                                                <select id="id_concepto_predio_edit" name="id_concepto_predio_edit" class="form-control selectpicker show-tick res-validate" data-live-search="true" data-size="5" title="Sin informaci&oacute;n...">
+                                                                    @if(count($conceptos_predios) > 0)
+                                                                        @foreach($conceptos_predios as $concepto_predio)
+                                                                        <option value="{{ $concepto_predio->id }}" {{ old('id_concepto_predio_edit') == $concepto_predio->id ? 'selected' : '' }} data-subtext="{{ $concepto_predio->codigo }}">{{ $concepto_predio->nombre }}</option>
+                                                                        @endforeach
+                                                                    @endif
+                                                                </select>
+                                                                <span class="text-danger">@error('id_predio') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Desde:</label>
                                                                 <input type="text" id="exoneracion_desde_edit" name="exoneracion_desde_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese exoneraci&oacute;n desde" value="{{ old('exoneracion_desde_edit') }}" maxlength="4">
                                                                 <span class="text-danger">@error('exoneracion_desde_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Hasta:</label>
                                                                 <input type="text" id="exoneracion_hasta_edit" name="exoneracion_hasta_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese exoneraci&oacute;n hasta" value="{{ old('exoneracion_hasta_edit') }}" maxlength="4">
