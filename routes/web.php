@@ -234,10 +234,7 @@ Route::get('registro_exoneracion/{id}', [PrediosExoneracionesController::class, 
 Route::get('registro_exoneracion', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
 
 Route::post('create_exoneraciones', [PrediosExoneracionesController::class, 'store'])->name('prediosexoneraciones.create_exoneraciones')->middleware('checkdb');
-//Route::post('update_exoneraciones', [PrediosExoneracionesController::class, 'update'])->name('prediosexoneraciones.update_exoneraciones')->middleware('checkdb');
-Route::post('update_exoneraciones', function(){
-    dd('ruta OK');
-});
+Route::post('update_exoneraciones', [PrediosExoneracionesController::class, 'update'])->name('prediosexoneraciones.update_exoneraciones')->middleware('checkdb');
 Route::post('delete_exoneraciones', [PrediosExoneracionesController::class, 'destroy'])->name('prediosexoneraciones.delete_exoneraciones')->middleware('checkdb');
 
 //TarifasPredialController

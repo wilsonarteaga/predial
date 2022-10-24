@@ -6,6 +6,7 @@
     <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
     {!! JsValidator::formRequest('App\Http\Requests\ResolucionesIgacCreateFormRequest', '#create-form'); !!}
     {!! JsValidator::formRequest('App\Http\Requests\ResolucionesIgacUpdateFormRequest', '#update-form'); !!}
+    <script src="{!! asset('theme/js/autonumeric.min.js') !!}"></script>
     <script src="{!! asset('theme/js/customjs/controlsite.js') !!}"></script>
 @endpush
 @if(Session::get('tab_current'))
