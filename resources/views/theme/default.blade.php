@@ -28,6 +28,8 @@
     <link href="{!! asset('theme/bootstrap/jqdatepicker/datepicker.min.css') !!}" rel="stylesheet" />
     <link href="{!! asset('theme/plugins/bower_components/clockpicker/dist/bootstrap-clockpicker.min.css') !!}" rel="stylesheet" />
     <link href="{!! asset('theme/plugins/bower_components/bootstrap-select/bootstrap-select.min.css') !!}" rel="stylesheet" />
+    <!--select2 CSS -->
+    <link href="{!! asset('theme/plugins/bower_components/select2/css/select2.min.css') !!}" rel="stylesheet" type="text/css">
     <!--alerts CSS -->
     <link href="{!! asset('theme/plugins/bower_components/sweetalert/sweetalert.css') !!}" rel="stylesheet" type="text/css">
     <!-- animation CSS -->
@@ -143,6 +145,11 @@
 
     <!-- DataTables JavaScript -->
     <script src="{!! asset('theme/plugins/bower_components/datatables/jquery.dataTables.min.js') !!}"></script>
+
+    <!-- Select2 JavaScript -->
+    <script src="{!! asset('theme/plugins/bower_components/select2/js/select2.full.min.js') !!}"></script>
+    <script src="{!! asset('theme/plugins/bower_components/select2/js/i18n/es.js') !!}"></script>
+
     <!-- start - This is for export functionality only -->
     <script src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.flash.min.js"></script>

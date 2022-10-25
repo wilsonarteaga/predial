@@ -94,12 +94,14 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo predio:</label>
-                                                                <select id="id_predio" name="id_predio" class="form-control selectpicker show-tick res-validate" data-live-search="true" data-size="5" title="Sin informaci&oacute;n...">
+                                                                {{-- <select id="id_predio" name="id_predio" class="form-control selectpicker show-tick res-validate" data-live-search="true" data-size="5" title="Sin informaci&oacute;n...">
                                                                     @if(count($predios) > 0)
                                                                         @foreach($predios as $predio)
                                                                         <option value="{{ $predio->id }}" {{ old('id_predio') == $predio->id ? 'selected' : '' }}>{{ $predio->codigo_predio }}</option>
                                                                         @endforeach
                                                                     @endif
+                                                                </select> --}}
+                                                                <select id="id_predio" class="form-control" name="id_predio">
                                                                 </select>
                                                                 <span class="text-danger">@error('id_predio') {{ $message }} @enderror</span>
                                                             </div>

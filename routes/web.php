@@ -232,10 +232,12 @@ Route::post('/store/predios_datos_procesos_historicos', [PrediosController::clas
 //PrediosExoneracionesController
 Route::get('registro_exoneracion/{id}', [PrediosExoneracionesController::class, 'create'])->middleware('checkdb');
 Route::get('registro_exoneracion', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
+Route::get('/filter_exoneraciones', [PrediosExoneracionesController::class, 'buscar']);
 
 Route::post('create_exoneraciones', [PrediosExoneracionesController::class, 'store'])->name('prediosexoneraciones.create_exoneraciones')->middleware('checkdb');
 Route::post('update_exoneraciones', [PrediosExoneracionesController::class, 'update'])->name('prediosexoneraciones.update_exoneraciones')->middleware('checkdb');
 Route::post('delete_exoneraciones', [PrediosExoneracionesController::class, 'destroy'])->name('prediosexoneraciones.delete_exoneraciones')->middleware('checkdb');
+
 
 //TarifasPredialController
 Route::get('registro_tarifaspredial/{id}', [TarifasPredialController::class, 'create'])->middleware('checkdb');

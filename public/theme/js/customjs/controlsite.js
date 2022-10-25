@@ -667,8 +667,80 @@ $(document).ready(function() {
                 }
             }
         });
+
+        $('#id_predio').select2({
+            language: "es",
+            placeholder: "Buscar...",
+            allowClear: true,
+            ajax: {
+                url: "/filter_exoneraciones",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                  return {
+                    q: params.term, // search term
+                    page: params.page
+                  };
+                },
+                processResults: function (data, params) {
+                  // parse the results into the format expected by Select2
+                  // since we are using custom formatting functions we do not need to
+                  // alter the remote JSON data, except to indicate that infinite
+                  // scrolling can be used
+                  params.page = params.page || 1;
+
+                  return {
+                    results: data.items,
+                    pagination: {
+                      more: (params.page * 30) < data.total_count
+                    }
+                  };
+                },
+                cache: true
+            },
+            //placeholder: 'Search for a repository',
+            minimumInputLength: 3,
+            templateResult: formatRepo,
+            templateSelection: formatRepoSelection
+        });
     }
 });
+
+function formatRepo (repo) {
+    if (repo.loading) {
+      return repo.text;
+    }
+
+    var $container = $(
+      "<div class='select2-result-repository clearfix'>" +
+        "<div class='select2-result-repository__avatar'><img src=' data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABg2lDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9TpSJVBztIcchQO1kQFXGUKhbBQmkrtOpgcukXNGlIUlwcBdeCgx+LVQcXZ10dXAVB8APE0clJ0UVK/F9SaBHjwXE/3t173L0DhGaVqWbPBKBqlpFOxMVcflUMvELAIIAwohIz9WRmMQvP8XUPH1/vYjzL+9yfY0ApmAzwicRzTDcs4g3imU1L57xPHGJlSSE+Jx436ILEj1yXXX7jXHJY4JkhI5ueJw4Ri6UulruYlQ2VeJo4oqga5Qs5lxXOW5zVap2178lfGCxoKxmu0xxFAktIIgURMuqooAoLMVo1UkykaT/u4Q87/hS5ZHJVwMixgBpUSI4f/A9+d2sWpybdpGAc6H2x7Y8xILALtBq2/X1s260TwP8MXGkdf60JzH6S3uhokSNgaBu4uO5o8h5wuQOMPOmSITmSn6ZQLALvZ/RNeWD4Fuhfc3tr7+P0AchSV8s3wMEhEC1R9rrHu/u6e/v3TLu/H1bmcpz7VyktAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH5gIOADAkdZOkTgAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAIlSURBVDjLpZNNSBQBFMd/Mzvu4Izj+LWt7CGo1FxWV1lNPajZh0KGC5467MWjgVDQsWvXSEoSvAXVsUC7hFFaHUpUZNK09BKo+LXq7jrTzuY6HcJCXMPof33v/d7/Pd4TYmaSTMpVZFpaw3cBRoYHb7WHr91wHMcHcMJTeP9BX+8SgJSpuLmpTckr0B9vbSc6AVpaw6dSqR+SaSU7VCU7qes5D/dzDwEikS6fqqnPtrYT9Z7ykjcA63MLnVlZkg2gacrOwED/t4yA7u6eysXltReiKHjzg/6hEV2/JCHQ4M4aSnz+2pbJrbC/g0ikq3Vxee255BJTUnXFuzFVC+9V1AMO4vQYdWZicHdqugnQvN7C9qdPHg0DCI7jcP5yx/XEjtXnluWlZFVg3lD1i06wAdzyrzYpG8H4QNCMvc42ZsrspO3TcpSe0VdD/ULjhav34gnzplvJnjRDQWk2zxPEXwMu10Gv6TTMTuDfXjfUSWM3ZX0P5Wpqr6vkbOCMKArRaE2VOu87XUdZFYji4WFFETw+oum0V9HkhfxodFSW3Yaw6zhMvX9J7Ux8nKLiGo6jjZWJ8YBeW93YhmRaNqWhFlgdO5Az11yJN0cBYHXHovztpz/BomJKQ3WYlp35kACM1U0KYiYAm0n7SDNHAppOeinOVQFYiZvwZenfAItxCzu9B8D6Ef/yV8C5j3PH2qfIf+q3A/+d24IoCMcq2nMcgSvDAPwEi5vDOoBfr5EAAAAASUVORK5CYII=' /></div>" +
+        "<div class='select2-result-repository__meta'>" +
+          "<div class='select2-result-repository__title'></div>" +
+          "<div class='select2-result-repository__description'></div>" +
+        //   "<div class='select2-result-repository__statistics'>" +
+        //     "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i> </div>" +
+        //     "<div class='select2-result-repository__stargazers'><i class='fa fa-star'></i> </div>" +
+        //     "<div class='select2-result-repository__watchers'><i class='fa fa-eye'></i> </div>" +
+        //   "</div>" +
+        "</div>" +
+      "</div>"
+    );
+
+    $container.find(".select2-result-repository__title").text(repo.text);
+    $container.find(".select2-result-repository__description").text(repo.codigo_predio);
+
+    //$container.find(".select2-result-repository__title").text(repo.full_name);
+    // $container.find(".select2-result-repository__description").text(repo.description);
+    // $container.find(".select2-result-repository__forks").append(repo.forks_count + " Forks");
+    // $container.find(".select2-result-repository__stargazers").append(repo.stargazers_count + " Stars");
+    // $container.find(".select2-result-repository__watchers").append(repo.watchers_count + " Watchers");
+
+    return $container;
+}
+
+function formatRepoSelection (repo) {
+    return repo.codigo_predio || repo.text;
+}
 
 function setData(jsonObj) {
     $('#div_table').fadeOut(function() {
