@@ -669,40 +669,104 @@ $(document).ready(function() {
         });
     }
 
-    $('#id_predio.select2').select2({
-        language: "es",
-        placeholder: "Buscar...",
-        allowClear: true,
-        minimumInputLength: 3,
-        ajax: {
-            url: "/filter_exoneraciones",
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-              return {
-                q: params.term, // search term
-                page: params.page
-              };
-            },
-            processResults: function (data, params) {
-              // parse the results into the format expected by Select2
-              // since we are using custom formatting functions we do not need to
-              // alter the remote JSON data, except to indicate that infinite
-              // scrolling can be used
-              params.page = params.page || 1;
+    if($('#id_predio.select2').length > 0) {
+        $('#id_predio.select2').select2({
+            language: "es",
+            placeholder: "Buscar...",
+            allowClear: true,
+            minimumInputLength: 3,
+            ajax: {
+                url: "/filter_exoneraciones",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                return {
+                    q: params.term, // search term
+                    page: params.page
+                };
+                },
+                processResults: function (data, params) {
+                // parse the results into the format expected by Select2
+                // since we are using custom formatting functions we do not need to
+                // alter the remote JSON data, except to indicate that infinite
+                // scrolling can be used
+                params.page = params.page || 1;
 
-              return {
-                results: data.items,
-                pagination: {
-                  more: (params.page * 30) < data.total_count
-                }
-              };
+                return {
+                    results: data.items,
+                    pagination: {
+                    more: (params.page * 30) < data.total_count
+                    }
+                };
+                },
+                cache: true
             },
-            cache: true
-        },
-        templateResult: formatRepo,
-        templateSelection: formatRepoSelection
-    });
+            templateResult: formatRepo,
+            templateSelection: formatRepoSelection
+        });
+
+        $('#id_predio.select2').on('select2:select', function (e) {
+            if ($("#create-form").length > 0) {
+                $('#create-form').validate().element($('#id_predio.select2'));
+            }
+        });
+
+        $('#id_predio.select2').on('select2:clear', function (e) {
+            if ($("#create-form").length > 0) {
+                $('#create-form').validate().element($('#id_predio.select2'));
+            }
+        });
+    }
+
+    if($('#id_predio_edit.select2').length > 0) {
+        $('#id_predio_edit.select2').select2({
+            language: "es",
+            placeholder: "Buscar...",
+            allowClear: true,
+            minimumInputLength: 3,
+            ajax: {
+                url: "/filter_exoneraciones",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                return {
+                    q: params.term, // search term
+                    page: params.page
+                };
+                },
+                processResults: function (data, params) {
+                // parse the results into the format expected by Select2
+                // since we are using custom formatting functions we do not need to
+                // alter the remote JSON data, except to indicate that infinite
+                // scrolling can be used
+                params.page = params.page || 1;
+
+                return {
+                    results: data.items,
+                    pagination: {
+                    more: (params.page * 30) < data.total_count
+                    }
+                };
+                },
+                cache: true
+            },
+            templateResult: formatRepo,
+            templateSelection: formatRepoSelection
+        });
+
+        $('#id_predio_edit.select2').on('select2:select', function (e) {
+            if ($("#update-form").length > 0) {
+                $('#update-form').validate().element($('#id_predio_edit.select2'));
+            }
+        });
+
+        $('#id_predio_edit.select2').on('select2:clear', function (e) {
+            if ($("#update-form").length > 0) {
+                $('#update-form').validate().element($('#id_predio_edit.select2'));
+            }
+        });
+    }
+
 });
 
 function formatRepo (repo) {

@@ -31,6 +31,18 @@ textarea.form-control {
     color: #f30c07;
 }
 
+.has-error span.select2 span.selection span.select2-selection.select2-selection--single {
+    border-color: #ff7676;
+}
+
+.has-success span.select2 span.selection span.select2-selection.select2-selection--single {
+    border-color: #53e69d;
+}
+
+span.select2 span.selection span.select2-selection.select2-selection--single {
+    border: 1px solid #e4e7ea;
+}
+
 .help-block.error-help-block {
     color: #f30c07;
 }
