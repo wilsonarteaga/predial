@@ -37,7 +37,7 @@ class PrediosExoneracionesCreateFormRequest extends FormRequest
     public function messages()
     {
         return [
-            'id_predio.required' => 'El campo codigo predio es obligatorio.',
+            'id_predio.required' => 'El campo código predio es obligatorio.',
             'id_concepto_predio.required' => 'El campo concepto predio es obligatorio.',
             'exoneracion_desde.required' => 'El campo exoneración desde es obligatorio.',
             'exoneracion_desde.min' => 'Mínimo año permitido :min',

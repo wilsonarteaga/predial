@@ -120,12 +120,14 @@
                                                         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo predio:</label>
-                                                                <select id="id_predio" name="id_predio" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" title="Sin informaci&oacute;n...">
+                                                                {{-- <select id="id_predio" name="id_predio" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" title="Sin informaci&oacute;n...">
                                                                     @if(count($predios) > 0)
                                                                         @foreach($predios as $predio)
                                                                         <option value="{{ $predio->id }}" {{ old('id_predio') == $predio->id ? 'selected' : '' }}>{{ $predio->codigo_predio }}</option>
                                                                         @endforeach
                                                                     @endif
+                                                                </select> --}}
+                                                                <select id="id_predio" class="form-control select2" name="id_predio">
                                                                 </select>
                                                                 <span class="text-danger">@error('id_predio') {{ $message }} @enderror</span>
                                                             </div>
@@ -181,8 +183,8 @@
                                 <div id="div_table" class="row">
                                     <div class="col-lg-12">
                                         <div class="well">
-                                            @if(isset($pagos))
-                                                <div class="result">
+                                            {{-- @if(isset($pagos)) --}}
+                                                {{-- <div class="result">
                                                     @if(Session::get('success'))
                                                         <div class="alert alert-success">
                                                             {!! Session::get('success') !!}
@@ -193,7 +195,7 @@
                                                             {!! Session::get('fail') !!}
                                                         </div>
                                                     @endif
-                                                </div>
+                                                </div> --}}
                                                 <h2>Lista de pagos</h2>
                                                 <form id="pagos-filtro-form">
                                                     <div class="row">
@@ -230,24 +232,22 @@
                                                 {{-- <div class="pagination-blobk">
                                                     {{ $pagos->links('layouts.paginationlinks') }}
                                                 </div> --}}
-                                                <form id="form_delete" action="{{ route('pagos.delete_pagos') }}" method="post" style="display: none;">
+                                                {{-- <form id="form_delete" action="{{ route('pagos.delete_pagos') }}" method="post" style="display: none;">
                                                     @csrf
                                                     <input type="hidden" id="input_delete" name="input_delete">
-                                                </form>
-                                            @endif
+                                                </form> --}}
+                                            {{-- @endif --}}
                                         </div>
                                     </div>
                                 </div>
-                                <div id="div_edit_form" class="panel panel-info" style="display: none; margin-bottom: 0px">
+                                {{-- <div id="div_edit_form" class="panel panel-info" style="display: none; margin-bottom: 0px">
                                     <div class="panel-heading"><i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Actualizar informaci&oacute;n del pago</div>
                                     <div class="panel-wrapper collapse in" aria-expanded="true">
                                         <div class="panel-body">
                                             <form action="{{ route('pagos.update_pagos') }}" method="post" id="update-form">
                                                 @csrf
-
                                                 <div class="form-body">
                                                     <input type="hidden" id="id_edit" name="id_edit" value="{{ old('id_edit') }}">
-
                                                     <div class="row">
                                                         <div class="col-lg-3 col-md-3 col-sm-5 col-xs-12">
                                                             <div class="form-group">
@@ -341,132 +341,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-
-                                                    {{-- <div class="row">
-                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">C&oacute;digo pago:</label>
-                                                                <input type="text" id="codigo_pago_edit" name="codigo_pago_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo pago" value="{{ old('codigo_pago_edit') }}" readonly="readonly">
-                                                                <span class="text-danger">@error('codigo_pago_edit') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-                                                        <div id="div_tipo_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6" style="opacity: 0;">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Tipo:</label>
-                                                                <input type="hidden" id="tipo_edit" name="tipo_edit" value="{{ old('tipo_edit') }}">
-                                                                <span id="span_tipo_edit" class="span_pago"></span>
-                                                                <span class="text-danger">@error('tipo_edit') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-                                                        <div id="div_sector_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6" style="opacity: 0;">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Sector:</label>
-                                                                <input type="hidden" id="sector_edit" name="sector_edit" value="{{ old('sector_edit') }}">
-                                                                <span id="span_sector_edit" class="span_pago"></span>
-                                                                <span class="text-danger">@error('sector_edit') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-
-                                                        <div id="div_manzana_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6" style="opacity: 0;">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Manzana:</label>
-                                                                <input type="hidden" id="manzana_edit" name="manzana_edit" value="{{ old('manzana_edit') }}">
-                                                                <span id="span_manzana_edit" class="span_pago"></span>
-                                                                <span class="text-danger">@error('manzana_edit') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-
-                                                        <div id="div_pago_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6" style="opacity: 0;">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Predio:</label>
-                                                                <input type="hidden" id="pago_edit" name="pago_edit" value="{{ old('pago_edit') }}">
-                                                                <span id="span_pago_edit" class="span_pago"></span>
-                                                                <span class="text-danger">@error('pago_edit') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-
-                                                        <div id="div_mejora_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6" style="opacity: 0;">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Mejora:</label>
-                                                                <input type="hidden" id="mejora_edit" name="mejora_edit" value="{{ old('mejora_edit') }}">
-                                                                <span id="span_mejora_edit" class="span_pago"></span>
-                                                                <span class="text-danger">@error('mejora_edit') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="col-lg-offset-1 col-lg-2 col-md-offset-1 col-md-2 col-sm-offset-1 col-sm-3 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Zona:</label>
-                                                                <select id="id_zona_edit" name="id_zona_edit" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" title="Seleccione...">
-                                                                    @if(count($zonas) > 0)
-                                                                        @foreach($zonas as $zona)
-                                                                        <option value="{{ $zona->id }}" {{ old('id_zona_edit') == $zona->id ? 'selected' : '' }}>{{ $zona->descripcion }}</option>
-                                                                        @endforeach
-                                                                    @endif
-                                                                </select>
-                                                                <span class="text-danger">@error('id_zona_edit') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="row">
-                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Direcci&oacute;n:</label>
-                                                                <input type="text" id="direccion_edit" name="direccion_edit" class="form-control" autocomplete="off" placeholder="Ingrese direcci&oacute;n" value="{{ old('direccion_edit') }}" maxlength="128">
-                                                                <span class="text-danger">@error('direccion_edit') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="row">
-                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">&Aacute;rea metros:</label>
-                                                                <input type="text" id="area_metros_edit" name="area_metros_edit" class="form-control" autocomplete="off" placeholder="Ingrese &aacute;rea metros" value="{{ old('area_metros_edit') }}">
-                                                                <span class="text-danger">@error('area_metros_edit') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">&Aacute;rea construida:</label>
-                                                                <input type="text" id="area_construida_edit" name="area_construida_edit" class="form-control" autocomplete="off" placeholder="Ingrese &aacute;rea construida" value="{{ old('area_construida_edit') }}">
-                                                                <span class="text-danger">@error('area_construida_edit') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">&Aacute;rea hect&aacute;reas:</label>
-                                                                <input type="text" id="area_hectareas_edit" name="area_hectareas_edit" class="form-control" autocomplete="off" placeholder="Ingrese &aacute;rea hect&aacute;reas" value="{{ old('area_hectareas_edit') }}">
-                                                                <span class="text-danger">@error('area_hectareas_edit') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Tarifa actual:</label>
-                                                                <input type="text" id="tarifa_actual_edit" name="tarifa_actual_edit" class="form-control" autocomplete="off" placeholder="Ingrese tarifa actual" value="{{ old('tarifa_actual_edit') }}">
-                                                                <span class="text-danger">@error('tarifa_actual_edit') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="row">
-                                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Aval&uacute;o:</label>
-                                                                <input type="text" id="avaluo_edit" name="avaluo_edit" class="form-control" autocomplete="off" placeholder="Ingrese aval&uacute;o" value="{{ old('avaluo_edit') }}">
-                                                                <span class="text-danger">@error('avaluo_edit') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">&Uacute;ltimo a&ntilde;o pago:</label>
-                                                                <input type="text" id="ultimo_anio_pago_edit" name="ultimo_anio_pago_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('ultimo_anio_pago_edit') }}" maxlength="4">
-                                                                <span class="text-danger">@error('ultimo_anio_pago_edit') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-                                                    </div> --}}
-
                                                 </div>
                                                 <div class="form-actions m-t-20">
                                                     <button type="submit" class="btn btn-info"> <i class="fa fa-save"></i> Actualizar informaci&oacute;n</button>
@@ -475,7 +349,7 @@
                                             </form>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                             </section>
                             <!-- <section id="section-bar-3" class="">
                                 <h2>Tabbing 3</h2></section>

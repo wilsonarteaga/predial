@@ -667,43 +667,42 @@ $(document).ready(function() {
                 }
             }
         });
-
-        $('#id_predio').select2({
-            language: "es",
-            placeholder: "Buscar...",
-            allowClear: true,
-            ajax: {
-                url: "/filter_exoneraciones",
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                  return {
-                    q: params.term, // search term
-                    page: params.page
-                  };
-                },
-                processResults: function (data, params) {
-                  // parse the results into the format expected by Select2
-                  // since we are using custom formatting functions we do not need to
-                  // alter the remote JSON data, except to indicate that infinite
-                  // scrolling can be used
-                  params.page = params.page || 1;
-
-                  return {
-                    results: data.items,
-                    pagination: {
-                      more: (params.page * 30) < data.total_count
-                    }
-                  };
-                },
-                cache: true
-            },
-            //placeholder: 'Search for a repository',
-            minimumInputLength: 3,
-            templateResult: formatRepo,
-            templateSelection: formatRepoSelection
-        });
     }
+
+    $('#id_predio.select2').select2({
+        language: "es",
+        placeholder: "Buscar...",
+        allowClear: true,
+        minimumInputLength: 3,
+        ajax: {
+            url: "/filter_exoneraciones",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+              return {
+                q: params.term, // search term
+                page: params.page
+              };
+            },
+            processResults: function (data, params) {
+              // parse the results into the format expected by Select2
+              // since we are using custom formatting functions we do not need to
+              // alter the remote JSON data, except to indicate that infinite
+              // scrolling can be used
+              params.page = params.page || 1;
+
+              return {
+                results: data.items,
+                pagination: {
+                  more: (params.page * 30) < data.total_count
+                }
+              };
+            },
+            cache: true
+        },
+        templateResult: formatRepo,
+        templateSelection: formatRepoSelection
+    });
 });
 
 function formatRepo (repo) {
@@ -713,21 +712,23 @@ function formatRepo (repo) {
 
     var $container = $(
       "<div class='select2-result-repository clearfix'>" +
-        "<div class='select2-result-repository__avatar'><img src=' data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABg2lDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9TpSJVBztIcchQO1kQFXGUKhbBQmkrtOpgcukXNGlIUlwcBdeCgx+LVQcXZ10dXAVB8APE0clJ0UVK/F9SaBHjwXE/3t173L0DhGaVqWbPBKBqlpFOxMVcflUMvELAIIAwohIz9WRmMQvP8XUPH1/vYjzL+9yfY0ApmAzwicRzTDcs4g3imU1L57xPHGJlSSE+Jx436ILEj1yXXX7jXHJY4JkhI5ueJw4Ri6UulruYlQ2VeJo4oqga5Qs5lxXOW5zVap2178lfGCxoKxmu0xxFAktIIgURMuqooAoLMVo1UkykaT/u4Q87/hS5ZHJVwMixgBpUSI4f/A9+d2sWpybdpGAc6H2x7Y8xILALtBq2/X1s260TwP8MXGkdf60JzH6S3uhokSNgaBu4uO5o8h5wuQOMPOmSITmSn6ZQLALvZ/RNeWD4Fuhfc3tr7+P0AchSV8s3wMEhEC1R9rrHu/u6e/v3TLu/H1bmcpz7VyktAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH5gIOADAkdZOkTgAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAIlSURBVDjLpZNNSBQBFMd/Mzvu4Izj+LWt7CGo1FxWV1lNPajZh0KGC5467MWjgVDQsWvXSEoSvAXVsUC7hFFaHUpUZNK09BKo+LXq7jrTzuY6HcJCXMPof33v/d7/Pd4TYmaSTMpVZFpaw3cBRoYHb7WHr91wHMcHcMJTeP9BX+8SgJSpuLmpTckr0B9vbSc6AVpaw6dSqR+SaSU7VCU7qes5D/dzDwEikS6fqqnPtrYT9Z7ykjcA63MLnVlZkg2gacrOwED/t4yA7u6eysXltReiKHjzg/6hEV2/JCHQ4M4aSnz+2pbJrbC/g0ikq3Vxee255BJTUnXFuzFVC+9V1AMO4vQYdWZicHdqugnQvN7C9qdPHg0DCI7jcP5yx/XEjtXnluWlZFVg3lD1i06wAdzyrzYpG8H4QNCMvc42ZsrspO3TcpSe0VdD/ULjhav34gnzplvJnjRDQWk2zxPEXwMu10Gv6TTMTuDfXjfUSWM3ZX0P5Wpqr6vkbOCMKArRaE2VOu87XUdZFYji4WFFETw+oum0V9HkhfxodFSW3Yaw6zhMvX9J7Ux8nKLiGo6jjZWJ8YBeW93YhmRaNqWhFlgdO5Az11yJN0cBYHXHovztpz/BomJKQ3WYlp35kACM1U0KYiYAm0n7SDNHAppOeinOVQFYiZvwZenfAItxCzu9B8D6Ef/yV8C5j3PH2qfIf+q3A/+d24IoCMcq2nMcgSvDAPwEi5vDOoBfr5EAAAAASUVORK5CYII=' /></div>" +
+        "<div class='select2-result-repository__avatar'><img src='data:image/png;base64,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' /></div>" +
+        //"<div class='select2-result-repository__avatar'>" + repo.text + "</div>" +
         "<div class='select2-result-repository__meta'>" +
           "<div class='select2-result-repository__title'></div>" +
           "<div class='select2-result-repository__description'></div>" +
-        //   "<div class='select2-result-repository__statistics'>" +
-        //     "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i> </div>" +
+           "<div class='select2-result-repository__statistics'>" +
+             "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i> </div>" +
         //     "<div class='select2-result-repository__stargazers'><i class='fa fa-star'></i> </div>" +
         //     "<div class='select2-result-repository__watchers'><i class='fa fa-eye'></i> </div>" +
-        //   "</div>" +
+           "</div>" +
         "</div>" +
       "</div>"
     );
 
     $container.find(".select2-result-repository__title").text(repo.text);
     $container.find(".select2-result-repository__description").text(repo.codigo_predio);
+    $container.find(".select2-result-repository__forks").append(repo.propietarios);
 
     //$container.find(".select2-result-repository__title").text(repo.full_name);
     // $container.find(".select2-result-repository__description").text(repo.description);
@@ -831,6 +832,11 @@ function clear_form_elements(ele) {
             $('#' + $(this).attr('id') + '_edit').removeAttr('prev-val');
         }
     });
+
+    if($(ele).find('.select2').length > 0) {
+        $(ele).find('.select2').val(null).trigger('change');
+        $(ele).find('.select2').find('option').remove();
+    }
 
     $.each(arr_autonumeric, function(i, el) {
         if ($(ele).find('#' + el).length > 0) {

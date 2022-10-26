@@ -801,4 +801,45 @@ class PrediosController extends Controller
         }
         return FALSE;
     }
+
+    public function buscar(Request $request) {
+        $data = $request->all();
+        $term = preg_replace('/\s/', '%', preg_replace('/\s\s+/', ' ', trim($data['q'])));
+
+        // $filter_data = DB::table('predios')
+        //                     ->leftJoin('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+        //                     ->leftJoin('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+        //                 ->selectRaw('predios.id AS id, TRIM(predios.direccion) AS text, predios.codigo_predio, predios_propietarios.id_predio, STRING_AGG(CONCAT(TRIM(propietarios.nombre), \' - \', propietarios.identificacion), \'<br />\') AS propietarios')
+        //                 ->where('predios.estado', 1)
+        //                 ->where(function($query) use($term) {
+        //                     $query->whereRaw('LOWER(predios.direccion) LIKE \'%?%\'', [strtolower($term)])
+        //                           ->orWhereRaw('LOWER(predios.codigo_predio) LIKE \'%?%\'', [strtolower($term)])
+        //                           ->orwhereRaw('LOWER(propietarios.nombre) LIKE \'%?%\'', [strtolower($term)])
+        //                           ->orWhereRaw('LOWER(propietarios.identificacion) LIKE \'%?%\'', [strtolower($term)]);
+        //                 })
+        //                 ->groupBy('predios.id', 'predios.direccion', 'predios.codigo_predio', 'predios_propietarios.id_predio')
+        //                 ->get();
+
+        $filter_data = DB::select('select
+                                    predios.id AS id,
+                                    TRIM(predios.direccion) AS text,
+                                    predios.codigo_predio,
+                                    predios_propietarios.id_predio,
+                                    STRING_AGG(CONCAT(TRIM(propietarios.nombre), \' - \', propietarios.identificacion), \'<br />\') AS propietarios
+                                from [predios] inner join
+                                    [predios_propietarios]
+                                    on [predios].[id] = [predios_propietarios].[id_predio] inner join
+                                    [propietarios]
+                                    on [propietarios].[id] = [predios_propietarios].[id_propietario]
+                                where [predios].[estado] = 1 and
+                                    (LOWER(predios.direccion) LIKE \'%'.$term.'%\' or
+                                    LOWER(predios.codigo_predio) LIKE \'%'.$term.'%\' or
+                                    LOWER(propietarios.nombre) LIKE \'%'.$term.'%\' or
+                                    LOWER(propietarios.identificacion) LIKE \'%'.$term.'%\')
+                                group by [predios].[id], [predios].[direccion], [predios].[codigo_predio], [predios_propietarios].[id_predio]');
+
+        $result = array("items" => $filter_data, "total_count" => count($filter_data));
+
+        return response()->json($result);
+    }
 }

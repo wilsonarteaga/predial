@@ -34,21 +34,20 @@ class PagosController extends Controller
         }
         $opcion = Opcion::where('id','=', base64_decode($id))->first();
 
-        $predios = DB::table('predios')
-                            ->select('predios.id', 'predios.codigo_predio')
-                            ->get();
+        // $predios = DB::table('predios')
+        //                     ->select('predios.id', 'predios.codigo_predio')
+        //                     ->get();
 
         $bancos = DB::table('bancos')
                             ->select('bancos.id', 'bancos.codigo', 'bancos.asobancaria', 'bancos.nombre')
                             ->get();
 
-        $pagos = DB::table('pagos')->join('bancos', function ($join) {
-                    $join->on('pagos.id_banco_factura', '=', 'bancos.id');
-                })
-                ->select('pagos.*', 'bancos.nombre as banco')
-                ->get();
+        // $pagos = DB::table('pagos')->join('bancos', function ($join) {
+        //             $join->on('pagos.id_banco_factura', '=', 'bancos.id');
+        //         })
+        //         ->select('pagos.*', 'bancos.nombre as banco')
+        //         ->get();
 
-        //dd($pagos);
         // $pagos = DB::table('pagos')->join('bancos', function ($join) use($request){
         //             $join->on('pagos.id_banco_factura', '=', 'bancos.id')
         //            ->where ('pagos.fecha_pago','=',$request->fecha_pago)
@@ -66,8 +65,8 @@ class PagosController extends Controller
 
 
         return view('pagos.create', ['opcion' => $opcion,
-                                    'pagos' => $pagos,
-                                    'predios' => $predios,
+                                    //'pagos' => $pagos,
+                                    //'predios' => $predios,
                                     'bancos' => $bancos,
                                     'tab_current' => $tab_current]);
     }

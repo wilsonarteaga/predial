@@ -269,22 +269,4 @@ class PrediosExoneracionesController extends Controller
         //     return back()->with(['fail' => 'No se pudo eliminar la informaci&oacute;n. La clase de mutaci&oacute;n <b>' . $predio->nombre . ' (' . $predio->codigo . ')</b> ya posee informaci&oacute;n asociada.', 'tab_current' => $tab_current]);
         // }
     }
-
-    public function buscar(Request $request) {
-        $data = $request->all();
-        $query = $data['q'];
-        $filter_data = DB::table('predios')->join('zonas', function ($join) {
-            $join->on('predios.id_zona', '=', 'zonas.id');
-        })
-        ->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
-        ->select(DB::raw('predios.id AS id, TRIM(predios.direccion) AS text, predios.codigo_predio'))
-        ->where('predios.estado', 1)
-        ->where('predios.direccion', 'LIKE', '%'.$query.'%')
-        ->orWhere('predios.codigo_predio', 'LIKE', '%'.$query.'%')
-        ->get();
-
-        $result = array("items" => $filter_data, "total_count" => count($filter_data));
-
-        return response()->json($result);
-    }
 }

@@ -44,9 +44,9 @@ class PrediosUpdateFormRequest extends FormRequest
     public function messages()
     {
         return [
-            'codigo_predio_edit.required' => 'El campo codigo predio es obligatorio.',
-            //'codigo_predio_edit.unique' => 'El codigo de predio ya esta registrado.',
-            'codigo_predio_edit.15o25' => 'El campo codigo predio debe contener 15 o 25 digitos.',
+            'codigo_predio_edit.required' => 'El campo código predio es obligatorio.',
+            //'codigo_predio_edit.unique' => 'El código de predio ya esta registrado.',
+            'codigo_predio_edit.15o25' => 'El campo código predio debe contener 15 o 25 digitos.',
             'tipo_edit.required' => 'El campo tipo es obligatorio.',
             'tipo_edit.size' => 'El campo tipo debe contener :size digitos.',
             'sector_edit.required' => 'El campo sector es obligatorio.',

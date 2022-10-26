@@ -101,7 +101,7 @@
                                                                         @endforeach
                                                                     @endif
                                                                 </select> --}}
-                                                                <select id="id_predio" class="form-control" name="id_predio">
+                                                                <select id="id_predio" class="form-control select2" name="id_predio">
                                                                 </select>
                                                                 <span class="text-danger">@error('id_predio') {{ $message }} @enderror</span>
                                                             </div>

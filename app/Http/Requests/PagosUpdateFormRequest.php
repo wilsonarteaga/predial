@@ -38,15 +38,15 @@ class PagosUpdateFormRequest extends FormRequest
     public function messages()
     {
         return [
-            'fecha_pago_edit.required' => 'El campo descripcion es obligatorio.',
-            'codigo_barras_edit.required' => 'El campo descripcion es obligatorio.',
-            'id_predio_edit.required' => 'El campo descripcion es obligatorio.',
-            'numero_recibo_edit.required' => 'El campo descripcion es obligatorio.',
-            'valor_facturado_edit.required' => 'El campo descripcion es obligatorio.',
-            'anio_pago_edit.required' => 'El campo descripcion es obligatorio.',
+            'fecha_pago_edit.required' => 'El campo fecha pago es obligatorio.',
+            'codigo_barras_edit.required' => 'El campo código de barras es obligatorio.',
+            'id_predio_edit.required' => 'El campo código predio es obligatorio.',
+            'numero_recibo_edit.required' => 'El campo número recibo es obligatorio.',
+            'valor_facturado_edit.required' => 'El campo valor facturado es obligatorio.',
+            'anio_pago_edit.required' => 'El campo año es obligatorio.',
             'anio_pago_edit.max' => 'Máximo :max caracteres.',
-            'fecha_factura_edit.required' => 'El campo descripcion es obligatorio.',
-            'id_banco_factura_edit.required' => 'El campo descripcion es obligatorio.'
+            'fecha_factura_edit.required' => 'El campo fecha de factura es obligatorio.',
+            'id_banco_factura_edit.required' => 'El campo banco factura es obligatorio.'
         ];
     }
 }
