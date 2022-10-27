@@ -829,14 +829,19 @@ function getPredio(id_predio) {
                 var opcion = JSON.parse($('#opcion').val());
                 var predio = response[0];
                 var classBtn = 'btn-warning';
+                var disabledBtnEdita = '';
                 var disabledBtnPrescribe = '';
                 var disabledBtnCalculo = '';
+                var disabledBtnElimina = '';
                 var tr = $('<tr style="cursor: pointer;" id="tr_predio_' + predio.id + '" json-data=\'' + JSON.stringify(predio) + '\' class="predio_row"></tr>');
                 var td_1 = $('<td class="edit_row cell_center">' + predio.codigo_predio + '</td>');
                 if(Number(predio.prescrito) > 0) {
                     td_1.append('&nbsp;&nbsp;<span class="tips" style="color: #25ca59;" title="Prescrito hasta ' + predio.prescribe_hasta + '"><i class="fa fa-info-circle"></i></span>');
                     classBtn = 'btn-default tips';
                     disabledBtnPrescribe = 'disabled="disabled"';
+                    disabledBtnCalculo = 'disabled="disabled"';
+                    disabledBtnEdita = 'disabled="disabled"';
+                    disabledBtnElimina = 'disabled="disabled"';
                 }
                 if(Number(global_json_predio.tiene_pago) === 0) {
                     disabledBtnCalculo = 'disabled="disabled"';
@@ -845,13 +850,13 @@ function getPredio(id_predio) {
                 var td_3 = $('<td class="edit_row cell_center">' + predio.propietarios + '</td>');
                 var td_4 = $('<td class="cell_center"></td>');
 
-                var htmlBotones = '<button type="button" ide="' + predio.id + '" class="modify_row btn btn-info" req_res="' + opcion.resolucion_edita + '"><i class="fa fa-pencil-square"></i></button>' +
+                var htmlBotones = '<button type="button" ide="' + predio.id + '" class="modify_row btn btn-info" req_res="' + opcion.resolucion_edita + '" ' + disabledBtnEdita + '><i class="fa fa-pencil-square"></i></button>' +
                                   '&nbsp;&nbsp;' +
                                   '<button type="button" ide="' + predio.id + '" class="prescribe_row btn ' + classBtn + '" ' + disabledBtnPrescribe + '><i class="fa fa-clock-o"></i></button>' +
                                   '&nbsp;&nbsp;' +
                                   '<button type="button" ide="' + predio.id + '" class="download_row btn btn-success" url="/generate_factura_pdf/' + predio.id + '" msg="¿Está seguro/a que desea ejecutar el cálculo?" ' + disabledBtnCalculo + '><i class="fa fa-cogs"></i></button>' +
                                   '&nbsp;&nbsp;' +
-                                  '<button type="button" ide="' + predio.id + '" class="delete_row btn btn-inverse" req_res="' + opcion.resolucion_elimina + '" msg="¿Está seguro/a que desea anular el predio?"><i class="fa fa-trash-o"></i></button>';
+                                  '<button type="button" ide="' + predio.id + '" class="delete_row btn btn-inverse" req_res="' + opcion.resolucion_elimina + '" msg="¿Está seguro/a que desea anular el predio?" ' + disabledBtnElimina + '><i class="fa fa-trash-o"></i></button>';
 
                 td_4.html(htmlBotones);
                 tr.append(td_1).append(td_2).append(td_3).append(td_4);

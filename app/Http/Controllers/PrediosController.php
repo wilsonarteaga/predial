@@ -52,7 +52,7 @@ class PrediosController extends Controller
         //             })
         //             ->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
         //             //->select('predios.*', 'zonas.descripcion')
-        //             ->select(DB::raw('predios.*, zonas.descripcion, COALESCE(predios_prescripciones.id_predio, 0) AS prescrito, predios_prescripciones.prescribe_hasta'))
+        //             ->select(DB::raw('predios.*, zonas.descripcion, CASE WHEN COALESCE(predios_prescripciones.prescribe_hasta, 0) >= YEAR(GETDATE()) THEN 1 ELSE 0 END AS prescrito, predios_prescripciones.prescribe_hasta'))
         //             ->where('estado', 1)
         //             ->get(); //paginate(5);
 
@@ -664,7 +664,7 @@ class PrediosController extends Controller
             $join->on('predios.id_zona', '=', 'zonas.id');
         })
         ->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
-        ->select(DB::raw('predios.*, zonas.descripcion, COALESCE(predios_prescripciones.id_predio, 0) AS prescrito, predios_prescripciones.prescribe_hasta'))
+        ->select(DB::raw('predios.*, zonas.descripcion, CASE WHEN COALESCE(predios_prescripciones.prescribe_hasta, 0) >= YEAR(GETDATE()) THEN 1 ELSE 0 END AS prescrito, predios_prescripciones.prescribe_hasta'))
         ->where('estado', 1)
         ->where('predios.id', $id)
         ->get();
@@ -895,7 +895,7 @@ class PrediosController extends Controller
                         $join->on('predios.id_zona', '=', 'zonas.id');
                     })
                     ->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
-                    ->select(DB::raw('predios.*, zonas.descripcion, COALESCE(predios_prescripciones.id_predio, 0) AS prescrito, predios_prescripciones.prescribe_hasta'))
+                    ->select(DB::raw('predios.*, zonas.descripcion, CASE WHEN COALESCE(predios_prescripciones.prescribe_hasta, 0) >= YEAR(GETDATE()) THEN 1 ELSE 0 END AS prescrito, predios_prescripciones.prescribe_hasta'))
                     ->where('predios.estado', 1)
                     ->where('predios.id', $data->{'id_predio'})
                     ->get();
