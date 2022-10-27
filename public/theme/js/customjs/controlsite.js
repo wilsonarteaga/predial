@@ -66,6 +66,15 @@ $(document).ready(function() {
                         $(el).removeClass('has-error');
                     });
                 }
+
+                // Limpiar la ultima busqueda realizada en predios
+                if($('#id_predio.select2.json').length > 0) {
+                    $('#id_predio.select2.json').val(null).trigger('change');
+                    $('#id_predio.select2.json').find('option').remove();
+                    if($('#myTable').length > 0) {
+                        $('#myTable').find('tbody').empty();
+                    }
+                }
             }
         });
     }
