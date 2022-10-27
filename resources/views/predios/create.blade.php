@@ -18,6 +18,7 @@
 @elseif($tab_current)
 <input type="hidden" id="tab" value="{{ $tab_current }}">
 @endif
+<input type="hidden" id="opcion" value='@json($opcion)'>
 <div class="container-fluid">
     <div class="row bg-title">
         <div class="col-lg-5 col-md-8 col-sm-12 col-xs-12">
@@ -42,7 +43,7 @@
                         <nav>
                             <ul>
                                 <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-pulse"><span>Nuevo predio</span></a></li>
-                                <li id="li-section-bar-2" class=""><a href="#section-bar-2" class="sticon icon-list"><span>Listado de predios</span></a></li>
+                                <li id="li-section-bar-2" class=""><a href="#section-bar-2" class="sticon icon-list"><span>Opciones de predios</span></a></li>
                                 <!-- <li class=""><a href="#section-bar-3" class="sticon ti-stats-up"><span>Analytics</span></a></li>
                                 <li class=""><a href="#section-bar-4" class="sticon ti-upload"><span>Upload</span></a></li>
                                 <li class=""><a href="#section-bar-5" class="sticon ti-settings"><span>Settings</span></a></li> -->
@@ -272,7 +273,16 @@
                                                         </div>
                                                     @endif
                                                 </div>
-                                                <h2>Lista de predios</h2>
+                                                <div class="row">
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Buscar predio:</label><br />
+                                                            <select id="id_predio" class="form-control select2 json" name="id_predio" data-placeholder="C&oacute;digo, propietario o direcci&oacute;n..." style="width: 100%">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <h2>Opciones de predio</h2>
                                                 <table id="myTable" class="table table-hover table-striped table-bordered">
                                                     <thead>
                                                         <tr>

@@ -46,40 +46,41 @@ class PrediosController extends Controller
             return redirect('/');
         }
         $opcion = Opcion::where('id','=', base64_decode($id))->first();
-        $predios = DB::table('predios')->join('zonas', function ($join) {
-                        $join->on('predios.id_zona', '=', 'zonas.id');
-                    })
-                    ->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
-                    //->select('predios.*', 'zonas.descripcion')
-                    ->select(DB::raw('predios.*, zonas.descripcion, COALESCE(predios_prescripciones.id_predio, 0) AS prescrito, predios_prescripciones.prescribe_hasta'))
-                    ->where('estado', 1)
-                    ->get(); //paginate(5);
+        $predios = [];
+        // DB::table('predios')->join('zonas', function ($join) {
+        //                 $join->on('predios.id_zona', '=', 'zonas.id');
+        //             })
+        //             ->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
+        //             //->select('predios.*', 'zonas.descripcion')
+        //             ->select(DB::raw('predios.*, zonas.descripcion, COALESCE(predios_prescripciones.id_predio, 0) AS prescrito, predios_prescripciones.prescribe_hasta'))
+        //             ->where('estado', 1)
+        //             ->get(); //paginate(5);
 
-        $propietarios = DB::table('predios')
-                                     ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
-                                     ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
-                                     ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
-                ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(CONCAT(propietarios.nombre, \' - \', propietarios.identificacion), \'<br />\') AS propietarios'))
-                ->where('predios.estado', 1)
-                ->groupBy('predios_propietarios.id_predio')
-                ->get();
+        // $propietarios = DB::table('predios')
+        //                              ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+        //                              ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+        //                              ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
+        //         ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(CONCAT(TRIM(propietarios.nombre), \' - \', propietarios.identificacion), \'<br />\') AS propietarios'))
+        //         ->where('predios.estado', 1)
+        //         ->groupBy('predios_propietarios.id_predio')
+        //         ->get();
 
-        if($propietarios) {
-            foreach ($predios as $key => $predio) {
-                $desired_object = self::findInCollection($propietarios, 'id_predio', $predio->id);
-                if($desired_object) {
-                    $predio->propietarios = $desired_object->propietarios;
-                }
-                else {
-                    $predio->propietarios = 'Sin asignar';
-                }
-            }
-        }
-        else {
-            foreach ($predios as $key => $predio) {
-                $predio->propietarios = 'Sin asignar';
-            }
-        }
+        // if($propietarios) {
+        //     foreach ($predios as $key => $predio) {
+        //         $desired_object = self::findInCollection($propietarios, 'id_predio', $predio->id);
+        //         if($desired_object) {
+        //             $predio->propietarios = $desired_object->propietarios;
+        //         }
+        //         else {
+        //             $predio->propietarios = 'Sin asignar';
+        //         }
+        //     }
+        // }
+        // else {
+        //     foreach ($predios as $key => $predio) {
+        //         $predio->propietarios = 'Sin asignar';
+        //     }
+        // }
 
         $zonas = DB::table('zonas')
                     ->select('zonas.id', 'zonas.descripcion')
@@ -632,7 +633,7 @@ class PrediosController extends Controller
                                 ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
                                 ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
                                 ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
-            ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(propietarios.nombre, \'<br />\') AS propietarios, STRING_AGG(propietarios.identificacion, \'<br />\') AS identificaciones'))
+            ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(TRIM(propietarios.nombre), \'<br />\') AS propietarios, STRING_AGG(propietarios.identificacion, \'<br />\') AS identificaciones'))
             ->where('predios.estado', 1)
             ->where('predios.id', $id)
             ->groupBy('predios_propietarios.id_predio')
@@ -802,7 +803,7 @@ class PrediosController extends Controller
         return FALSE;
     }
 
-    public function buscar(Request $request) {
+    public function autocomplete(Request $request) {
         $data = $request->all();
         $term = preg_replace('/\s/', '%', preg_replace('/\s\s+/', ' ', trim($data['q'])));
 
@@ -841,5 +842,45 @@ class PrediosController extends Controller
         $result = array("items" => $filter_data, "total_count" => count($filter_data));
 
         return response()->json($result);
+    }
+
+    public function get_predio(Request $request) {
+        $data = json_decode($request->form);
+        $predios =  DB::table('predios')->join('zonas', function ($join) {
+                        $join->on('predios.id_zona', '=', 'zonas.id');
+                    })
+                    ->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
+                    ->select(DB::raw('predios.*, zonas.descripcion, COALESCE(predios_prescripciones.id_predio, 0) AS prescrito, predios_prescripciones.prescribe_hasta'))
+                    ->where('predios.estado', 1)
+                    ->where('predios.id', $data->{'id_predio'})
+                    ->get();
+
+        $propietarios = DB::table('predios')
+                                     ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                                     ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                                     ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
+                ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(CONCAT(TRIM(propietarios.nombre), \' - \', propietarios.identificacion), \'<br />\') AS propietarios'))
+                ->where('predios.estado', 1)
+                ->groupBy('predios_propietarios.id_predio')
+                ->get();
+
+        if($propietarios) {
+            foreach ($predios as $key => $predio) {
+                $desired_object = self::findInCollection($propietarios, 'id_predio', $predio->id);
+                if($desired_object) {
+                    $predio->propietarios = $desired_object->propietarios;
+                }
+                else {
+                    $predio->propietarios = 'Sin asignar';
+                }
+            }
+        }
+        else {
+            foreach ($predios as $key => $predio) {
+                $predio->propietarios = 'Sin asignar';
+            }
+        }
+
+        return response()->json($predios);
     }
 }
