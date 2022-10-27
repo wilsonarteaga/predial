@@ -702,8 +702,6 @@ function setEditRow(initDataTable) {
                 "destroy": true,
                 "ordering": false,
                 "order": [],
-                "searching": searching,
-                "paging": paging,
                 "lengthChange": false,
                 "info": false,
                 "pageLength": 5,
