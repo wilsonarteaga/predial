@@ -567,7 +567,7 @@
                                                                     <div class="col-lg-6 col-md-6 col-sm-9 col-xs-12">
                                                                         <div class="form-group">
                                                                             <label class="control-label">Banco:</label>
-                                                                            <select id="id_banco" name="id_banco" class="form-control selectpicker-noval show-tick" data-live-search="true" data-size="5" title="Sin informaci&oacute;n..." readonly="true">
+                                                                            <select id="id_banco" name="id_banco" class="form-control selectpicker-noval show-tick" data-live-search="true" data-size="5" title="Sin informaci&oacute;n..." readonly="true" disabled="disabled">
                                                                                 @if(count($bancos) > 0)
                                                                                     @foreach($bancos as $banco)
                                                                                     <option value="{{ $banco->id }}" {{ old('id_banco') == $banco->id ? 'selected' : '' }}>{{ $banco->codigo }} - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>

@@ -826,18 +826,21 @@ class PrediosController extends Controller
                                     TRIM(predios.direccion) AS text,
                                     predios.codigo_predio,
                                     predios_propietarios.id_predio,
-                                    STRING_AGG(CONCAT(TRIM(propietarios.nombre), \' - \', propietarios.identificacion), \'<br />\') AS propietarios
+                                    STRING_AGG(CONCAT(TRIM(propietarios.nombre), \' - \', propietarios.identificacion), \'<br />\') AS propietarios,
+                                    ISNULL([predios_pagos].[id_predio], 0) AS tiene_pago
                                 from [predios] inner join
                                     [predios_propietarios]
                                     on [predios].[id] = [predios_propietarios].[id_predio] inner join
                                     [propietarios]
-                                    on [propietarios].[id] = [predios_propietarios].[id_propietario]
+                                    on [propietarios].[id] = [predios_propietarios].[id_propietario] left join
+                                    [predios_pagos]
+                                    on [predios].[id] = [predios_pagos].[id_predio]
                                 where [predios].[estado] = 1 and
                                     (LOWER(predios.direccion) LIKE \'%'.$term.'%\' or
                                     LOWER(predios.codigo_predio) LIKE \'%'.$term.'%\' or
                                     LOWER(propietarios.nombre) LIKE \'%'.$term.'%\' or
                                     LOWER(propietarios.identificacion) LIKE \'%'.$term.'%\')
-                                group by [predios].[id], [predios].[direccion], [predios].[codigo_predio], [predios_propietarios].[id_predio]');
+                                group by [predios].[id], [predios].[direccion], [predios].[codigo_predio], [predios_propietarios].[id_predio], [predios_pagos].[id_predio]');
 
         $result = array("items" => $filter_data, "total_count" => count($filter_data));
 

@@ -1,4 +1,6 @@
 var global_json = null;
+var global_json_predio = null;
+var global_url_autocomplete_predio = "/autocomplete";
 var arr_autonumeric = ['porcentaje', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
     'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_pago', 'valor_abono',
     'valor_facturado', 'avaluoigac', 'area'
@@ -497,7 +499,7 @@ $(document).ready(function() {
             allowClear: true,
             minimumInputLength: 3,
             ajax: {
-                url: "/autocomplete",
+                url: global_url_autocomplete_predio,
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
@@ -507,18 +509,18 @@ $(document).ready(function() {
                 };
                 },
                 processResults: function (data, params) {
-                // parse the results into the format expected by Select2
-                // since we are using custom formatting functions we do not need to
-                // alter the remote JSON data, except to indicate that infinite
-                // scrolling can be used
-                params.page = params.page || 1;
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    params.page = params.page || 1;
 
-                return {
-                    results: data.items,
-                    pagination: {
-                    more: (params.page * 30) < data.total_count
-                    }
-                };
+                    return {
+                        results: data.items,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
                 },
                 cache: true
             },
@@ -540,6 +542,7 @@ $(document).ready(function() {
         });
 
         $('#id_predio.select2').on('select2:clear', function (e) {
+            global_json_predio = null;
             if ($('#id_predio.select2').closest('form').length > 0) {
                 if ($('#id_predio.select2').closest('form').attr('id') === 'create-form') {
                     $('#create-form').validate().element($('#id_predio.select2'));
@@ -560,7 +563,7 @@ $(document).ready(function() {
             allowClear: true,
             minimumInputLength: 3,
             ajax: {
-                url: "/filter_exoneraciones",
+                url: global_url_autocomplete_predio,
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
@@ -590,6 +593,7 @@ $(document).ready(function() {
         });
 
         $('#id_predio_edit.select2').on('select2:select', function (e) {
+            global_json_predio = null;
             if ($('#id_predio_edit.select2').closest('form').length > 0) {
                 if ($('#id_predio_edit.select2').closest('form').attr('id') === 'update-form') {
                     $('#update-form').validate().element($('#id_predio_edit.select2'));
@@ -800,17 +804,22 @@ function getPredio(id_predio) {
             form: JSON.stringify(jsonObj)
         },
         success: function(response) {
+            $('#myTable').find('tbody').empty();
             if (response.length > 0) {
                 var opcion = JSON.parse($('#opcion').val());
                 var predio = response[0];
                 var classBtn = 'btn-warning';
-                var disabledBtn = '';
+                var disabledBtnPrescribe = '';
+                var disabledBtnCalculo = '';
                 var tr = $('<tr style="cursor: pointer;" id="tr_predio_' + predio.id + '" json-data=\'' + JSON.stringify(predio) + '\' class="predio_row"></tr>');
                 var td_1 = $('<td class="edit_row cell_center">' + predio.codigo_predio + '</td>');
                 if(Number(predio.prescrito) > 0) {
                     td_1.append('&nbsp;&nbsp;<span class="tips" style="color: #25ca59;" title="Prescrito hasta ' + predio.prescribe_hasta + '"><i class="fa fa-info-circle"></i></span>');
                     classBtn = 'btn-default tips';
-                    disabledBtn = 'disabled="disabled"';
+                    disabledBtnPrescribe = 'disabled="disabled"';
+                }
+                if(Number(global_json_predio.tiene_pago) === 0) {
+                    disabledBtnCalculo = 'disabled="disabled"';
                 }
                 var td_2 = $('<td class="edit_row cell_center">' + predio.direccion + '</td>');
                 var td_3 = $('<td class="edit_row cell_center">' + predio.propietarios + '</td>');
@@ -818,9 +827,9 @@ function getPredio(id_predio) {
 
                 var htmlBotones = '<button type="button" ide="' + predio.id + '" class="modify_row btn btn-info" req_res="' + opcion.resolucion_edita + '"><i class="fa fa-pencil-square"></i></button>' +
                                   '&nbsp;&nbsp;' +
-                                  '<button type="button" ide="' + predio.id + '" class="prescribe_row btn ' + classBtn + '" ' + disabledBtn + '><i class="fa fa-clock-o"></i></button>' +
+                                  '<button type="button" ide="' + predio.id + '" class="prescribe_row btn ' + classBtn + '" ' + disabledBtnPrescribe + '><i class="fa fa-clock-o"></i></button>' +
                                   '&nbsp;&nbsp;' +
-                                  '<button type="button" ide="' + predio.id + '" class="download_row btn btn-success" url="/generate_factura_pdf/' + predio.id + '" msg="¿Está seguro/a que desea ejecutar el cálculo?"><i class="fa fa-cogs"></i></button>' +
+                                  '<button type="button" ide="' + predio.id + '" class="download_row btn btn-success" url="/generate_factura_pdf/' + predio.id + '" msg="¿Está seguro/a que desea ejecutar el cálculo?" ' + disabledBtnCalculo + '><i class="fa fa-cogs"></i></button>' +
                                   '&nbsp;&nbsp;' +
                                   '<button type="button" ide="' + predio.id + '" class="delete_row btn btn-inverse" req_res="' + opcion.resolucion_elimina + '" msg="¿Está seguro/a que desea anular el predio?"><i class="fa fa-trash-o"></i></button>';
 
@@ -929,6 +938,7 @@ function formatRepo (repo) {
 }
 
 function formatRepoSelection (repo) {
+    global_json_predio = repo;
     return repo.codigo_predio || repo.text;
 }
 
