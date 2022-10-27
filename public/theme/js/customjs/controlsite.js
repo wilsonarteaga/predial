@@ -22,6 +22,16 @@ $(document).ready(function() {
                 if ($('#codigo_predio').length > 0) {
                     $('.buttonTareas').css('display', 'none');
                     $('.span_predio').html('');
+                    $('.span_predio').closest('div').parent('div').css('opacity', '0');
+                    $('.codigo_15').find('input').val('');
+                    $('.codigo_25').find('input').val('');
+                    $('.codigo_15_25').find('input').val('');
+                    $('.codigo_25').css({
+                        'display': 'none'
+                    });
+                    $('.codigo_15').css({
+                        'display': ''
+                    });
                 }
 
                 if ($("#pagosTable").length > 0) {
@@ -140,6 +150,9 @@ $(document).ready(function() {
             $('#div_edit_form').fadeOut(function() {
                 if ($('#codigo_predio').length > 0) {
                     $('.buttonTareas').css('display', 'none');
+                    $('.codigo_15_edit').find('input').val('');
+                    $('.codigo_25_edit').find('input').val('');
+                    $('.codigo_15_25_edit').find('input').val('');
                 }
                 if ($('#div_table').length > 0)
                     $('#div_table').fadeIn();
@@ -1070,50 +1083,165 @@ function clear_form_elements(ele) {
 }
 
 function calcEditLabels() {
-    if ($('#codigo_predio_edit').val().substr(0, 2) !== undefined && $('#codigo_predio_edit').val().substr(0, 2).length > 0) {
-        $('#tipo_edit').val($('#codigo_predio_edit').val().substr(0, 2));
-        $('#span_tipo_edit').text($('#tipo_edit').val());
-        $('#div_tipo_edit').css('opacity', 1);
-    } else {
-        $('#tipo_edit').val('s');
-        $('#span_tipo_edit').text('');
-        $('#div_tipo_edit').css('opacity', 0);
+    if($('#codigo_predio_edit').val().length < 16) {
+        $('.codigo_15_edit').css('display', '');
+        $('.codigo_25_edit').css('display', 'none');
+        $('.codigo_25_edit').find('input').val('');
+        //TIPO
+        if ($('#codigo_predio_edit').val().substr(0, 2) !== undefined && $('#codigo_predio_edit').val().substr(0, 2).length > 0) {
+            $('#tipo_edit').val($('#codigo_predio_edit').val().substr(0, 2));
+            $('#span_tipo_edit').text($('#tipo_edit').val());
+            $('#div_tipo_edit').css('opacity', 1);
+        } else {
+            $('#tipo_edit').val('');
+            $('#span_tipo_edit').text('');
+            $('#div_tipo_edit').css('opacity', 0);
+        }
+        //SECTOR
+        if ($('#codigo_predio_edit').val().substr(2, 2) !== undefined && $('#codigo_predio_edit').val().substr(2, 2).length > 0) {
+            $('#sector_edit').val($('#codigo_predio_edit').val().substr(2, 2));
+            $('#span_sector_edit').text($('#sector_edit').val());
+            $('#div_sector_edit').css('opacity', 1);
+        } else {
+            $('#sector_edit').val('');
+            $('#span_sector_edit').text('');
+            $('#div_sector_edit').css('opacity', 0);
+        }
+        //MANZANA
+        if ($('#codigo_predio_edit').val().substr(4, 4) !== undefined && $('#codigo_predio_edit').val().substr(4, 4).length > 0) {
+            $('#manzana_edit').val($('#codigo_predio_edit').val().substr(4, 4));
+            $('#span_manzana_edit').text($('#manzana_edit').val());
+            $('#div_manzana_edit').css('opacity', 1);
+        } else {
+            $('#manzana_edit').val('');
+            $('#span_manzana_edit').text('');
+            $('#div_manzana_edit').css('opacity', 0);
+        }
+        //PREDIO
+        if ($('#codigo_predio_edit').val().substr(8, 4) !== undefined && $('#codigo_predio_edit').val().substr(8, 4).length > 0) {
+            $('#predio_edit').val($('#codigo_predio_edit').val().substr(8, 4));
+            $('#span_predio_edit').text($('#predio_edit').val());
+            $('#div_predio_edit').css('opacity', 1);
+        } else {
+            $('#predio_edit').val('');
+            $('#span_predio_edit').text('');
+            $('#div_predio_edit').css('opacity', 0);
+        }
+        //MEJORA
+        if ($('#codigo_predio_edit').val().substr(12) !== undefined && $('#codigo_predio_edit').val().substr(12).length > 0) {
+            $('#mejora_edit').val($('#codigo_predio_edit').val().substr(12));
+            $('#span_mejora_edit').text($('#mejora_edit').val());
+            $('#div_mejora_edit').css('opacity', 1);
+        } else {
+            $('#mejora_edit').val('');
+            $('#span_mejora_edit').text('');
+            $('#div_mejora_edit').css('opacity', 0);
+        }
     }
-    if ($('#codigo_predio_edit').val().substr(2, 2) !== undefined && $('#codigo_predio_edit').val().substr(2, 2).length > 0) {
-        $('#sector_edit').val($('#codigo_predio_edit').val().substr(2, 2));
-        $('#span_sector_edit').text($('#sector_edit').val());
-        $('#div_sector_edit').css('opacity', 1);
-    } else {
-        $('#sector_edit').val('');
-        $('#span_sector_edit').text('');
-        $('#div_sector_edit').css('opacity', 0);
-    }
-    if ($('#codigo_predio_edit').val().substr(4, 4) !== undefined && $('#codigo_predio_edit').val().substr(4, 4).length > 0) {
-        $('#manzana_edit').val($('#codigo_predio_edit').val().substr(4, 4));
-        $('#span_manzana_edit').text($('#manzana_edit').val());
-        $('#div_manzana_edit').css('opacity', 1);
-    } else {
-        $('#manzana_edit').val('');
-        $('#span_manzana_edit').text('');
-        $('#div_manzana_edit').css('opacity', 0);
-    }
-    if ($('#codigo_predio_edit').val().substr(8, 4) !== undefined && $('#codigo_predio_edit').val().substr(8, 4).length > 0) {
-        $('#predio_edit').val($('#codigo_predio_edit').val().substr(8, 4));
-        $('#span_predio_edit').text($('#predio_edit').val());
-        $('#div_predio_edit').css('opacity', 1);
-    } else {
-        $('#predio_edit').val('');
-        $('#span_predio_edit').text('');
-        $('#div_predio_edit').css('opacity', 0);
-    }
-    if ($('#codigo_predio_edit').val().substr(12) !== undefined && $('#codigo_predio_edit').val().substr(12).length > 0) {
-        $('#mejora_edit').val($('#codigo_predio_edit').val().substr(12));
-        $('#span_mejora_edit').text($('#mejora_edit').val());
-        $('#div_mejora_edit').css('opacity', 1);
-    } else {
-        $('#mejora_edit').val('');
-        $('#span_mejora_edit').text('');
-        $('#div_mejora_edit').css('opacity', 0);
+    else {
+        $('.codigo_15_edit').css('display', 'none');
+        $('.codigo_15_edit').find('input').val('');
+        $('.codigo_25_edit').css('display', '');
+        //ZONA
+        if ($('#codigo_predio_edit').val().substr(0, 2) !== undefined && $('#codigo_predio_edit').val().substr(0, 2).length > 0) {
+            $('#zona_edit').val($('#codigo_predio_edit').val().substr(0, 2));
+            $('#span_zona_edit').text($('#zona_edit').val());
+            $('#div_zona_edit').css('opacity', 1);
+        } else {
+            $('#zona_edit').val('');
+            $('#span_zona_edit').text('');
+            $('#div_zona_edit').css('opacity', 0);
+        }
+        //SECTOR
+        if ($('#codigo_predio_edit').val().substr(2, 2) !== undefined && $('#codigo_predio_edit').val().substr(2, 2).length > 0) {
+            $('#sector_edit').val($('#codigo_predio_edit').val().substr(2, 2));
+            $('#span_sector_edit').text($('#sector_edit').val());
+            $('#div_sector_edit').css('opacity', 1);
+        } else {
+            $('#sector_edit').val('');
+            $('#span_sector_edit').text('');
+            $('#div_sector_edit').css('opacity', 0);
+        }
+        //COMUNA
+        if ($('#codigo_predio_edit').val().substr(4, 2) !== undefined && $('#codigo_predio_edit').val().substr(4, 2).length > 0) {
+            $('#comuna_edit').val($('#codigo_predio_edit').val().substr(4, 2));
+            $('#span_comuna_edit').text($('#comuna_edit').val());
+            $('#div_comuna_edit').css('opacity', 1);
+        } else {
+            $('#comuna_edit').val('');
+            $('#span_comuna_edit').text('');
+            $('#div_comuna_edit').css('opacity', 0);
+        }
+        //BARRIO
+        if ($('#codigo_predio_edit').val().substr(6, 2) !== undefined && $('#codigo_predio_edit').val().substr(6, 2).length > 0) {
+            $('#barrio_edit').val($('#codigo_predio_edit').val().substr(6, 2));
+            $('#span_barrio_edit').text($('#barrio_edit').val());
+            $('#div_barrio_edit').css('opacity', 1);
+        } else {
+            $('#barrio_edit').val('');
+            $('#span_barrio_edit').text('');
+            $('#div_barrio_edit').css('opacity', 0);
+        }
+        //MANZANA
+        if ($('#codigo_predio_edit').val().substr(8, 4) !== undefined && $('#codigo_predio_edit').val().substr(8, 4).length > 0) {
+            $('#manzana_edit').val($('#codigo_predio_edit').val().substr(8, 4));
+            $('#span_manzana_edit').text($('#manzana_edit').val());
+            $('#div_manzana_edit').css('opacity', 1);
+        } else {
+            $('#manzana_edit').val('');
+            $('#span_manzana_edit').text('');
+            $('#div_manzana_edit').css('opacity', 0);
+        }
+        //TERRENO
+        if ($('#codigo_predio_edit').val().substr(12, 4) !== undefined && $('#codigo_predio_edit').val().substr(12, 4).length > 0) {
+            $('#terreno_edit').val($('#codigo_predio_edit').val().substr(12, 4));
+            $('#span_terreno_edit').text($('#terreno_edit').val());
+            $('#div_terreno_edit').css('opacity', 1);
+        } else {
+            $('#terreno_edit').val('');
+            $('#span_terreno_edit').text('');
+            $('#div_terreno_edit').css('opacity', 0);
+        }
+        //CONDICION
+        if ($('#codigo_predio_edit').val().substr(16, 1) !== undefined && $('#codigo_predio_edit').val().substr(16, 1).length > 0) {
+            $('#condicion_edit').val($('#codigo_predio_edit').val().substr(16, 1));
+            $('#span_condicion_edit').text($('#condicion_edit').val());
+            $('#div_condicion_edit').css('opacity', 1);
+        } else {
+            $('#condicion_edit').val('');
+            $('#span_condicion_edit').text('');
+            $('#div_condicion_edit').css('opacity', 0);
+        }
+        //EDIFICIO/TORRE
+        if ($('#codigo_predio_edit').val().substr(17, 2) !== undefined && $('#codigo_predio_edit').val().substr(17, 2).length > 0) {
+            $('#edificio_torre_edit').val($('#codigo_predio_edit').val().substr(17, 2));
+            $('#span_edificio_torre_edit').text($('#edificio_torre_edit').val());
+            $('#div_edificio_torre_edit').css('opacity', 1);
+        } else {
+            $('#edificio_torre_edit').val('');
+            $('#span_edificio_torre_edit').text('');
+            $('#div_edificio_torre_edit').css('opacity', 0);
+        }
+        //PISO
+        if ($('#codigo_predio_edit').val().substr(19, 2) !== undefined && $('#codigo_predio_edit').val().substr(19, 2).length > 0) {
+            $('#piso_edit').val($('#codigo_predio_edit').val().substr(19, 2));
+            $('#span_piso_edit').text($('#piso_edit').val());
+            $('#div_piso_edit').css('opacity', 1);
+        } else {
+            $('#piso_edit').val('');
+            $('#span_piso_edit').text('');
+            $('#div_piso_edit').css('opacity', 0);
+        }
+        //PROPIEDAD
+        if ($('#codigo_predio_edit').val().substr(21, 4) !== undefined && $('#codigo_predio_edit').val().substr(21, 4).length > 0) {
+            $('#propiedad_edit').val($('#codigo_predio_edit').val().substr(21, 4));
+            $('#span_propiedad_edit').text($('#propiedad_edit').val());
+            $('#div_propiedad_edit').css('opacity', 1);
+        } else {
+            $('#propiedad_edit').val('');
+            $('#span_propiedad_edit').text('');
+            $('#div_propiedad_edit').css('opacity', 0);
+        }
     }
 }
 

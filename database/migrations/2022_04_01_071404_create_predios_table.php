@@ -21,11 +21,25 @@ class CreatePrediosTable extends Migration
             $table->smallInteger('ultimo_anio_pago');
             $table->unsignedBigInteger('id_zona'); // RURAL, URBANO
 
-            $table->char('tipo', 2);
-            $table->char('sector', 2);
-            $table->char('manzana', 4);
-            $table->char('predio', 4);
-            $table->char('mejora', 3);
+            $table->char('tipo', 2)->nullable();
+            $table->char('zona', 2)->nullable();
+
+            $table->char('sector', 2)->nullable();
+
+            $table->char('comuna', 2)->nullable();
+            $table->char('barrio', 2)->nullable();
+
+            $table->char('manzana', 4)->nullable();
+
+            $table->char('predio', 4)->nullable();
+            $table->char('terreno', 4)->nullable();
+
+            $table->char('mejora', 3)->nullable();
+
+            $table->char('condicion', 1)->nullable();
+            $table->char('edificio_torre', 2)->nullable();
+            $table->char('piso', 2)->nullable();
+            $table->char('propiedad', 4)->nullable();
 
             $table->decimal('area_metros', $precision = 12, $scale = 2);
             $table->decimal('area_construida', $precision = 12, $scale = 2);

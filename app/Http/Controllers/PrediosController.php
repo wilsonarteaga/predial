@@ -132,11 +132,27 @@ class PrediosController extends Controller
 
         $predio = new Predio();
         $predio->codigo_predio = $request->codigo_predio;
-        $predio->tipo = $request->tipo;
-        $predio->sector = $request->sector;
-        $predio->manzana = $request->manzana;
-        $predio->predio = $request->predio;
-        $predio->mejora = $request->mejora;
+
+        $predio->tipo = $request->filled('tipo') ? $request->tipo : NULL;//2
+        $predio->zona = $request->filled('zona') ? $request->zona : NULL;//2
+
+        $predio->sector = $request->sector;//2
+
+        $predio->comuna = $request->filled('comuna') ? $request->comuna : NULL;//2
+        $predio->barrio = $request->filled('barrio') ? $request->barrio : NULL;//2
+
+        $predio->manzana = $request->manzana;//4
+
+        $predio->predio = $request->predio;//4
+        $predio->terreno = $request->filled('terreno') ? $request->terreno : NULL;//4
+
+        $predio->mejora = $request->mejora;//3
+
+        $predio->condicion = $request->filled('condicion') ? $request->condicion : NULL;//1
+        $predio->edificio_torre = $request->filled('edificio_torre') ? $request->edificio_torre : NULL;//2
+        $predio->piso = $request->filled('piso') ? $request->piso : NULL;//2
+        $predio->propiedad = $request->filled('propiedad') ? $request->propiedad : NULL;//4
+
         $predio->id_zona = $request->id_zona;
         $predio->direccion = $request->direccion;
         $predio->area_metros = str_replace(",", "", $request->area_metros);
@@ -193,6 +209,32 @@ class PrediosController extends Controller
         $predio = Predio::find($request->id_edit);
         $predio_tmp = Predio::find($request->id_edit);
         $predio->codigo_predio = $request->codigo_predio_edit;
+
+        if((strlen($predio_tmp->codigo_predio) == 15 && strlen($request->codigo_predio_edit) == 25) ||
+           (strlen($predio_tmp->codigo_predio) == 25 && strlen($request->codigo_predio_edit) == 15)) {
+            $predio->codigo_predio_anterior = $predio_tmp->codigo_predio;
+        }
+
+        $predio->tipo = $request->filled('tipo_edit') ? $request->tipo_edit : NULL;//2
+        $predio->zona = $request->filled('zona_edit') ? $request->zona_edit : NULL;//2
+
+        $predio->sector = $request->sector_edit;//2
+
+        $predio->comuna = $request->filled('comuna_edit') ? $request->comuna_edit : NULL;//2
+        $predio->barrio = $request->filled('barrio_edit') ? $request->barrio_edit : NULL;//2
+
+        $predio->manzana = $request->manzana_edit;//4
+
+        $predio->predio = $request->predio_edit;//4
+        $predio->terreno = $request->filled('terreno_edit') ? $request->terreno_edit : NULL;//4
+
+        $predio->mejora = $request->mejora_edit;//3
+
+        $predio->condicion = $request->filled('condicion_edit') ? $request->condicion_edit : NULL;//1
+        $predio->edificio_torre = $request->filled('edificio_torre_edit') ? $request->edificio_torre_edit : NULL;//2
+        $predio->piso = $request->filled('piso_edit') ? $request->piso_edit : NULL;//2
+        $predio->propiedad = $request->filled('propiedad_edit') ? $request->propiedad_edit : NULL;//4
+
         $predio->id_zona = $request->id_zona_edit;
         $predio->direccion = $request->direccion_edit;
         $predio->area_metros = str_replace(",", "", $request->area_metros_edit);

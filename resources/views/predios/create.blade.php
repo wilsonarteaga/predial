@@ -73,14 +73,16 @@
                                                     <!-- <h3 class="box-title">Informaci&oacute;n de la predio</h3> -->
                                                     <!-- <hr> -->
                                                     <div class="row">
-                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo predio:</label>
-                                                                <input type="text" id="codigo_predio" name="codigo_predio" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo predio" value="{{ old('codigo_predio') }}" maxlength="25">
+                                                                <input type="text" style="font-size: 170%; letter-spacing: 5px;" id="codigo_predio" name="codigo_predio" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo predio 15/25" value="{{ old('codigo_predio') }}" maxlength="25">
                                                                 <span class="text-danger">@error('codigo_predio') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div id="div_tipo" class="col-lg-1 col-md-1 col-sm-2 col-xs-6" style="opacity: 0;">
+                                                    </div>
+                                                    <div class="row">
+                                                        <div id="div_tipo" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_15" style="opacity: 0;">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tipo:</label>
                                                                 <input type="hidden" id="tipo" name="tipo" value="{{ old('tipo') }}">
@@ -89,7 +91,17 @@
                                                                 <span class="text-danger">@error('tipo') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div id="div_sector" class="col-lg-1 col-md-1 col-sm-2 col-xs-6" style="opacity: 0;">
+                                                        <div id="div_zona" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_25" style="opacity: 0;">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Zona:</label>
+                                                                <input type="hidden" id="zona" name="zona" value="{{ old('zona') }}">
+                                                                <span id="span_zona" class="span_predio"></span>
+                                                                {{-- <input type="text" id="zona" name="zona" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('zona') }}" maxlength="2"> --}}
+                                                                <span class="text-danger">@error('zona') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div id="div_sector" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_15_25" style="opacity: 0;">
                                                             <div class="form-group">
                                                                 <label class="control-label">Sector:</label>
                                                                 <input type="hidden" id="sector" name="sector" value="{{ old('sector') }}">
@@ -99,9 +111,28 @@
                                                             </div>
                                                         </div>
 
-                                                        <div id="div_manzana" class="col-lg-1 col-md-1 col-sm-2 col-xs-6" style="opacity: 0;">
+                                                        <div id="div_comuna" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_25" style="opacity: 0;">
                                                             <div class="form-group">
-                                                                <label class="control-label">Manzana:</label>
+                                                                <label class="control-label">Comuna:</label>
+                                                                <input type="hidden" id="comuna" name="comuna" value="{{ old('comuna') }}">
+                                                                <span id="span_comuna" class="span_predio"></span>
+                                                                {{-- <input type="text" id="comuna" name="comuna" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('comuna') }}" maxlength="2"> --}}
+                                                                <span class="text-danger">@error('comuna') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div id="div_barrio" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_25" style="opacity: 0;">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Barrio:</label>
+                                                                <input type="hidden" id="barrio" name="barrio" value="{{ old('barrio') }}">
+                                                                <span id="span_barrio" class="span_predio"></span>
+                                                                {{-- <input type="text" id="barrio" name="barrio" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('barrio') }}" maxlength="4"> --}}
+                                                                <span class="text-danger">@error('barrio') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div id="div_manzana" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_15_25" style="opacity: 0;">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Mz<span class="codigo_25">/Vda</span>:</label>
                                                                 <input type="hidden" id="manzana" name="manzana" value="{{ old('manzana') }}">
                                                                 <span id="span_manzana" class="span_predio"></span>
                                                                 {{-- <input type="text" id="manzana" name="manzana" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('manzana') }}" maxlength="4"> --}}
@@ -109,7 +140,7 @@
                                                             </div>
                                                         </div>
 
-                                                        <div id="div_predio" class="col-lg-1 col-md-1 col-sm-2 col-xs-6" style="opacity: 0;">
+                                                        <div id="div_predio" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_15" style="opacity: 0;">
                                                             <div class="form-group">
                                                                 <label class="control-label">Predio:</label>
                                                                 <input type="hidden" id="predio" name="predio" value="{{ old('predio') }}">
@@ -118,8 +149,17 @@
                                                                 <span class="text-danger">@error('predio') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
+                                                        <div id="div_terreno" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_25" style="opacity: 0;">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Terreno:</label>
+                                                                <input type="hidden" id="terreno" name="terreno" value="{{ old('terreno') }}">
+                                                                <span id="span_terreno" class="span_predio"></span>
+                                                                {{-- <input type="text" id="terreno" name="terreno" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('terreno') }}" maxlength="4"> --}}
+                                                                <span class="text-danger">@error('terreno') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
 
-                                                        <div id="div_mejora" class="col-lg-1 col-md-1 col-sm-2 col-xs-6" style="opacity: 0;">
+                                                        <div id="div_mejora" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_15" style="opacity: 0;">
                                                             <div class="form-group">
                                                                 <label class="control-label">Mejora:</label>
                                                                 <input type="hidden" id="mejora" name="mejora" value="{{ old('mejora') }}">
@@ -128,8 +168,45 @@
                                                                 <span class="text-danger">@error('mejora') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
+                                                        <div id="div_condicion" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_25" style="opacity: 0;">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Cond:</label>
+                                                                <input type="hidden" id="condicion" name="condicion" value="{{ old('condicion') }}">
+                                                                <span id="span_condicion" class="span_predio"></span>
+                                                                {{-- <input type="text" id="condicion" name="condicion" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('condicion') }}" maxlength="1"> --}}
+                                                                <span class="text-danger">@error('condicion') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div id="div_edificio_torre" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_25" style="opacity: 0;">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Edi/Tor:</label>
+                                                                <input type="hidden" id="edificio_torre" name="edificio_torre" value="{{ old('edificio_torre') }}">
+                                                                <span id="span_edificio_torre" class="span_predio"></span>
+                                                                {{-- <input type="text" id="edificio_torre" name="edificio_torre" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('edificio_torre') }}" maxlength="2"> --}}
+                                                                <span class="text-danger">@error('edificio_torre') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div id="div_piso" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_25" style="opacity: 0;">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Piso:</label>
+                                                                <input type="hidden" id="piso" name="piso" value="{{ old('piso') }}">
+                                                                <span id="span_piso" class="span_predio"></span>
+                                                                {{-- <input type="text" id="piso" name="piso" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('piso') }}" maxlength="2"> --}}
+                                                                <span class="text-danger">@error('piso') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div id="div_propiedad" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_25" style="opacity: 0;">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Propiedad:</label>
+                                                                <input type="hidden" id="propiedad" name="propiedad" value="{{ old('propiedad') }}">
+                                                                <span id="span_propiedad" class="span_predio"></span>
+                                                                {{-- <input type="text" id="propiedad" name="propiedad" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('propiedad') }}" maxlength="2"> --}}
+                                                                <span class="text-danger">@error('propiedad') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
 
                                                     </div>
+
                                                     <div class="row">
                                                         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                                             <div class="form-group">
@@ -377,15 +454,16 @@
                                                 <div class="form-body">
                                                     <input type="hidden" id="id_edit" name="id_edit" value="{{ old('id_edit') }}">
                                                     <div class="row">
-                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo predio:</label>
-                                                                <input type="text" id="codigo_predio_edit" name="codigo_predio_edit" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="Ingrese c&oacute;digo predio" value="{{ old('codigo_predio_edit') }}" maxlength="25">
+                                                                <input type="text" style="font-size: 170%; letter-spacing: 5px;" id="codigo_predio_edit" name="codigo_predio_edit" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="Ingrese c&oacute;digo predio 15/25" value="{{ old('codigo_predio_edit') }}" maxlength="25">
                                                                 <span class="text-danger">@error('codigo_predio_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-
-                                                        <div id="div_tipo_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6" style="opacity: 0;">
+                                                    </div>
+                                                    <div class="row">
+                                                        <div id="div_tipo_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_15_edit" style="opacity: 0;">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tipo:</label>
                                                                 <input type="hidden" id="tipo_edit" name="tipo_edit" value="{{ old('tipo_edit') }}">
@@ -394,8 +472,17 @@
                                                                 <span class="text-danger">@error('tipo_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
+                                                        <div id="div_zona_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_25_edit" style="opacity: 0;">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Zona:</label>
+                                                                <input type="hidden" id="zona_edit" name="zona_edit" value="{{ old('zona_edit') }}">
+                                                                <span id="span_zona_edit" class="span_predio"></span>
+                                                                {{-- <input type="text" id="zona_edit" name="zona_edit" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('zona_edit') }}" maxlength="2"> --}}
+                                                                <span class="text-danger">@error('zona_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
 
-                                                        <div id="div_sector_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6" style="opacity: 0;">
+                                                        <div id="div_sector_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_15_25_edit" style="opacity: 0;">
                                                             <div class="form-group">
                                                                 <label class="control-label">Sector:</label>
                                                                 <input type="hidden" id="sector_edit" name="sector_edit" value="{{ old('sector_edit') }}">
@@ -405,9 +492,28 @@
                                                             </div>
                                                         </div>
 
-                                                        <div id="div_manzana_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6" style="opacity: 0;">
+                                                        <div id="div_comuna_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_25_edit" style="opacity: 0;">
                                                             <div class="form-group">
-                                                                <label class="control-label">Manzana:</label>
+                                                                <label class="control-label">Comuna:</label>
+                                                                <input type="hidden" id="comuna_edit" name="comuna_edit" value="{{ old('comuna_edit') }}">
+                                                                <span id="span_comuna_edit" class="span_predio"></span>
+                                                                {{-- <input type="text" id="comuna_edit" name="comuna_edit" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('comuna_edit') }}" maxlength="2"> --}}
+                                                                <span class="text-danger">@error('comuna_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div id="div_barrio_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_25_edit" style="opacity: 0;">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Barrio:</label>
+                                                                <input type="hidden" id="barrio_edit" name="barrio_edit" value="{{ old('barrio_edit') }}">
+                                                                <span id="span_barrio_edit" class="span_predio"></span>
+                                                                {{-- <input type="text" id="barrio_edit" name="barrio_edit" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('barrio_edit') }}" maxlength="4"> --}}
+                                                                <span class="text-danger">@error('barrio_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div id="div_manzana_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_15_25_edit" style="opacity: 0;">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Mz<span class="codigo_25_edit">/Vda</span>:</label>
                                                                 <input type="hidden" id="manzana_edit" name="manzana_edit" value="{{ old('manzana_edit') }}">
                                                                 <span id="span_manzana_edit" class="span_predio"></span>
                                                                 {{-- <input type="text" id="manzana_edit" name="manzana_edit" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('manzana_edit') }}" maxlength="4"> --}}
@@ -415,7 +521,7 @@
                                                             </div>
                                                         </div>
 
-                                                        <div id="div_predio_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6" style="opacity: 0;">
+                                                        <div id="div_predio_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_15_edit" style="opacity: 0;">
                                                             <div class="form-group">
                                                                 <label class="control-label">Predio:</label>
                                                                 <input type="hidden" id="predio_edit" name="predio_edit" value="{{ old('predio_edit') }}">
@@ -424,8 +530,17 @@
                                                                 <span class="text-danger">@error('predio_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
+                                                        <div id="div_terreno_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_25_edit" style="opacity: 0;">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Terreno:</label>
+                                                                <input type="hidden" id="terreno_edit" name="terreno_edit" value="{{ old('terreno_edit') }}">
+                                                                <span id="span_terreno_edit" class="span_predio"></span>
+                                                                {{-- <input type="text" id="terreno_edit" name="terreno_edit" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('terreno_edit') }}" maxlength="4"> --}}
+                                                                <span class="text-danger">@error('terreno_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
 
-                                                        <div id="div_mejora_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6" style="opacity: 0;">
+                                                        <div id="div_mejora_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_15_edit" style="opacity: 0;">
                                                             <div class="form-group">
                                                                 <label class="control-label">Mejora:</label>
                                                                 <input type="hidden" id="mejora_edit" name="mejora_edit" value="{{ old('mejora_edit') }}">
@@ -434,6 +549,43 @@
                                                                 <span class="text-danger">@error('mejora_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
+                                                        <div id="div_condicion_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_25_edit" style="opacity: 0;">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Cond:</label>
+                                                                <input type="hidden" id="condicion_edit" name="condicion_edit" value="{{ old('condicion_edit') }}">
+                                                                <span id="span_condicion_edit" class="span_predio"></span>
+                                                                {{-- <input type="text" id="condicion_edit" name="condicion_edit" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('condicion_edit') }}" maxlength="1"> --}}
+                                                                <span class="text-danger">@error('condicion_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div id="div_edificio_torre_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_25_edit" style="opacity: 0;">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Edi/Tor:</label>
+                                                                <input type="hidden" id="edificio_torre_edit" name="edificio_torre_edit" value="{{ old('edificio_torre_edit') }}">
+                                                                <span id="span_edificio_torre_edit" class="span_predio"></span>
+                                                                {{-- <input type="text" id="edificio_torre_edit" name="edificio_torre_edit" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('edificio_torre_edit') }}" maxlength="2"> --}}
+                                                                <span class="text-danger">@error('edificio_torre_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div id="div_piso_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_25_edit" style="opacity: 0;">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Piso:</label>
+                                                                <input type="hidden" id="piso_edit" name="piso_edit" value="{{ old('piso_edit') }}">
+                                                                <span id="span_piso_edit" class="span_predio"></span>
+                                                                {{-- <input type="text" id="piso_edit" name="piso_edit" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('piso_edit') }}" maxlength="2"> --}}
+                                                                <span class="text-danger">@error('piso_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div id="div_propiedad_edit" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_25_edit" style="opacity: 0;">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Propiedad:</label>
+                                                                <input type="hidden" id="propiedad_edit" name="propiedad_edit" value="{{ old('propiedad_edit') }}">
+                                                                <span id="span_propiedad_edit" class="span_predio"></span>
+                                                                {{-- <input type="text" id="propiedad_edit" name="propiedad_edit" class="form-control nofocus" autocomplete="off" placeholder="" value="{{ old('propiedad_edit') }}" maxlength="2"> --}}
+                                                                <span class="text-danger">@error('propiedad_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+
                                                     </div>
 
                                                     <div class="row">
