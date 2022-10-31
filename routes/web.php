@@ -36,7 +36,7 @@ Route::get('/', [LoginController::class, 'login']);
 Route::get('logout', [LoginController::class, 'logout'])->name('auth.logout');
 
 //Login
-Route::post('checkLogin', [LoginController::class, 'checkLogin'])->name('auth.checkLogin')->middleware('checkdb');
+Route::post('checkLogin', [LoginController::class, 'checkLogin'])->name('auth.checkLogin');//->middleware('checkdb');
 Route::get('profile', [LoginController::class, 'profile'])->middleware('checkdb');
 
 Route::get('cambiar_password', [ChangePasswordController::class, 'index'])->name('auth.index_change_pass')->middleware('checkdb');

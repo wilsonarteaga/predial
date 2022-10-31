@@ -641,72 +641,73 @@ function setEditRow(initDataTable) {
             if (!$(row).hasClass('disabled')) {
                 var jsonObj = JSON.parse($(row).attr('json-data'));
                 global_json = jsonObj;
-                $('.result').empty();
+                if(Number(global_json.prescrito) < 1) {
+                    $('.result').empty();
+                    if ($(row).hasClass('descuento_row')) {
+                        $('#porcentaje_edit').prop('readonly', false);
+                        $('#fecha_inicio_edit').prop('readonly', true);
+                        $('#fecha_fin_edit').prop('readonly', true);
+                        $('#fecha_fin_edit').datepicker('destroy');
 
-                if ($(row).hasClass('descuento_row')) {
-                    $('#porcentaje_edit').prop('readonly', false);
-                    $('#fecha_inicio_edit').prop('readonly', true);
-                    $('#fecha_fin_edit').prop('readonly', true);
-                    $('#fecha_fin_edit').datepicker('destroy');
+                        if (moment($('#fecha_oculta').val()) <= moment(jsonObj.fecha_fin) && moment($('#fecha_oculta').val()) > moment(jsonObj.fecha_inicio)) {
+                            $('#porcentaje_edit').prop('readonly', true);
+                            $('#fecha_fin_edit').prop('readonly', false);
+                            $('#fecha_fin_edit').datepicker({
+                                language: 'es-ES',
+                                format: 'yyyy-mm-dd',
+                                startDate: moment($('#fecha_oculta').val()), // Or '02/14/2014'
+                                hide: function() {
+                                    if ($("#create-form").length > 0) {
+                                        if ($('#' + $(this).attr('id') + '-error').length > 0)
+                                            $('#' + $(this).attr('id') + '-error').remove();
 
-                    if (moment($('#fecha_oculta').val()) <= moment(jsonObj.fecha_fin) && moment($('#fecha_oculta').val()) > moment(jsonObj.fecha_inicio)) {
-                        $('#porcentaje_edit').prop('readonly', true);
-                        $('#fecha_fin_edit').prop('readonly', false);
-                        $('#fecha_fin_edit').datepicker({
-                            language: 'es-ES',
-                            format: 'yyyy-mm-dd',
-                            startDate: moment($('#fecha_oculta').val()), // Or '02/14/2014'
-                            hide: function() {
-                                if ($("#create-form").length > 0) {
-                                    if ($('#' + $(this).attr('id') + '-error').length > 0)
-                                        $('#' + $(this).attr('id') + '-error').remove();
+                                        $('#create-form').validate().element($(this));
+                                    }
+                                    if ($("#update-form").length > 0) {
+                                        if ($('#' + $(this).attr('id') + '-error').length > 0)
+                                            $('#' + $(this).attr('id') + '-error').remove();
 
-                                    $('#create-form').validate().element($(this));
+                                        $('#update-form').validate().element($(this));
+                                    }
+                                },
+                                pick: function() {
+                                    $('.text-danger').remove();
                                 }
-                                if ($("#update-form").length > 0) {
-                                    if ($('#' + $(this).attr('id') + '-error').length > 0)
-                                        $('#' + $(this).attr('id') + '-error').remove();
+                            });
+                        }
 
-                                    $('#update-form').validate().element($(this));
-                                }
-                            },
-                            pick: function() {
-                                $('.text-danger').remove();
-                            }
-                        });
-                    }
+                        //     var hour_control = $(row).attr('data-control');
+                        //     $.ajax({
+                        //         type: 'GET',
+                        //         url: '/iavailable/hours',
+                        //         data: {
+                        //             date: jsonObj.fec_cit,
+                        //             hour: jsonObj.hor_cit
+                        //         },
+                        //         success: function(response) {
+                        //             if (response.data.length > 0 && response.data.length < 19) {
+                        //                 $('#' + hour_control).empty();
+                        //                 $.each(response.data, function(i, el) {
+                        //                     var option = $('<option value="' + el + '">' + el + '</option>');
+                        //                     $('#' + hour_control).append(option);
+                        //                 });
+                        //                 $('#' + hour_control).selectpicker("refresh");
+                        //                 setData(jsonObj);
+                        //             } else {
+                        //                 $('#' + hour_control).val('default').selectpicker("refresh");
+                        //                 setData(jsonObj);
+                        //             }
+                        //         },
+                        //         error: function(xhr) {
+                        //             console.log(xhr.responseText);
+                        //             setData(jsonObj);
+                        //         }
+                        //     });
+                    } //else {
 
-                    //     var hour_control = $(row).attr('data-control');
-                    //     $.ajax({
-                    //         type: 'GET',
-                    //         url: '/iavailable/hours',
-                    //         data: {
-                    //             date: jsonObj.fec_cit,
-                    //             hour: jsonObj.hor_cit
-                    //         },
-                    //         success: function(response) {
-                    //             if (response.data.length > 0 && response.data.length < 19) {
-                    //                 $('#' + hour_control).empty();
-                    //                 $.each(response.data, function(i, el) {
-                    //                     var option = $('<option value="' + el + '">' + el + '</option>');
-                    //                     $('#' + hour_control).append(option);
-                    //                 });
-                    //                 $('#' + hour_control).selectpicker("refresh");
-                    //                 setData(jsonObj);
-                    //             } else {
-                    //                 $('#' + hour_control).val('default').selectpicker("refresh");
-                    //                 setData(jsonObj);
-                    //             }
-                    //         },
-                    //         error: function(xhr) {
-                    //             console.log(xhr.responseText);
-                    //             setData(jsonObj);
-                    //         }
-                    //     });
-                } //else {
-
-                setData(jsonObj);
-                // }
+                    setData(jsonObj);
+                    // }
+                }
             }
         });
 
