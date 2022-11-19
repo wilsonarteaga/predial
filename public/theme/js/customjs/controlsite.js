@@ -641,7 +641,7 @@ function setEditRow(initDataTable) {
             if (!$(row).hasClass('disabled')) {
                 var jsonObj = JSON.parse($(row).attr('json-data'));
                 global_json = jsonObj;
-                if(Number(global_json.prescrito) < 1) {
+                if(global_json.prescrito === undefined || Number(global_json.prescrito) < 1) {
                     $('.result').empty();
                     if ($(row).hasClass('descuento_row')) {
                         $('#porcentaje_edit').prop('readonly', false);
