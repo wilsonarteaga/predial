@@ -144,7 +144,7 @@
                                                     <div class="col-lg-3 col-md-5 col-sm-6 col-xs-12">
                                                         <div class="form-group">
                                                             <label>Acudiente</label>
-                                                            <select id="ide_acu" name="ide_acu" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" title="Seleccione...">
+                                                            <select id="ide_acu" name="ide_acu" class="form-control selectpicker show-tick" data-live-search="true" data-size="4" title="Seleccione...">
                                                                 {{-- <option value="">--Seleccione--</option> --}}
                                                                 @if(count($acudientes) > 0)
                                                                     @foreach($acudientes as $acudiente)
@@ -323,7 +323,7 @@
                                                     <div class="col-lg-3 col-md-5 col-sm-6 col-xs-12">
                                                         <div class="form-group">
                                                             <label>Acudiente</label>
-                                                            <select id="acudientes_ide_acu_edit" name="acudientes_ide_acu_edit" class="form-control selectpicker show-tick" data-live-search="true" data-size="5" title="Seleccione...">
+                                                            <select id="acudientes_ide_acu_edit" name="acudientes_ide_acu_edit" class="form-control selectpicker show-tick" data-live-search="true" data-size="4" title="Seleccione...">
                                                                 {{-- <option value="">--Seleccione--</option> --}}
                                                                 @if(count($acudientes) > 0)
                                                                     @foreach($acudientes as $acudiente)

@@ -94,7 +94,7 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo predio:</label>
-                                                                <select id="id_predio" name="id_predio" class="form-control selectpicker show-tick res-validate" data-live-search="true" data-size="5" title="Sin informaci&oacute;n...">
+                                                                <select id="id_predio" name="id_predio" class="form-control selectpicker show-tick res-validate" data-live-search="true" data-size="4" title="Sin informaci&oacute;n...">
                                                                     @if(count($predios) > 0)
                                                                         @foreach($predios as $predio)
                                                                         <option value="{{ $predio->id }}" {{ old('id_predio') == $predio->id ? 'selected' : '' }}>{{ $predio->codigo_predio }}</option>
@@ -107,7 +107,7 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Concepto predio:</label>
-                                                                <select id="id_concepto_predio" name="id_concepto_predio" class="form-control selectpicker show-tick res-validate" data-live-search="true" data-size="5" title="Sin informaci&oacute;n...">
+                                                                <select id="id_concepto_predio" name="id_concepto_predio" class="form-control selectpicker show-tick res-validate" data-live-search="true" data-size="4" title="Sin informaci&oacute;n...">
                                                                     @if(count($conceptos_predios) > 0)
                                                                         @foreach($conceptos_predios as $concepto_predio)
                                                                         <option value="{{ $concepto_predio->id }}" {{ old('id_concepto_predio') == $concepto_predio->id ? 'selected' : '' }} data-subtext="{{ $concepto_predio->codigo }}">{{ $concepto_predio->nombre }}</option>
