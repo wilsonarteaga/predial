@@ -8,9 +8,6 @@
 
 .dropdown-menu.open {
     border-color: rgb(40, 172, 161);
-    z-index: 9999;
-    position: relative;
-    top: 0px;
 }
 
 textarea.form-control {
