@@ -784,31 +784,40 @@ function setDownloadRow() {
                 position: 'top-right',
                 loaderBg: '#fff',
                 icon: 'warning',
-                hideAfter: 10000,
+                hideAfter: 4000,
                 stack: 6
             });
 
             setTimeout(function() {
-                $.toast({
-                    heading: 'Información',
-                    text: 'El cálculo predial ha sido ejecutado satisfactoriamente. Inicia descarga de factura.',
-                    position: 'top-right',
-                    loaderBg: '#fff',
-                    icon: 'success',
-                    hideAfter: 3000,
-                    stack: 6
-                });
-                setTimeout(function() {
-                    if ($('#iframe_reporte').length > 0) {
-                        $('#iframe_reporte').remove();
-                    }
-                    var iframe = $('<iframe id="iframe_reporte" style="display:none;"></iframe>');
-                    iframe.attr('src', $(btn).attr('url'));
-                    $('body').append(iframe);
-                    $(btn).attr('disabled', false);
-                }, 2000);
-            }, 10000);
+                if ($('#iframe_reporte').length > 0) {
+                    $('#iframe_reporte').remove();
+                }
+                var iframe = $('<iframe id="iframe_reporte" style="display:none;"></iframe>');
+                iframe.attr('src', $(btn).attr('url'));
+                $('body').append(iframe);
+                $(btn).attr('disabled', false);
+            }, 1000);
 
+            // setTimeout(function() {
+            //     $.toast({
+            //         heading: 'Información',
+            //         text: 'El cálculo predial ha sido ejecutado satisfactoriamente. Inicia descarga de factura.',
+            //         position: 'top-right',
+            //         loaderBg: '#fff',
+            //         icon: 'success',
+            //         hideAfter: 3000,
+            //         stack: 6
+            //     });
+            //     setTimeout(function() {
+            //         if ($('#iframe_reporte').length > 0) {
+            //             $('#iframe_reporte').remove();
+            //         }
+            //         var iframe = $('<iframe id="iframe_reporte" style="display:none;"></iframe>');
+            //         iframe.attr('src', $(btn).attr('url'));
+            //         $('body').append(iframe);
+            //         $(btn).attr('disabled', false);
+            //     }, 2000);
+            // }, 2000);
         });
     }
 }
@@ -844,9 +853,9 @@ function getPredio(id_predio) {
                     disabledBtnEdita = 'disabled="disabled"';
                     disabledBtnElimina = 'disabled="disabled"';
                 }
-                if(Number(global_json_predio.tiene_pago) === 0) {
-                    disabledBtnCalculo = 'disabled="disabled"';
-                }
+                // if(Number(global_json_predio.tiene_pago) === 0) {
+                //     disabledBtnCalculo = 'disabled="disabled"';
+                // }
                 var td_2 = $('<td class="edit_row cell_center">' + predio.direccion + '</td>');
                 var td_3 = $('<td class="edit_row cell_center">' + predio.propietarios + '</td>');
                 var td_4 = $('<td class="cell_center"></td>');
