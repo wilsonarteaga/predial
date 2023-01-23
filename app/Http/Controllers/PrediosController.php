@@ -851,8 +851,8 @@ class PrediosController extends Controller
             $fechas_pago_hasta[2] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->tercera_fecha)->toDateString());
 
             $valores_factura[0] = (round($suma_total + ($ultimo_anio_pagar->total_calculo  - ($ultimo_anio_pagar->total_calculo * (intval($ultimo_anio_pagar->porcentaje_uno) / 100))), 0));
-            $valores_factura[1] = (round($suma_total + ($ultimo_anio_pagar->total_calculo  - ($ultimo_anio_pagar->total_calculo * (intval($ultimo_anio_pagar->porcentaje_dos) / 100))), 0));
-            $valores_factura[2] = (round($suma_total + ($ultimo_anio_pagar->total_calculo  - ($ultimo_anio_pagar->total_calculo * (intval($ultimo_anio_pagar->porcentaje_tres) / 100))), 0));
+            $valores_factura[1] = (round($suma_total + ($ultimo_anio_pagar->total_dos  - ($ultimo_anio_pagar->total_dos * (intval($ultimo_anio_pagar->porcentaje_dos) / 100))), 0));
+            $valores_factura[2] = (round($suma_total + ($ultimo_anio_pagar->total_tres  - ($ultimo_anio_pagar->total_tres * (intval($ultimo_anio_pagar->porcentaje_tres) / 100))), 0));
 
             $porcentajes_descuento[0] = ($ultimo_anio_pagar->porcentaje_uno);
             $porcentajes_descuento[1] = ($ultimo_anio_pagar->porcentaje_dos);
