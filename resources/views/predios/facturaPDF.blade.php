@@ -122,7 +122,7 @@
             <table class="table-header">
                 <tr>
                     <td style="width: 20%;">
-                        <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/admin-text-dark.png'))) }}" alt="Logo" />
+                        <img style="width: 70%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/logo-sesquile.png'))) }}" alt="Logo" />
                     </td>
                     <td>
                         <p class="header">
