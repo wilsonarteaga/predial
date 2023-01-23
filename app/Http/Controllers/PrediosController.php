@@ -788,7 +788,7 @@ class PrediosController extends Controller
             $nit = '7709998776913';
             $lista_pagos = new Collection();
             $ultimo_anio_pagado = new Collection();
-            $suma_total = new Collection();
+            $suma_total = 0;
             $valores_factura = new Collection();
             $fechas_pago_hasta = new Collection();
             $barras = new Collection();
@@ -829,9 +829,6 @@ class PrediosController extends Controller
                                 ->orderBy('id', 'asc')
                                 ->get();
 
-            $suma_total[0] = 0;
-            $suma_total[1] = 0;
-            $suma_total[2] = 0;
             foreach ($pagos_pendientes as $pago_pendiente) {
                 $obj = new StdClass();
                 $obj->anio = $pago_pendiente->ultimo_anio;
@@ -845,9 +842,7 @@ class PrediosController extends Controller
                 $obj->blanco = 0;
                 $obj->otros = 0;
                 $obj->total = $pago_pendiente->total_calculo == null ? 0 : $pago_pendiente->total_calculo;
-                $suma_total[0] += $pago_pendiente->ultimo_anio < $currentYear ? $pago_pendiente->total_calculo : 0; // al ultimo año se le calculan descuentos
-                $suma_total[1] += $pago_pendiente->ultimo_anio < $currentYear ? $pago_pendiente->total_dos : 0;
-                $suma_total[2] += $pago_pendiente->ultimo_anio < $currentYear ? $pago_pendiente->total_tres : 0;
+                $suma_total += $pago_pendiente->ultimo_anio < $currentYear ? $pago_pendiente->valor_concepto1 + $pago_pendiente->valor_concepto3 : 0; // al ultimo año se le calculan descuentos
                 $lista_pagos->push($obj);
             }
 
@@ -855,9 +850,9 @@ class PrediosController extends Controller
             $fechas_pago_hasta[1] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->segunda_fecha)->toDateString());
             $fechas_pago_hasta[2] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->tercera_fecha)->toDateString());
 
-            $valores_factura[0] = (round($suma_total[0] + ($ultimo_anio_pagar->valor_concepto1 + $ultimo_anio_pagar->valor_concepto3 - ($ultimo_anio_pagar->total_calculo * (intval($ultimo_anio_pagar->porcentaje_uno) / 100))), 0));
-            $valores_factura[1] = (round($suma_total[1] + ($ultimo_anio_pagar->valor_concepto1 + $ultimo_anio_pagar->valor_concepto3 - ($ultimo_anio_pagar->total_dos * (intval($ultimo_anio_pagar->porcentaje_dos) / 100))), 0));
-            $valores_factura[2] = (round($suma_total[2] + ($ultimo_anio_pagar->valor_concepto1 + $ultimo_anio_pagar->valor_concepto3 - ($ultimo_anio_pagar->total_tres * (intval($ultimo_anio_pagar->porcentaje_tres) / 100))), 0));
+            $valores_factura[0] = (round($suma_total + ($ultimo_anio_pagar->valor_concepto1 + $ultimo_anio_pagar->valor_concepto3 - ($ultimo_anio_pagar->valor_concepto1 + $ultimo_anio_pagar->valor_concepto3 * (intval($ultimo_anio_pagar->porcentaje_uno) / 100))), 0));
+            $valores_factura[1] = (round($suma_total + ($ultimo_anio_pagar->valor_concepto1 + $ultimo_anio_pagar->valor_concepto3 - ($ultimo_anio_pagar->valor_concepto1 + $ultimo_anio_pagar->valor_concepto3 * (intval($ultimo_anio_pagar->porcentaje_dos) / 100))), 0));
+            $valores_factura[2] = (round($suma_total + ($ultimo_anio_pagar->valor_concepto1 + $ultimo_anio_pagar->valor_concepto3 - ($ultimo_anio_pagar->valor_concepto1 + $ultimo_anio_pagar->valor_concepto3 * (intval($ultimo_anio_pagar->porcentaje_tres) / 100))), 0));
 
             $porcentajes_descuento[0] = ($ultimo_anio_pagar->porcentaje_uno);
             $porcentajes_descuento[1] = ($ultimo_anio_pagar->porcentaje_dos);
