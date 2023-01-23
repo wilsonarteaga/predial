@@ -226,7 +226,7 @@
                     @foreach($lista_pagos as $pago)
                     <tr>
                         <td>{{ $pago->anio }}</td>
-                        <td>@money($pago->m_tar)</td>
+                        <td>{{ $pago->m_tar }}</td>
                         <td>@money($pago->avaluo)</td>
                         <td>@money($pago->impuesto)</td>
                         <td>@money($pago->interes)</td>
