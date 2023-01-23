@@ -832,9 +832,9 @@ class PrediosController extends Controller
             foreach ($pagos_pendientes as $pago_pendiente) {
                 $obj = new StdClass();
                 $obj->anio = $pago_pendiente->ultimo_anio;
-                $obj->m_tar = $pago_pendiente->tarifa == null ? 0 : $pago_pendiente->tarifa;
+                $obj->m_tar = $pago_pendiente->tarifa == null ? 0 : $pago_pendiente->tarifa * 1000;
                 $obj->avaluo = $pago_pendiente->avaluo == null ? 0 : $pago_pendiente->avaluo;
-                $obj->impuesto = $pago_pendiente->valor_concepto1 == null ? 0 : $pago_pendiente->valor_concepto1;
+                $obj->impuesto = $pago_pendiente->valor_concepto1 == null ? 0 : $pago_pendiente->valor_concepto1 + $pago_pendiente->valor_concepto3;
                 $obj->interes = $pago_pendiente->valor_concepto2 == null ? 0 : $pago_pendiente->valor_concepto2;
                 $obj->descuento_interes = $pago_pendiente->valor_concepto13 == null ? 0 : $pago_pendiente->valor_concepto13;
                 $obj->catorce = 0;
