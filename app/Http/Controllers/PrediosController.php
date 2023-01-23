@@ -863,34 +863,6 @@ class PrediosController extends Controller
                 $barras_texto[$x] = ('(415)' . $nit . '(8020)' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $fechas_pago_hasta[$x]));
             }
 
-            // Caluclar valor a pagar con descuento solo si se realizo un nuevo calculo
-            // if(count($submit) > 0) {
-            //     // Obtener lista de descuentos
-            //     $descuentos = DB::table('descuentos')
-            //                 ->where('descuentos.fecha_inicio', '<=', Carbon::createFromFormat("Y-m-d", $dt->toDateString())->format('Y-m-d'))
-            //                 ->where('descuentos.fecha_fin', '>=', Carbon::createFromFormat("Y-m-d", $dt->toDateString())->format('Y-m-d'))
-            //                 ->where('descuentos.anio', $currentYear)
-            //                 ->select('descuentos.anio', 'descuentos.porcentaje')
-            //                 ->get();
-
-            //     foreach ($descuentos as $descuento) {
-            //         $obj = (object)array($descuento->anio => $descuento->porcentaje);
-            //         $suma_porcentaje_descuento += $descuento->porcentaje;
-            //         $lista_descuentos->push($obj);
-            //     }
-
-            //     $suma_total_con_descuento = round($suma_total);
-            //     if($suma_porcentaje_descuento > 0){
-            //         $suma_total_con_descuento = round($suma_total - ($suma_total * ($suma_porcentaje_descuento / 100)));
-            //     }
-
-            //     $valor_factura = intval($suma_total_con_descuento);
-            // }
-            // else {
-            //     $valor_factura = intval($ultimo_anio_pagar->valor_pago);
-            //     $fecha_mision = Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->fecha_emision);
-            // }
-
             $data = [
                 'title' => 'Predio',
                 'fecha' => count($submit) > 0 ? $dt_emision->format('d/m/Y') : $fecha_mision->format('d/m/Y'),
