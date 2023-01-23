@@ -846,21 +846,21 @@ class PrediosController extends Controller
                 $lista_pagos->push($obj);
             }
 
-            $fechas_pago_hasta->push(Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->primer_fecha)->toDateString());
-            $fechas_pago_hasta->push(Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->segunda_fecha)->toDateString());
-            $fechas_pago_hasta->push(Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->tercera_fecha)->toDateString());
+            $fechas_pago_hasta[0] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->primer_fecha)->toDateString());
+            $fechas_pago_hasta[1] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->segunda_fecha)->toDateString());
+            $fechas_pago_hasta[2] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->tercera_fecha)->toDateString());
 
-            $valores_factura->push(round($suma_total + ($ultimo_anio_pagar->total_calculo  - ($ultimo_anio_pagar->total_calculo * (intval($ultimo_anio_pagar->porcentaje_uno) / 100))), 0));
-            $valores_factura->push(round($suma_total + ($ultimo_anio_pagar->total_calculo  - ($ultimo_anio_pagar->total_calculo * (intval($ultimo_anio_pagar->porcentaje_dos) / 100))), 0));
-            $valores_factura->push(round($suma_total + ($ultimo_anio_pagar->total_calculo  - ($ultimo_anio_pagar->total_calculo * (intval($ultimo_anio_pagar->porcentaje_tres) / 100))), 0));
+            $valores_factura[0] = (round($suma_total + ($ultimo_anio_pagar->total_calculo  - ($ultimo_anio_pagar->total_calculo * (intval($ultimo_anio_pagar->porcentaje_uno) / 100))), 0));
+            $valores_factura[1] = (round($suma_total + ($ultimo_anio_pagar->total_calculo  - ($ultimo_anio_pagar->total_calculo * (intval($ultimo_anio_pagar->porcentaje_dos) / 100))), 0));
+            $valores_factura[2] = (round($suma_total + ($ultimo_anio_pagar->total_calculo  - ($ultimo_anio_pagar->total_calculo * (intval($ultimo_anio_pagar->porcentaje_tres) / 100))), 0));
 
-            $porcentajes_descuento->push($ultimo_anio_pagar->porcentaje_uno);
-            $porcentajes_descuento->push($ultimo_anio_pagar->porcentaje_dos);
-            $porcentajes_descuento->push($ultimo_anio_pagar->porcentaje_tres);
+            $porcentajes_descuento[0] = ($ultimo_anio_pagar->porcentaje_uno);
+            $porcentajes_descuento[1] = ($ultimo_anio_pagar->porcentaje_dos);
+            $porcentajes_descuento[2] = ($ultimo_anio_pagar->porcentaje_tres);
 
             for ($x = 0; $x < count($valores_factura); $x++) {
-                $barras->push('415' . $nit . '8020' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '3900' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . '96' . str_replace('-', '', $fechas_pago_hasta[$x]));
-                $barras_texto->push('(415)' . $nit . '(8020)' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $fechas_pago_hasta[$x]));
+                $barras[$x] = ('415' . $nit . '8020' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '3900' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . '96' . str_replace('-', '', $fechas_pago_hasta[$x]));
+                $barras_texto[$x] = ('(415)' . $nit . '(8020)' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $fechas_pago_hasta[$x]));
             }
 
             // Caluclar valor a pagar con descuento solo si se realizo un nuevo calculo
