@@ -73,13 +73,12 @@
         }
         #body {
             padding:10px;
-            padding-bottom:60px;   /* Height of the footer */
         }
         #footer {
             position:absolute;
             bottom:0;
             width:100%;
-            height:60px;   /* Height of the footer */
+            height:40px;   /* Height of the footer */
             text-align: center;
             font-size: 80%;
             border-top: 1px solid #c0c0c0;
@@ -88,7 +87,7 @@
 		/* div.page { width:100%; padding-top: 5%; padding-bottom: 100px; margin: 0 auto; } */
         th, td { border: 1px solid #000000; }
         table { border-collapse: collapse; font-size: 80%; width: 100%; }
-        td { padding: 3px; }
+        td { padding: 1px; }
         th { padding: 1px; background-color: #f3efef; }
 		p.header { width: 100%; text-align:center; font-weight: bold; padding: 0px; margin: 0px; }
 		h3.title { width: 100%; text-align:right; }
@@ -103,8 +102,8 @@
 		table.info-pagos tr td { text-align:right; font-size: 60%; }
 		table.info-pagos tr.totales th { text-align:right; }
 
-        table.info-resumen tr th { white-space: nowrap; font-size: 80%; }
-		table.info-resumen tr td { white-space: nowrap; font-size: 80%; }
+        table.info-resumen tr th { white-space: nowrap; font-size: 80%; padding: 0px; }
+		table.info-resumen tr td { white-space: nowrap; font-size: 80%; padding: 0px; }
 
 		table.info-alcaldia tr td { border: 0px; text-align: center; font-size: 80%; }
 
@@ -264,10 +263,10 @@
                 </tr>
                 @endif
             </table>
-            <div class="negrilla info" style="padding-top: 20px; padding-bottom: 15px; width: 100%; text-align: center;">
+            <div class="negrilla info" style="padding-top: 15px; padding-bottom: 15px; width: 100%; text-align: center;">
                 USUARIO
             </div>
-            <div class="info" style="padding-bottom: 20px; width: 100%; text-align: center;">
+            <div class="info" style="padding-bottom: 15px; width: 100%; text-align: center;">
                 ESTA FACTURA PRESTA MERITO EJECUTIVO CONFORME AL ART. 828 DEL E.T.
             </div>
             @if(count($lista_pagos) > 0)
@@ -282,7 +281,7 @@
                         <th>A&ntilde;os a pagar</th>
                         <td>{{ $predio->anios_a_pagar }}</td>
                         <th>N&uacute;mero factura</th>
-                        <td class="negrilla" style="font-size: 130%;">{{ $numero_factura }}</td>
+                        <td class="negrilla" style="font-size: 120%;">{{ $numero_factura }}</td>
                     </tr>
                     <tr>
                         <th>Propietario</th>
@@ -305,7 +304,7 @@
                         @for ($x = 0; $x < count($valores_factura); $x++)
                             <tr>
                                 <td style="width: 50%; padding-top: 15px;">
-                                    {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 70) !!}
+                                    {!! DNS1D::getBarcodeHTML($barras[$x], 'C128C', 1, 80) !!}
                                     <span style="width: 100%; font-size: 90%; padding-top: 10px;">{{ $barras_texto[$x] }}</span>
                                 </td>
                                 <td>
