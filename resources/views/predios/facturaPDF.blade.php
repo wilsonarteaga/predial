@@ -239,9 +239,9 @@
                     </tr>
                     @php($suma_impuesto += $pago->impuesto)
                     @php($suma_interes += $pago->interes)
-                    @php($suma_descuento_interes += $pago->descuento_interes)
+                    @php($suma_descuento_interes += ($pago->descuento_interes))
                     @php($suma_catorce += $pago->catorce)
-                    @php($suma_descuento_15 += $pago->descuento_15)
+                    @php($suma_descuento_15 += ($pago->descuento_15))
                     @php($suma_blanco += $pago->blanco)
                     @php($suma_otros += $pago->otros)
                     @php($suma_total += $pago->total)
