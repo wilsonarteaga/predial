@@ -69,7 +69,7 @@
             position:relative;
         }
         #header {
-            padding: 5px;
+            padding:10px;
         }
         #body {
             padding:10px;
@@ -78,7 +78,7 @@
             position:absolute;
             bottom:0;
             width:100%;
-            height:30px;   /* Height of the footer */
+            height:40px;   /* Height of the footer */
             text-align: center;
             font-size: 80%;
             border-top: 1px solid #c0c0c0;
@@ -89,7 +89,7 @@
         table { border-collapse: collapse; font-size: 80%; width: 100%; }
         td { padding: 1px; }
         th { padding: 1px; background-color: #f3efef; }
-		span.header { display: block; width: 100%; text-align:center; font-weight: bold; padding: 0px; margin: 0px; }
+		p.header { width: 100%; text-align:center; font-weight: bold; padding: 0px; margin: 0px; }
 		h3.title { width: 100%; text-align:right; }
 
         table.table-header tr td { border: 0px; }
@@ -121,22 +121,22 @@
             <table class="table-header">
                 <tr>
                     <td style="width: 20%;">
-                        <img style="width: 50%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/logo-sesquile.png'))) }}" alt="Logo" />
+                        <img style="width: 70%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/logo-sesquile.png'))) }}" alt="Logo" />
                     </td>
                     <td>
-                        <span class="header">
-                            SECRETARIA DE HACIENDA</span>
-                        <span class="header">
-                            IMPUESTO PREDIAL UNIFICADO</span>
-                        <span class="header">
-                            FACTURA DE COBRO</span>
+                        <p class="header">
+                            SECRETARIA DE HACIENDA</p>
+                        <p class="header">
+                            IMPUESTO PREDIAL UNIFICADO</p>
+                        <p class="header">
+                            FACTURA DE COBRO</p>
                     </td>
                 </tr>
             </table>
 
         </div>
         <div id="body">
-            <table class="titles" style="width: 100%; margin-top: 0px;">
+            <table class="titles" style="width: 100%; margin-top: 10px;">
                 <tr>
                     <td style="width: 80%;">
                         <h3 class="title">Fecha emisi&oacute;n:</h3>
@@ -263,7 +263,7 @@
                 </tr>
                 @endif
             </table>
-            <div class="negrilla info" style="padding-top: 15px; padding-bottom: 10px; width: 100%; text-align: center;">
+            <div class="negrilla info" style="padding-top: 15px; padding-bottom: 15px; width: 100%; text-align: center;">
                 USUARIO
             </div>
             <div class="info" style="padding-bottom: 15px; width: 100%; text-align: center;">

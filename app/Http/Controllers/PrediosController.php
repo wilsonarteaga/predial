@@ -787,6 +787,7 @@ class PrediosController extends Controller
 
             $nit = '7709998776913';
             $lista_pagos = new Collection();
+            $lista_pagos_depurada = new Collection();
             $ultimo_anio_pagado = new Collection();
             $suma_total = new Collection();
             $suma_intereses = 0;
@@ -853,6 +854,55 @@ class PrediosController extends Controller
                 $suma_intereses += $pago_pendiente->ultimo_anio < $currentYear ? $pago_pendiente->valor_concepto2 : 0; // al ultimo año se le calculan descuentos
                 $suma_descuento_intereses += $pago_pendiente->ultimo_anio < $currentYear ? $pago_pendiente->valor_concepto13 : 0; // al ultimo año se le calculan descuentos
                 $lista_pagos->push($obj);
+            }
+
+            if(count($lista_pagos) > 5) {
+                $obj = new StdClass();
+                $obj->anio = '< ' . $lista_pagos[count($lista_pagos) - 5]->anio;
+
+                $obj_m_tar = 0;
+                $obj_avaluo = 0;
+                $obj_impuesto = 0;
+                $obj_interes = 0;
+                $obj_descuento_interes = 0;
+                $obj_catorce = 0;
+                $obj_descuento_15 = 0;
+                $obj_blanco = 0;
+                $obj_otros = 0;
+                $obj_total = 0;
+
+                for ($x = 0; $x < count($lista_pagos) - 5; $x++) {
+                    $obj_m_tar = $lista_pagos[$x]->m_tar;
+                    $obj_avaluo += $lista_pagos[$x]->avaluo;
+                    $obj_impuesto += $lista_pagos[$x]->impuesto;
+                    $obj_interes += $lista_pagos[$x]->interes;
+                    $obj_descuento_interes += $lista_pagos[$x]->descuento_interes;
+                    $obj_catorce += $lista_pagos[$x]->catorce;
+                    $obj_descuento_15 += $lista_pagos[$x]->descuento_15;
+                    $obj_blanco += $lista_pagos[$x]->blanco;
+                    $obj_otros += $lista_pagos[$x]->otros;
+                    $obj_total += $lista_pagos[$x]->total;
+                }
+
+                $obj->m_tar = $obj_m_tar;
+                $obj->avaluo = $obj_avaluo;
+                $obj->impuesto = $obj_impuesto;
+                $obj->interes = $obj_interes;
+                $obj->descuento_interes = $obj_descuento_interes;
+                $obj->catorce = $obj_catorce;
+                $obj->descuento_15 = $obj_descuento_15;
+                $obj->blanco = $obj_blanco;
+                $obj->otros = $obj_otros;
+                $obj->total = $obj_total;
+
+                $lista_pagos_depurada->push($obj);
+                for ($x = count($lista_pagos) - 5; $x < count($lista_pagos); $x++) {
+                    $lista_pagos_depurada->push($lista_pagos[$x]);
+                }
+            }
+
+            if(count($lista_pagos_depurada) > 0) {
+                $lista_pagos = $lista_pagos_depurada;
             }
 
             $fechas_pago_hasta[0] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->primer_fecha)->toDateString());
