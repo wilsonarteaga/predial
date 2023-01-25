@@ -913,9 +913,13 @@ class PrediosController extends Controller
             // $valores_factura[1] = (round($suma_total + (($ultimo_anio_pagar->valor_concepto1 + $ultimo_anio_pagar->valor_concepto3) - (($ultimo_anio_pagar->valor_concepto1 + $ultimo_anio_pagar->valor_concepto3) * (intval($ultimo_anio_pagar->porcentaje_dos) / 100))), 0));
             // $valores_factura[2] = (round($suma_total + (($ultimo_anio_pagar->valor_concepto1 + $ultimo_anio_pagar->valor_concepto3) - (($ultimo_anio_pagar->valor_concepto1 + $ultimo_anio_pagar->valor_concepto3) * (intval($ultimo_anio_pagar->porcentaje_tres) / 100))), 0));
 
-            $valores_factura[0] = (round($suma_total[0] + $suma_intereses - $suma_descuento_intereses + $ultimo_anio_pagar->total_calculo, 0));
-            $valores_factura[1] = (round($suma_total[1] + $suma_intereses - $suma_descuento_intereses + $ultimo_anio_pagar->total_dos, 0));
-            $valores_factura[2] = (round($suma_total[2] + $suma_intereses - $suma_descuento_intereses + $ultimo_anio_pagar->total_tres, 0));
+            // $valores_factura[0] = (round($suma_total[0] + $suma_intereses - $suma_descuento_intereses + $ultimo_anio_pagar->total_calculo, 0));
+            // $valores_factura[1] = (round($suma_total[1] + $suma_intereses - $suma_descuento_intereses + $ultimo_anio_pagar->total_dos, 0));
+            // $valores_factura[2] = (round($suma_total[2] + $suma_intereses - $suma_descuento_intereses + $ultimo_anio_pagar->total_tres, 0));
+
+            $valores_factura[0] = (round($suma_total[0] + $ultimo_anio_pagar->total_calculo, 0));
+            $valores_factura[1] = (round($suma_total[1] + $ultimo_anio_pagar->total_dos, 0));
+            $valores_factura[2] = (round($suma_total[2] + $ultimo_anio_pagar->total_tres, 0));
 
             $porcentajes_descuento[0] = ($ultimo_anio_pagar->porcentaje_uno);
             $porcentajes_descuento[1] = ($ultimo_anio_pagar->porcentaje_dos);

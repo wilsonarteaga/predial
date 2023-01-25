@@ -78,7 +78,7 @@
             position:absolute;
             bottom:0;
             width:100%;
-            height:40px;   /* Height of the footer */
+            height:35px;   /* Height of the footer */
             text-align: center;
             font-size: 80%;
             border-top: 1px solid #c0c0c0;
@@ -136,7 +136,7 @@
 
         </div>
         <div id="body">
-            <table class="titles" style="width: 100%; margin-top: 10px;">
+            <table class="titles" style="width: 100%; margin-top: 0px;">
                 <tr>
                     <td style="width: 80%;">
                         <h3 class="title">Fecha emisi&oacute;n:</h3>
