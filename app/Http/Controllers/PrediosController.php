@@ -662,7 +662,7 @@ class PrediosController extends Controller
         $submit = [];
         $dt = Carbon::now();
         $dt_emision = Carbon::now();
-        $fecha_mision = $dt_emision;
+        $fecha_emision = $dt_emision;
         $currentYear = $dt->year;
 
         // Verificar si el registro ya existe
@@ -740,7 +740,7 @@ class PrediosController extends Controller
             }
             else {
                 $numero_factura = $ultimo_anio_pagar->factura_pago;
-                $fecha_mision = Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->fecha_emision);
+                $fecha_emision = Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->fecha_emision);
             }
 
             $predios = DB::table('predios')->join('zonas', function ($join) {
@@ -790,6 +790,7 @@ class PrediosController extends Controller
             $ultimo_anio_pagado = new Collection();
             $suma_total = new Collection();
             $suma_intereses = 0;
+            $suma_descuento_intereses = 0;
             $valores_factura = new Collection();
             $fechas_pago_hasta = new Collection();
             $barras = new Collection();
@@ -849,7 +850,8 @@ class PrediosController extends Controller
                 $suma_total[0] += $pago_pendiente->ultimo_anio < $currentYear ? $pago_pendiente->total_calculo : 0; // al ultimo año se le calculan descuentos
                 $suma_total[1] += $pago_pendiente->ultimo_anio < $currentYear ? $pago_pendiente->total_dos : 0; // al ultimo año se le calculan descuentos
                 $suma_total[2] += $pago_pendiente->ultimo_anio < $currentYear ? $pago_pendiente->total_tres : 0; // al ultimo año se le calculan descuentos
-                $suma_intereses += $pago_pendiente->ultimo_anio < $currentYear ? $pago_pendiente->impuesto : 0; // al ultimo año se le calculan descuentos
+                $suma_intereses += $pago_pendiente->ultimo_anio < $currentYear ? $pago_pendiente->valor_concepto2 : 0; // al ultimo año se le calculan descuentos
+                $suma_descuento_intereses += $pago_pendiente->ultimo_anio < $currentYear ? $pago_pendiente->valor_concepto13 : 0; // al ultimo año se le calculan descuentos
                 $lista_pagos->push($obj);
             }
 
@@ -861,9 +863,9 @@ class PrediosController extends Controller
             // $valores_factura[1] = (round($suma_total + (($ultimo_anio_pagar->valor_concepto1 + $ultimo_anio_pagar->valor_concepto3) - (($ultimo_anio_pagar->valor_concepto1 + $ultimo_anio_pagar->valor_concepto3) * (intval($ultimo_anio_pagar->porcentaje_dos) / 100))), 0));
             // $valores_factura[2] = (round($suma_total + (($ultimo_anio_pagar->valor_concepto1 + $ultimo_anio_pagar->valor_concepto3) - (($ultimo_anio_pagar->valor_concepto1 + $ultimo_anio_pagar->valor_concepto3) * (intval($ultimo_anio_pagar->porcentaje_tres) / 100))), 0));
 
-            $valores_factura[0] = (round($suma_total[0] + $suma_intereses + $ultimo_anio_pagar->total_calculo, 0));
-            $valores_factura[1] = (round($suma_total[1] + $suma_intereses + $ultimo_anio_pagar->total_dos, 0));
-            $valores_factura[2] = (round($suma_total[2] + $suma_intereses + $ultimo_anio_pagar->total_tres, 0));
+            $valores_factura[0] = (round($suma_total[0] + $suma_intereses - $suma_descuento_intereses + $ultimo_anio_pagar->total_calculo, 0));
+            $valores_factura[1] = (round($suma_total[1] + $suma_intereses - $suma_descuento_intereses + $ultimo_anio_pagar->total_dos, 0));
+            $valores_factura[2] = (round($suma_total[2] + $suma_intereses - $suma_descuento_intereses + $ultimo_anio_pagar->total_tres, 0));
 
             $porcentajes_descuento[0] = ($ultimo_anio_pagar->porcentaje_uno);
             $porcentajes_descuento[1] = ($ultimo_anio_pagar->porcentaje_dos);
@@ -876,8 +878,8 @@ class PrediosController extends Controller
 
             $data = [
                 'title' => 'Predio',
-                'fecha' => count($submit) > 0 ? $dt_emision->format('d/m/Y') : $fecha_mision->format('d/m/Y'),
-                'hora' => count($submit) > 0 ? $dt_emision->isoFormat('h:mm:ss a') : $fecha_mision->isoFormat('h:mm:ss a'),
+                'fecha' => count($submit) > 0 ? $dt_emision->format('d/m/Y') : $fecha_emision->format('d/m/Y'),
+                'hora' => count($submit) > 0 ? $dt_emision->isoFormat('h:mm:ss a') : $fecha_emision->isoFormat('h:mm:ss a'),
                 'numero_factura' => $numero_factura,
                 'predio' => $predio,
                 'ultimo_anio_pagado' => $ultimo_anio_pagado,
