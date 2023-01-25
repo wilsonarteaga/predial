@@ -873,7 +873,7 @@ class PrediosController extends Controller
 
                 for ($x = 0; $x < count($lista_pagos) - 5; $x++) {
                     $obj_m_tar = $lista_pagos[$x]->m_tar;
-                    $obj_avaluo += $lista_pagos[$x]->avaluo;
+                    $obj_avaluo = $lista_pagos[$x]->avaluo;
                     $obj_impuesto += $lista_pagos[$x]->impuesto;
                     $obj_interes += $lista_pagos[$x]->interes;
                     $obj_descuento_interes += $lista_pagos[$x]->descuento_interes;
