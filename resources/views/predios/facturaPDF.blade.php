@@ -304,7 +304,7 @@
                         @for ($x = 0; $x < count($valores_factura); $x++)
                             <tr>
                                 <td style="width: 50%; padding-top: 15px;">
-                                    {!! DNS1D::getBarcodeHTML($barras[$x], 'C128C', 1, 80) !!}
+                                    {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!}
                                     <span style="width: 100%; font-size: 90%; padding-top: 10px;">{{ $barras_texto[$x] }}</span>
                                 </td>
                                 <td>
