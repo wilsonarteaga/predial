@@ -305,7 +305,7 @@
                             <tr>
                                 <td style="width: 40%; padding-top: 15px;">
                                     {{-- {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!} --}}
-                                    <img src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras[$x], 'C128C') }}" height="70" width="360" /><br />
+                                    <img src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras[$x], 'C128') }}" height="75" width="370" /><br />
                                     <span style="width: 100%; font-size: 80%; padding-top: 10px;">{{ $barras_texto[$x] }}</span>
                                 </td>
                                 <td>
