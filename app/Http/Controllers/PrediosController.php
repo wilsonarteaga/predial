@@ -945,7 +945,7 @@ class PrediosController extends Controller
                 'valores_factura' => $valores_factura
             ];
 
-            $pdf = PDF::loadView('predios.facturaPDF', $data);
+            $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('predios.facturaPDF', $data);
 
             $query = true;
             // Actualizar el consecutivo de numero de factura disponible para la proxima impresion

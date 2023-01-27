@@ -303,8 +303,10 @@
                     <table class="info-codigo-barras" style="width: 100%; margin-top: 10px;">
                         @for ($x = 0; $x < count($valores_factura); $x++)
                             <tr>
-                                <td style="width: 50%; padding-top: 15px;">
-                                    {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!}
+                                <td style="width: 40%; padding-top: 15px;">
+                                    {{-- {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!} --}}
+                                    <img src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras[$x], 'C128') }}" height="70" width="360" /><br />
+                                    {{-- <img src="DNS1D::getBarcodePNG($barras[$x], 'C128', 1, 80, array(0,0,0), true) !!}" alt="barcode"   /> --}}
                                     <span style="width: 100%; font-size: 90%; padding-top: 10px;">{{ $barras_texto[$x] }}</span>
                                 </td>
                                 <td>
