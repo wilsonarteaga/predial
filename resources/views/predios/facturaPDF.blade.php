@@ -300,7 +300,7 @@
                     </tr>
                 </table>
                 @if(count($valores_factura) > 0)
-                    @php($generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG())
+                    {{-- @php($generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG()) --}}
                     <table class="info-codigo-barras" style="width: 100%; margin-top: 10px;">
                         @for ($x = 0; $x < count($valores_factura); $x++)
                             <tr>
