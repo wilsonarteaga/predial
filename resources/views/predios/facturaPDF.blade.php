@@ -300,15 +300,17 @@
                     </tr>
                 </table>
                 @if(count($valores_factura) > 0)
+                    @php($generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG())
                     <table class="info-codigo-barras" style="width: 100%; margin-top: 10px;">
                         @for ($x = 0; $x < count($valores_factura); $x++)
                             <tr>
-                                <td style="width: 40%; padding-top: 15px;">
+                                <td style="width: 53%; padding-top: 15px; border: 0px solid #000; text-align: center;">
                                     {{-- {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!} --}}
-                                    <img src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras[$x], 'C128') }}" height="75" width="360" /><br />
-                                    <span style="width: 100%; font-size: 80%; padding-top: 10px;">{{ $barras_texto[$x] }}</span>
+                                    <img style="padding-left: 5px; padding-top: 5px;" src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras[$x], 'C128') }}" height="77" width="371" />
+                                    {{-- <img style="padding-top: 5px;" src="data:image/png;base64,{{ base64_encode($generatorPNG->getBarcode($barras[$x], $generatorPNG::TYPE_CODE_128)) }}" height="75" width="360"> --}}
+                                    <span style="width: 100%; font-size: 80%;">{{ $barras_texto[$x] }}</span>
                                 </td>
-                                <td>
+                                <td style="width: 19%;">
                                     <table style="width: 100%; font-size: 120%;">
                                         <tr><td class="negrilla">Pague hasta {{ $fechas_pago_hasta[$x] }}</td></tr>
                                         <tr><td>Descuento {{ intval($porcentajes_descuento[$x]) }}%</td></tr>
