@@ -926,7 +926,7 @@ class PrediosController extends Controller
             $porcentajes_descuento[2] = ($ultimo_anio_pagar->porcentaje_tres);
 
             for ($x = 0; $x < count($valores_factura); $x++) {
-                $barras[$x] = (chr(241) . '415' . $nit . '8020' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '3900' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . '96' . str_replace('-', '', $fechas_pago_hasta[$x]));
+                $barras[$x] = (chr(241) . '415' . $nit . chr(241) . '8020' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . chr(241) . '3900' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . chr(241) . '96' . str_replace('-', '', $fechas_pago_hasta[$x]));
                 $barras_texto[$x] = ('(415)' . $nit . '(8020)' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $fechas_pago_hasta[$x]));
             }
 
