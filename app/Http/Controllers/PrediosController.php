@@ -822,7 +822,7 @@ class PrediosController extends Controller
                 $ultimo_anio_pagado = $obj;
             }
             else {
-                $ultimo_anio_pagado->fecha_pago = Carbon::createFromFormat("Y-m-d", substr($ultimo_anio_pagado->fecha_pago, 0, 10))->format('d/m/Y');
+                $ultimo_anio_pagado->fecha_pago = $ultimo_anio_pagado->fecha_pago !== null ? Carbon::createFromFormat("Y-m-d", substr($ultimo_anio_pagado->fecha_pago, 0, 10))->format('d/m/Y') : 'N/D';
             }
 
             // Obtener informacion de los pagos pendientes por año
