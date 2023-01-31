@@ -988,7 +988,7 @@ class PrediosController extends Controller
                 }
 
                 // Nombre del archivo obtenido a partir de la fecha exacta de solicitud de generación del PDF
-                if(intval($tmp) > 0) {
+                if(intval($tmp) == 0) {
                     return $pdf->download($numero_factura . '_' . $dt_emision->toDateString() . '_' . str_replace(':', '-', $dt_emision->toTimeString()) . '.pdf');
                 }
                 else {
