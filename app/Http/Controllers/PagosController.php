@@ -8,6 +8,7 @@ use App\Http\Requests\PagosCreateFormRequest;
 use App\Http\Requests\PagosUpdateFormRequest;
 use App\Models\Pago;
 use App\Models\Opcion;
+use App\Models\PredioPago;
 
 use Carbon\Carbon;
 
@@ -97,10 +98,36 @@ class PagosController extends Controller
         $tab_current = 'li-section-bar-1';
 
         if($query) {
-            return back()->with(['success' => 'La informaci&oacute;n se guard&oacute; satisfactoriamente.', 'tab_current' => $tab_current]);
+            // Verificar si el registro ya existe
+            $predio_pago = DB::table('predios_pagos')
+                                ->where('factura_pago', $request->numero_recibo)
+                                ->where('ultimo_anio', $request->anio_pago)
+                                ->where('pagado', 0)
+                                ->first();
+
+            if($predio_pago != null) {
+                $pp = new PredioPago;
+                $pp = PredioPago::find($predio_pago->id);
+                $pp->fecha_pago = $request->fecha_pago;
+                $pp->valor_pago = $request->valor_facturado;
+                $pp->id_banco = $request->id_banco_factura;
+                $pp->pagado = -1;
+                $query = $pp->save();
+                if($query) {
+                    return back()->with(['success' => 'La informaci&oacute;n se guard&oacute; satisfactoriamente.', 'tab_current' => $tab_current]);
+                }
+                else {
+                    $pago->delete();
+                    return back()->with(['fail' => 'No se pudo guardar la informaci&oacute;n de asociaci&oacute;n predio - pago. Intente nuevamente.', 'tab_current' => $tab_current]);
+                }
+            }
+            else {
+                $pago->delete();
+                return back()->with(['fail' => 'No existe informaci&oacute;n de asociaci&oacute;n predio - pago. Intente nuevamente.', 'tab_current' => $tab_current]);
+            }
         }
         else {
-            return back()->with(['fail' => 'No se pudo guardar la informaci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
+            return back()->with(['fail' => 'No se pudo guardar la informaci&oacute;n del pago. Intente nuevamente.', 'tab_current' => $tab_current]);
         }
     }
 
@@ -166,8 +193,7 @@ class PagosController extends Controller
      * @param  Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
-    {
+    public function destroy(Request $request) {
         if (!$request->session()->exists('userid')) {
             return redirect('/');
         }

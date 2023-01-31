@@ -2,8 +2,77 @@ var DTPagos = null;
 var PAGE_LENGTH = 3;
 var global_filtroform_to_send = "";
 $(document).ready(function() {
+    $('#codigo_barras').bind('keyup', function() {
+        if($(this).val().length === 72) {
+            if(!$('#numero_recibo').attr('readonly')) {
+                $('#numero_recibo').attr('readonly', true);
+                $('#valor_facturado').attr('readonly', true);
+                $('#fecha_factura').attr('readonly', true);
+                $('.datepicker').datepicker({
+                    language: 'es-ES',
+                    format: 'yyyy-mm-dd',
+                    hide: function() {
+                        if ($("#create-form").length > 0) {
+                            if ($('#' + $(this).attr('id') + '-error').length > 0)
+                                $('#' + $(this).attr('id') + '-error').remove();
 
-    //$("#fecha_pago_listar").
+                            if ($('#create-form').is(':visible')) {
+                                $('#create-form').validate().element($(this));
+                            }
+                        }
+                        if ($("#update-form").length > 0) {
+                            if ($('#' + $(this).attr('id') + '-error').length > 0)
+                                $('#' + $(this).attr('id') + '-error').remove();
+
+                            if ($('#update-form').is(':visible')) {
+                                $('#update-form').validate().element($(this));
+                            }
+                        }
+                    }
+                });
+                $('#anio_pago').attr('readonly', true);
+            }
+            var section_1 = $(this).val().substr(0, 15); // 15 caracteres
+            var section_2 = $(this).val().substr(16, 28); // 28 caracteres
+            var section_3 = $(this).val().substr(44, 18); // 18 caracteres
+            var section_4 = $(this).val().substr(62); // 10 caracteres
+            $('#numero_recibo').val(Number(section_2.substr(4))).attr('readonly', true);
+            AutoNumeric.set('#valor_facturado', Number(section_3.substr(4)));
+            $('#valor_facturado').attr('readonly', true);
+            $('#fecha_factura').datepicker('setDate', stringToDate(section_4.substr(2))).attr('readonly', true);
+            $('#fecha_factura').datepicker('destroy');
+            $('#anio_pago').val(Number(section_4.substr(2).substr(0, 4))).attr('readonly', true);
+        }
+        else {
+            $('#numero_recibo').val('').attr('readonly', false);
+            $('#valor_facturado').attr('readonly', false);
+            AutoNumeric.set('#valor_facturado', 0);
+            $('#fecha_factura').attr('readonly', false);
+            $('.datepicker').datepicker({
+                language: 'es-ES',
+                format: 'yyyy-mm-dd',
+                hide: function() {
+                    if ($("#create-form").length > 0) {
+                        if ($('#' + $(this).attr('id') + '-error').length > 0)
+                            $('#' + $(this).attr('id') + '-error').remove();
+
+                        if ($('#create-form').is(':visible')) {
+                            $('#create-form').validate().element($(this));
+                        }
+                    }
+                    if ($("#update-form").length > 0) {
+                        if ($('#' + $(this).attr('id') + '-error').length > 0)
+                            $('#' + $(this).attr('id') + '-error').remove();
+
+                        if ($('#update-form').is(':visible')) {
+                            $('#update-form').validate().element($(this));
+                        }
+                    }
+                }
+            });
+            $('#anio_pago').attr('readonly', false);
+        }
+    });
 
     $("#btn_buscar_pagos")
         .off("click")
@@ -163,6 +232,21 @@ function getJsonPagos() {
             console.log(xhr.responseText);
         },
     });
+}
+
+function stringToDate(str_date) {
+    let return_date = '';
+    if(str_date.length === 8) {
+        return_date = `${str_date.substr(0, 4)}-${str_date.substr(4, 2)}-${str_date.substr(6)}`;
+    }
+    else {
+        const date = new Date();
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        return_date = `${year}-${month}-${day}`;
+    }
+    return return_date;
 }
 
 var validatorFiltro = $("#pagos-filtro-form").validate({
