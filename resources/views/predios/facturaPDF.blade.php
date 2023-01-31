@@ -90,6 +90,7 @@
         td { padding: 1px; }
         th { padding: 1px; background-color: #f3efef; }
 		p.header { width: 100%; text-align:center; font-weight: bold; padding: 0px; margin: 0px; }
+        p.previa { color: tomato; width: 100%; text-align:center; font-weight: bold; padding: 0px; margin: 0px; }
 		h3.title { width: 100%; text-align:right; }
 
         table.table-header tr td { border: 0px; }
@@ -128,8 +129,13 @@
                             SECRETARIA DE HACIENDA</p>
                         <p class="header">
                             IMPUESTO PREDIAL UNIFICADO</p>
+                        @if($temporal > 0)
+                        <p class="previa">
+                            VISTA PREVIA FACTURA DE COBRO</p>
+                        @else
                         <p class="header">
                             FACTURA DE COBRO</p>
+                        @endif
                     </td>
                 </tr>
             </table>
@@ -138,9 +144,20 @@
         <div id="body">
             <table class="titles" style="width: 100%; margin-top: 0px;">
                 <tr>
+                    @if($temporal > 0)
+                    <td style="width: 40%;" rowspan="2">
+                        <h3 class="title" style="color: tomato; text-align: left; font-weight: normal;">
+                            Documento no v&aacute;lido para la ejecuci&oacute;n del pago de impuesto predial.
+                        </h3>
+                    </td>
+                    <td style="width: 40%;">
+                        <h3 class="title">Fecha emisi&oacute;n:</h3>
+                    </td>
+                    @else
                     <td style="width: 80%;">
                         <h3 class="title">Fecha emisi&oacute;n:</h3>
                     </td>
+                    @endif
                     <td>
                         {{ $fecha }}, {{ $hora }}
                     </td>
@@ -332,6 +349,7 @@
         </div>
         <div id="footer">
             SECRETAR&Iacute;A DE HACIENDA
+            @if($temporal > 0)<br /><span style="color: tomato; font-size: 70%;">VISTA PREVIA FACTURA DE COBRO</span>@endif
         </div>
     </div>
 </body>

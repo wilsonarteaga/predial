@@ -654,7 +654,7 @@ class PrediosController extends Controller
         ]);
     }
 
-    public function generateFacturaPDFByIdPredio(Request $request, $id) {
+    public function generate_factura_pdf(Request $request, $id, $tmp) {
         if (!$request->session()->exists('userid')) {
             return redirect('/');
         }
@@ -685,7 +685,7 @@ class PrediosController extends Controller
 
             // Si se EJECUTO EL PROCEDIMIENTO DE CALCULO, entonces se genera un nuevo numero de factura
             // Generar informacion de numero de fatura solo si se realizo un nuevo calculo
-            if(count($submit) > 0) {
+            if((count($submit) > 0 || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->factura_pago == null)) && intval($tmp) == 0) {
                 $init_anio = new Anio;
                 $init_anio = Anio::find($anio->id);
                 $case_ultimo_numero_factura = 0;
@@ -736,11 +736,23 @@ class PrediosController extends Controller
                 $numero_factura = $currentYear . (str_pad($ultimo_numero_factura, 5, "0", STR_PAD_LEFT));
 
                 // Configurar informacion del ultimo año a pagar
-                $ultimo_anio_pagar = $submit[0];
+                if(count($submit) > 0) {
+                    $ultimo_anio_pagar = $submit[0];
+                }
             }
             else {
-                $numero_factura = $ultimo_anio_pagar->factura_pago;
-                $fecha_emision = Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->fecha_emision);
+                if(intval($tmp) == 0) {
+                    $numero_factura = $ultimo_anio_pagar->factura_pago;
+                    $fecha_emision = Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->fecha_emision);
+                }
+                else {
+                    $numero_factura = '000000000';
+                    $ultimo_anio_pagar = DB::table('predios_pagos')
+                            ->where('id_predio', $id)
+                            ->where('ultimo_anio', $currentYear)
+                            ->where('pagado', 0)
+                            ->first();
+                }
             }
 
             $predios = DB::table('predios')->join('zonas', function ($join) {
@@ -942,7 +954,8 @@ class PrediosController extends Controller
                 'barras_texto' => $barras_texto,
                 'fechas_pago_hasta' => $fechas_pago_hasta,
                 'porcentajes_descuento' => $porcentajes_descuento,
-                'valores_factura' => $valores_factura
+                'valores_factura' => $valores_factura,
+                'temporal' => $tmp
             ];
 
             $pdf = PDF::loadView('predios.facturaPDF', $data);
@@ -950,7 +963,7 @@ class PrediosController extends Controller
             $query = true;
             // Actualizar el consecutivo de numero de factura disponible para la proxima impresion
             // Guardar informacion solo si se realizo un nuevo calculo
-            if(count($submit) > 0) {
+            if((count($submit) > 0 || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->factura_pago == null)) && intval($tmp) == 0) {
                 $update_anio = new Anio;
                 $update_anio = Anio::find($anio->id);
                 $update_anio->numero_factura_actual = $ultimo_numero_factura + 1;
@@ -960,16 +973,27 @@ class PrediosController extends Controller
             if($query) {
                 // Actualizar datos pago: valor_pago, numero_factura, fecha emision
                 // Guardar informacion solo si se realizo un nuevo calculo
-                if(count($submit) > 0) {
+                if((count($submit) > 0 || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->factura_pago == null)) && intval($tmp) == 0) {
                     $pp = new PredioPago;
                     $pp = PredioPago::find($ultimo_anio_pagar->id);
                     $pp->factura_pago = $numero_factura;
                     $pp->fecha_emision = Carbon::createFromFormat("Y-m-d H:i:s", $dt_emision->toDateTimeString())->format('Y-m-d H:i:s');
                     $pp->save();
                 }
+                else if(count($submit) > 0){
+                    $pp = new PredioPago;
+                    $pp = PredioPago::find($ultimo_anio_pagar->id);
+                    $pp->fecha_emision = Carbon::createFromFormat("Y-m-d H:i:s", $dt_emision->toDateTimeString())->format('Y-m-d H:i:s');
+                    $pp->save();
+                }
 
                 // Nombre del archivo obtenido a partir de la fecha exacta de solicitud de generación del PDF
-                return $pdf->download($numero_factura . '_' . $dt_emision->toDateString() . '_' . str_replace(':', '-', $dt_emision->toTimeString()) . '.pdf');
+                if(intval($tmp) > 0) {
+                    return $pdf->download($numero_factura . '_' . $dt_emision->toDateString() . '_' . str_replace(':', '-', $dt_emision->toTimeString()) . '.pdf');
+                }
+                else {
+                    return $pdf->download('temporal_' . $dt_emision->toDateString() . '_' . str_replace(':', '-', $dt_emision->toTimeString()) . '.pdf');
+                }
             }
             else {
                 return null;

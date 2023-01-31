@@ -775,49 +775,45 @@ function setDownloadRow() {
     if ($('.download_row').length > 0) {
         $('.download_row').off('click').on('click', function(evt) {
             var btn = $(this);
-
+            var url_download = $(btn).attr('url');
             $(btn).attr('disabled', true);
-
-            $.toast({
-                heading: 'Atención',
-                text: 'Iniciando ejecución de cálculo predial. Espere un momento por favor.',
-                position: 'top-right',
-                loaderBg: '#fff',
-                icon: 'warning',
-                hideAfter: 4000,
-                stack: 6
-            });
-
-            setTimeout(function() {
-                if ($('#iframe_reporte').length > 0) {
-                    $('#iframe_reporte').remove();
+            swal({
+                title: "Atención",
+                text: "Generación de factura de cobro impuesto predial",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Definitiva",
+                cancelButtonText: "Vista previa",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            }, function(isConfirm) {
+                if (isConfirm) {
+                    url_download = url_download + '/0';
                 }
-                var iframe = $('<iframe id="iframe_reporte" style="display:none;"></iframe>');
-                iframe.attr('src', $(btn).attr('url'));
-                $('body').append(iframe);
-                $(btn).attr('disabled', false);
-            }, 1000);
+                else {
+                    url_download = url_download + '/1';
+                }
 
-            // setTimeout(function() {
-            //     $.toast({
-            //         heading: 'Información',
-            //         text: 'El cálculo predial ha sido ejecutado satisfactoriamente. Inicia descarga de factura.',
-            //         position: 'top-right',
-            //         loaderBg: '#fff',
-            //         icon: 'success',
-            //         hideAfter: 3000,
-            //         stack: 6
-            //     });
-            //     setTimeout(function() {
-            //         if ($('#iframe_reporte').length > 0) {
-            //             $('#iframe_reporte').remove();
-            //         }
-            //         var iframe = $('<iframe id="iframe_reporte" style="display:none;"></iframe>');
-            //         iframe.attr('src', $(btn).attr('url'));
-            //         $('body').append(iframe);
-            //         $(btn).attr('disabled', false);
-            //     }, 2000);
-            // }, 2000);
+                $.toast({
+                    heading: 'Atención',
+                    text: 'Iniciando ejecución de cálculo predial. Espere un momento por favor.',
+                    position: 'top-right',
+                    loaderBg: '#fff',
+                    icon: 'warning',
+                    hideAfter: 4000,
+                    stack: 6
+                });
+                setTimeout(function() {
+                    if ($('#iframe_reporte').length > 0) {
+                        $('#iframe_reporte').remove();
+                    }
+                    var iframe = $('<iframe id="iframe_reporte" style="display:none;"></iframe>');
+                    iframe.attr('src', url_download);
+                    $('body').append(iframe);
+                    $(btn).attr('disabled', false);
+                }, 1000);
+            });
         });
     }
 }
