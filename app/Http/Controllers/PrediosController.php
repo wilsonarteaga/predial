@@ -817,7 +817,7 @@ class PrediosController extends Controller
             $ultimo_anio_pagado = DB::table('predios_pagos')
                                 ->where('id_predio', $id)
                                 ->where('pagado', -1)
-                                ->orderBy('id', 'desc')
+                                ->orderBy('ultimo_anio', 'desc')
                                 ->first();
 
             //establecer años a pagar

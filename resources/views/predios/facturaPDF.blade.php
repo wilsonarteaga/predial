@@ -210,7 +210,7 @@
                 <tr>
                     <td>{{ $predio->anios_a_pagar }}</td>
                     <td>@money($predio->avaluo)</td>
-                    <td>{{ $predio->ultimo_anio_pago }}</td>
+                    <td>{{ $ultimo_anio_pagado->ultimo_anio }}</td>
                     <td>{{ $ultimo_anio_pagado->fecha_pago }}</td>
                     <td>@money($ultimo_anio_pagado->valor_pago)</td>
                 </tr>
