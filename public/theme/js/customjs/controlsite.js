@@ -2,7 +2,7 @@ var global_json = null;
 var global_json_predio = null;
 var global_url_autocomplete_predio = "/autocomplete";
 var arr_autonumeric = ['porcentaje', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
-    'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_pago', 'valor_abono',
+    'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_abono',
     'valor_facturado', 'avaluoigac', 'area'
 ];
 var ROOT_URL = window.location.protocol + "//" + window.location.host;
@@ -697,38 +697,9 @@ function setEditRow(initDataTable) {
                                 }
                             });
                         }
-
-                        //     var hour_control = $(row).attr('data-control');
-                        //     $.ajax({
-                        //         type: 'GET',
-                        //         url: '/iavailable/hours',
-                        //         data: {
-                        //             date: jsonObj.fec_cit,
-                        //             hour: jsonObj.hor_cit
-                        //         },
-                        //         success: function(response) {
-                        //             if (response.data.length > 0 && response.data.length < 19) {
-                        //                 $('#' + hour_control).empty();
-                        //                 $.each(response.data, function(i, el) {
-                        //                     var option = $('<option value="' + el + '">' + el + '</option>');
-                        //                     $('#' + hour_control).append(option);
-                        //                 });
-                        //                 $('#' + hour_control).selectpicker("refresh");
-                        //                 setData(jsonObj);
-                        //             } else {
-                        //                 $('#' + hour_control).val('default').selectpicker("refresh");
-                        //                 setData(jsonObj);
-                        //             }
-                        //         },
-                        //         error: function(xhr) {
-                        //             console.log(xhr.responseText);
-                        //             setData(jsonObj);
-                        //         }
-                        //     });
-                    } //else {
+                    }
 
                     setData(jsonObj);
-                    // }
                 }
             }
         });
@@ -1018,7 +989,7 @@ function setData(jsonObj) {
                             $('#' + i + '_edit').val(el);
                             $('#' + i + '_edit').attr('prev-val', el);
                             if ($('#' + i + '_edit').is(':checkbox')) {
-                                if (Number(el) > 0) {
+                                if (Number(el) > 0 || Number(el) === -1) {
                                     if (!$('#' + i + '_edit').is(':checked')) {
                                         $('#' + i + '_edit').trigger('click');
                                     }

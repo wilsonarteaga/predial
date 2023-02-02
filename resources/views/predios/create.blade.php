@@ -668,7 +668,7 @@
                                                         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">&Uacute;ltimo a&ntilde;o pago:</label>
-                                                                <input type="text" id="ultimo_anio_pago_edit" name="ultimo_anio_pago_edit" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('ultimo_anio_pago_edit') }}" maxlength="4">
+                                                                <input type="text" id="ultimo_anio_pago_edit" name="ultimo_anio_pago_edit" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('ultimo_anio_pago_edit') }}" maxlength="4" readonly="readonly">
                                                                 <span class="text-danger">@error('ultimo_anio_pago_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -1168,7 +1168,7 @@
                                     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">Valor pago:</label>
-                                            <input type="text" id="valor_pago" name="valor_pago" class="form-control" autocomplete="off" placeholder="Ingrese valor pago" value="{{ old('valor_pago') }}">
+                                            <input type="text" id="valor_pago_" name="valor_pago_" class="form-control" autocomplete="off" placeholder="Ingrese valor pago" value="{{ old('valor_pago_') }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
@@ -1236,7 +1236,7 @@
                                     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">Valor pago:</label>
-                                            <input type="text" id="valor_pago" name="valor_pago" class="form-control" autocomplete="off" placeholder="Ingrese valor pago" value="{{ old('valor_pago') }}">
+                                            <input type="text" id="valor_pago_" name="valor_pago_" class="form-control" autocomplete="off" placeholder="Ingrese valor pago" value="{{ old('valor_pago_') }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">

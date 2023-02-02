@@ -162,7 +162,7 @@ class PrediosController extends Controller
         $predio->tarifa_actual = str_replace(",", "", $request->tarifa_actual);
         $predio->avaluo = str_replace(",", "", $request->avaluo);
         $predio->ultimo_anio_pago = $request->ultimo_anio_pago;
-        $predio->ind_ley1995 = $request->filled('ind_ley1995') ? $request->ind_ley1995 : 0;
+        $predio->ind_ley1995 = $request->filled('ind_ley1995') ? intval($request->ind_ley1995) * -1 : 0;
         $query = $predio->save();
         $tab_current = 'li-section-bar-1';
 
@@ -245,7 +245,7 @@ class PrediosController extends Controller
         $predio->tarifa_actual = str_replace(",", "", $request->tarifa_actual_edit);
         $predio->avaluo = str_replace(",", "", $request->avaluo_edit);
         $predio->ultimo_anio_pago = $request->ultimo_anio_pago_edit;
-        $predio->ind_ley1995 = $request->filled('ind_ley1995_edit') ? $request->ind_ley1995_edit : 0;
+        $predio->ind_ley1995 = $request->filled('ind_ley1995_edit') ? intval($request->ind_ley1995_edit) * -1 : 0;
         $query = $predio->save();
 
         if($query) {
@@ -633,7 +633,8 @@ class PrediosController extends Controller
 
         $predio_calculo = PredioCalculo::where('id_predio', $request->id_predio)->first();
 
-        $predio_pago = PredioPago::where('id_predio', $request->id_predio)
+        $predio_pago = PredioPago::select('id', 'id_predio', 'ultimo_anio', 'valor_pago', 'fecha_pago', 'factura_pago', 'id_banco')
+                        ->where('id_predio', $request->id_predio)
                         ->where('pagado', -1)
                         ->orderBy('id', 'desc')
                         ->first();

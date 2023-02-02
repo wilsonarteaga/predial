@@ -9,6 +9,7 @@ use App\Http\Requests\PagosUpdateFormRequest;
 use App\Models\Pago;
 use App\Models\Opcion;
 use App\Models\PredioPago;
+use App\Models\Predio;
 
 use Carbon\Carbon;
 
@@ -98,6 +99,13 @@ class PagosController extends Controller
         $tab_current = 'li-section-bar-1';
 
         if($query) {
+
+            // Actualizar ultimo anio pago en la tabla predios
+            $predio = new Predio;
+            $predio = Predio::find($pago->id_predio);
+            $predio->ultimo_anio_pago = $request->anio_pago;
+            $query = $predio->save();
+
             // Verificar si el registro ya existe
             $predio_pago = DB::table('predios_pagos')
                                 ->where('factura_pago', $request->numero_recibo)
