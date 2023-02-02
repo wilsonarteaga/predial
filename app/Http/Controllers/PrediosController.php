@@ -162,6 +162,7 @@ class PrediosController extends Controller
         $predio->tarifa_actual = str_replace(",", "", $request->tarifa_actual);
         $predio->avaluo = str_replace(",", "", $request->avaluo);
         $predio->ultimo_anio_pago = $request->ultimo_anio_pago;
+        $predio->ind_ley1995 = $request->filled('ind_ley1995') ? $request->ind_ley1995 : 0;
         $query = $predio->save();
         $tab_current = 'li-section-bar-1';
 
@@ -244,6 +245,7 @@ class PrediosController extends Controller
         $predio->tarifa_actual = str_replace(",", "", $request->tarifa_actual_edit);
         $predio->avaluo = str_replace(",", "", $request->avaluo_edit);
         $predio->ultimo_anio_pago = $request->ultimo_anio_pago_edit;
+        $predio->ind_ley1995 = $request->filled('ind_ley1995_edit') ? $request->ind_ley1995_edit : 0;
         $query = $predio->save();
 
         if($query) {

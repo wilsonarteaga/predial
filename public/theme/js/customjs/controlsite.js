@@ -429,6 +429,28 @@ $(document).ready(function() {
         });
     }
 
+    if ($('#ind_ley1995').length > 0) {
+        $('#ind_ley1995').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_ind_ley1995').html('SI');
+                $(this).val(1);
+            } else {
+                $('#span_ind_ley1995').html('NO');
+                $(this).val(0);
+            }
+        });
+
+        $('#ind_ley1995_edit').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_ind_ley1995_edit').html('SI');
+                $(this).val(1);
+            } else {
+                $('#span_ind_ley1995_edit').html('NO');
+                $(this).val(0);
+            }
+        });
+    }
+
     if ($("#create-form").length > 0) {
         $('#create-form').validate().settings.ignore = '';
         $('#create-form').validate().settings.errorPlacement = function(error, element) {

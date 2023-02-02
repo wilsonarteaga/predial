@@ -48,6 +48,8 @@ class CreatePrediosTable extends Migration
 
             $table->boolean('estado')->default(1);
 
+            $table->tinyInteger('ind_ley1995')->nullable()->default(0);
+
             $table->timestamps();
 
             $table->foreign('id_zona')->references('id')->on('zonas');

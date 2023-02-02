@@ -282,6 +282,15 @@
                                                                 <span class="text-danger">@error('ultimo_anio_pago') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
+                                                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                                            <div class="form-group" style="margin-bottom: 0px;">
+                                                                <input type="checkbox" id="ind_ley1995" name="ind_ley1995" value="{{ old('ind_ley1995') }}">
+                                                                <label for="ind_ley1995_check" class="control-label" style="padding-left: 10px;">¿Aplica ley 1995?</label>
+                                                            </div>
+                                                            <span id="span_ind_ley1995" class="text-muted">
+                                                                NO
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                     {{-- <div class="row">
                                                         <div class="col-lg-3 col-md-5 col-sm-6 col-xs-12">
@@ -662,6 +671,15 @@
                                                                 <input type="text" id="ultimo_anio_pago_edit" name="ultimo_anio_pago_edit" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('ultimo_anio_pago_edit') }}" maxlength="4">
                                                                 <span class="text-danger">@error('ultimo_anio_pago_edit') {{ $message }} @enderror</span>
                                                             </div>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                                            <div class="form-group" style="margin-bottom: 0px;">
+                                                                <input type="checkbox" id="ind_ley1995_edit" name="ind_ley1995_edit" class="res-validate" value="{{ old('ind_ley1995_edit') }}">
+                                                                <label for="ind_ley1995_check_edit" class="control-label" style="padding-left: 10px;">¿Aplica ley 1995?</label>
+                                                            </div>
+                                                            <span id="span_ind_ley1995_edit" class="text-muted">
+                                                                NO
+                                                            </span>
                                                         </div>
                                                     </div>
                                                     {{-- <div class="row">
