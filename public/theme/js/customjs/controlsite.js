@@ -1,9 +1,10 @@
 var global_json = null;
 var global_json_predio = null;
 var global_url_autocomplete_predio = "/autocomplete";
+var global_url_print = '';
 var arr_autonumeric = ['porcentaje', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
     'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_abono',
-    'valor_facturado', 'avaluoigac', 'area'
+    'valor_facturado', 'avaluoigac', 'area', 'valor_paz'
 ];
 var ROOT_URL = window.location.protocol + "//" + window.location.host;
 $(document).ready(function() {
@@ -199,10 +200,10 @@ $(document).ready(function() {
     $('.selectpicker-noval').selectpicker();
 
     $('.selectpicker').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
-        if ($("#create-form").length > 0) {
+        if ($("#create-form").length > 0 && $(this).parent('form').attr('id') === 'create-form') {
             $('#create-form').validate().element($(this));
         }
-        if ($("#update-form").length > 0) {
+        if ($("#update-form").length > 0 && $(this).parent('form').attr('id') === 'update-form') {
             $('#update-form').validate().element($(this));
         }
     });
@@ -210,6 +211,7 @@ $(document).ready(function() {
     $('.datepicker').datepicker({
         language: 'es-ES',
         format: 'yyyy-mm-dd',
+        autoHide: true,
         //startDate: ($('#fec_cit').length > 0) ? moment($('#fer_cit').val()) : null, // Or '02/14/2014'
         hide: function() {
             if ($("#create-form").length > 0) {
@@ -235,6 +237,7 @@ $(document).ready(function() {
         $('.datelimite').datepicker({
             language: 'es-ES',
             format: 'yyyy-mm-dd',
+            autoHide: true,
             //startDate: moment($('#fecha_oculta').val()), // Or '02/14/2014'
             hide: function() {
                 if ($("#create-form").length > 0) {
@@ -654,6 +657,27 @@ $(document).ready(function() {
         });
     }
 
+    $('#generate_factura_definitiva').off('click').on('click', function() {
+        $('.btn_pdf').attr('disabled', true);
+        if(checkAnioImpresion()) {
+            startImpresion(global_url_print + '/0/' + $('#ultimo_anio_facturar').val(), 'Iniciando generación factura definitiva de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
+        }
+    });
+
+    $('#generate_factura_temporal').off('click').on('click', function() {
+        $('.btn_pdf').attr('disabled', true);
+        if(checkAnioImpresion()) {
+            startImpresion(global_url_print + '/1/' + $('#ultimo_anio_facturar').val(), 'Iniciando generación factura vista previa de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
+        }
+    });
+
+    $('#generate_paz').off('click').on('click', function() {
+        $('.btn_pdf').attr('disabled', true);
+        if(checkFormPaz()) {
+            startImpresion(global_url_print + '/' + $('#destino_paz').val() + '/' + $('#fecha_paz').val() + '/' + $('#valor_paz').val(), 'Iniciando generación de documento de paz y salvo. Espere un momento por favor.', 'warning', 'modal-impresion-paz');
+        }
+    });
+
 });
 
 function setEditRow(initDataTable) {
@@ -764,50 +788,88 @@ function setDeleteRow() {
     }
 }
 
-function setDownloadRow() {
-    if ($('.download_row').length > 0) {
-        $('.download_row').off('click').on('click', function(evt) {
+function setDownloadFacturaRow() {
+    if ($('.download_factura_row').length > 0) {
+        $('.download_factura_row').off('click').on('click', function(evt) {
             var btn = $(this);
             var url_download = $(btn).attr('url');
             $(btn).attr('disabled', true);
-            swal({
-                title: "Atención",
-                text: "Generación de factura de cobro impuesto predial",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Definitiva",
-                cancelButtonText: "Vista previa",
-                closeOnConfirm: true,
-                closeOnCancel: true
-            }, function(isConfirm) {
-                if (isConfirm) {
-                    url_download = url_download + '/0';
-                }
-                else {
-                    url_download = url_download + '/1';
-                }
-
-                $.toast({
-                    heading: 'Atención',
-                    text: 'Iniciando ejecución de cálculo predial. Espere un momento por favor.',
-                    position: 'top-right',
-                    loaderBg: '#fff',
-                    icon: 'warning',
-                    hideAfter: 4000,
-                    stack: 6
-                });
-                setTimeout(function() {
-                    if ($('#iframe_reporte').length > 0) {
-                        $('#iframe_reporte').remove();
-                    }
-                    var iframe = $('<iframe id="iframe_reporte" style="display:none;"></iframe>');
-                    iframe.attr('src', url_download);
-                    $('body').append(iframe);
-                    $(btn).attr('disabled', false);
-                }, 1000);
+            $('#modal-impresion-factura').modal({ backdrop: 'static', keyboard: false }, 'show');
+            global_url_print = url_download;
+            $('#modal-impresion-factura').on('hidden.bs.modal', function() {
+                $(btn).attr('disabled', false);
+                $('#form-predios-impresion-factura')[0].reset();
             });
         });
+    }
+}
+
+function setDownloadPazRow() {
+    if ($('.download_paz_row').length > 0) {
+        $('.download_paz_row').off('click').on('click', function(evt) {
+            var btn = $(this);
+            var url_download = $(btn).attr('url');
+            $(btn).attr('disabled', true);
+            // Create a date object from a date string
+            var today = new Date();
+            var tomorrow = new Date();
+            tomorrow.setDate(today.getDate()+1);
+            // Get year, month, and day part from the date
+            var year = tomorrow.toLocaleString("default", { year: "numeric" });
+            var month = tomorrow.toLocaleString("default", { month: "2-digit" });
+            var day = tomorrow.toLocaleString("default", { day: "2-digit" });
+            // Generate yyyy-mm-dd date string
+            var formattedDate = year + "-" + month + "-" + day;
+            $('#fecha_paz').datepicker('setStartDate', formattedDate);
+            $('#modal-impresion-paz').modal({ backdrop: 'static', keyboard: false }, 'show');
+            global_url_print = url_download;
+            $('#modal-impresion-paz').on('hidden.bs.modal', function() {
+                $(btn).attr('disabled', false);
+                $('#form-predios-impresion-paz')[0].reset();
+            });
+        });
+    }
+}
+
+function startImpresion(url_download, message_toast, type_icon, modal) {
+    if(url_download.length > 0) {
+        $.toast({
+            heading: 'Atención',
+            text: message_toast,
+            position: 'top-right',
+            loaderBg: '#fff',
+            icon: type_icon,
+            hideAfter: 4000,
+            stack: 6,
+            afterHidden: function () {
+                if(modal.length > 0) {
+                    $('.btn_pdf').attr('disabled', false);
+                    $('#' + modal).modal('hide');
+                }
+            }
+        });
+        setTimeout(function() {
+            if ($('#iframe_reporte').length > 0) {
+                $('#iframe_reporte').remove();
+            }
+            var iframe = $('<iframe id="iframe_reporte" style="display:none;"></iframe>');
+            iframe.attr('src', url_download);
+            $('body').append(iframe);
+        }, 1000);
+    }
+    else {
+        swal({
+            title: "Atención",
+            text: "Se necesita establecer una url para generación de PDF.",
+            type: "danger",
+            showCancelButton: false,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Aceptar",
+            cancelButtonText: "Cancelar",
+            closeOnConfirm: true,
+            closeOnCancel: true
+        });
+        $('.btn_pdf').attr('disabled', false);
     }
 }
 
@@ -824,13 +886,15 @@ function getPredio(id_predio) {
         },
         success: function(response) {
             $('#myTable').find('tbody').empty();
-            if (response.length > 0) {
+            if (response.predio.length > 0) {
                 var opcion = JSON.parse($('#opcion').val());
-                var predio = response[0];
-                var classBtn = 'btn-warning';
+                var predio = response.predio[0];
+                var anios = response.anios;
+                var classBtn = 'btn-info';
                 var disabledBtnEdita = '';
                 var disabledBtnPrescribe = '';
                 var disabledBtnCalculo = '';
+                var disabledBtnPaz = '';
                 var disabledBtnElimina = '';
                 var tr = $('<tr style="cursor: pointer;" id="tr_predio_' + predio.id + '" json-data=\'' + JSON.stringify(predio) + '\' class="predio_row"></tr>');
                 var td_1 = $('<td class="edit_row cell_center">' + predio.codigo_predio + '</td>');
@@ -839,32 +903,46 @@ function getPredio(id_predio) {
                     classBtn = 'btn-default tips';
                     disabledBtnPrescribe = 'disabled="disabled"';
                     disabledBtnCalculo = 'disabled="disabled"';
+                    disabledBtnPaz = 'disabled="disabled"';
                     disabledBtnEdita = 'disabled="disabled"';
                     disabledBtnElimina = 'disabled="disabled"';
                 }
                 // if(Number(global_json_predio.tiene_pago) === 0) {
                 //     disabledBtnCalculo = 'disabled="disabled"';
                 // }
+                if(anios.length > 1 || (anios.length === 1 && Number(predio.ultimo_anio_pago) !== Number(anios[0].ultimo_anio))) {
+                    disabledBtnPaz = 'disabled="disabled"';
+                }
                 var td_2 = $('<td class="edit_row cell_center">' + predio.direccion + '</td>');
                 var td_3 = $('<td class="edit_row cell_center">' + predio.propietarios + '</td>');
                 var td_4 = $('<td class="cell_center"></td>');
 
-                var htmlBotones = '<button type="button" ide="' + predio.id + '" class="modify_row btn btn-info" req_res="' + opcion.resolucion_edita + '" ' + disabledBtnEdita + '><i class="fa fa-pencil-square"></i></button>' +
+                var htmlBotones = '<button type="button" ide="' + predio.id + '" class="modify_row btn btn-instagram" req_res="' + opcion.resolucion_edita + '" ' + disabledBtnEdita + '><i class="fa fa-pencil-square"></i></button>' +
                                   '&nbsp;&nbsp;' +
                                   '<button type="button" ide="' + predio.id + '" class="prescribe_row btn ' + classBtn + '" ' + disabledBtnPrescribe + '><i class="fa fa-clock-o"></i></button>' +
                                   '&nbsp;&nbsp;' +
-                                  '<button type="button" ide="' + predio.id + '" class="download_row btn btn-success" url="/generate_factura_pdf/' + predio.id + '" msg="¿Está seguro/a que desea ejecutar el cálculo?" ' + disabledBtnCalculo + '><i class="fa fa-cogs"></i></button>' +
+                                  '<button type="button" ide="' + predio.id + '" class="download_factura_row btn btn-success" url="/generate_factura_pdf/' + predio.id + '" msg="¿Está seguro/a que desea ejecutar el cálculo?" ' + disabledBtnCalculo + '><i class="fa fa-cogs"></i></button>' +
                                   '&nbsp;&nbsp;' +
-                                  '<button type="button" ide="' + predio.id + '" class="delete_row btn btn-inverse" req_res="' + opcion.resolucion_elimina + '" msg="¿Está seguro/a que desea anular el predio?" ' + disabledBtnElimina + '><i class="fa fa-trash-o"></i></button>';
+                                  '<button type="button" ide="' + predio.id + '" class="download_paz_row btn btn-warning" url="/generate_paz_pdf/' + predio.id + '" msg="¿Está seguro/a que desea generar el paz y salvo?" ' + disabledBtnPaz + '><i class="fa fa-trophy"></i></button>' +
+                                  '&nbsp;&nbsp;' +
+                                  '<button type="button" ide="' + predio.id + '" class="delete_row btn btn-danger" req_res="' + opcion.resolucion_elimina + '" msg="¿Está seguro/a que desea anular el predio?" ' + disabledBtnElimina + '><i class="fa fa-trash-o"></i></button>';
 
                 td_4.html(htmlBotones);
                 tr.append(td_1).append(td_2).append(td_3).append(td_4);
                 $('#myTable').find('tbody').append(tr);
+
+                $('#ultimo_anio_facturar').empty();
+                $('#ultimo_anio_facturar').append('<option value="">Seleccione a&ntilde;o para facturar</option>');
+                $.each(anios, function(i, el){
+                    $('#ultimo_anio_facturar').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
+                });
+
                 setTimeout(function() {
                     setEditRow(false);
                     setModifyRow();
                     setDeleteRow();
-                    setDownloadRow();
+                    setDownloadFacturaRow();
+                    setDownloadPazRow();
                     setPrescribeRow();
                     $('.tips').powerTip({
                         placement: 's' // north-east tooltip position
@@ -1301,5 +1379,47 @@ function checkSaveResolucion(form, desc_operacion) {
         if ($('.resolucion_validate_field_level-' + $(form).attr('id')).length === 0 && $('.resolucion_validate_form_level-' + $(form).attr('id')).length === 0) {
             $('#' + $(form).attr('id')).first().submit();
         }
+    }
+}
+
+function checkAnioImpresion() {
+    if($('#ultimo_anio_facturar').val() === '' || $('#ultimo_anio_facturar').val().length < 4) {
+        swal({
+            title: "Atención",
+            text: "Se necesita establecer el último año que se desea facturar.",
+            type: "error",
+            showCancelButton: false,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Aceptar",
+            cancelButtonText: "Cancelar",
+            closeOnConfirm: true,
+            closeOnCancel: true
+        });
+        $('.btn_pdf').attr('disabled', false);
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+function checkFormPaz() {
+    if($('#destino_paz').val() === '' || $('#fecha_paz').val() === '' || $('#valor_paz').val() === '0.00' || $('#valor_paz').val() === '') {
+        swal({
+            title: "Atención",
+            text: "Es necesario establecer toda la información requerida.",
+            type: "error",
+            showCancelButton: false,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Aceptar",
+            cancelButtonText: "Cancelar",
+            closeOnConfirm: true,
+            closeOnCancel: true
+        });
+        $('.btn_pdf').attr('disabled', false);
+        return false;
+    }
+    else {
+        return true;
     }
 }

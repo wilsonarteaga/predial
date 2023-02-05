@@ -21,6 +21,7 @@ class CreateAniosTable extends Migration
             $table->unsignedBigInteger('id_tipo_tasa_interes');
             $table->unsignedBigInteger('numero_factura_inicial');
             $table->unsignedBigInteger('numero_factura_actual');
+            $table->unsignedBigInteger('consecutivo_paz');
             $table->timestamps();
 
             $table->foreign('id_estado')->references('id')->on('estados_anio');

@@ -14,7 +14,8 @@ $(document).ready(function() {
         'display': 'none'
     });
 
-    setDownloadRow();
+    setDownloadFacturaRow();
+    setDownloadPazRow();
     setPrescribeRow();
 
     if ($('#codigo_predio').length > 0) {

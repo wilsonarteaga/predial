@@ -876,6 +876,89 @@
         </div>
     </div>
 </div>
+<div id="modal-impresion-factura" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-impresion-factura-label" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                {{-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> --}}
+                <h4 class="modal-title" id="modal-impresion-factura-label">Atenci&oacute;n!</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12">
+                        <form id="form-predios-impresion-factura">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group" style="margin-bottom: 0px; text-align: center;">
+                                            <label class="control-label">Generaci&oacute;n de factura de cobro impuesto predial.</label>
+                                            <select id="ultimo_anio_facturar" name="ultimo_anio_facturar" class="form-control" data-size="4" title="Seleccione a&ntilde;o..." data-container="#modal-impresion-factura" style="width: 100%">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="text-align: center;">
+                <button id="generate_factura_definitiva" type="button" class="btn btn-info btn_pdf"> <i class="fa fa-file-text"></i> Ver definitiva</button>
+                <button id="generate_factura_temporal" type="button" class="btn btn-inverse btn_pdf"> <i class="fa fa-file-text-o"></i> Vista previa  </button>
+                <button type="button" class="btn btn-danger btn_pdf" style="margin-top: 5px;" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-impresion-paz" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-impresion-paz-label" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                {{-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> --}}
+                <h4 class="modal-title" id="modal-impresion-paz-label">Atenci&oacute;n!</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12">
+                        <form id="form-predios-impresion-paz">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label" style="width: 100%; text-align: center;">Generaci&oacute;n certificado de paz y salvo - impuesto predial.</label>
+                                            <label class="control-label">Destino:</label>
+                                            <input type="text" id="destino_paz" name="destino_paz" class="form-control" autocomplete="off" placeholder="Ingrese nombre destino" value="{{ old('destino_paz') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Fecha validez:</label>
+                                            <input type="text" id="fecha_paz" name="fecha_paz" class="form-control datepicker" autocomplete="off" placeholder="Fecha validez" value="{{ old('fecha_paz') }}" style="width: 100%;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Valor:</label>
+                                            <input type="text" id="valor_paz" name="valor_paz" class="form-control" autocomplete="off" placeholder="Valor en pesos" value="{{ old('valor_paz') }}" style="width: 100%;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="generate_paz" type="button" class="btn btn-info btn_pdf"> <i class="fa fa-download"></i> Generar</button>
+                <button type="button" class="btn btn-danger btn_pdf" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="modal-datos-basicos" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-datos-basicos-label" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

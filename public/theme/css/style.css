@@ -18371,14 +18371,14 @@ ul.select-row-icon li a.selected i.whn-hov {
 .tabs-style-bar nav ul li a {
     margin: 0 2px;
     background-color: #f7fafc;
-    color: #686868;
+    color: #a3a3a3;
     padding: 5px 0;
     transition: background-color 0.2s, color 0.2s;
 }
 
 .tabs-style-bar nav ul li a:hover,
 .tabs-style-bar nav ul li a:focus {
-    color: #cca12abf;
+    color: #535864;
     /* #ff7676; */
 }
 
@@ -18390,9 +18390,8 @@ ul.select-row-icon li a.selected i.whn-hov {
 }
 
 .tabs-style-bar nav ul li.tab-current a {
-    background: #cca12abf;
-    /* #fb9678; */
-    color: #fff;
+    background: #3cd0cc87;
+    color: #535864;
 }
 
 

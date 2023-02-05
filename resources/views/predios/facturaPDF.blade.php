@@ -126,7 +126,7 @@
                     </td>
                     <td>
                         <p class="header">
-                            SECRETARIA DE HACIENDA</p>
+                            SECRETAR&Iacute;A DE HACIENDA</p>
                         <p class="header">
                             IMPUESTO PREDIAL UNIFICADO</p>
                         @if($temporal > 0)
@@ -317,14 +317,12 @@
                     </tr>
                 </table>
                 @if(count($valores_factura) > 0)
-                    {{-- @php($generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG()) --}}
                     <table class="info-codigo-barras" style="width: 100%; margin-top: 10px;">
                         @for ($x = 0; $x < count($valores_factura); $x++)
                             <tr>
                                 <td style="width: 53%; padding-top: 15px; border: 0px solid #000; text-align: center;">
                                     {{-- {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!} --}}
                                     <img style="padding-left: 5px; padding-top: 5px;" src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras[$x], 'C128') }}" height="77" width="371" />
-                                    {{-- <img style="padding-top: 5px;" src="data:image/png;base64,{{ base64_encode($generatorPNG->getBarcode($barras[$x], $generatorPNG::TYPE_CODE_128)) }}" height="75" width="360"> --}}
                                     <span style="width: 100%; font-size: 80%;">{{ $barras_texto[$x] }}</span>
                                 </td>
                                 <td style="width: 19%;">
