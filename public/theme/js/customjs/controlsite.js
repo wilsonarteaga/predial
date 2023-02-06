@@ -1404,7 +1404,7 @@ function checkAnioImpresion() {
 }
 
 function checkFormPaz() {
-    if($('#destino_paz').val() === '' || $('#fecha_paz').val() === '' || $('#valor_paz').val() === '0.00' || $('#valor_paz').val() === '') {
+    if($('#destino_paz').val() === '' || $('#fecha_paz').val() === '' || $('#valor_paz').val() === '') {
         swal({
             title: "Atención",
             text: "Es necesario establecer toda la información requerida.",
