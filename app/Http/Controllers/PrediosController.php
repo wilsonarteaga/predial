@@ -108,6 +108,7 @@ class PrediosController extends Controller
         }
 
         //$request->session()->put('display_buttons', '1');
+        $current_time = Carbon::now()->timestamp;
 
         return view('predios.create', ['opcion' => $opcion,
                                      'predios' => $predios,
@@ -117,6 +118,7 @@ class PrediosController extends Controller
                                      'clases_mutacion' => $clases_mutacion,
                                      'tarifas_predial' => $tarifas_predial,
                                      'bancos' => $bancos,
+                                     'current_time' => $current_time,
                                      'tab_current' => $tab_current]);
     }
 
