@@ -668,7 +668,7 @@
                                                         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">&Uacute;ltimo a&ntilde;o pago:</label>
-                                                                <input type="text" id="ultimo_anio_pago_edit" name="ultimo_anio_pago_edit" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('ultimo_anio_pago_edit') }}" maxlength="4" readonly="readonly">
+                                                                <input type="text" id="ultimo_anio_pago_edit" name="ultimo_anio_pago_edit" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('ultimo_anio_pago_edit') }}" maxlength="4">
                                                                 <span class="text-danger">@error('ultimo_anio_pago_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
