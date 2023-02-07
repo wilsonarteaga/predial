@@ -2,77 +2,83 @@ var DTPagos = null;
 var PAGE_LENGTH = 3;
 var global_filtroform_to_send = "";
 $(document).ready(function() {
-    $('#codigo_barras').bind('keyup', function() {
-        if($(this).val().length === 72) {
-            if(!$('#numero_recibo').attr('readonly')) {
-                $('#numero_recibo').attr('readonly', true);
-                $('#valor_facturado').attr('readonly', true);
-                $('#fecha_factura').attr('readonly', true);
-                $('.datepicker').datepicker({
-                    language: 'es-ES',
-                    format: 'yyyy-mm-dd',
-                    hide: function() {
-                        if ($("#create-form").length > 0) {
-                            if ($('#' + $(this).attr('id') + '-error').length > 0)
-                                $('#' + $(this).attr('id') + '-error').remove();
-
-                            if ($('#create-form').is(':visible')) {
-                                $('#create-form').validate().element($(this));
-                            }
-                        }
-                        if ($("#update-form").length > 0) {
-                            if ($('#' + $(this).attr('id') + '-error').length > 0)
-                                $('#' + $(this).attr('id') + '-error').remove();
-
-                            if ($('#update-form').is(':visible')) {
-                                $('#update-form').validate().element($(this));
-                            }
-                        }
-                    }
-                });
-                $('#anio_pago').attr('readonly', true);
-            }
-            var section_1 = $(this).val().substr(0, 15); // 15 caracteres
-            var section_2 = $(this).val().substr(16, 28); // 28 caracteres
-            var section_3 = $(this).val().substr(44, 18); // 18 caracteres
-            var section_4 = $(this).val().substr(62); // 10 caracteres
-            $('#numero_recibo').val(Number(section_2.substr(4))).attr('readonly', true);
-            AutoNumeric.set('#valor_facturado', Number(section_3.substr(4)));
-            $('#valor_facturado').attr('readonly', true);
-            $('#fecha_factura').datepicker('setDate', stringToDate(section_4.substr(2))).attr('readonly', true);
-            $('#fecha_factura').datepicker('destroy');
-            $('#anio_pago').val(Number(section_4.substr(2).substr(0, 4))).attr('readonly', true);
-        }
-        else {
-            $('#numero_recibo').val('').attr('readonly', false);
-            $('#valor_facturado').attr('readonly', false);
-            AutoNumeric.set('#valor_facturado', 0);
-            $('#fecha_factura').attr('readonly', false);
-            $('.datepicker').datepicker({
-                language: 'es-ES',
-                format: 'yyyy-mm-dd',
-                hide: function() {
-                    if ($("#create-form").length > 0) {
-                        if ($('#' + $(this).attr('id') + '-error').length > 0)
-                            $('#' + $(this).attr('id') + '-error').remove();
-
-                        if ($('#create-form').is(':visible')) {
-                            $('#create-form').validate().element($(this));
-                        }
-                    }
-                    if ($("#update-form").length > 0) {
-                        if ($('#' + $(this).attr('id') + '-error').length > 0)
-                            $('#' + $(this).attr('id') + '-error').remove();
-
-                        if ($('#update-form').is(':visible')) {
-                            $('#update-form').validate().element($(this));
-                        }
-                    }
-                }
-            });
-            $('#anio_pago').attr('readonly', false);
+    $('#numero_recibo').bind('keyup', function() {
+        if($.trim($(this).val()).length === 9) {
+            getInfoPago();
         }
     });
+
+    // $('#codigo_barras').bind('keyup', function() {
+    //     if($(this).val().length === 72) {
+    //         if(!$('#numero_recibo').attr('readonly')) {
+    //             $('#numero_recibo').attr('readonly', true);
+    //             $('#valor_facturado').attr('readonly', true);
+    //             $('#fecha_factura').attr('readonly', true);
+    //             $('.datepicker').datepicker({
+    //                 language: 'es-ES',
+    //                 format: 'yyyy-mm-dd',
+    //                 hide: function() {
+    //                     if ($("#create-form").length > 0) {
+    //                         if ($('#' + $(this).attr('id') + '-error').length > 0)
+    //                             $('#' + $(this).attr('id') + '-error').remove();
+
+    //                         if ($('#create-form').is(':visible')) {
+    //                             $('#create-form').validate().element($(this));
+    //                         }
+    //                     }
+    //                     if ($("#update-form").length > 0) {
+    //                         if ($('#' + $(this).attr('id') + '-error').length > 0)
+    //                             $('#' + $(this).attr('id') + '-error').remove();
+
+    //                         if ($('#update-form').is(':visible')) {
+    //                             $('#update-form').validate().element($(this));
+    //                         }
+    //                     }
+    //                 }
+    //             });
+    //             $('#anio_pago').attr('readonly', true);
+    //         }
+    //         var section_1 = $(this).val().substr(0, 15); // 15 caracteres
+    //         var section_2 = $(this).val().substr(16, 28); // 28 caracteres
+    //         var section_3 = $(this).val().substr(44, 18); // 18 caracteres
+    //         var section_4 = $(this).val().substr(62); // 10 caracteres
+    //         $('#numero_recibo').val(Number(section_2.substr(4))).attr('readonly', true);
+    //         AutoNumeric.set('#valor_facturado', Number(section_3.substr(4)));
+    //         $('#valor_facturado').attr('readonly', true);
+    //         $('#fecha_factura').datepicker('setDate', stringToDate(section_4.substr(2))).attr('readonly', true);
+    //         $('#fecha_factura').datepicker('destroy');
+    //         $('#anio_pago').val(Number(section_4.substr(2).substr(0, 4))).attr('readonly', true);
+    //     }
+    //     else {
+    //         $('#numero_recibo').val('').attr('readonly', false);
+    //         $('#valor_facturado').attr('readonly', false);
+    //         AutoNumeric.set('#valor_facturado', 0);
+    //         $('#fecha_factura').attr('readonly', false);
+    //         $('.datepicker').datepicker({
+    //             language: 'es-ES',
+    //             format: 'yyyy-mm-dd',
+    //             hide: function() {
+    //                 if ($("#create-form").length > 0) {
+    //                     if ($('#' + $(this).attr('id') + '-error').length > 0)
+    //                         $('#' + $(this).attr('id') + '-error').remove();
+
+    //                     if ($('#create-form').is(':visible')) {
+    //                         $('#create-form').validate().element($(this));
+    //                     }
+    //                 }
+    //                 if ($("#update-form").length > 0) {
+    //                     if ($('#' + $(this).attr('id') + '-error').length > 0)
+    //                         $('#' + $(this).attr('id') + '-error').remove();
+
+    //                     if ($('#update-form').is(':visible')) {
+    //                         $('#update-form').validate().element($(this));
+    //                     }
+    //                 }
+    //             }
+    //         });
+    //         $('#anio_pago').attr('readonly', false);
+    //     }
+    // });
 
     $("#btn_buscar_pagos")
         .off("click")
@@ -230,6 +236,66 @@ function getJsonPagos() {
         },
         error: function(xhr) {
             console.log(xhr.responseText);
+        },
+    });
+}
+
+function getInfoPago() {
+    $('#valor_facturado').attr('readonly', true);
+    $.blockUI({ message: null });
+    $('#btn_save_info').attr('disabled', false);
+    var jsonObj = {};
+    jsonObj.factura_pago = $('#numero_recibo').val();
+    $.ajax({
+        type: "POST",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        dataType: "json",
+        url: '/get_info_pago',
+        data: {
+            form: JSON.stringify(jsonObj)
+        },
+        success: function(response) {
+            if (response.length > 0) {
+                $('#id_predio').val(response[0].id_predio);
+                $('#codigo_predio').val(response[0].codigo_predio);
+                if(Number(response[0].valor_pago) > 0) {
+                    AutoNumeric.set('#valor_facturado', Number(response[0].valor_pago));
+                }
+                else {
+                    $('#valor_facturado').attr('readonly', false);
+                }
+                $('#fecha_factura').val(response[0].fecha_pago.substr(0, 10));
+                $('#anio_pago').val(response[0].ultimo_anio);
+                if(Number(response[0].pagado) > 0) {
+                    $('#btn_save_info').attr('disabled', true);
+                    swal({
+                        title: "Atención",
+                        text: "El número de factura consultado ya posee un pago registrado. Verifique su consulta",
+                        type: "error",
+                        showCancelButton: false,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Aceptar",
+                        closeOnConfirm: true
+                    });
+                }
+            } else {
+                $('#create-form')[0].reset();
+            }
+            $.unblockUI();
+            var validatorCreate = $("#create-form").validate();
+            validatorCreate.resetForm();
+            $.each($('.has-success'), function(i, el) {
+                $(el).removeClass('has-success');
+            });
+            $.each($('.has-error'), function(i, el) {
+                $(el).removeClass('has-error');
+            });
+        },
+        error: function(xhr) {
+            console.log(xhr.responseText);
+            $.unblockUI();
         },
     });
 }

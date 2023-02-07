@@ -20,6 +20,9 @@ $(document).ready(function() {
     if ($('#li-section-bar-1').length > 0) {
         $('#li-section-bar-1').bind('click', function() {
             if ($('#tab').val() === 'li-section-bar-2') {
+                if ($('#valor_facturado').length > 0) {
+                    $('#valor_facturado').attr('readonly', true);
+                }
                 if ($('#codigo_predio').length > 0) {
                     $('.buttonTareas').css('display', 'none');
                     $('.span_predio').html('');
@@ -211,7 +214,7 @@ $(document).ready(function() {
     $('.datepicker').datepicker({
         language: 'es-ES',
         format: 'yyyy-mm-dd',
-        autoHide: true,
+        // autoHide: true,
         //startDate: ($('#fec_cit').length > 0) ? moment($('#fer_cit').val()) : null, // Or '02/14/2014'
         hide: function() {
             if ($("#create-form").length > 0) {

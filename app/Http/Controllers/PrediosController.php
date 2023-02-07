@@ -875,8 +875,10 @@ class PrediosController extends Controller
                 $suma_total[0] += $pago_pendiente->ultimo_anio < $anios ? $pago_pendiente->total_calculo : 0; // al ultimo año se le calculan descuentos
 
                 $suma_total[1] += $pago_pendiente->ultimo_anio < $anios ? $pago_pendiente->total_dos : 0; // al ultimo año se le calculan descuentos
+                // $suma_total[1] += $pago_pendiente->ultimo_anio < $anios ? ($pago_pendiente->total_dos > 0 ? $pago_pendiente->total_dos : $pago_pendiente->total_calculo) : 0; // al ultimo año se le calculan descuentos
 
                 $suma_total[2] += $pago_pendiente->ultimo_anio < $anios ? $pago_pendiente->total_tres : 0; // al ultimo año se le calculan descuentos
+                // $suma_total[2] += $pago_pendiente->ultimo_anio < $anios ? ($pago_pendiente->total_tres > 0 ? $pago_pendiente->total_tres : $pago_pendiente->total_calculo) : 0; // al ultimo año se le calculan descuentos
 
                 $suma_intereses += $pago_pendiente->ultimo_anio < $anios ? $pago_pendiente->valor_concepto2 : 0; // al ultimo año se le calculan descuentos
                 $suma_descuento_intereses += $pago_pendiente->ultimo_anio < $anios ? $pago_pendiente->valor_concepto13 : 0; // al ultimo año se le calculan descuentos
@@ -937,8 +939,12 @@ class PrediosController extends Controller
             $fechas_pago_hasta[2] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->tercera_fecha)->toDateString());
 
             $valores_factura[0] = (round($suma_total[0] + $ultimo_anio_pagar->total_calculo, 0));
+
             $valores_factura[1] = (round($suma_total[1] + $ultimo_anio_pagar->total_dos, 0));
+            //$valores_factura[1] = (round($suma_total[1] + ($ultimo_anio_pagar->total_dos > 0 ? $ultimo_anio_pagar->total_dos : $ultimo_anio_pagar->total_calculo), 0));
+
             $valores_factura[2] = (round($suma_total[2] + $ultimo_anio_pagar->total_tres, 0));
+            //$valores_factura[2] = (round($suma_total[2] + ($ultimo_anio_pagar->total_tres > 0 ? $ultimo_anio_pagar->total_tres : $ultimo_anio_pagar->total_calculo), 0));
 
             $porcentajes_descuento[0] = ($ultimo_anio_pagar->porcentaje_uno);
             $porcentajes_descuento[1] = ($ultimo_anio_pagar->porcentaje_dos);

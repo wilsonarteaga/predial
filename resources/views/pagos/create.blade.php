@@ -11,6 +11,7 @@
     <script src="{!! asset('theme/js/autonumeric.min.js') !!}"></script>
     <script src="{!! asset('theme/plugins/bower_components/jquery.serializeJSON/jquery.serializejson.min.js') !!}"></script>
     <script src="{!! asset('theme/plugins/bower_components/jquery-validation-1.19.5/jquery.validate.min.js') !!}"></script>
+    <script src="{!! asset('theme/plugins/bower_components/blockUI/jquery.blockUI.js') !!}"></script>
             <div class="modal-header">
     <script src="{!! asset('theme/js/customjs/controlsite.js') !!}"></script>
    <script src="{!! asset('theme/js/customjs/pagos.js') !!}"></script>
@@ -58,6 +59,7 @@
                                     <div class="panel-wrapper collapse in" aria-expanded="true">
                                         <div class="panel-body">
                                             <form action="{{ route('pagos.create_pagos') }}" method="post" id="create-form">
+                                                <input type="hidden" id="id_predio" name="id_predio" value="">
                                                 @csrf
                                                 <div class="result">
                                                     @if(Session::get('success'))
@@ -75,13 +77,35 @@
                                                     <!-- <h3 class="box-title">Informaci&oacute;n de la pago</h3> -->
                                                     <!-- <hr> -->
                                                     <div class="row">
-                                                        <div class="col-lg-3 col-md-3 col-sm-5 col-xs-12">
+                                                        <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
                                                             <div class="form-group">
-                                                                <label class="control-label">Fecha pago:</label>
-                                                                <input type="text" id="fecha_pago" name="fecha_pago" class="form-control datepicker" autocomplete="off" placeholder="Ingrese fecha pago" value="{{ old('fecha_pago') }}">
+                                                                <label class="control-label">Banco factura:</label>
+                                                                <select id="id_banco_factura" name="id_banco_factura" class="form-control selectpicker show-tick" data-live-search="true" data-size="4" title="Sin informaci&oacute;n...">
+                                                                    @if(count($bancos) > 0)
+                                                                        @foreach($bancos as $banco)
+                                                                        <option value="{{ $banco->id }}" {{ old('id_banco_factura') == $banco->id ? 'selected' : '' }}>{{ $banco->codigo }} - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>
+                                                                        @endforeach
+                                                                    @endif
+                                                                </select>
+                                                                <span class="text-danger">@error('id_banco_factura') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-6 col-md-6 col-sm-7 col-xs-12">
+                                                        <div class="col-lg-3 col-md-2 col-sm-6 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Fecha pago:</label>
+                                                                <input type="text" id="fecha_pago" name="fecha_pago" class="form-control datepicker" autocomplete="off" placeholder="Ingrese fecha pago" value="{{ old('fecha_pago') }}" style="width: 100%;">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">N&uacute;mero factura:</label>
+                                                                <input type="text" id="numero_recibo" name="numero_recibo" class="form-control onlyNumbers" autocomplete="off" placeholder="N&uacute;mero de recibo" value="{{ old('numero_recibo') }}" maxlength="9">
+                                                                <span class="text-danger">@error('numero_recibo') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-5 col-md-6 col-sm-7 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Banco archivo:</label>
                                                                 <select id="id_banco_archivo" name="id_banco_archivo" class="form-control selectpicker-noval show-tick" data-live-search="true" data-size="4" title="Sin informaci&oacute;n...">
@@ -93,26 +117,10 @@
                                                                 </select>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Paquete archivo:</label>
                                                                 <input type="text" id="paquete_archivo" name="paquete_archivo" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese n&uacute;mero de paquete" value="{{ old('paquete_archivo') }}" maxlength="2">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">C&oacute;digo de barras:</label>
-                                                                <input type="text" id="codigo_barras" name="codigo_barras" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo de barras" value="{{ old('codigo_barras') }}" maxlength="128">
-                                                                <span class="text-danger">@error('codigo_barras') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">N&uacute;mero recibo:</label>
-                                                                <input type="text" id="numero_recibo" name="numero_recibo" class="form-control onlyNumbers" autocomplete="off" placeholder="N&uacute;mero de recibo" value="{{ old('numero_recibo') }}" maxlength="128">
-                                                                <span class="text-danger">@error('numero_recibo') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -127,51 +135,47 @@
                                                                         @endforeach
                                                                     @endif
                                                                 </select> --}}
-                                                                <select id="id_predio" class="form-control select2" name="id_predio">
+                                                                {{-- <select id="id_predio" class="form-control select2" name="id_predio">
                                                                 </select>
-                                                                <span class="text-danger">@error('id_predio') {{ $message }} @enderror</span>
+                                                                <span class="text-danger">@error('id_predio') {{ $message }} @enderror</span> --}}
+                                                                <input type="text" id="codigo_predio" name="codigo_predio" class="form-control onlyNumbers" autocomplete="off" placeholder="C&oacute;digo predio" value="{{ old('codigo_predio') }}" maxlength="128" readonly="readonly">
+                                                                <span class="text-danger">@error('codigo_predio') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Valor facturado:</label>
-                                                                <input type="text" id="valor_facturado" name="valor_facturado" class="form-control" autocomplete="off" placeholder="Ingrese valor" value="{{ old('valor_facturado') }}">
+                                                                <input type="text" id="valor_facturado" name="valor_facturado" class="form-control" autocomplete="off" placeholder="Ingrese valor" value="{{ old('valor_facturado') }}" readonly="readonly">
                                                                 <span class="text-danger">@error('valor_facturado') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Fecha factura:</label>
-                                                                <input type="text" id="fecha_factura" name="fecha_factura" class="form-control datepicker" autocomplete="off" placeholder="Ingrese fecha factura" value="{{ old('fecha_factura') }}">
+                                                                <input type="text" id="fecha_factura" name="fecha_factura" class="form-control" autocomplete="off" placeholder="Ingrese fecha factura" value="{{ old('fecha_factura') }}" readonly="readonly">
                                                                 <span class="text-danger">@error('fecha_factura') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                                                            <div class="form-group" style="margin-bottom: 5px;">
+                                                                <label class="control-label">A&ntilde;o factura:</label>
+                                                                <input type="text" id="anio_pago" name="anio_pago" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('anio_pago') }}" maxlength="4" readonly="readonly">
+                                                                <span class="text-danger">@error('anio_pago') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-lg-6 col-md-6 col-sm-7 col-xs-12">
                                                             <div class="form-group">
-                                                                <label class="control-label">Banco factura:</label>
-                                                                <select id="id_banco_factura" name="id_banco_factura" class="form-control selectpicker show-tick" data-live-search="true" data-size="4" title="Sin informaci&oacute;n...">
-                                                                    @if(count($bancos) > 0)
-                                                                        @foreach($bancos as $banco)
-                                                                        <option value="{{ $banco->id }}" {{ old('id_banco_factura') == $banco->id ? 'selected' : '' }}>{{ $banco->codigo }} - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>
-                                                                        @endforeach
-                                                                    @endif
-                                                                </select>
-                                                                <span class="text-danger">@error('id_banco_factura') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                                                            <div class="form-group" style="margin-bottom: 5px;">
-                                                                <label class="control-label">A&ntilde;o factura:</label>
-                                                                <input type="text" id="anio_pago" name="anio_pago" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('anio_pago') }}" maxlength="4">
-                                                                <span class="text-danger">@error('anio_pago') {{ $message }} @enderror</span>
+                                                                <label class="control-label">C&oacute;digo de barras:</label>
+                                                                <input type="text" id="codigo_barras" name="codigo_barras" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo de barras" value="{{ old('codigo_barras') }}" maxlength="128">
+                                                                <span class="text-danger">@error('codigo_barras') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-actions m-t-20">
-                                                    <button type="submit" class="btn btn-info"> <i class="fa fa-save"></i> Guardar informaci&oacute;n</button>
+                                                    <button id="btn_save_info" type="submit" class="btn btn-info"> <i class="fa fa-save"></i> Guardar informaci&oacute;n</button>
                                                     <!-- <button type="button" class="btn btn-default">Cancelar</button> -->
                                                 </div>
                                             </form>
@@ -284,8 +288,8 @@
                                                         </div>
                                                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                                             <div class="form-group">
-                                                                <label class="control-label">N&uacute;mero recibo:</label>
-                                                                <input type="text" id="numero_recibo_edit" name="numero_recibo_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="N&uacute;mero de recibo" value="{{ old('numero_recibo_edit') }}" maxlength="128">
+                                                                <label class="control-label">N&uacute;mero factura:</label>
+                                                                <input type="text" id="numero_recibo_edit" name="numero_recibo_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="N&uacute;mero de recibo" value="{{ old('numero_recibo_edit') }}" maxlength="9">
                                                                 <span class="text-danger">@error('numero_recibo_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>

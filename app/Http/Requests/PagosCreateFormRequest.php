@@ -25,7 +25,7 @@ class PagosCreateFormRequest extends FormRequest
     {
         return [
             'fecha_pago'  => 'required',
-            'codigo_barras'  => 'required',
+            // 'codigo_barras'  => 'required',
             'id_predio'  => 'required',
             'numero_recibo'  => 'required',
             'valor_facturado'  => 'required',
@@ -39,7 +39,7 @@ class PagosCreateFormRequest extends FormRequest
     {
         return [
             'fecha_pago.required' => 'El campo fecha pago es obligatorio.',
-            'codigo_barras.required' => 'El campo código de barras es obligatorio.',
+            // 'codigo_barras.required' => 'El campo código de barras es obligatorio.',
             'id_predio.required' => 'El campo código predio es obligatorio.',
             'numero_recibo.required' => 'El campo número de recibo es obligatorio.',
             'valor_facturado.required' => 'El campo valor facturado es obligatorio.',

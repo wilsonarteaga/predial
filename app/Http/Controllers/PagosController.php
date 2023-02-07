@@ -243,41 +243,13 @@ class PagosController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    // public function destroy($id)
-    // {
-    //     if (!$request->session()->exists('userid')) {
-    //         return redirect('/');
-    //     }
-
-    //     $countPagos = DB::table('usuarios')
-    //                         ->leftJoin('fonoaudiologos', 'fonoaudiologos.usuarios_ide_usu', '=', 'usuarios.ide_usu')
-    //                         ->select(DB::raw('count(*) as usuarios_count'))
-    //                         ->where('usuarios.ide_usu', $request->input_delete)
-    //                         ->where(function($query) {
-    //                             $query->orWhereNotNull('fonoaudiologos.usuarios_ide_usu');
-    //                         })->first();
-
-    //     $tab_current = 'li-section-bar-2';
-    //     $usuario = new Usuario;
-    //     $usuario = Usuario::find($request->input_delete);
-
-    //     if($countPagos->usuarios_count == 0) {
-    //         $query = $usuario->delete();
-    //         if($query) {
-    //             return back()->with(['success' => 'El registro se elimin&oacute; satisfactoriamente.', 'tab_current' => $tab_current]);
-    //         }
-    //         else {
-    //             return back()->with(['fail' => 'No se pudo eliminar la informaci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
-    //         }
-    //     }
-    //     else {
-    //         return back()->with(['fail' => 'No se pudo eliminar la informaci&oacute;n. El usuario <b>' . $usuario->nom_usu . ' ' . $usuario->ape_usu . '</b> ya posee informaci&oacute;n asociada.', 'tab_current' => $tab_current]);
-    //     }
-    // }
+    public function get_info_pago(Request $request) {
+        $data = json_decode($request->form);
+        $predio_pago = DB::table('predios_pagos')
+                        ->join('predios', 'predios.id', '=', 'predios_pagos.id_predio')
+                        ->select(DB::raw('predios_pagos.id_predio, predios_pagos.ultimo_anio, predios_pagos.valor_pago, predios_pagos.fecha_pago, predios_pagos.pagado, predios.codigo_predio'))
+                        ->where('factura_pago', $data->{'factura_pago'})
+                        ->get();
+        return response()->json($predio_pago);
+    }
 }
