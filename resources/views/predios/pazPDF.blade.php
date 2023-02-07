@@ -161,7 +161,7 @@
                 <tr>
                     <td>
                         <p>
-                            Que en los archivos de la tesorer&iacute;a municipal aparece inscrito el predio con c&oacute;digo catastral n&uacute;mero: <b>{{ $predio->codigo_predio }}</b> el cual figura a nombre del <b>MUNICIPIO DE SESQUILE</b>, documento de identidad n&uacute;mero <b>89999941520-0</b> con las siguientes especificaciones.
+                            Que en los archivos de la tesorer&iacute;a municipal aparece inscrito el predio con c&oacute;digo catastral n&uacute;mero: <b>{{ $predio->codigo_predio }}</b> el cual figura a nombre de <b>{{ $propietario_ppal->nombre }}</b>, documento de identidad n&uacute;mero <b>{{ $propietario_ppal->identificacion }}</b> con las siguientes especificaciones.
                             <br /><b>&Uacute;ltimo pago con factura No.:</b> {{ $ultimo_anio_pagado->factura_pago }}
                             <br /><b>Fecha:</b> {{ substr($ultimo_anio_pagado->fecha_pago, 0, 10) }}
                         </p>

@@ -1047,6 +1047,15 @@ class PrediosController extends Controller
             ->where('predios.id', $id)
             ->get();
 
+        $propietario_ppal = DB::table('predios')
+                ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                ->select(DB::raw('propietarios.*, predios_propietarios.jerarquia'))
+                ->where('predios_propietarios.jerarquia', 1)
+                ->where('predios.estado', 1)
+                ->where('predios.id', $id)
+                ->first();
+
         // Obtener informacion del ultimo año pagado
         $ultimo_anio_pagado = DB::table('predios_pagos')
                                 ->where('id_predio', $id)
@@ -1068,6 +1077,7 @@ class PrediosController extends Controller
             'numero_certificado' => $str_numero_certificado,
             'codigo_postal' => $codigo_postal,
             'predio' => $predio,
+            'propietario_ppal' => $propietario_ppal,
             'propietarios' => $propietarios,
             'ultimo_anio_pagado' => $ultimo_anio_pagado,
             'destino' => strtoupper($destino),
