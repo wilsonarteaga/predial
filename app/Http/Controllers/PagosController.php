@@ -86,7 +86,7 @@ class PagosController extends Controller
 
         $pago = new Pago();
         $pago->fecha_pago = $request->fecha_pago;
-        $pago->codigo_barras = $request->codigo_barras;
+        $pago->codigo_barras = $request->filled('codigo_barras') ? $request->codigo_barras : NULL;
         $pago->numero_recibo = $request->numero_recibo;
         $pago->id_predio = $request->id_predio;
         $pago->valor_facturado = $request->valor_facturado;
