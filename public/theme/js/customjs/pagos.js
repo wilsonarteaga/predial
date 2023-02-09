@@ -1,11 +1,26 @@
 var DTPagos = null;
 var PAGE_LENGTH = 3;
+var MAX_FILE_SIZE = 10;
 var global_filtroform_to_send = "";
+var bar = $('.bar.one');
+var percent = $('.porciento.one');
 $(document).ready(function() {
     $('#numero_recibo').bind('keyup', function() {
         if($.trim($(this).val()).length === 9) {
             getInfoPago();
         }
+    });
+
+    $('#upload-asobancaria').off('click').on('click', function() {
+        var btn = $(this);
+        $(btn).attr('disabled', true);
+        $('#modal-carga-archivo-asobancaria').modal({ backdrop: 'static', keyboard: false }, 'show');
+        $('#btn_cargar_archivo_asobancaria').attr('disabled', true);
+    });
+
+    $('#modal-carga-archivo-asobancaria').on('hidden.bs.modal', function() {
+        $('#load-form')[0].reset();
+        $('#upload-asobancaria').attr('disabled', false);
     });
 
     // $('#codigo_barras').bind('keyup', function() {
@@ -206,6 +221,100 @@ $(document).ready(function() {
             //, { "visible": false, "targets": [2] }
         ],
     });
+
+    $('#btn_cargar_archivo_asobancaria').off('click').on('click', function() {
+        $('#load-form').submit();
+    });
+
+    $('#file').bind('change', function() {
+        reset_bar(false);
+        // clearImageLoader();
+        var filesize = this.files[0].size; // On older browsers this can return NULL.
+        var filesizeMB = (filesize / (1024 * 1024)).toFixed(2);
+
+        if (filesizeMB <= MAX_FILE_SIZE) {
+            // Allow the form to be submitted here.
+            $('#btn_cargar_archivo_asobancaria').attr('disabled', false);
+            $('#error_fileupload').fadeOut();
+        } else {
+            // Don't allow submission of the form here.
+            $('#btn_cargar_archivo_asobancaria').attr('disabled', true);
+            $('#error_fileupload').fadeIn();
+        }
+    });
+
+    $('#load-form').ajaxForm({
+        beforeSend: function() {
+            $.blockUI({
+                message: 'Espere un momento por favor...',
+                css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: 0.5,
+                    color: '#fff'
+                }
+            });
+
+            reset_bar(true);
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+            var percentVal = percentComplete + '%';
+            bar.width(percentVal);
+            percent.html(percentVal);
+        },
+        complete: function(xhr) {
+            $.unblockUI();
+        },
+        success: function(response, statusText, xhr, $form) {
+            if (response.filename !== undefined) {
+                $('#current_filename').html('<b>Archivo cargado:</b> ' + response.filename);
+                //$('#btn_analysis').attr('data-filename', response.filename);
+                //$('#btn_analysis').attr('data-fileid', response.id);
+                $('#filename').val(response.filename);
+                $('#fileid').val(response.id);
+                percent.css('color', '#2eb52a');
+                percent.html('Archivo cargado satisfactoriamente');
+
+                //$('#div_radios').fadeIn();
+                // $('#btn_analysis').css('display', '');
+                // $('#btn_upload').css('display', 'none');
+
+                // var isview = true;
+                // var file = response.file;
+                // var t = $('#myTable').DataTable();
+                // var folder = file.folder;
+                // var html_btn = '<button type="button" data-filename="' + file.name + '" data-fileid="' + file.id + '" data-resultdiv="div_images_result" data-objectscroll="div_images_result" class="btn_analysis btn btn-inverse">Analyze</button>';
+                // if (folder === null) {
+                //     html_btn = '<button type="button" data-filename="' + file.name + '" data-fileid="' + file.id + '" data-resultdiv="div_images_result" data-objectscroll="div_images_result" class="btn_setfolder btn btn-warning">Set folder</button>';
+                //     folder = 'No folder';
+                //     isview = false;
+                // }
+                // t.row.add([
+                //     file.id,
+                //     file.name,
+                //     folder,
+                //     statuses[file.analyzed],
+                //     file.created_at,
+                //     file.updated_at,
+                //     html_btn
+                // ]).draw(false);
+
+                // if (isview) {
+                //     $('.btn_view').off('click').on('click', view);
+                // } else {
+                //     $('.btn_setfolder').off('click').on('click', function() {
+                //         setFolder($(this).attr('data-fileid'), $(this).attr('data-filename'));
+                //     });
+                // }
+
+            } else {
+                $('#current_filename').html('<b>Error:</b> ' + response.error);
+            }
+        }
+    });
 });
 
 function getJsonPagos() {
@@ -260,8 +369,12 @@ function getInfoPago() {
             if (response.length > 0) {
                 $('#id_predio').val(response[0].id_predio);
                 $('#codigo_predio').val(response[0].codigo_predio);
-                if(Number(response[0].valor_pago) > 0) {
-                    AutoNumeric.set('#valor_facturado', Number(response[0].valor_pago));
+                var prev_valor = response[0].valor_pago;
+                if (prev_valor === '.00') {
+                    prev_valor = '0.00';
+                }
+                if(Number(prev_valor) > 0) {
+                    AutoNumeric.set('#valor_facturado', Number(prev_valor));
                 }
                 else {
                     $('#valor_facturado').attr('readonly', false);
@@ -325,3 +438,29 @@ var validatorFiltro = $("#pagos-filtro-form").validate({
         id_banco: "Fecha de pago requerido",
     },
 });
+
+function reset_bar(before) {
+    // reset_bar2(false);
+    var percentVal = '0%';
+    bar.width(percentVal);
+    percent.html(percentVal);
+    percent.css('color', '#000000');
+    if (before) {
+        percent.css('display', 'inline-block');
+        $('#btn_cargar_archivo_asobancaria').attr('disabled', true);
+    } else {
+        percent.css('display', 'none');
+    }
+    // $('#btn_analysis').css('display', 'none');
+    // $('#btn_analysis').attr('disabled', false);
+    // $('#btn_analysis').removeClass('btn-default');
+    // $('#btn_analysis').addClass('btn-success');
+
+    $('#btn_cargar_archivo_asobancaria').css('display', '');
+    $('#current_filename').html('');
+    // $('#div_images').fadeOut(function() {
+    //     $('#div_images').find('div:eq(1)').empty();
+    //     $('.file_model').empty();
+    // });
+    // from_tab = false;
+}
