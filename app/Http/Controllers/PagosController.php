@@ -249,7 +249,8 @@ class PagosController extends Controller
                         ->join('predios', 'predios.id', '=', 'predios_pagos.id_predio')
                         ->select(DB::raw('predios_pagos.id_predio, predios_pagos.ultimo_anio, predios_pagos.valor_pago, predios_pagos.fecha_pago, predios_pagos.pagado, predios.codigo_predio'))
                         ->where('factura_pago', $data->{'factura_pago'})
+                        ->orderBy('ultimo_anio', 'desc')
                         ->get();
-        return response()->json($predio_pago);
+        return response()->json([$predio_pago[0]]);
     }
 }
