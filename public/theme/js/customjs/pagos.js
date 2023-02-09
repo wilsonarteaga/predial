@@ -243,78 +243,78 @@ $(document).ready(function() {
         }
     });
 
-    $('#load-form').ajaxForm({
-        beforeSend: function() {
-            $.blockUI({
-                message: 'Espere un momento por favor...',
-                css: {
-                    border: 'none',
-                    padding: '15px',
-                    backgroundColor: '#000',
-                    '-webkit-border-radius': '10px',
-                    '-moz-border-radius': '10px',
-                    opacity: 0.5,
-                    color: '#fff'
-                }
-            });
+    // $('#load-form').ajaxForm({
+    //     beforeSend: function() {
+    //         $.blockUI({
+    //             message: 'Espere un momento por favor...',
+    //             css: {
+    //                 border: 'none',
+    //                 padding: '15px',
+    //                 backgroundColor: '#000',
+    //                 '-webkit-border-radius': '10px',
+    //                 '-moz-border-radius': '10px',
+    //                 opacity: 0.5,
+    //                 color: '#fff'
+    //             }
+    //         });
 
-            reset_bar(true);
-        },
-        uploadProgress: function(event, position, total, percentComplete) {
-            var percentVal = percentComplete + '%';
-            bar.width(percentVal);
-            percent.html(percentVal);
-        },
-        complete: function(xhr) {
-            $.unblockUI();
-        },
-        success: function(response, statusText, xhr, $form) {
-            if (response.filename !== undefined) {
-                $('#current_filename').html('<b>Archivo cargado:</b> ' + response.filename);
-                //$('#btn_analysis').attr('data-filename', response.filename);
-                //$('#btn_analysis').attr('data-fileid', response.id);
-                $('#filename').val(response.filename);
-                $('#fileid').val(response.id);
-                percent.css('color', '#2eb52a');
-                percent.html('Archivo cargado satisfactoriamente');
+    //         reset_bar(true);
+    //     },
+    //     uploadProgress: function(event, position, total, percentComplete) {
+    //         var percentVal = percentComplete + '%';
+    //         bar.width(percentVal);
+    //         percent.html(percentVal);
+    //     },
+    //     complete: function(xhr) {
+    //         $.unblockUI();
+    //     },
+    //     success: function(response, statusText, xhr, $form) {
+    //         if (response.filename !== undefined) {
+    //             $('#current_filename').html('<b>Archivo cargado:</b> ' + response.filename);
+    //             //$('#btn_analysis').attr('data-filename', response.filename);
+    //             //$('#btn_analysis').attr('data-fileid', response.id);
+    //             $('#filename').val(response.filename);
+    //             $('#fileid').val(response.id);
+    //             percent.css('color', '#2eb52a');
+    //             percent.html('Archivo cargado satisfactoriamente');
 
-                //$('#div_radios').fadeIn();
-                // $('#btn_analysis').css('display', '');
-                // $('#btn_upload').css('display', 'none');
+    //             //$('#div_radios').fadeIn();
+    //             // $('#btn_analysis').css('display', '');
+    //             // $('#btn_upload').css('display', 'none');
 
-                // var isview = true;
-                // var file = response.file;
-                // var t = $('#myTable').DataTable();
-                // var folder = file.folder;
-                // var html_btn = '<button type="button" data-filename="' + file.name + '" data-fileid="' + file.id + '" data-resultdiv="div_images_result" data-objectscroll="div_images_result" class="btn_analysis btn btn-inverse">Analyze</button>';
-                // if (folder === null) {
-                //     html_btn = '<button type="button" data-filename="' + file.name + '" data-fileid="' + file.id + '" data-resultdiv="div_images_result" data-objectscroll="div_images_result" class="btn_setfolder btn btn-warning">Set folder</button>';
-                //     folder = 'No folder';
-                //     isview = false;
-                // }
-                // t.row.add([
-                //     file.id,
-                //     file.name,
-                //     folder,
-                //     statuses[file.analyzed],
-                //     file.created_at,
-                //     file.updated_at,
-                //     html_btn
-                // ]).draw(false);
+    //             // var isview = true;
+    //             // var file = response.file;
+    //             // var t = $('#myTable').DataTable();
+    //             // var folder = file.folder;
+    //             // var html_btn = '<button type="button" data-filename="' + file.name + '" data-fileid="' + file.id + '" data-resultdiv="div_images_result" data-objectscroll="div_images_result" class="btn_analysis btn btn-inverse">Analyze</button>';
+    //             // if (folder === null) {
+    //             //     html_btn = '<button type="button" data-filename="' + file.name + '" data-fileid="' + file.id + '" data-resultdiv="div_images_result" data-objectscroll="div_images_result" class="btn_setfolder btn btn-warning">Set folder</button>';
+    //             //     folder = 'No folder';
+    //             //     isview = false;
+    //             // }
+    //             // t.row.add([
+    //             //     file.id,
+    //             //     file.name,
+    //             //     folder,
+    //             //     statuses[file.analyzed],
+    //             //     file.created_at,
+    //             //     file.updated_at,
+    //             //     html_btn
+    //             // ]).draw(false);
 
-                // if (isview) {
-                //     $('.btn_view').off('click').on('click', view);
-                // } else {
-                //     $('.btn_setfolder').off('click').on('click', function() {
-                //         setFolder($(this).attr('data-fileid'), $(this).attr('data-filename'));
-                //     });
-                // }
+    //             // if (isview) {
+    //             //     $('.btn_view').off('click').on('click', view);
+    //             // } else {
+    //             //     $('.btn_setfolder').off('click').on('click', function() {
+    //             //         setFolder($(this).attr('data-fileid'), $(this).attr('data-filename'));
+    //             //     });
+    //             // }
 
-            } else {
-                $('#current_filename').html('<b>Error:</b> ' + response.error);
-            }
-        }
-    });
+    //         } else {
+    //             $('#current_filename').html('<b>Error:</b> ' + response.error);
+    //         }
+    //     }
+    // });
 });
 
 function getJsonPagos() {
