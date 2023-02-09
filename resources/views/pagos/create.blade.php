@@ -13,8 +13,8 @@
     <script src="{!! asset('theme/plugins/bower_components/jquery-validation-1.19.5/jquery.validate.min.js') !!}"></script>
     <script src="{!! asset('theme/plugins/bower_components/blockUI/jquery.blockUI.js') !!}"></script>
             <div class="modal-header">
-    <script src="{!! asset('theme/js/customjs/controlsite.js') !!}"></script>
-   <script src="{!! asset('theme/js/customjs/pagos.js') !!}"></script>
+    <script src="{!! asset('theme/js/customjs/controlsite.js') !!}?{{ $current_time }}"></script>
+   <script src="{!! asset('theme/js/customjs/pagos.js') !!}?{{ $current_time }}"></script>
     {{-- <script src="{!! asset('theme/js/customjs/pagos_forms.js') !!}"></script> --}}
 @endpush
 @if(Session::get('tab_current'))

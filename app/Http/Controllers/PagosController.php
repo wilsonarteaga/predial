@@ -65,11 +65,13 @@ class PagosController extends Controller
 
          //$request->session()->put('search', '1');
 
+        $current_time = Carbon::now()->timestamp;
 
         return view('pagos.create', ['opcion' => $opcion,
                                     //'pagos' => $pagos,
                                     //'predios' => $predios,
                                     'bancos' => $bancos,
+                                    'current_time' => $current_time,
                                     'tab_current' => $tab_current]);
     }
 
