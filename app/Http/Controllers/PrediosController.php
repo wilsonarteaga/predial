@@ -678,9 +678,9 @@ class PrediosController extends Controller
                             ->first();
 
         // Si no existe un predio_pago para el año actual, entonces EJECUTAR PROCEDIMIENTO DE CALCULO
-        if($ultimo_anio_pagar == null) {
+        //if($ultimo_anio_pagar == null) {
             $submit = DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?", array($anios, $id));
-        }
+        //}
 
         if(count($submit) > 0 || $ultimo_anio_pagar != null) {
             $anio = Anio::where('anio', $currentYear)
@@ -689,7 +689,7 @@ class PrediosController extends Controller
             $ultimo_numero_factura = 0;
 
             // Si se EJECUTO EL PROCEDIMIENTO DE CALCULO, entonces se genera un nuevo numero de factura
-            // Generar informacion de numero de fatura solo si se realizo un nuevo calculo
+            // Generar informacion de numero de factura solo si se realizo un nuevo calculo
             if((count($submit) > 0 || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->factura_pago == null)) && intval($tmp) == 0) {
                 $init_anio = new Anio;
                 $init_anio = Anio::find($anio->id);
