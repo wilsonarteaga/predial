@@ -678,7 +678,7 @@ class PrediosController extends Controller
                             ->first();
 
         // Si no existe un predio_pago para el año actual, entonces EJECUTAR PROCEDIMIENTO DE CALCULO
-        if($ultimo_anio_pagar == null || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->valor_pago == null && $ultimo_anio_pagar->fecha_pago == null && $ultimo_anio_pagar->id_banco == null)) {
+        if($ultimo_anio_pagar == null || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->valor_pago > 0 && $ultimo_anio_pagar->fecha_pago == null && $ultimo_anio_pagar->id_banco == null)) {
             $submit = DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?", array($anios, $id));
             if ($ultimo_anio_pagar == null) {
                 $primerCalculo = 1;
