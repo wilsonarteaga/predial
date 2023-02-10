@@ -669,7 +669,7 @@ class PrediosController extends Controller
         $dt_emision = Carbon::now();
         $fecha_emision = $dt_emision;
         $currentYear = $dt->year;
-
+        $primerCalculo = 0;
         // Verificar si el registro ya existe
         $ultimo_anio_pagar = DB::table('predios_pagos')
                             ->where('id_predio', $id)
@@ -678,9 +678,12 @@ class PrediosController extends Controller
                             ->first();
 
         // Si no existe un predio_pago para el año actual, entonces EJECUTAR PROCEDIMIENTO DE CALCULO
-        //if($ultimo_anio_pagar == null) {
+        if($ultimo_anio_pagar == null || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->valor_pago == null && $ultimo_anio_pagar->fecha_pago == null && $ultimo_anio_pagar->id_banco == null)) {
             $submit = DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?", array($anios, $id));
-        //}
+            if ($ultimo_anio_pagar == null) {
+                $primerCalculo = 1;
+            }
+        }
 
         if(count($submit) > 0 || $ultimo_anio_pagar != null) {
             $anio = Anio::where('anio', $currentYear)
@@ -690,7 +693,7 @@ class PrediosController extends Controller
 
             // Si se EJECUTO EL PROCEDIMIENTO DE CALCULO, entonces se genera un nuevo numero de factura
             // Generar informacion de numero de factura solo si se realizo un nuevo calculo
-            if((count($submit) > 0 || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->factura_pago == null)) && intval($tmp) == 0) {
+            if(((count($submit) > 0 && $primerCalculo == 1) || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->factura_pago == null)) && intval($tmp) == 0) {
                 $init_anio = new Anio;
                 $init_anio = Anio::find($anio->id);
                 $case_ultimo_numero_factura = 0;
@@ -976,7 +979,7 @@ class PrediosController extends Controller
             $query = true;
             // Actualizar el consecutivo de numero de factura disponible para la proxima impresion
             // Guardar informacion solo si se realizo un nuevo calculo
-            if((count($submit) > 0 || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->factura_pago == null)) && intval($tmp) == 0) {
+            if(((count($submit) > 0 && $primerCalculo == 1) || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->factura_pago == null)) && intval($tmp) == 0) {
                 $update_anio = new Anio;
                 $update_anio = Anio::find($anio->id);
                 $update_anio->numero_factura_actual = $ultimo_numero_factura + 1;
@@ -986,7 +989,7 @@ class PrediosController extends Controller
             if($query) {
                 // Actualizar datos pago: valor_pago, numero_factura, fecha emision
                 // Guardar informacion solo si se realizo un nuevo calculo
-                if((count($submit) > 0 || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->factura_pago == null)) && intval($tmp) == 0) {
+                if(((count($submit) > 0 && $primerCalculo == 1) || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->factura_pago == null)) && intval($tmp) == 0) {
                     foreach ($pagos_pendientes as $pago_pendiente) {
                         $pp = new PredioPago;
                         $pp = PredioPago::find($pago_pendiente->id);
