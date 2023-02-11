@@ -455,7 +455,7 @@
             </div>
             <div class="modal-footer">
                 <button id="btn_cargar_archivo_asobancaria" type="button" class="btn btn-info"> <i class="fa fa-upload"></i> Cargar archivo</button>
-                <button type="button" class="btn btn-danger btnasobancaria" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger btnasobancaria" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
