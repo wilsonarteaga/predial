@@ -6,6 +6,7 @@ use App\Models\ArchivoAsobancaria;
 use App\Models\Banco;
 use App\Models\Pago;
 use App\Models\PredioPago;
+use App\Models\Predio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -93,7 +94,7 @@ class UploadController extends Controller
                             $numero_recibo = intval(substr($line, 2, 48));
 
                             $objPago = DB::table('pagos')
-                                                ->where('numero_recibo', $numero_recibo)
+                                                ->where('numero_recibo', strval($numero_recibo))
                                                 ->first();
 
                             if($objPago == null) {
@@ -133,6 +134,11 @@ class UploadController extends Controller
                                         $pp->pagado = -1;
                                         $saved_predio_pago = $pp->save();
                                         if($saved_predio_pago) {
+                                            // Actualizar ultimo anio pago en la tabla predios
+                                            $predio = new Predio;
+                                            $predio = Predio::find($pago->id_predio);
+                                            $predio->ultimo_anio_pago = $objPredioPago->ultimo_anio;
+                                            $predio->save();
                                             $count_pagos_saved += 1;
                                         }
                                         else {
@@ -192,6 +198,11 @@ class UploadController extends Controller
                         $error = true;
                         $descripcion = '<br />No se pudo guardar toda la informaci&oacute;n.<br />Registros en archivo asobancaria: <b>' . $count_pagos . '</b><br />Registros guardados: <b>' . $count_pagos_saved . '</b>';
 
+                        if(count($pagos_ya_realizados) > 0) {
+                            $descripcion = $descripcion . '<br />Pagos ya registrados previamente: <b>' .
+                                            count($pagos_ya_realizados) . '</b>';
+                            $complemento = $complemento . '<br />Lista de pagos ya registrados: ' . implode(', ', $pagos_ya_realizados);
+                        }
                         if(count($pagos_no_realizados) > 0) {
                             $descripcion = $descripcion . '<br />Pagos no registrados: <b>' .
                                             count($pagos_no_realizados) . '</b>';
