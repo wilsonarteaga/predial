@@ -103,7 +103,7 @@ class UploadController extends Controller
                                                     ->first();
 
                                 if($objPredioPago != null) {
-                                    $valor_facturado = floatval(substr($line, 50, 14));
+                                    $valor_facturado = floatval(substr($line, 50, 12) . ',' . substr($line, 62, 2));
                                     $banco_factura = substr($line, 80, 3);
                                     $objBancoFactura = DB::table('bancos')
                                                         ->select('bancos.id')

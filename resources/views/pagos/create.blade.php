@@ -111,7 +111,7 @@
                                                         <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">N&uacute;mero factura:</label>
-                                                                <input type="text" id="numero_recibo" name="numero_recibo" class="form-control onlyNumbers" autocomplete="off" placeholder="N&uacute;mero de recibo" value="{{ old('numero_recibo') }}" maxlength="9">
+                                                                <input type="text" id="numero_recibo" name="numero_recibo" class="form-control onlyNumbers" autocomplete="off" placeholder="N&uacute;mero de recibo" value="{{ old('numero_recibo') }}" maxlength="9" disabled="disabled">
                                                                 <span class="text-danger">@error('numero_recibo') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>

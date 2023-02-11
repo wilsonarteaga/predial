@@ -248,12 +248,17 @@ class PagosController extends Controller
 
     public function get_info_pago(Request $request) {
         $data = json_decode($request->form);
+        $fecha = $data->{'fecha_pago'};
         $predio_pago = DB::table('predios_pagos')
                         ->join('predios', 'predios.id', '=', 'predios_pagos.id_predio')
-                        ->select(DB::raw('predios_pagos.id_predio, predios_pagos.ultimo_anio, predios_pagos.valor_pago, predios_pagos.fecha_emision as fecha_pago, predios_pagos.pagado, predios.codigo_predio'))
+                        ->leftJoin('pagos', 'pagos.numero_recibo', '=', 'predios_pagos.factura_pago')
+                        ->select(DB::raw("predios_pagos.id_predio, predios_pagos.ultimo_anio, CASE WHEN CONVERT(datetime, '" . $fecha . " 00:00:00.000') <= predios_pagos.primer_fecha THEN predios_pagos.total_calculo WHEN CONVERT(datetime, '" . $fecha . " 00:00:00.000') <= predios_pagos.segunda_fecha THEN predios_pagos.total_dos WHEN CONVERT(datetime, '" . $fecha . " 00:00:00.000') <= predios_pagos.tercera_fecha THEN predios_pagos.total_tres END as valor_pago, predios_pagos.fecha_emision as fecha_pago, predios_pagos.pagado, predios.codigo_predio, pagos.id_banco_archivo, pagos.paquete_archivo, pagos.codigo_barras"))
                         ->where('factura_pago', $data->{'factura_pago'})
                         ->orderBy('ultimo_anio', 'desc')
                         ->get();
-        return response()->json([$predio_pago[0]]);
+        if(count($predio_pago) > 0)
+            return response()->json([$predio_pago[0]]);
+        else
+            return response()->json([]);
     }
 }

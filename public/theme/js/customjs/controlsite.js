@@ -23,6 +23,10 @@ $(document).ready(function() {
                 if ($('#valor_facturado').length > 0) {
                     $('#valor_facturado').attr('readonly', true);
                 }
+                if ($('#btn_save_info').length > 0) {
+                    $('#btn_save_info').attr('disabled', false);
+                    $('#numero_recibo').attr('disabled', true);
+                }
                 if ($('#codigo_predio').length > 0) {
                     $('.buttonTareas').css('display', 'none');
                     $('.span_predio').html('');
@@ -215,7 +219,6 @@ $(document).ready(function() {
         language: 'es-ES',
         format: 'yyyy-mm-dd',
         // autoHide: true,
-        //startDate: ($('#fec_cit').length > 0) ? moment($('#fer_cit').val()) : null, // Or '02/14/2014'
         hide: function() {
             if ($("#create-form").length > 0) {
                 if ($('#' + $(this).attr('id') + '-error').length > 0)
@@ -241,7 +244,6 @@ $(document).ready(function() {
             language: 'es-ES',
             format: 'yyyy-mm-dd',
             autoHide: true,
-            //startDate: moment($('#fecha_oculta').val()), // Or '02/14/2014'
             hide: function() {
                 if ($("#create-form").length > 0) {
                     if ($('#' + $(this).attr('id') + '-error').length > 0)
@@ -262,68 +264,6 @@ $(document).ready(function() {
             },
             pick: function() {
                 $('.text-danger').remove();
-                // var control = $(this);
-                // var hour_control = $(control).attr('data-control');
-                // var date = $(control).datepicker('getDate', true);
-                // if (!hour_control.includes('edit')) {
-
-                //     $.ajax({
-                //         type: 'GET',
-                //         url: '/available/hours',
-                //         data: {
-                //             date: date
-                //         },
-                //         success: function(response) {
-                //             if ((response.data.length > 0 && response.data.length < 19) || $('#' + hour_control).children('option').length < 19) {
-                //                 $('#' + hour_control).empty();
-                //                 $.each(response.data, function(i, el) {
-                //                     var option = $('<option value="' + el + '">' + el + '</option>');
-                //                     $('#' + hour_control).append(option);
-                //                 });
-                //                 $('#' + hour_control).selectpicker("refresh");
-                //             } else {
-                //                 $('#' + hour_control).val('default').selectpicker("refresh");
-                //             }
-                //         },
-                //         error: function(xhr) {
-                //             console.log(xhr.responseText);
-                //         }
-                //     });
-                // } else {
-                //     $.ajax({
-                //         type: 'GET',
-                //         url: '/iavailable/hours',
-                //         data: {
-                //             date: date,
-                //             hour: global_json.hor_cit
-                //         },
-                //         success: function(response) {
-                //             if (response.data.length > 0 && response.data.length < 19) {
-                //                 $('#' + hour_control).empty();
-                //                 $.each(response.data, function(i, el) {
-                //                     var option = $('<option value="' + el + '">' + el + '</option>');
-                //                     $('#' + hour_control).append(option);
-                //                 });
-                //                 if (date === global_json.fec_cit) {
-                //                     $('#' + hour_control).selectpicker('val', global_json.hor_cit);
-                //                 }
-
-                //                 $('#' + hour_control).selectpicker("refresh");
-
-                //             } else {
-                //                 if (date === global_json.fec_cit) {
-                //                     $('#' + hour_control).selectpicker('val', global_json.hor_cit);
-                //                     $('#' + hour_control).selectpicker("refresh");
-                //                 } else {
-                //                     $('#' + hour_control).val('default').selectpicker("refresh");
-                //                 }
-                //             }
-                //         },
-                //         error: function(xhr) {
-                //             console.log(xhr.responseText);
-                //         }
-                //     });
-                // }
             }
         });
     }

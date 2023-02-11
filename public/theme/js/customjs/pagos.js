@@ -9,6 +9,9 @@ $(document).ready(function() {
         if($.trim($(this).val()).length === 9) {
             getInfoPago();
         }
+        else {
+            $('#btn_save_info').attr('disabled', false);
+        }
     });
 
     $('#upload-asobancaria').off('click').on('click', function() {
@@ -24,78 +27,6 @@ $(document).ready(function() {
         });
 
     });
-
-    // $('#codigo_barras').bind('keyup', function() {
-    //     if($(this).val().length === 72) {
-    //         if(!$('#numero_recibo').attr('readonly')) {
-    //             $('#numero_recibo').attr('readonly', true);
-    //             $('#valor_facturado').attr('readonly', true);
-    //             $('#fecha_factura').attr('readonly', true);
-    //             $('.datepicker').datepicker({
-    //                 language: 'es-ES',
-    //                 format: 'yyyy-mm-dd',
-    //                 hide: function() {
-    //                     if ($("#create-form").length > 0) {
-    //                         if ($('#' + $(this).attr('id') + '-error').length > 0)
-    //                             $('#' + $(this).attr('id') + '-error').remove();
-
-    //                         if ($('#create-form').is(':visible')) {
-    //                             $('#create-form').validate().element($(this));
-    //                         }
-    //                     }
-    //                     if ($("#update-form").length > 0) {
-    //                         if ($('#' + $(this).attr('id') + '-error').length > 0)
-    //                             $('#' + $(this).attr('id') + '-error').remove();
-
-    //                         if ($('#update-form').is(':visible')) {
-    //                             $('#update-form').validate().element($(this));
-    //                         }
-    //                     }
-    //                 }
-    //             });
-    //             $('#anio_pago').attr('readonly', true);
-    //         }
-    //         var section_1 = $(this).val().substr(0, 15); // 15 caracteres
-    //         var section_2 = $(this).val().substr(16, 28); // 28 caracteres
-    //         var section_3 = $(this).val().substr(44, 18); // 18 caracteres
-    //         var section_4 = $(this).val().substr(62); // 10 caracteres
-    //         $('#numero_recibo').val(Number(section_2.substr(4))).attr('readonly', true);
-    //         AutoNumeric.set('#valor_facturado', Number(section_3.substr(4)));
-    //         $('#valor_facturado').attr('readonly', true);
-    //         $('#fecha_factura').datepicker('setDate', stringToDate(section_4.substr(2))).attr('readonly', true);
-    //         $('#fecha_factura').datepicker('destroy');
-    //         $('#anio_pago').val(Number(section_4.substr(2).substr(0, 4))).attr('readonly', true);
-    //     }
-    //     else {
-    //         $('#numero_recibo').val('').attr('readonly', false);
-    //         $('#valor_facturado').attr('readonly', false);
-    //         AutoNumeric.set('#valor_facturado', 0);
-    //         $('#fecha_factura').attr('readonly', false);
-    //         $('.datepicker').datepicker({
-    //             language: 'es-ES',
-    //             format: 'yyyy-mm-dd',
-    //             hide: function() {
-    //                 if ($("#create-form").length > 0) {
-    //                     if ($('#' + $(this).attr('id') + '-error').length > 0)
-    //                         $('#' + $(this).attr('id') + '-error').remove();
-
-    //                     if ($('#create-form').is(':visible')) {
-    //                         $('#create-form').validate().element($(this));
-    //                     }
-    //                 }
-    //                 if ($("#update-form").length > 0) {
-    //                     if ($('#' + $(this).attr('id') + '-error').length > 0)
-    //                         $('#' + $(this).attr('id') + '-error').remove();
-
-    //                     if ($('#update-form').is(':visible')) {
-    //                         $('#update-form').validate().element($(this));
-    //                     }
-    //                 }
-    //             }
-    //         });
-    //         $('#anio_pago').attr('readonly', false);
-    //     }
-    // });
 
     $("#btn_buscar_pagos").off("click").on("click", function() {
             var form = $("#pagos-filtro-form");
@@ -284,6 +215,28 @@ $(document).ready(function() {
             }
         }
     });
+
+    $('#fecha_pago').bind('change', function() {
+        if(isNaN(Date.parse($('#fecha_pago').val()))) {
+            $('#numero_recibo').attr('disabled', true);
+            $('#numero_recibo').val('');
+            $('#fecha_pago').datepicker('reset');
+            $('#create-form')[0].reset();
+            $('#id_banco_archivo').val('default').selectpicker("refresh");
+        }
+    });
+    $('#fecha_pago').on('pick.datepicker', function (e) {
+        $('#btn_save_info').attr('disabled', false);
+        $('#fecha_pago').datepicker('hide');
+        $('#numero_recibo').attr('disabled', false);
+        $('#numero_recibo').focus();
+        $('#id_banco_archivo').val('default').selectpicker("refresh");
+        var validatorCreate = $("#create-form").validate();
+        validatorCreate.resetForm();
+        $.each($('.has-error'), function(i, el) {
+            $(el).removeClass('has-error');
+        });
+    });
 });
 
 function getJsonPagos() {
@@ -324,6 +277,7 @@ function getInfoPago() {
     $('#btn_save_info').attr('disabled', false);
     var jsonObj = {};
     jsonObj.factura_pago = $('#numero_recibo').val();
+    jsonObj.fecha_pago = $('#fecha_pago').val();
     $.ajax({
         type: "POST",
         headers: {
@@ -350,11 +304,29 @@ function getInfoPago() {
                 }
                 $('#fecha_factura').val(response[0].fecha_pago.substr(0, 10));
                 $('#anio_pago').val(response[0].ultimo_anio);
-                if(Number(response[0].pagado) > 0) {
+                if(response[0].codigo_barras !== null) {
+                    $('#codigo_barras').val(response[0].codigo_barras);
+                }
+                else {
+                    $('#codigo_barras').val(response[0].codigo_barras);
+                }
+                if(response[0].id_banco_archivo !== null) {
+                    $('#id_banco_archivo').val(response[0].id_banco_archivo).selectpicker("refresh");
+                }
+                else {
+                    $('#id_banco_archivo').val('default').selectpicker("refresh");
+                }
+                if(response[0].paquete_archivo !== null) {
+                    $('#paquete_archivo').val(response[0].paquete_archivo);
+                }
+                else {
+                    $('#paquete_archivo').val('');
+                }
+                if(Number(response[0].pagado) < 0) {
                     $('#btn_save_info').attr('disabled', true);
                     swal({
                         title: "Atención",
-                        text: "El número de factura consultado ya posee un pago registrado. Verifique su consulta",
+                        text: `El número de factura ${jsonObj.factura_pago} ya posee un pago registrado. Verifique su consulta`,
                         type: "error",
                         showCancelButton: false,
                         confirmButtonColor: "#DD6B55",
@@ -363,17 +335,26 @@ function getInfoPago() {
                     });
                 }
             } else {
-                $('#create-form')[0].reset();
+                swal({
+                    title: "Atención",
+                    text: `El número de factura ${jsonObj.factura_pago} no fue encontrado en el sistema. Verifique su consulta`,
+                    type: "error",
+                    showCancelButton: false,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Aceptar",
+                    closeOnConfirm: true
+                });
+                // $('#create-form')[0].reset();
             }
             $.unblockUI();
-            var validatorCreate = $("#create-form").validate();
-            validatorCreate.resetForm();
-            $.each($('.has-success'), function(i, el) {
-                $(el).removeClass('has-success');
-            });
-            $.each($('.has-error'), function(i, el) {
-                $(el).removeClass('has-error');
-            });
+            // var validatorCreate = $("#create-form").validate();
+            // validatorCreate.resetForm();
+            // $.each($('.has-success'), function(i, el) {
+            //     $(el).removeClass('has-success');
+            // });
+            // $.each($('.has-error'), function(i, el) {
+            //     $(el).removeClass('has-error');
+            // });
         },
         error: function(xhr) {
             console.log(xhr.responseText);
@@ -404,12 +385,11 @@ var validatorFiltro = $("#pagos-filtro-form").validate({
     },
     messages: {
         fecha_pago_listar: "Fecha de pago requerido",
-        id_banco: "Fecha de pago requerido",
+        id_banco: "Banco requerido",
     },
 });
 
 function reset_bar(before) {
-    // reset_bar2(false);
     var percentVal = '0%';
     bar.width(percentVal);
     percent.html(percentVal);
