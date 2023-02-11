@@ -1058,13 +1058,18 @@ function setFormData(form, jsonObj) {
                     }
                 } else {
                     if ($.inArray(i, arr_autonumeric) >= 0 || i === 'valor_pago') {
-                        new AutoNumeric('#' + i, {
-                            emptyInputBehavior: "zero",
-                            minimumValue: "0",
-                            modifyValueOnWheel: false,
-                            unformatOnSubmit: true
-                        });
-                        AutoNumeric.set('#' + i, Number(el));
+                        if(i === 'valor_pago') {
+                            $('#valor_pago').val(accounting.formatMoney(Number(el), "$ ", 2, ",", "."));
+                        }
+                        else {
+                            new AutoNumeric('#' + i, {
+                                emptyInputBehavior: "zero",
+                                minimumValue: "0",
+                                modifyValueOnWheel: false,
+                                unformatOnSubmit: true
+                            });
+                            AutoNumeric.set('#' + i, Number(el));
+                        }
                     } else {
                         $('#' + form).find('#' + i).val(el);
                         if ($('#' + form).find('#' + i).is(':checkbox')) {
