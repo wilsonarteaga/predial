@@ -180,7 +180,9 @@ class UploadController extends Controller
                 }
                 fclose($getFile);
 
-                File::delete($realPath);
+                unlink($realPath);
+                //Storage::disk('public')->delete('uploads/' . $name);
+                // File::delete($realPath);
 
                 if($formato_correcto) {
                     $descripcion = '';
