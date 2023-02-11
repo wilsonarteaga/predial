@@ -26,6 +26,8 @@ class UploadController extends Controller
                 $count_pagos = 0;
                 $count_pagos_saved = 0;
                 $count_pagos_not_saved = 0;
+                $control_archivo_registros = 0;
+                $control_archivo_recaudo = 0;
                 $fecha_pago = '';
                 $banco_archivo = '';
                 $paquete_archivo = '';
@@ -178,6 +180,8 @@ class UploadController extends Controller
                                     Total registros recaudados en archivo: 9
                                     Valor total recaudado en archivo: 18
                             */
+                            $control_archivo_registros = floatval(substr($line, 2, 9));
+                            $control_archivo_recaudo = floatval(substr($line, 11, 16) . ',' . substr($line, 27, 2));
                             break;
                         default:
                             // code to be executed if $tipo_registro is different from all labels
@@ -237,8 +241,11 @@ class UploadController extends Controller
                         $file->size = $request->file->getSize();
                         $file->total_registros = $count_pagos;
                         $file->total_guardados = $count_pagos_saved;
+                        $file->total_existentes = count($pagos_ya_realizados);
                         $file->total_fallidos = $count_pagos_not_saved;
                         $file->descripcion = $descripcion . $complemento;
+                        $file->control_archivo_registros = $control_archivo_registros;
+                        $file->control_archivo_recaudo = $control_archivo_recaudo;
                         $file->save();
                     }
 

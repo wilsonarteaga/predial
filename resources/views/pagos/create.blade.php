@@ -408,22 +408,6 @@
                                         <input type="hidden" id="fileid" value="">
                                         <form id="load-form" action="{{route('upload-file-asobancaria')}}" method="post" enctype="multipart/form-data">
                                             @csrf
-                                            @if ($msg = Session::get('success'))
-                                                <div class="alert alert-success">
-                                                    <strong>{{ $msg }}<br />Archivo: <span style="color: #0c865e;">{{ Session::get('file') }}</span></strong>
-                                                </div>
-                                            @endif
-
-                                            @if (count($errors) > 0)
-                                                <div class="alert alert-danger">
-                                                    <ul>
-                                                        @foreach ($errors->all() as $error)
-                                                        <li>{{ $error }}</li>
-                                                        @endforeach
-                                                    </ul>
-                                                </div>
-                                            @endif
-
                                             <div class="form-body">
                                                 <div class="row">
                                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
