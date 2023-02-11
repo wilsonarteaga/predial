@@ -16,11 +16,13 @@ $(document).ready(function() {
         $(btn).attr('disabled', true);
         $('#modal-carga-archivo-asobancaria').modal({ backdrop: 'static', keyboard: false }, 'show');
         $('#btn_cargar_archivo_asobancaria').attr('disabled', true);
-    });
 
-    $('#modal-carga-archivo-asobancaria').on('hidden.bs.modal', function() {
-        $('#load-form')[0].reset();
-        $('#upload-asobancaria').attr('disabled', false);
+        $('#modal-carga-archivo-asobancaria').on('hidden.bs.modal', function() {
+            $('#load-form')[0].reset();
+            $('#upload-asobancaria').attr('disabled', false);
+            reset_bar(false);
+        });
+
     });
 
     // $('#codigo_barras').bind('keyup', function() {
@@ -95,9 +97,7 @@ $(document).ready(function() {
     //     }
     // });
 
-    $("#btn_buscar_pagos")
-        .off("click")
-        .on("click", function() {
+    $("#btn_buscar_pagos").off("click").on("click", function() {
             var form = $("#pagos-filtro-form");
             if (form.valid()) {
                 var input_fecha_pago_listar = $(
@@ -243,78 +243,47 @@ $(document).ready(function() {
         }
     });
 
-    // $('#load-form').ajaxForm({
-    //     beforeSend: function() {
-    //         $.blockUI({
-    //             message: 'Espere un momento por favor...',
-    //             css: {
-    //                 border: 'none',
-    //                 padding: '15px',
-    //                 backgroundColor: '#000',
-    //                 '-webkit-border-radius': '10px',
-    //                 '-moz-border-radius': '10px',
-    //                 opacity: 0.5,
-    //                 color: '#fff'
-    //             }
-    //         });
-
-    //         reset_bar(true);
-    //     },
-    //     uploadProgress: function(event, position, total, percentComplete) {
-    //         var percentVal = percentComplete + '%';
-    //         bar.width(percentVal);
-    //         percent.html(percentVal);
-    //     },
-    //     complete: function(xhr) {
-    //         $.unblockUI();
-    //     },
-    //     success: function(response, statusText, xhr, $form) {
-    //         if (response.filename !== undefined) {
-    //             $('#current_filename').html('<b>Archivo cargado:</b> ' + response.filename);
-    //             //$('#btn_analysis').attr('data-filename', response.filename);
-    //             //$('#btn_analysis').attr('data-fileid', response.id);
-    //             $('#filename').val(response.filename);
-    //             $('#fileid').val(response.id);
-    //             percent.css('color', '#2eb52a');
-    //             percent.html('Archivo cargado satisfactoriamente');
-
-    //             //$('#div_radios').fadeIn();
-    //             // $('#btn_analysis').css('display', '');
-    //             // $('#btn_upload').css('display', 'none');
-
-    //             // var isview = true;
-    //             // var file = response.file;
-    //             // var t = $('#myTable').DataTable();
-    //             // var folder = file.folder;
-    //             // var html_btn = '<button type="button" data-filename="' + file.name + '" data-fileid="' + file.id + '" data-resultdiv="div_images_result" data-objectscroll="div_images_result" class="btn_analysis btn btn-inverse">Analyze</button>';
-    //             // if (folder === null) {
-    //             //     html_btn = '<button type="button" data-filename="' + file.name + '" data-fileid="' + file.id + '" data-resultdiv="div_images_result" data-objectscroll="div_images_result" class="btn_setfolder btn btn-warning">Set folder</button>';
-    //             //     folder = 'No folder';
-    //             //     isview = false;
-    //             // }
-    //             // t.row.add([
-    //             //     file.id,
-    //             //     file.name,
-    //             //     folder,
-    //             //     statuses[file.analyzed],
-    //             //     file.created_at,
-    //             //     file.updated_at,
-    //             //     html_btn
-    //             // ]).draw(false);
-
-    //             // if (isview) {
-    //             //     $('.btn_view').off('click').on('click', view);
-    //             // } else {
-    //             //     $('.btn_setfolder').off('click').on('click', function() {
-    //             //         setFolder($(this).attr('data-fileid'), $(this).attr('data-filename'));
-    //             //     });
-    //             // }
-
-    //         } else {
-    //             $('#current_filename').html('<b>Error:</b> ' + response.error);
-    //         }
-    //     }
-    // });
+    $('#load-form').ajaxForm({
+        beforeSend: function() {
+            $.blockUI({
+                message: 'Espere un momento por favor...',
+                css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: 0.5,
+                    color: '#fff',
+                    zIndex: 9999
+                }
+            });
+            $('.btnasobancaria').attr('disabled', true);
+            reset_bar(true);
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+            var percentVal = percentComplete + '%';
+            bar.width(percentVal);
+            percent.html(percentVal);
+        },
+        complete: function(xhr) {
+            $.unblockUI();
+            $('.btnasobancaria').attr('disabled', false);
+        },
+        success: function(response, statusText, xhr, $form) {
+            if (response.message !== undefined) {
+                $('#current_filename').html(response.message);
+                if(!response.error) {
+                    percent.css('color', '#2eb52a');
+                    percent.html('Archivo cargado con &eacute;xito');
+                }
+                else {
+                    percent.css('color', 'tomato');
+                    percent.html('Error al cargar el archivo');
+                }
+            }
+        }
+    });
 });
 
 function getJsonPagos() {
@@ -447,20 +416,10 @@ function reset_bar(before) {
     percent.css('color', '#000000');
     if (before) {
         percent.css('display', 'inline-block');
-        $('#btn_cargar_archivo_asobancaria').attr('disabled', true);
     } else {
         percent.css('display', 'none');
     }
-    // $('#btn_analysis').css('display', 'none');
-    // $('#btn_analysis').attr('disabled', false);
-    // $('#btn_analysis').removeClass('btn-default');
-    // $('#btn_analysis').addClass('btn-success');
-
+    $('#btn_cargar_archivo_asobancaria').attr('disabled', before);
     $('#btn_cargar_archivo_asobancaria').css('display', '');
     $('#current_filename').html('');
-    // $('#div_images').fadeOut(function() {
-    //     $('#div_images').find('div:eq(1)').empty();
-    //     $('.file_model').empty();
-    // });
-    // from_tab = false;
 }

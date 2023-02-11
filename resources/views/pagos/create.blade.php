@@ -9,14 +9,23 @@
     {!! JsValidator::formRequest('App\Http\Requests\PagosUpdateFormRequest', '#update-form'); !!}
     <script src="{!! asset('theme/js/accounting.min.js') !!}"></script>
     <script src="{!! asset('theme/js/autonumeric.min.js') !!}"></script>
+    <script src="{!! asset('theme/js/jquery.form.js') !!}"></script>
     <script src="{!! asset('theme/plugins/bower_components/jquery.serializeJSON/jquery.serializejson.min.js') !!}"></script>
     <script src="{!! asset('theme/plugins/bower_components/jquery-validation-1.19.5/jquery.validate.min.js') !!}"></script>
     <script src="{!! asset('theme/plugins/bower_components/blockUI/jquery.blockUI.js') !!}"></script>
-            <div class="modal-header">
+    <script src="{!! asset('theme/plugins/bower_components/bootstrap-filestyle/bootstrap-filestyle.min.js') !!}"></script>
+    {{-- <div class="modal-header"> --}}
     <script src="{!! asset('theme/js/customjs/controlsite.js') !!}?{{ $current_time }}"></script>
    <script src="{!! asset('theme/js/customjs/pagos.js') !!}?{{ $current_time }}"></script>
     {{-- <script src="{!! asset('theme/js/customjs/pagos_forms.js') !!}"></script> --}}
 @endpush
+
+<style>
+    .progress { width:100%; }
+    .bar { background-color: #10d831; width:0%; height:20px; }
+    .porciento { position:absolute; display:none; color: #040608;}
+</style>
+
 @if(Session::get('tab_current'))
 <input type="hidden" id="tab" value="{{ Session::get('tab_current') }}">
 @elseif($tab_current)
@@ -55,7 +64,10 @@
                         <div class="content-wrap">
                             <section id="section-bar-1" class="content-current">
                                 <div class="panel panel-inverse">
-                                    <div class="panel-heading"><i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Informaci&oacute;n del pago</div>
+                                    <div class="panel-heading">
+                                        <i class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Informaci&oacute;n del pago
+                                        <i id="upload-asobancaria" class="fa fa-upload pull-right" style="cursor: pointer;"></i>
+                                    </div>
                                     <div class="panel-wrapper collapse in" aria-expanded="true">
                                         <div class="panel-body">
                                             <form action="{{ route('pagos.create_pagos') }}" method="post" id="create-form">
@@ -374,4 +386,78 @@
 @endsection
 
 @section('modales')
+<div id="modal-carga-archivo-asobancaria" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-carga-archivo-asobancaria-label" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                {{-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> --}}
+                <h4 class="modal-title" id="modal-carga-archivo-asobancaria-label">Carga de archivo asobancaria.</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12">
+                        {{-- <form id="form-carga-archivo-asobancaria"> --}}
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        {{-- <div class="form-group">
+                                            <label class="control-label">Seleccione archivo:</label>
+                                            <input type="file" id="asobancaria" name="asobancaria" class="form-control" autocomplete="off" placeholder="Seleccione archivo">
+                                        </div> --}}
+                                        <input type="hidden" id="filename" value="">
+                                        <input type="hidden" id="fileid" value="">
+                                        <form id="load-form" action="{{route('upload-file-asobancaria')}}" method="post" enctype="multipart/form-data">
+                                            @csrf
+                                            @if ($msg = Session::get('success'))
+                                                <div class="alert alert-success">
+                                                    <strong>{{ $msg }}<br />Archivo: <span style="color: #0c865e;">{{ Session::get('file') }}</span></strong>
+                                                </div>
+                                            @endif
+
+                                            @if (count($errors) > 0)
+                                                <div class="alert alert-danger">
+                                                    <ul>
+                                                        @foreach ($errors->all() as $error)
+                                                        <li>{{ $error }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endif
+
+                                            <div class="form-body">
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Archivo pagos asobancaria</label><span class="text-muted" style="margin-left: 15px;">archivo .txt</span>
+                                                            <input type="file" accept=".txt" id="file" name="file" class="form-control filestyle" data-placeholder="" value="{{ old('file') }}" data-buttonName="btn-inverse" data-buttonBefore="true" data-buttonText="Buscar archivo">
+                                                            <span class="text-danger">@error('file') {{ $message }} @enderror</span>
+                                                        </div>
+                                                        <div class="progress">
+                                                            <div class="bar one"></div >
+                                                            <div class="porciento one">0%</div >
+                                                        </div>
+                                                        <span id="error_fileupload" class="text-danger" style="display: none;">Max file size 10 Mb</span>
+                                                        <span id="current_filename" class="text-inverse" style="display: block; padding-top: 15px;"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{-- <div class="form-actions m-t-20">
+                                                <button id="btn_upload" type="submit" class="btn btn-info"> <i class="fa fa-upload"></i> Cargar archivo</button>
+                                                <span id="current_filename" class="text-inverse" style="display: block; padding-top: 15px;"></span>
+                                            </div> --}}
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {{-- </form> --}}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn_cargar_archivo_asobancaria" type="button" class="btn btn-info"> <i class="fa fa-upload"></i> Cargar archivo</button>
+                <button type="button" class="btn btn-danger btnasobancaria" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

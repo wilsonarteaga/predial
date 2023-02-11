@@ -97,6 +97,7 @@ class PagosController extends Controller
         $pago->id_banco_factura = $request->id_banco_factura;
         $pago->id_banco_archivo = $request->filled('id_banco_archivo') ? $request->id_banco_archivo : NULL;
         $pago->paquete_archivo = $request->filled('paquete_archivo') ? $request->paquete_archivo : NULL;
+        $pago->origen = 'M';
         $query = $pago->save();
         $tab_current = 'li-section-bar-1';
 

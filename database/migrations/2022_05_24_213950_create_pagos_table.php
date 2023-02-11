@@ -27,7 +27,7 @@ class CreatePagosTable extends Migration
 
             $table->unsignedBigInteger('id_banco_archivo')->nullable();
             $table->char('paquete_archivo', 2)->nullable();
-
+            $table->char('origen', 1)->nullable(); // M = carga manual, A = carga archivo
             $table->timestamps();
 
             $table->foreign('id_predio')->references('id')->on('predios');

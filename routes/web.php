@@ -17,6 +17,7 @@ use App\Http\Controllers\TarifasPredialController;
 use App\Http\Controllers\TiposPredioController;
 use App\Http\Controllers\ResolucionesIgacController;
 use App\Http\Controllers\PrediosExoneracionesController;
+use App\Http\Controllers\UploadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -265,3 +266,5 @@ Route::get('registro_resolucion_igac', [ErrorRequestController::class, 'error_re
 Route::post('create_resolucion_igac', [ResolucionesIgacController::class, 'store'])->name('resoluciones_igac.create_resolucion_igac')->middleware('checkdb');
 Route::post('update_resolucion_igac', [ResolucionesIgacController::class, 'update'])->name('resoluciones_igac.update_resolucion_igac')->middleware('checkdb');
 Route::post('delete_resolucion_igac', [ResolucionesIgacController::class, 'destroy'])->name('resoluciones_igac.delete_resolucion_igac')->middleware('checkdb');
+
+Route::post('uploadFileAsobancaria', [UploadController::class, 'uploadFileAsobancaria'])->name('upload-file-asobancaria');
