@@ -815,20 +815,26 @@ function setDownloadPazRow() {
             $(btn).attr('disabled', true);
             // Create a date object from a date string
             var today = new Date();
-            var tomorrow = new Date();
-            tomorrow.setDate(today.getDate()+1);
+            //var tomorrow = new Date();
+            //tomorrow.setDate(today.getDate()+1);
             // Get year, month, and day part from the date
-            var year = tomorrow.toLocaleString("default", { year: "numeric" });
-            var month = tomorrow.toLocaleString("default", { month: "2-digit" });
-            var day = tomorrow.toLocaleString("default", { day: "2-digit" });
+            var year = today.toLocaleString("default", { year: "numeric" });
+            var month = today.toLocaleString("default", { month: "2-digit" });
+            var day = today.toLocaleString("default", { day: "2-digit" });
             // Generate yyyy-mm-dd date string
             var formattedDate = year + "-" + month + "-" + day;
+            var formattedEndDate = year + "-" + 12 + "-" + 31;
+            $('#fecha_paz').datepicker('setDate', formattedEndDate);
             $('#fecha_paz').datepicker('setStartDate', formattedDate);
+            $('#fecha_paz').datepicker('setEndDate', formattedEndDate);
             $('#modal-impresion-paz').modal({ backdrop: 'static', keyboard: false }, 'show');
             global_url_print = url_download;
             $('#modal-impresion-paz').on('hidden.bs.modal', function() {
                 $(btn).attr('disabled', false);
                 $('#form-predios-impresion-paz')[0].reset();
+            });
+            $('#modal-impresion-paz').on('shown.bs.modal', function() {
+                $('#destino_paz').focus();
             });
         });
     }
