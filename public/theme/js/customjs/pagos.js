@@ -1,5 +1,5 @@
 var DTPagos = null;
-var PAGE_LENGTH = 3;
+var PAGE_LENGTH = 5;
 var MAX_FILE_SIZE = 10;
 var global_filtroform_to_send = "";
 var bar = $('.bar.one');
@@ -66,7 +66,7 @@ $(document).ready(function() {
         //"filter": false,
         order: [],
         lengthChange: false,
-        info: false,
+        info: true,
         pageLength: PAGE_LENGTH,
         select: false,
         autoWidth: false,
