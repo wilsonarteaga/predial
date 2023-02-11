@@ -238,7 +238,7 @@ class UploadController extends Controller
                 }
                 else {
                     return response()->json([
-                        'message' => '<br />Formato de archivo asobancaria incorrecto. Verifique que el archivo cargado cumpla con el estándar o solicite un nuevo archivo a la entidad financiera correspondiente.',
+                        'message' => '<br />Formato de archivo asobancaria incorrecto. Verifique que el archivo cargado cumpla con el est&aacute;ndar o solicite un nuevo archivo a la entidad financiera correspondiente.',
                         'error'    => true
                     ]);
                 }
