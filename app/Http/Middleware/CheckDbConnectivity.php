@@ -26,7 +26,7 @@ class CheckDbConnectivity
         catch (PDOException $e)
         {
             $request->session()->invalidate();
-            return redirect('/');
+            return redirect('/')->with('fail', 'F&aacute;llo en la conexi&oacute;n a base de datos. Por favor intente acceder al sistema cuando se haya restablecido el servicio.');
         }
         return $next($request);
     }
