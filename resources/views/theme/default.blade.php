@@ -8,6 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <meta http-equiv="refresh" content="{{ intval(config('session.lifetime')) * 60 }};url=/">
     <link rel="icon" type="image/png" sizes="16x16" href="{!! asset('theme/plugins/images/favicon.png') !!}">
     <title>Plataforma - ERPSoft Predial</title>
     <!-- Bootstrap Core CSS -->
