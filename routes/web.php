@@ -223,6 +223,7 @@ Route::post('/get_predio', [PrediosController::class, 'get_predio']);
 Route::post('/store/predios_datos_basicos', [PrediosController::class, 'store_predios_datos_basicos']);
 //datos_propietarios
 Route::post('/store/predios_datos_propietarios', [PrediosController::class, 'store_predios_datos_propietarios']);
+Route::post('/store/predios_propietarios_jerarquia', [PrediosController::class, 'store_predios_propietarios_jerarquia']);
 //datos_calculo
 Route::post('/store/predios_datos_calculo', [PrediosController::class, 'store_predios_datos_calculo']);
 //datos_pagos

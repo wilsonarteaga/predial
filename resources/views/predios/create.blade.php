@@ -10,6 +10,7 @@
     <script src="{!! asset('theme/js/accounting.min.js') !!}"></script>
     <script src="{!! asset('theme/js/autonumeric.min.js') !!}"></script>
     <script src="{!! asset('theme/plugins/bower_components/jquery.serializeJSON/jquery.serializejson.min.js') !!}"></script>
+    <script src="{!! asset('theme/plugins/bower_components/blockUI/jquery.blockUI.js') !!}"></script>
     <script src="{!! asset('theme/js/customjs/controlsite.js') !!}?{{ $current_time }}"></script>
     <script src="{!! asset('theme/js/customjs/predios_forms.js') !!}?{{ $current_time }}"></script>
 @endpush
@@ -1075,9 +1076,18 @@
                                         <div class="form-group">
                                             <label class="control-label">N&uacute;mero:</label><br />
                                             <input type="hidden" id="jerarquia" name="jerarquia" value="001" />
-                                            <span id="span_jerarquia" class="text-muted" style="font-size: 180%; font-weight: bold;">001</span>
-                                            <span id="span_de_jererquia" class="text-muted"></span>
-                                            {{-- <span class="text-danger">@error('correo_electronico') {{ $message }} @enderror</span> --}}
+                                            <div id="div_jerarquia" style="cursor: pointer;">
+                                                <span id="span_jerarquia" class="text-muted" style="font-size: 180%; font-weight: bold;">001</span>
+                                                <span id="span_de_jererquia" class="text-muted"></span>
+                                            </div>
+                                            <div id="div_set_jerarquia" style="display: none;">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control onlyNumbers" placeholder="Jerarquia" id="val_jerarquia" value="" maxlength="3">
+                                                    <span class="input-group-btn">
+                                                         <button id="save_jerarquia" class="btn btn-success" type="button"><i class="fa fa-check"></i></button>
+                                                    </span>
+                                                 </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-3 col-sm-7 col-xs-12">

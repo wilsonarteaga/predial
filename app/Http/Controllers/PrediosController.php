@@ -169,10 +169,10 @@ class PrediosController extends Controller
         $tab_current = 'li-section-bar-1';
 
         if($query) {
-            return back()->with(['success' => 'La informaci&oacute;n se guard&oacute; satisfactoriamente.', 'tab_current' => $tab_current]);
+            return back()->with(['success' => 'La información se guardó satisfactoriamente.', 'tab_current' => $tab_current]);
         }
         else {
-            return back()->with(['fail' => 'No se pudo guardar la informaci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
+            return back()->with(['fail' => 'No se pudo guardar la información. Intente nuevamente.', 'tab_current' => $tab_current]);
         }
     }
 
@@ -265,21 +265,21 @@ class PrediosController extends Controller
 
                 $query = $resolucion_predio->save();
                 if($query) {
-                    return back()->with(['success' => 'La informaci&oacute;n se actualiz&oacute; satisfactoriamente.', 'tab_current' => $tab_current]);
+                    return back()->with(['success' => 'La información se actualizó satisfactoriamente.', 'tab_current' => $tab_current]);
                 }
                 else {
                     $resolucion->delete();
                     $predio_tmp->save();
-                    return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n predio. Intente nuevamente.', 'tab_current' => $tab_current]);
+                    return back()->with(['fail' => 'No se pudo generar la información de resolución predio. Intente nuevamente.', 'tab_current' => $tab_current]);
                 }
             }
             else {
                 $predio_tmp->save();
-                return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
+                return back()->with(['fail' => 'No se pudo generar la información de resolución. Intente nuevamente.', 'tab_current' => $tab_current]);
             }
         }
         else {
-            return back()->with(['fail' => 'No se pudo actualizar la informaci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
+            return back()->with(['fail' => 'No se pudo actualizar la información. Intente nuevamente.', 'tab_current' => $tab_current]);
         }
     }
 
@@ -328,13 +328,13 @@ class PrediosController extends Controller
                         $resolucion->delete();
                         $predio->estado = 1;
                         $predio->save();
-                        return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n predio. Intente nuevamente.', 'tab_current' => $tab_current]);
+                        return back()->with(['fail' => 'No se pudo generar la información de resolución predio. Intente nuevamente.', 'tab_current' => $tab_current]);
                     }
                 }
                 else {
                     $predio->estado = 1;
                     $predio->save();
-                    return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
+                    return back()->with(['fail' => 'No se pudo generar la información de resolución. Intente nuevamente.', 'tab_current' => $tab_current]);
                 }
             }
             else {
@@ -342,7 +342,7 @@ class PrediosController extends Controller
             }
         }
         // else {
-        //     return back()->with(['fail' => 'No se pudo eliminar la informaci&oacute;n. La clase de mutaci&oacute;n <b>' . $predio->nombre . ' (' . $predio->codigo . ')</b> ya posee informaci&oacute;n asociada.', 'tab_current' => $tab_current]);
+        //     return back()->with(['fail' => 'No se pudo eliminar la información. La clase de mutación <b>' . $predio->nombre . ' (' . $predio->codigo . ')</b> ya posee información asociada.', 'tab_current' => $tab_current]);
         // }
     }
 
@@ -385,12 +385,12 @@ class PrediosController extends Controller
                 else {
                     $resolucion->delete();
                     $predio_prescripcion->delete();
-                    return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n predio. Intente nuevamente.', 'tab_current' => $tab_current]);
+                    return back()->with(['fail' => 'No se pudo generar la información de resolución predio. Intente nuevamente.', 'tab_current' => $tab_current]);
                 }
             }
             else {
                 $predio_prescripcion->delete();
-                return back()->with(['fail' => 'No se pudo generar la informaci&oacute;n de resoluci&oacute;n. Intente nuevamente.', 'tab_current' => $tab_current]);
+                return back()->with(['fail' => 'No se pudo generar la información de resolución. Intente nuevamente.', 'tab_current' => $tab_current]);
             }
         }
         else {
@@ -422,14 +422,14 @@ class PrediosController extends Controller
         $result = array("success"=>$query);
 
         if($query) {
-            $result['message'] = 'Informaci&oacute;n b&aacute;sica del predio actualizada satisfactoriamente.';
+            $result['message'] = 'Información básica del predio actualizada satisfactoriamente.';
             return response()->json([
                 'data' => $result,
                 'obj' => $predio_dato
             ]);
         }
         else {
-            $result['message'] = 'No se pudo actualizar la informaci&oacute;n b&aacute;sica del predio.';
+            $result['message'] = 'No se pudo actualizar la información básica del predio.';
             return response()->json([
                 'data' => $result
             ]);
@@ -445,9 +445,9 @@ class PrediosController extends Controller
         if(array_key_exists('id', $data)) {
             $propietario = Propietario::find($data->{'id'});
         }
-        else {
-            $propietario->identificacion = $data->{'identificacion'};
-        }
+        // else {
+        // }
+        $propietario->identificacion = $data->{'identificacion'};
         $propietario->nombre = $data->{'nombre'};
         $propietario->direccion = $data->{'direccion'};
         $propietario->correo_electronico = $data->{'correo_electronico'};
@@ -459,7 +459,7 @@ class PrediosController extends Controller
         if($query) {
 
             if(array_key_exists('id', $data)) {
-                $result['message'] = 'Informaci&oacute;n de propietario del predio actualizada satisfactoriamente.';
+                $result['message'] = 'Información de propietario del predio actualizada satisfactoriamente.';
 
                 $propietario = DB::table('predios_propietarios')
                                    ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
@@ -483,7 +483,7 @@ class PrediosController extends Controller
                 $result = array("success"=>$query);
 
                 if($query) {
-                    $result['message'] = 'Informaci&oacute;n de propietario del predio actualizada satisfactoriamente.';
+                    $result['message'] = 'Información de propietario del predio actualizada satisfactoriamente.';
 
                     $propietario = DB::table('predios_propietarios')
                                    ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
@@ -498,7 +498,7 @@ class PrediosController extends Controller
                 }
                 else {
                     $propietario->delete();
-                    $result['message'] = 'No se pudo actualizar la informaci&oacute;n de propietario del predio.';
+                    $result['message'] = 'No se pudo actualizar la información de propietario del predio.';
                     return response()->json([
                         'data' => $result
                     ]);
@@ -506,11 +506,71 @@ class PrediosController extends Controller
             }
         }
         else {
-            $result['message'] = 'No se pudo actualizar la informaci&oacute;n de propietario del predio.';
+            $result['message'] = 'No se pudo actualizar la información de propietario del predio.';
             return response()->json([
                 'data' => $result
             ]);
         }
+    }
+
+    public function store_predios_propietarios_jerarquia(Request $request) {
+        $data = json_decode($request->form);
+
+        $prev_predio_propietarios = DB::table('predios_propietarios')
+                                    ->select('predios_propietarios.*')
+                                    ->where('predios_propietarios.id_predio', $data->{'id_predio'})
+                                    ->whereRaw('CONVERT(int, predios_propietarios.jerarquia) = ' . intval($data->{'jerarquia_anterior'}))
+                                    ->first();
+
+        if(intval($data->{'jerarquia_nueva'}) > intval($data->{'jerarquia_anterior'})) {
+            $predio_propietarios = DB::table('predios_propietarios')
+                                    ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
+                                    ->select('predios_propietarios.id', 'predios_propietarios.jerarquia')
+                                    ->where('predios_propietarios.id_predio', $data->{'id_predio'})
+                                    ->whereRaw('CONVERT(int, predios_propietarios.jerarquia) > ' . intval($data->{'jerarquia_anterior'}))
+                                    ->whereRaw('CONVERT(int, predios_propietarios.jerarquia) <= '. intval($data->{'jerarquia_nueva'}))
+                                    ->orderBy('predios_propietarios.jerarquia', 'asc')
+                                    ->get();
+        }
+        else if(intval($data->{'jerarquia_nueva'}) < intval($data->{'jerarquia_anterior'})) {
+            $predio_propietarios = DB::table('predios_propietarios')
+                                    ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
+                                    ->select('predios_propietarios.id', 'predios_propietarios.jerarquia')
+                                    ->where('predios_propietarios.id_predio', $data->{'id_predio'})
+                                    ->whereRaw('CONVERT(int, predios_propietarios.jerarquia) >= ' . intval($data->{'jerarquia_nueva'}))
+                                    ->whereRaw('CONVERT(int, predios_propietarios.jerarquia) < '. intval($data->{'jerarquia_anterior'}))
+                                    ->orderBy('predios_propietarios.jerarquia', 'asc')
+                                    ->get();
+        }
+
+        $init_jerarquia = intval($data->{'jerarquia_anterior'});
+        if(intval($data->{'jerarquia_nueva'}) < intval($data->{'jerarquia_anterior'})) {
+            $init_jerarquia = intval($data->{'jerarquia_nueva'}) + 1;
+        }
+
+        foreach ($predio_propietarios as $registro) {
+            $pp = new PredioPropietario;
+            $pp = PredioPropietario::find($registro->id);
+            $pp->jerarquia = str_pad($init_jerarquia, 3, "0", STR_PAD_LEFT);
+            $pp->save();
+            $init_jerarquia++;
+        }
+
+        $pp = new PredioPropietario;
+        $pp = PredioPropietario::find($prev_predio_propietarios->id);
+        $pp->jerarquia = $data->{'jerarquia_nueva'};
+        $pp->save();
+
+        $nuevos_predio_propietarios = DB::table('predios_propietarios')
+                                    ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
+                                    ->select('propietarios.*', 'predios_propietarios.jerarquia')
+                                    ->where('predios_propietarios.id_predio', $data->{'id_predio'})
+                                    ->orderBy('predios_propietarios.jerarquia', 'asc')
+                                    ->get();
+
+        return response()->json([
+            'data' => $nuevos_predio_propietarios
+        ]);
     }
 
     public function store_predios_datos_calculo(Request $request) {
@@ -535,14 +595,14 @@ class PrediosController extends Controller
         $result = array("success"=>$query);
 
         if($query) {
-            $result['message'] = 'Informaci&oacute;n de c&aacute;lculo del predio actualizada satisfactoriamente.';
+            $result['message'] = 'Información de cálculo del predio actualizada satisfactoriamente.';
             return response()->json([
                 'data' => $result,
                 'obj' => $predio_calculo
             ]);
         }
         else {
-            $result['message'] = 'No se pudo actualizar la informaci&oacute;n de c&aacute;lculo del predio.';
+            $result['message'] = 'No se pudo actualizar la información de cálculo del predio.';
             return response()->json([
                 'data' => $result
             ]);
@@ -571,14 +631,14 @@ class PrediosController extends Controller
         $result = array("success"=>$query);
 
         if($query) {
-            $result['message'] = 'Informaci&oacute;n de pago del predio actualizada satisfactoriamente.';
+            $result['message'] = 'Información de pago del predio actualizada satisfactoriamente.';
             return response()->json([
                 'data' => $result,
                 'obj' => $predio_pago
             ]);
         }
         else {
-            $result['message'] = 'No se pudo actualizar la informaci&oacute;n de pago del predio.';
+            $result['message'] = 'No se pudo actualizar la información de pago del predio.';
             return response()->json([
                 'data' => $result
             ]);
@@ -604,7 +664,7 @@ class PrediosController extends Controller
         $result = array("success"=>$query);
 
         if($query) {
-            $result['message'] = 'Informaci&oacute;n de abono del predio actualizada satisfactoriamente.';
+            $result['message'] = 'Información de abono del predio actualizada satisfactoriamente.';
 
             $predio_abonos = PredioAbono::where('id_predio', $data->{'id_predio'})
                             ->orderBy('id', 'asc')
@@ -616,7 +676,7 @@ class PrediosController extends Controller
             ]);
         }
         else {
-            $result['message'] = 'No se pudo actualizar la informaci&oacute;n de abono del predio.';
+            $result['message'] = 'No se pudo actualizar la información de abono del predio.';
             return response()->json([
                 'data' => $result
             ]);
@@ -786,7 +846,7 @@ class PrediosController extends Controller
                 ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(TRIM(propietarios.nombre), \'<br />\') AS propietarios, STRING_AGG(propietarios.identificacion, \'<br />\') AS identificaciones'))
                 ->where('predios.estado', 1)
                 ->where('predios.id', $id)
-                ->where('predios_propietarios.jerarquia', 1)
+                ->where('predios_propietarios.jerarquia', '001')
                 ->groupBy('predios_propietarios.id_predio')
                 ->get();
 
@@ -1061,7 +1121,7 @@ class PrediosController extends Controller
                 ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
                 ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
                 ->select(DB::raw('propietarios.*, predios_propietarios.jerarquia'))
-                ->where('predios_propietarios.jerarquia', 1)
+                ->where('predios_propietarios.jerarquia', '001')
                 ->where('predios.estado', 1)
                 ->where('predios.id', $id)
                 ->first();
@@ -1156,7 +1216,7 @@ class PrediosController extends Controller
                                             predios_propietarios ppr
                                             on p.id = ppr.id_predio inner join
                                             propietarios pro
-                                            on pro.id = ppr.id_propietario left join
+                                            on (pro.id = ppr.id_propietario and ppr.jerarquia = \'001\') left join
                                             predios_pagos ppa
                                             on p.id = ppa.id_predio
                                         where p.estado = 1 and
