@@ -730,12 +730,21 @@ class PrediosController extends Controller
         $fecha_emision = $dt_emision;
         $currentYear = $dt->year;
         $primerCalculo = 0;
-        // Verificar si el registro ya existe
+
         $ultimo_anio_pagar = DB::table('predios_pagos')
-                            ->where('id_predio', $id)
-                            ->where('ultimo_anio', $anios)
-                            ->where('pagado', 0)
-                            ->first();
+                                ->where('id_predio', $id)
+                                ->where('ultimo_anio', $anios)
+                                ->where('pagado', -1)
+                                ->first();
+
+        if($ultimo_anio_pagar == null) {
+            // Verificar si el registro ya existe
+            $ultimo_anio_pagar = DB::table('predios_pagos')
+                                ->where('id_predio', $id)
+                                ->where('ultimo_anio', $anios)
+                                ->where('pagado', 0)
+                                ->first();
+        }
 
         // Si no existe un predio_pago para el año actual, entonces EJECUTAR PROCEDIMIENTO DE CALCULO
         if($ultimo_anio_pagar == null || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->valor_pago == 0 && $ultimo_anio_pagar->fecha_pago == null && $ultimo_anio_pagar->id_banco == null)) {
@@ -750,13 +759,6 @@ class PrediosController extends Controller
                                     ->where('pagado', 0)
                                     ->first();
             }
-        }
-        else {
-            $ultimo_anio_pagar = DB::table('predios_pagos')
-                            ->where('id_predio', $id)
-                            ->where('ultimo_anio', $anios)
-                            ->where('pagado', -1)
-                            ->first();
         }
 
         if(count($submit) > 0 || $ultimo_anio_pagar != null) {
