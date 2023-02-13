@@ -144,10 +144,14 @@
         <div id="body">
             <table class="titles" style="width: 100%; margin-top: 0px;">
                 <tr>
-                    @if($temporal > 0)
+                    @if($temporal > 0 || $facturaYaPagada > 0)
                     <td style="width: 40%;" rowspan="2">
                         <h3 class="title" style="color: tomato; text-align: left; font-weight: normal;">
+                            @if($temporal > 0)
                             Documento no v&aacute;lido para la ejecuci&oacute;n del pago de impuesto predial.
+                            @elseif($facturaYaPagada > 0)
+                            PAGO DE FACTURA YA REGISTRADO.
+                            @endif
                         </h3>
                     </td>
                     <td style="width: 40%;">
@@ -347,7 +351,16 @@
         </div>
         <div id="footer">
             SECRETAR&Iacute;A DE HACIENDA
-            @if($temporal > 0)<br /><span style="color: tomato; font-size: 70%;">VISTA PREVIA FACTURA DE COBRO</span>@endif
+            @if($temporal > 0 || $facturaYaPagada > 0)
+                <br />
+                <span style="color: tomato; font-size: 70%;">
+                    @if($temporal > 0)
+                    VISTA PREVIA FACTURA DE COBRO
+                    @elseif ($facturaYaPagada > 0)
+                    PAGO DE FACTURA YA REGISTRADO.
+                    @endif
+                </span>
+            @endif
         </div>
     </div>
 </body>

@@ -1341,12 +1341,21 @@ class PrediosController extends Controller
                             ->where('pagado', 0)
                             ->first();
 
+        if($ultimo_anio_pagar == null) {
+            $ultimo_anio_pagar = DB::table('predios_pagos')
+                            ->where('id_predio', $data->{'id_predio'})
+                            ->where('ultimo_anio', $currentYear)
+                            ->where('pagado', -1)
+                            ->first();
+        }
+
         $array_anios = $anios->toArray();
 
-        // Si no existe un calculo para el año actual se agrega el año a la lista
+        // Si no existe un calculo para el año actual se agrega el año a la lista o
+        // Si el año actual no ha sido aun pagado
         if($ultimo_anio_pagar == null) {
             array_unshift($array_anios, ['ultimo_anio' => strval($currentYear), 'factura_pago' => null]);
         }
-        return response()->json(['predio' => $predios, 'anios' => $array_anios]);
+        return response()->json(['predio' => $predios, 'anios' => $array_anios, 'anio_actual' => $currentYear]);
     }
 }

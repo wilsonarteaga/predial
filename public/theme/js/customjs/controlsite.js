@@ -2,6 +2,8 @@ var global_json = null;
 var global_json_predio = null;
 var global_url_autocomplete_predio = "/autocomplete";
 var global_url_print = '';
+var global_ya_pagado = false;
+var global_anio_actual = 0;
 var arr_autonumeric = ['porcentaje', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
     'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_abono',
     'valor_facturado', 'avaluoigac', 'area', 'valor_paz'
@@ -736,13 +738,19 @@ function setDownloadFacturaRow() {
         $('.download_factura_row').off('click').on('click', function(evt) {
             var btn = $(this);
             var url_download = $(btn).attr('url');
-            $(btn).attr('disabled', true);
-            $('#modal-impresion-factura').modal({ backdrop: 'static', keyboard: false }, 'show');
             global_url_print = url_download;
-            $('#modal-impresion-factura').on('hidden.bs.modal', function() {
+            $(btn).attr('disabled', true);
+            if(!global_ya_pagado) {
+                $('#modal-impresion-factura').modal({ backdrop: 'static', keyboard: false }, 'show');
+                $('#modal-impresion-factura').on('hidden.bs.modal', function() {
+                    $(btn).attr('disabled', false);
+                    $('#form-predios-impresion-factura')[0].reset();
+                });
+            }
+            else {
+                startImpresion(global_url_print + '/0/' + global_anio_actual, 'Pago ya registrado. Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
                 $(btn).attr('disabled', false);
-                $('#form-predios-impresion-factura')[0].reset();
-            });
+            }
         });
     }
 }
@@ -823,6 +831,8 @@ function startImpresion(url_download, message_toast, type_icon, modal) {
 }
 
 function getPredio(id_predio) {
+    global_ya_pagado = false;
+    global_anio_actual = 0;
     var jsonObj = {};
     jsonObj.id_predio = id_predio;
     $.ajax({
@@ -839,7 +849,10 @@ function getPredio(id_predio) {
                 var opcion = JSON.parse($('#opcion').val());
                 var predio = response.predio[0];
                 var anios = response.anios;
+                global_anio_actual = Number(response.anio_actual);
                 var classBtn = 'btn-info';
+                var classBtnCalculo = 'fa-cogs';
+                var colorBtnCalculo = 'success';
                 var disabledBtnEdita = '';
                 var disabledBtnPrescribe = '';
                 var disabledBtnCalculo = '';
@@ -862,6 +875,11 @@ function getPredio(id_predio) {
                 if(anios.length > 1 || (anios.length === 1 && Number(predio.ultimo_anio_pago) !== Number(anios[0].ultimo_anio))) {
                     disabledBtnPaz = 'disabled="disabled"';
                 }
+                else if(anios.length === 0) {
+                    global_ya_pagado = true;
+                    classBtnCalculo = 'fa-file-pdf-o';
+                    colorBtnCalculo = 'success btn-outline';
+                }
                 var td_2 = $('<td class="edit_row cell_center">' + predio.direccion + '</td>');
                 var td_3 = $('<td class="edit_row cell_center">' + predio.propietarios + '</td>');
                 var td_4 = $('<td class="cell_center"></td>');
@@ -870,7 +888,7 @@ function getPredio(id_predio) {
                                   '&nbsp;&nbsp;' +
                                   '<button type="button" ide="' + predio.id + '" class="prescribe_row btn ' + classBtn + '" ' + disabledBtnPrescribe + '><i class="fa fa-clock-o"></i></button>' +
                                   '&nbsp;&nbsp;' +
-                                  '<button type="button" ide="' + predio.id + '" class="download_factura_row btn btn-success" url="/generate_factura_pdf/' + predio.id + '" msg="¿Está seguro/a que desea ejecutar el cálculo?" ' + disabledBtnCalculo + '><i class="fa fa-cogs"></i></button>' +
+                                  '<button type="button" ide="' + predio.id + '" class="download_factura_row btn btn-'+ colorBtnCalculo +'" url="/generate_factura_pdf/' + predio.id + '" msg="¿Está seguro/a que desea ejecutar el cálculo?" ' + disabledBtnCalculo + '><i class="fa ' + classBtnCalculo + '"></i></button>' +
                                   '&nbsp;&nbsp;' +
                                   '<button type="button" ide="' + predio.id + '" class="download_paz_row btn btn-warning" url="/generate_paz_pdf/' + predio.id + '" msg="¿Está seguro/a que desea generar el paz y salvo?" ' + disabledBtnPaz + '><i class="fa fa-trophy"></i></button>' +
                                   '&nbsp;&nbsp;' +
