@@ -1163,7 +1163,6 @@ function saveJerarquiaPredio(id_predio, jerarquia_anterior, jerarquia_nueva) {
             form: JSON.stringify(jsonObj)
         },
         success: function(response) {
-            console.log(response);
             if (DTPropietarios !== null) {
                 $('#tr_predio_' + $('#id_edit').val()).attr('data-dp', JSON.stringify(response.data));
                 DTPropietarios.clear().draw();
@@ -1180,8 +1179,6 @@ function saveJerarquiaPredio(id_predio, jerarquia_anterior, jerarquia_nueva) {
                     $('.modal').css('z-index', 1041);
                 });
             });
-            // if (response.length > 0) {
-            // }
         },
         error: function(xhr) {
             console.log(xhr.responseText);

@@ -252,8 +252,9 @@ class PagosController extends Controller
         $predio_pago = DB::table('predios_pagos')
                         ->join('predios', 'predios.id', '=', 'predios_pagos.id_predio')
                         ->leftJoin('pagos', 'pagos.numero_recibo', '=', 'predios_pagos.factura_pago')
-                        ->select(DB::raw("predios_pagos.id_predio, predios_pagos.ultimo_anio, CASE WHEN CONVERT(datetime, '" . $fecha . " 00:00:00.000') <= predios_pagos.primer_fecha THEN predios_pagos.total_calculo WHEN CONVERT(datetime, '" . $fecha . " 00:00:00.000') <= predios_pagos.segunda_fecha THEN predios_pagos.total_dos WHEN CONVERT(datetime, '" . $fecha . " 00:00:00.000') <= predios_pagos.tercera_fecha THEN predios_pagos.total_tres END as valor_pago, predios_pagos.fecha_emision as fecha_pago, predios_pagos.pagado, predios.codigo_predio, pagos.id_banco_archivo, pagos.paquete_archivo, pagos.codigo_barras"))
+                        ->select(DB::raw("predios_pagos.id_predio, MAX(predios_pagos.ultimo_anio) as ultimo_anio, CASE WHEN CONVERT(datetime, '" . $fecha . " 00:00:00.000') <= MAX(predios_pagos.primer_fecha) THEN SUM(predios_pagos.total_calculo) WHEN CONVERT(datetime, '" . $fecha . " 00:00:00.000') <= MAX(predios_pagos.segunda_fecha) THEN SUM(predios_pagos.total_dos) WHEN CONVERT(datetime, '" . $fecha . " 00:00:00.000') <= MAX(predios_pagos.tercera_fecha) THEN SUM(predios_pagos.total_tres) END as valor_pago, MAX(predios_pagos.fecha_emision) as fecha_pago, predios_pagos.pagado, predios.codigo_predio, pagos.id_banco_archivo, pagos.paquete_archivo, pagos.codigo_barras"))
                         ->where('factura_pago', $data->{'factura_pago'})
+                        ->groupBy('predios_pagos.id_predio', 'predios_pagos.pagado', 'predios.codigo_predio', 'pagos.id_banco_archivo', 'pagos.paquete_archivo', 'pagos.codigo_barras')
                         ->orderBy('ultimo_anio', 'desc')
                         ->get();
         if(count($predio_pago) > 0)
