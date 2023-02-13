@@ -751,6 +751,13 @@ class PrediosController extends Controller
                                     ->first();
             }
         }
+        else {
+            $ultimo_anio_pagar = DB::table('predios_pagos')
+                            ->where('id_predio', $id)
+                            ->where('ultimo_anio', $anios)
+                            ->where('pagado', -1)
+                            ->first();
+        }
 
         if(count($submit) > 0 || $ultimo_anio_pagar != null) {
             $anio = Anio::where('anio', $currentYear)
