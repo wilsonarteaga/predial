@@ -290,38 +290,53 @@ function getInfoPago() {
         },
         success: function(response) {
             if (response.length > 0) {
+                var prev_valor = response[0].valor_pago;
                 $('#id_predio').val(response[0].id_predio);
                 $('#codigo_predio').val(response[0].codigo_predio);
-                var prev_valor = response[0].valor_pago;
-                if (prev_valor === '.00') {
+
+                if (prev_valor === '.00'|| prev_valor === null) {
                     prev_valor = '0.00';
                 }
+
                 if(Number(prev_valor) > 0) {
                     AutoNumeric.set('#valor_facturado', Number(prev_valor));
                 }
-                else {
-                    $('#valor_facturado').attr('readonly', false);
+
+                if(response[0].fecha_pago !== null) {
+                    $('#fecha_factura').val(response[0].fecha_pago.substr(0, 10));
                 }
-                $('#fecha_factura').val(response[0].fecha_pago.substr(0, 10));
-                $('#anio_pago').val(response[0].ultimo_anio);
+                else {
+                    $('#fecha_factura').val('');
+                }
+
+                if(response[0].ultimo_anio !== null) {
+                    $('#anio_pago').val(response[0].ultimo_anio);
+                }
+                else {
+                    $('#anio_pago').val('');
+                }
+
                 if(response[0].codigo_barras !== null) {
                     $('#codigo_barras').val(response[0].codigo_barras);
                 }
                 else {
-                    $('#codigo_barras').val(response[0].codigo_barras);
+                    $('#codigo_barras').val('');
                 }
+
                 if(response[0].id_banco_archivo !== null) {
                     $('#id_banco_archivo').val(response[0].id_banco_archivo).selectpicker("refresh");
                 }
                 else {
                     $('#id_banco_archivo').val('default').selectpicker("refresh");
                 }
+
                 if(response[0].paquete_archivo !== null) {
                     $('#paquete_archivo').val(response[0].paquete_archivo);
                 }
                 else {
                     $('#paquete_archivo').val('');
                 }
+
                 if(Number(response[0].pagado) < 0) {
                     $('#btn_save_info').attr('disabled', true);
                     swal({
@@ -344,17 +359,16 @@ function getInfoPago() {
                     confirmButtonText: "Aceptar",
                     closeOnConfirm: true
                 });
-                // $('#create-form')[0].reset();
+                $('#id_predio').val('');
+                $('#codigo_predio').val('');
+                AutoNumeric.set('#valor_facturado', 0);
+                $('#fecha_factura').val('');
+                $('#anio_pago').val('');
+                $('#codigo_barras').val('');
+                $('#id_banco_archivo').val('default').selectpicker("refresh");
+                $('#paquete_archivo').val('');
             }
             $.unblockUI();
-            // var validatorCreate = $("#create-form").validate();
-            // validatorCreate.resetForm();
-            // $.each($('.has-success'), function(i, el) {
-            //     $(el).removeClass('has-success');
-            // });
-            // $.each($('.has-error'), function(i, el) {
-            //     $(el).removeClass('has-error');
-            // });
         },
         error: function(xhr) {
             console.log(xhr.responseText);
