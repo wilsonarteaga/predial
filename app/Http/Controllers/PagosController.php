@@ -102,29 +102,30 @@ class PagosController extends Controller
         $tab_current = 'li-section-bar-1';
 
         if($query) {
-
-            // Actualizar ultimo anio pago en la tabla predios
-            $predio = new Predio;
-            $predio = Predio::find($pago->id_predio);
-            $predio->ultimo_anio_pago = $request->anio_pago;
-            $query = $predio->save();
-
             // Verificar si el registro ya existe
-            $predio_pago = DB::table('predios_pagos')
+            $predios_pago = DB::table('predios_pagos')
                                 ->where('factura_pago', $request->numero_recibo)
-                                ->where('ultimo_anio', $request->anio_pago)
                                 ->where('pagado', 0)
-                                ->first();
+                                ->get();
 
-            if($predio_pago != null) {
-                $pp = new PredioPago;
-                $pp = PredioPago::find($predio_pago->id);
-                $pp->fecha_pago = $request->fecha_pago;
-                $pp->valor_pago = $request->valor_facturado;
-                $pp->id_banco = $request->id_banco_factura;
-                $pp->pagado = -1;
-                $query = $pp->save();
-                if($query) {
+            if($predios_pago != null) {
+                $updated = PredioPago::where('factura_pago', $request->numero_recibo)
+                                        ->where('pagado', 0)
+                                        ->update([
+                                            'fecha_pago' => $request->fecha_pago,
+                                            'valor_pago' => $request->valor_facturado,
+                                            'id_banco' => $request->id_banco_factura,
+                                            'pagado' => -1
+                                        ]);
+
+                if($updated == count($predios_pago)) {
+
+                    // Actualizar ultimo anio pago en la tabla predios
+                    $predio = new Predio;
+                    $predio = Predio::find($pago->id_predio);
+                    $predio->ultimo_anio_pago = $request->anio_pago;
+                    $query = $predio->save();
+
                     return back()->with(['success' => 'La informaci&oacute;n se guard&oacute; satisfactoriamente.', 'tab_current' => $tab_current]);
                 }
                 else {
