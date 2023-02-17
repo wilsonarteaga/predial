@@ -1049,7 +1049,7 @@ class PrediosController extends Controller
             // $valores_factura[1] = (round($suma_total[1] + $ultimo_anio_pagar->total_dos, 0));
             // $valores_factura[2] = (round($suma_total[2] + $ultimo_anio_pagar->total_tres, 0));
 
-            $valores_factura[0] = (round($ultimo_anio_pagar->total_calculo, 0));
+            $valores_factura[0] = (round($suma_total[0] + $ultimo_anio_pagar->total_calculo, 0));
             $valores_factura[1] = (round($ultimo_anio_pagar->total_dos, 0));
             $valores_factura[2] = (round($ultimo_anio_pagar->total_tres, 0));
 
