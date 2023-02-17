@@ -980,12 +980,8 @@ class PrediosController extends Controller
                 $obj->total = $pago_pendiente->total_calculo == null ? 0 : $pago_pendiente->total_calculo;
 
                 $suma_total[0] += $pago_pendiente->ultimo_anio < $anios ? $pago_pendiente->total_calculo : 0; // al ultimo año se le calculan descuentos
-
                 $suma_total[1] += $pago_pendiente->ultimo_anio < $anios ? $pago_pendiente->total_dos : 0; // al ultimo año se le calculan descuentos
-                // $suma_total[1] += $pago_pendiente->ultimo_anio < $anios ? ($pago_pendiente->total_dos > 0 ? $pago_pendiente->total_dos : $pago_pendiente->total_calculo) : 0; // al ultimo año se le calculan descuentos
-
                 $suma_total[2] += $pago_pendiente->ultimo_anio < $anios ? $pago_pendiente->total_tres : 0; // al ultimo año se le calculan descuentos
-                // $suma_total[2] += $pago_pendiente->ultimo_anio < $anios ? ($pago_pendiente->total_tres > 0 ? $pago_pendiente->total_tres : $pago_pendiente->total_calculo) : 0; // al ultimo año se le calculan descuentos
 
                 $suma_intereses += $pago_pendiente->ultimo_anio < $anios ? $pago_pendiente->valor_concepto2 : 0; // al ultimo año se le calculan descuentos
                 $suma_descuento_intereses += $pago_pendiente->ultimo_anio < $anios ? $pago_pendiente->valor_concepto13 : 0; // al ultimo año se le calculan descuentos
@@ -1037,25 +1033,23 @@ class PrediosController extends Controller
                 }
             }
 
-            if(count($lista_pagos_depurada) > 0) {
+            $valores_factura[0] = (round($suma_total[0] + $ultimo_anio_pagar->total_calculo, 0));
+            $fechas_pago_hasta[0] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->primer_fecha)->toDateString());
+            $porcentajes_descuento[0] = ($ultimo_anio_pagar->porcentaje_uno);
+
+            if(count($lista_pagos_depurada) == 0) {
+                $valores_factura[1] = (round($ultimo_anio_pagar->total_dos, 0));
+                $valores_factura[2] = (round($ultimo_anio_pagar->total_tres, 0));
+
+                $fechas_pago_hasta[1] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->segunda_fecha)->toDateString());
+                $fechas_pago_hasta[2] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->tercera_fecha)->toDateString());
+
+                $porcentajes_descuento[1] = ($ultimo_anio_pagar->porcentaje_dos);
+                $porcentajes_descuento[2] = ($ultimo_anio_pagar->porcentaje_tres);
+            }
+            else if(count($lista_pagos_depurada) > 0) {
                 $lista_pagos = $lista_pagos_depurada;
             }
-
-            $fechas_pago_hasta[0] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->primer_fecha)->toDateString());
-            $fechas_pago_hasta[1] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->segunda_fecha)->toDateString());
-            $fechas_pago_hasta[2] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->tercera_fecha)->toDateString());
-
-            // $valores_factura[0] = (round($suma_total[0] + $ultimo_anio_pagar->total_calculo, 0));
-            // $valores_factura[1] = (round($suma_total[1] + $ultimo_anio_pagar->total_dos, 0));
-            // $valores_factura[2] = (round($suma_total[2] + $ultimo_anio_pagar->total_tres, 0));
-
-            $valores_factura[0] = (round($suma_total[0] + $ultimo_anio_pagar->total_calculo, 0));
-            $valores_factura[1] = (round($ultimo_anio_pagar->total_dos, 0));
-            $valores_factura[2] = (round($ultimo_anio_pagar->total_tres, 0));
-
-            $porcentajes_descuento[0] = ($ultimo_anio_pagar->porcentaje_uno);
-            $porcentajes_descuento[1] = ($ultimo_anio_pagar->porcentaje_dos);
-            $porcentajes_descuento[2] = ($ultimo_anio_pagar->porcentaje_tres);
 
             for ($x = 0; $x < count($valores_factura); $x++) {
                 $barras[$x] = (chr(241) . '415' . $nit . '8020' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . chr(241) . '3900' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . chr(241) . '96' . str_replace('-', '', $fechas_pago_hasta[$x]));
