@@ -1045,13 +1045,13 @@ class PrediosController extends Controller
             $fechas_pago_hasta[1] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->segunda_fecha)->toDateString());
             $fechas_pago_hasta[2] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->tercera_fecha)->toDateString());
 
-            $valores_factura[0] = (round($suma_total[0] + $ultimo_anio_pagar->total_calculo, 0));
+            // $valores_factura[0] = (round($suma_total[0] + $ultimo_anio_pagar->total_calculo, 0));
+            // $valores_factura[1] = (round($suma_total[1] + $ultimo_anio_pagar->total_dos, 0));
+            // $valores_factura[2] = (round($suma_total[2] + $ultimo_anio_pagar->total_tres, 0));
 
-            $valores_factura[1] = (round($suma_total[1] + $ultimo_anio_pagar->total_dos, 0));
-            //$valores_factura[1] = (round($suma_total[1] + ($ultimo_anio_pagar->total_dos > 0 ? $ultimo_anio_pagar->total_dos : $ultimo_anio_pagar->total_calculo), 0));
-
-            $valores_factura[2] = (round($suma_total[2] + $ultimo_anio_pagar->total_tres, 0));
-            //$valores_factura[2] = (round($suma_total[2] + ($ultimo_anio_pagar->total_tres > 0 ? $ultimo_anio_pagar->total_tres : $ultimo_anio_pagar->total_calculo), 0));
+            $valores_factura[0] = (round($ultimo_anio_pagar->total_calculo, 0));
+            $valores_factura[1] = (round($ultimo_anio_pagar->total_dos, 0));
+            $valores_factura[2] = (round($ultimo_anio_pagar->total_tres, 0));
 
             $porcentajes_descuento[0] = ($ultimo_anio_pagar->porcentaje_uno);
             $porcentajes_descuento[1] = ($ultimo_anio_pagar->porcentaje_dos);
@@ -1357,5 +1357,44 @@ class PrediosController extends Controller
             array_unshift($array_anios, ['ultimo_anio' => strval($currentYear), 'factura_pago' => null]);
         }
         return response()->json(['predio' => $predios, 'anios' => $array_anios, 'anio_actual' => $currentYear]);
+    }
+
+    public function avaluos_predio(Request $request) {
+        $data = json_decode($request->form);
+        $predio = DB::select('select p.id,
+                                    pp.ultimo_anio as anio,
+                                    pp.avaluo,
+                                    CASE WHEN pa.origen = \'M\' THEN \'Manual\' ELSE \'Archivo\' END as tipo_registro,
+                                    p.tarifa_actual as tarifa,
+                                    pp.tarifa as porcentaje_tarifa,
+                                    CONCAT(b.codigo, \' - \' , b.nombre) as banco,
+                                    ISNULL(CONVERT(VARCHAR, pp.fecha_pago, 101), \'N/D\') as fecha_pago,
+                                    pp.valor_pago,
+                                    ISNULL(pp.factura_pago, \'N/D\') as factura_pago,
+                                    CASE
+                                        WHEN pa.fecha_pago <= pp.primer_fecha THEN
+                                            ISNULL(pp.total_calculo, 0)
+                                        WHEN pa.fecha_pago <= pp.segunda_fecha THEN
+                                            ISNULL(pp.total_dos, 0)
+                                        WHEN pa.fecha_pago <= pp.tercera_fecha THEN
+                                            ISNULL(pp.total_tres, 0)
+                                        ELSE
+                                            0
+                                    END AS valor_vigencia
+                            from predios p inner join
+                                predios_pagos pp
+                                on (p.id = pp.id_predio) left join
+                                bancos b
+                                on (pp.id_banco = b.id) left join
+                                pagos pa
+                                on (p.id = pa.id_predio and pp.factura_pago = pa.numero_recibo)
+                            where
+                                p.id = '. $data->{'id_predio'} .' and
+                                pp.pagado = -1 and
+                                pp.anulada = 0
+                            order by p.id, pp.ultimo_anio desc');
+
+        $result = array("predio" => $predio);
+        return response()->json($result);
     }
 }
