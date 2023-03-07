@@ -104,8 +104,9 @@ class PagosController extends Controller
         if($query) {
             // Verificar si el registro ya existe
             $predios_pago = DB::table('predios_pagos')
-                                ->where('factura_pago', $request->numero_recibo)
-                                ->where('pagado', 0)
+                                ->select('predios_pagos.id')
+                                ->where('predios_pagos.factura_pago', $request->numero_recibo)
+                                ->where('predios_pagos.pagado', 0)
                                 ->get();
 
             if($predios_pago != null) {

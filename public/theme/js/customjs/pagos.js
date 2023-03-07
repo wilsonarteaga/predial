@@ -272,7 +272,7 @@ function getJsonPagos() {
 }
 
 function getInfoPago() {
-    $('#valor_facturado').attr('readonly', true);
+    // $('#valor_facturado').attr('readonly', true);
     $.blockUI({ message: null });
     $('#btn_save_info').attr('disabled', false);
     var jsonObj = {};

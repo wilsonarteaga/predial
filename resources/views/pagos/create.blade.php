@@ -157,7 +157,7 @@
                                                         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Valor facturado:</label>
-                                                                <input type="text" id="valor_facturado" name="valor_facturado" class="form-control" autocomplete="off" placeholder="Ingrese valor" value="{{ old('valor_facturado') }}" readonly="readonly">
+                                                                <input type="text" id="valor_facturado" name="valor_facturado" class="form-control" autocomplete="off" placeholder="Ingrese valor" value="{{ old('valor_facturado') }}">
                                                                 <span class="text-danger">@error('valor_facturado') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
