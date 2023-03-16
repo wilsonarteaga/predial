@@ -66,7 +66,7 @@ class UploadController extends Controller
                             $banco_archivo = substr($line, 20, 3);
                             $objBancoArchivo = DB::table('bancos')
                                                 ->select('bancos.id')
-                                                ->where('bancos.codigo', $banco_archivo)
+                                                ->where('bancos.asobancaria', $banco_archivo)
                                                 ->first();
                             break;
                         case '05':
@@ -109,7 +109,7 @@ class UploadController extends Controller
                                     $banco_factura = substr($line, 80, 3);
                                     $objBancoFactura = DB::table('bancos')
                                                         ->select('bancos.id')
-                                                        ->where('bancos.codigo', $banco_factura)
+                                                        ->where('bancos.asobancaria', $banco_factura)
                                                         ->first();
 
                                     // Guardar informacion de pago
