@@ -45,9 +45,6 @@
                             <ul>
                                 <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-pulse"><span>Nuevo predio</span></a></li>
                                 <li id="li-section-bar-2" class=""><a href="#section-bar-2" class="sticon icon-list"><span>Opciones de predios</span></a></li>
-                                <!-- <li class=""><a href="#section-bar-3" class="sticon ti-stats-up"><span>Analytics</span></a></li>
-                                <li class=""><a href="#section-bar-4" class="sticon ti-upload"><span>Upload</span></a></li>
-                                <li class=""><a href="#section-bar-5" class="sticon ti-settings"><span>Settings</span></a></li> -->
                             </ul>
                         </nav>
                         <div class="content-wrap">
@@ -56,6 +53,29 @@
                                     <div class="panel-heading"><i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Informaci&oacute;n del predio</div>
                                     <div class="panel-wrapper collapse in" aria-expanded="true">
                                         <div class="panel-body">
+                                            <div class="row">
+                                                <div id="div_verificar_predio" class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Verificar existencia de predio:</label><br />
+                                                        <select id="id_predio_edit" class="form-control select2 json" name="id_predio_edit" data-placeholder="C&oacute;digo predio" style="width: 100%">
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div id="div_msg_predio_existe" class="col-lg-8 col-md-7 col-sm-12 col-xs-12" style="display: none;">
+                                                    <h2 style="margin-top: 2.5rem;">
+                                                        <mark style="border-radius: 0.7rem;">
+                                                            Atenci&oacute;n!!! El c&oacute;digo de predio ingresado ya existe en el sistema.
+                                                        </mark>
+                                                    </h2>
+                                                </div>
+                                                <div id="div_msg_predio_disponible" class="col-lg-8 col-md-7 col-sm-12 col-xs-12" style="display: none;">
+                                                    <h2 style="margin-top: 2.5rem;">
+                                                        <mark style="background-color: #d9f4e3; border-radius: 0.7rem;">
+                                                            Atenci&oacute;n!!! C&oacute;digo de predio disponible.
+                                                        </mark>
+                                                    </h2>
+                                                </div>
+                                            </div>
                                             <form action="{{ route('predios.create_predios') }}" method="post" id="create-form">
                                                 @csrf
                                                 <div class="result">
@@ -74,7 +94,8 @@
                                                     <!-- <h3 class="box-title">Informaci&oacute;n de la predio</h3> -->
                                                     <!-- <hr> -->
                                                     <div class="row">
-                                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                                        <div class="col-lg-5 col-md-6 col-sm-12 col-xs-12">
+                                                            {{-- <input type="text" style="font-size: 170%; letter-spacing: 5px; display: none;" id="codigo_predio" name="codigo_predio" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo predio 15/25" value="{{ old('codigo_predio') }}" maxlength="25"> --}}
                                                             <div class="form-group">
                                                                 <label class="control-label">C&oacute;digo predio:</label>
                                                                 <input type="text" style="font-size: 170%; letter-spacing: 5px;" id="codigo_predio" name="codigo_predio" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese c&oacute;digo predio 15/25" value="{{ old('codigo_predio') }}" maxlength="25">
@@ -82,7 +103,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="row">
+                                                    <div class="row labels_codigo_predio" style="display: none;">
                                                         <div id="div_tipo" class="col-lg-1 col-md-1 col-sm-2 col-xs-6 codigo_15" style="opacity: 0;">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tipo:</label>
@@ -292,47 +313,25 @@
                                                                 NO
                                                             </span>
                                                         </div>
-                                                    </div>
-                                                    {{-- <div class="row">
-                                                        <div class="col-lg-3 col-md-5 col-sm-6 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Tipo identificaci&oacute;n</label>
-                                                                <select id="tid_acu" name="tid_acu" class="form-control selectpicker" title="Seleccione...">
-                                                                    <option value="CC" {{ old('tid_acu') == "CC" || old('tid_acu') == null ? 'selected' : '' }}>C&eacute;dula</option>
-                                                                    <option value="TI" {{ old('tid_acu') == "TI" ? 'selected' : '' }}>Tarjeta Identidad</option>
-                                                                    <option value="CE" {{ old('tid_acu') == "CE" ? 'selected' : '' }}>C&eacute;dula extranjer&iacute;a</option>
-                                                                    <option value="PS" {{ old('tid_acu') == "PS" ? 'selected' : '' }}>Pasaporte</option>
-                                                                    <option value="RC" {{ old('tid_acu') == "RC" ? 'selected' : '' }}>Registro Civ&iacute;l</option>
-                                                                </select>
-                                                                <span class="text-danger">@error('tid_acu') {{ $message }} @enderror</span>
+                                                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                                            <div class="form-group" style="margin-bottom: 0px;">
+                                                                <input type="checkbox" id="ind_excento_impuesto" name="ind_excento_impuesto" value="{{ old('ind_excento_impuesto') }}">
+                                                                <label for="ind_excento_impuesto_check" class="control-label" style="padding-left: 10px;">¿Exento impuesto?</label>
                                                             </div>
+                                                            <span id="span_ind_excento_impuesto" class="text-muted">
+                                                                NO
+                                                            </span>
                                                         </div>
-                                                        <div class="col-lg-3 col-md-5 col-sm-6 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Identificaci&oacute;n</label>
-                                                                <input type="text" id="ide_acu" name="ide_acu" class="form-control onlyNumbers" placeholder="Ingrese identificaci&oacute;n" value="{{ old('ide_acu') }}">
-                                                                <span class="text-danger">@error('ide_acu') {{ $message }} @enderror</span>
+                                                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                                            <div class="form-group" style="margin-bottom: 0px;">
+                                                                <input type="checkbox" id="ind_plusvalia" name="ind_plusvalia" value="{{ old('ind_plusvalia') }}">
+                                                                <label for="ind_plusvalia_check" class="control-label" style="padding-left: 10px;">¿Plusvalia?</label>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-lg-3 col-md-5 col-sm-6 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Tel&eacute;fono</label>
-                                                                <input type="text" id="tel_acu" name="tel_acu" class="form-control onlyNumbers" placeholder="Ingrese tel&eacute;fono" value="{{ old('tel_acu') }}">
-                                                                <span class="text-danger">@error('tel_acu') {{ $message }} @enderror</span>
-                                                            </div>
+                                                            <span id="span_ind_plusvalia" class="text-muted">
+                                                                NO
+                                                            </span>
                                                         </div>
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                        <div class="form-group">
-                                                                <label class="control-label">Direcci&oacute;n</label>
-                                                                <input type="text" id="dir_acu" name="dir_acu" class="form-control" placeholder="Ingrese la direcci&oacute;n" value="{{ old('dir_acu') }}">
-                                                                <span class="text-danger">@error('dir_acu') {{ $message }} @enderror</span>
-                                                            </div>
-
-                                                        </div>
-                                                    </div> --}}
-
                                                 </div>
                                                 <div class="form-actions m-t-20">
                                                     <button type="submit" class="btn btn-info"> <i class="fa fa-save"></i> Guardar informaci&oacute;n</button>
@@ -361,7 +360,7 @@
                                                     @endif
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-lg-4">
+                                                    <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Buscar predio:</label><br />
                                                             <select id="id_predio" class="form-control select2 json" name="id_predio" data-placeholder="C&oacute;digo, propietario o direcci&oacute;n..." style="width: 100%">
@@ -612,12 +611,6 @@
                                                                 <span class="text-danger">@error('id_zona_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        {{-- <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" style="display: none;">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Nombre propietario:</label>
-                                                                <input type="text" id="nombre_propietario" name="nombre_propietario" class="form-control" autocomplete="off" value="{{ old('nombre_propietario') }}" maxlength="128">
-                                                            </div>
-                                                        </div> --}}
                                                         <div class="col-lg-10 col-md-10 col-sm-9 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Direcci&oacute;n:</label>
@@ -682,45 +675,25 @@
                                                                 NO
                                                             </span>
                                                         </div>
-                                                    </div>
-                                                    {{-- <div class="row">
-                                                        <div class="col-lg-3 col-md-5 col-sm-6 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Tipo identificaci&oacute;n</label>
-                                                                <select id="tid_acu_edit" name="tid_acu_edit" class="form-control selectpicker" title="Seleccione...">
-                                                                    <option value="CC" {{ old('tid_acu_edit') == "CC" ? 'selected' : '' }}>C&eacute;dula</option>
-                                                                    <option value="TI" {{ old('tid_acu_edit') == "TI" ? 'selected' : '' }}>Tarjeta Identidad</option>
-                                                                    <option value="CE" {{ old('tid_acu_edit') == "CE" ? 'selected' : '' }}>C&eacute;dula extranjer&iacute;a</option>
-                                                                    <option value="PS" {{ old('tid_acu_edit') == "PS" ? 'selected' : '' }}>Pasaporte</option>
-                                                                    <option value="RC" {{ old('tid_acu_edit') == "RC" ? 'selected' : '' }}>Registro Civ&iacute;l</option>
-                                                                </select>
-                                                                <span class="text-danger">@error('tid_acu_edit') {{ $message }} @enderror</span>
+                                                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                                            <div class="form-group" style="margin-bottom: 0px;">
+                                                                <input type="checkbox" id="ind_excento_impuesto_edit" name="ind_excento_impuesto_edit" value="{{ old('ind_excento_impuesto_edit') }}">
+                                                                <label for="ind_excento_impuesto_check_edit" class="control-label" style="padding-left: 10px;">¿Exento impuesto?</label>
                                                             </div>
+                                                            <span id="span_ind_excento_impuesto_edit" class="text-muted">
+                                                                NO
+                                                            </span>
                                                         </div>
-                                                        <div class="col-lg-3 col-md-5 col-sm-6 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Identificaci&oacute;n</label>
-                                                                <input type="text" id="ide_acu_edit" name="ide_acu_edit" readonly="" class="form-control onlyNumbers" placeholder="Ingrese identificaci&oacute;n" value="{{ old('ide_acu_edit') }}">
-                                                                <span class="text-danger">@error('ide_acu_edit') {{ $message }} @enderror</span>
+                                                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                                                            <div class="form-group" style="margin-bottom: 0px;">
+                                                                <input type="checkbox" id="ind_plusvalia_edit" name="ind_plusvalia_edit" value="{{ old('ind_plusvalia_edit') }}">
+                                                                <label for="ind_plusvalia_check_edit" class="control-label" style="padding-left: 10px;">¿Plusvalia?</label>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-lg-3 col-md-5 col-sm-6 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Tel&eacute;fono</label>
-                                                                <input type="text" id="tel_acu_edit" name="tel_acu_edit" class="form-control onlyNumbers" placeholder="Ingrese tel&eacute;fono" value="{{ old('tel_acu_edit') }}">
-                                                                <span class="text-danger">@error('tel_acu_edit') {{ $message }} @enderror</span>
-                                                            </div>
+                                                            <span id="span_ind_plusvalia_edit" class="text-muted">
+                                                                NO
+                                                            </span>
                                                         </div>
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Direcci&oacute;n</label>
-                                                                <input type="text" id="dir_acu_edit" name="dir_acu_edit" class="form-control" placeholder="Ingrese la direcci&oacute;n" value="{{ old('dir_acu_edit') }}">
-                                                                <span class="text-danger">@error('dir_acu_edit') {{ $message }} @enderror</span>
-                                                            </div>
-                                                        </div>
-                                                    </div> --}}
                                                 </div>
                                                 <div class="form-actions m-t-20">
                                                     <button id="btn_save_edit" type="button" class="btn btn-info"> <i class="fa fa-save"></i> Actualizar informaci&oacute;n</button>
@@ -807,37 +780,37 @@
 
 @section('buttons')
 <li class="mega-dropdown buttonTareas">
-    <a class="waves-effect waves-light tips" data-toggle="modal" data-target="#modal-datos-basicos" data-backdrop="static" data-keyboard="false" href="#" title="Datos b&aacute;sicos predios">
+    <a class="waves-effect waves-light" data-tooltip="tooltip" data-placement="bottom" data-toggle="modal" data-target="#modal-datos-basicos" data-backdrop="static" data-keyboard="false" href="#" title="Datos b&aacute;sicos predios">
         <span class="hidden-xs">DBP</span> <i class="icon-home"></i>
     </a>
 </li>
 <li class="mega-dropdown buttonTareas">
-    <a class="waves-effect waves-light tips" data-toggle="modal" data-target="#modal-datos-propietarios" data-backdrop="static" data-keyboard="false" href="#" title="Datos propietarios">
+    <a class="waves-effect waves-light" data-tooltip="tooltip" data-placement="bottom" data-toggle="modal" data-target="#modal-datos-propietarios" data-backdrop="static" data-keyboard="false" href="#" title="Datos propietarios">
         <span class="hidden-xs">DP</span> <i class="icon-people"></i>
     </a>
 </li>
-<li class="mega-dropdown buttonTareas">
-    <a class="waves-effect waves-light tips" data-toggle="modal" data-target="#modal-datos-calculo" data-backdrop="static" data-keyboard="false" href="#" title="Datos c&aacute;lculo">
+{{-- <li class="mega-dropdown buttonTareas">
+    <a class="waves-effect waves-light" data-tooltip="tooltip" data-placement="bottom" data-toggle="modal" data-target="#modal-datos-calculo" data-backdrop="static" data-keyboard="false" href="#" title="Datos c&aacute;lculo">
         <span class="hidden-xs">DC</span> <i class="icon-calculator"></i>
     </a>
-</li>
+</li> --}}
 {{-- <li class="mega-dropdown buttonTareas">
-    <a class="waves-effect waves-light tips" data-toggle="modal" data-target="#modal-datos-pagos" data-backdrop="static" data-keyboard="false" href="#" title="Datos pagos">
+    <a class="waves-effect waves-light" data-tooltip="tooltip" data-placement="bottom" data-toggle="modal" data-target="#modal-datos-pagos" data-backdrop="static" data-keyboard="false" href="#" title="Datos pagos">
         <span class="hidden-xs">DPA</span> <i class="icon-wallet"></i>
     </a>
 </li> --}}
 <li class="mega-dropdown buttonTareas">
-    <a class="waves-effect waves-light tips" data-toggle="modal" data-target="#modal-datos-acuerdos-pago" data-backdrop="static" data-keyboard="false" href="#" title="Datos acuerdos de pago">
+    <a class="waves-effect waves-light" data-tooltip="tooltip" data-placement="bottom" data-toggle="modal" data-target="#modal-datos-acuerdos-pago" data-backdrop="static" data-keyboard="false" href="#" title="Datos acuerdos de pago">
         <span class="hidden-xs">DAP</span> <i class="icon-book-open"></i>
     </a>
 </li>
 <li class="mega-dropdown buttonTareas">
-    <a class="waves-effect waves-light tips" data-toggle="modal" data-target="#modal-datos-abonos" data-backdrop="static" data-keyboard="false" href="#" title="Datos abonos">
+    <a class="waves-effect waves-light" data-tooltip="tooltip" data-placement="bottom" data-toggle="modal" data-target="#modal-datos-abonos" data-backdrop="static" data-keyboard="false" href="#" title="Datos abonos">
         <span class="hidden-xs">DA</span> <i class="icon-flag"></i>
     </a>
 </li>
 <li class="mega-dropdown buttonTareas">
-    <a class="waves-effect waves-light tips" data-toggle="modal" data-target="#modal-datos-procesos-historicos" data-backdrop="static" data-keyboard="false" href="#" title="Procesos e hist&oacute;ricos">
+    <a class="waves-effect waves-light" data-tooltip="tooltip" data-placement="bottom" data-toggle="modal" data-target="#modal-datos-procesos-historicos" data-backdrop="static" data-keyboard="false" href="#" title="Procesos e hist&oacute;ricos">
         <span class="hidden-xs">P&H</span> <i class="icon-layers"></i>
     </a>
 </li>
@@ -911,6 +884,63 @@
         </div>
     </div>
 </div>
+{{-- <div id="modal-impresion-factura" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-impresion-factura-label" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> -->
+                <h4 class="modal-title" id="modal-impresion-factura-label">Atenci&oacute;n!</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12">
+                        <form id="form-predios-impresion-factura">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group" style="margin-bottom: 0px; text-align: center;">
+                                            <label class="control-label">Generaci&oacute;n de factura de cobro impuesto predial.</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">A&ntilde;o:</label>
+                                            <select id="ultimo_anio_facturar" name="ultimo_anio_facturar" class="form-control" data-size="4" title="Seleccione a&ntilde;o..." data-container="#modal-impresion-factura" style="width: 100%">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Cuotas:</label>
+                                            <input type="text" id="cuotas_factura" name="cuotas_factura" class="form-control onlyNumbers" value="0" autocomplete="off" placeholder="Cuotas" value="{{ old('cuotas_factura') }}" maxlength="2" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="div_fecha_pago_factura" class="row" style="margin-bottom: 0px;">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Fecha pago:</label>
+                                            <input type="text" id="fecha_pago_factura" name="fecha_pago_factura" class="form-control datepicker" autocomplete="off" placeholder="Fecha pago" value="{{ old('fecha_pago_factura') }}" style="width: 100%;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="text-align: center;">
+                <button id="generate_factura_definitiva" type="button" class="btn btn-info btn_pdf"> <i class="fa fa-file-text"></i> Ver definitiva</button>
+                <button id="generate_factura_temporal" type="button" class="btn btn-inverse btn_pdf"> <i class="fa fa-file-text-o"></i> Vista previa  </button>
+                <button type="button" class="btn btn-danger btn_pdf" style="margin-top: 5px;" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div> --}}
 <div id="modal-impresion-paz" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-impresion-paz-label" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -960,6 +990,21 @@
         </div>
     </div>
 </div>
+{{-- <div id="modal-avaluo" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-avaluo-label" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg" style="width: 90%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal-avaluo-label">Aval&uacute;o de predio</h4>
+            </div>
+            <div class="modal-body">
+                <table id="avaluosTable" class="table table-hover table-condensed table-striped table-bordered" style="margin-bottom: 10px;"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default waves-effect text-left" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div> --}}
 <div id="modal-datos-basicos" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-datos-basicos-label" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -1145,11 +1190,10 @@
         </div>
     </div>
 </div>
-<div id="modal-datos-calculo" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-datos-calculo-label" aria-hidden="true" style="display: none;">
+{{-- <div id="modal-datos-calculo" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-datos-calculo-label" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                {{-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> --}}
                 <h4 class="modal-title" id="modal-datos-calculo-label">Informaci&oacute;n adicional - <span>Datos c&aacute;lculo</h4>
             </div>
             <div class="modal-body">
@@ -1162,28 +1206,24 @@
                                         <div class="form-group">
                                             <label class="control-label">Estrato:</label>
                                             <input type="text" id="estrato" name="estrato" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese estrato" value="{{ old('estrato') }}" maxlength="3">
-                                            {{-- <span class="text-danger">@error('estrato') {{ $message }} @enderror</span> --}}
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">Destino econ&oacute;mico:</label>
                                             <input type="text" id="destino_economico" name="destino_economico" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese destino econ&oacute;mico" value="{{ old('destino_economico') }}" maxlength="3">
-                                            {{-- <span class="text-danger">@error('destino_economico') {{ $message }} @enderror</span> --}}
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">N&uacute;mero resoluci&oacute;n:</label>
                                             <input type="text" id="numero_resolucion" name="numero_resolucion" class="form-control" autocomplete="off" placeholder="Ingrese n&uacute;mero resoluci&oacute;n" value="{{ old('numero_resolucion') }}" maxlength="10">
-                                            {{-- <span class="text-danger">@error('numero_resolucion') {{ $message }} @enderror</span> --}}
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">N&uacute;mero &uacute;ltima factura:</label>
                                             <input type="text" id="numero_ultima_factura" name="numero_ultima_factura" class="form-control" autocomplete="off" placeholder="Ingrese n&uacute;mero &uacute;ltima factura" value="{{ old('numero_ultima_factura') }}" maxlength="15">
-                                            {{-- <span class="text-danger">@error('numero_ultima_factura') {{ $message }} @enderror</span> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -1219,7 +1259,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 {{-- <div id="modal-datos-pagos" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-datos-pagos-label" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -1409,14 +1449,15 @@
     </div>
 </div>
 <div id="modal-datos-procesos-historicos" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-datos-procesos-historicos-label" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg" style="width: 95%;">
         <div class="modal-content">
             <div class="modal-header">
                 {{-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> --}}
                 <h4 class="modal-title" id="modal-datos-procesos-historicos-label">Informaci&oacute;n adicional - <span>Procesos e Hist&oacutericos</h4>
             </div>
             <div class="modal-body">
-                <div class="row">
+                <table id="avaluosTable" class="table table-hover table-condensed table-striped table-bordered" style="margin-bottom: 10px;"></table>
+                {{-- <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12">
                         <form id="form-predios-datos-procesos-historicos">
                             <div class="form-body">
@@ -1428,10 +1469,10 @@
                             </div>
                         </form>
                     </div>
-                 </div>
+                </div> --}}
             </div>
             <div class="modal-footer">
-                <button id="save_da" type="button" class="btn btn-info"> <i class="fa fa-save"></i> Guardar informaci&oacute;n</button>
+                <button id="print_avaluos" url="/generate_avaluos_predio_pdf/" type="button" class="btn btn-youtube pull-left btn_pdf"> <i class="fa fa-file-pdf-o"></i> Descargar PDF</button>
                 <button type="button" class="btn btn-default waves-effect text-left" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
