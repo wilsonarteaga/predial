@@ -100,11 +100,24 @@ class UploadController extends Controller
                                                 ->first();
 
                             if($objPago == null) {
-                                $objPredioPago = DB::table('predios_pagos')
-                                                    ->where('factura_pago', strval($numero_recibo))
+
+                                // Verificar si el registro ya existe
+                                $max_pago = DB::table('predios_pagos')
+                                            ->selectRaw("MAX(predios_pagos.ultimo_anio) as ultimo_anio")
+                                            ->where('predios_pagos.factura_pago', strval($numero_recibo))
+                                            ->where('predios_pagos.pagado', 0)
+                                            ->where('predios_pagos.anulada', 0)
+                                            ->first();
+
+                                if($max_pago != null) {
+                                    $predios_pago = DB::table('predios_pagos')
+                                                    ->select("predios_pagos.*")
+                                                    ->where('predios_pagos.factura_pago', strval($numero_recibo))
+                                                    ->where('predios_pagos.ultimo_anio', $max_pago->ultimo_anio)
+                                                    ->where('predios_pagos.pagado', 0)
+                                                    ->where('predios_pagos.anulada', 0)
                                                     ->first();
 
-                                if($objPredioPago != null) {
                                     $valor_facturado = floatval(substr($line, 50, 12) . ',' . substr($line, 62, 2));
                                     $banco_factura = substr($line, 80, 3);
                                     $objBancoFactura = DB::table('bancos')
@@ -116,10 +129,10 @@ class UploadController extends Controller
                                     $pago = new Pago;
                                     $pago->fecha_pago = Carbon::createFromFormat("Ymd", $fecha_pago)->format('Y-m-d');
                                     $pago->numero_recibo = $numero_recibo;
-                                    $pago->id_predio = $objPredioPago->id_predio;
+                                    $pago->id_predio = $predios_pago->id_predio;
                                     $pago->valor_facturado = $valor_facturado;
-                                    $pago->anio_pago = $objPredioPago->ultimo_anio;
-                                    $pago->fecha_factura = Carbon::createFromFormat("Y-m-d H:i:s.u", $objPredioPago->fecha_emision)->format('Y-m-d');
+                                    $pago->anio_pago = $predios_pago->ultimo_anio;
+                                    $pago->fecha_factura = Carbon::createFromFormat("Y-m-d H:i:s.u", $predios_pago->fecha_emision)->format('Y-m-d');
                                     $pago->id_banco_factura = $objBancoFactura->id;
                                     $pago->id_banco_archivo = $objBancoArchivo->id;
                                     $pago->paquete_archivo = substr($paquete_archivo, 2);
@@ -128,18 +141,21 @@ class UploadController extends Controller
 
                                     if($saved_pago) {
                                         // Actualizar informacion de predio pago
-                                        $pp = new PredioPago;
-                                        $pp = PredioPago::find($objPredioPago->id);
-                                        $pp->valor_pago = $valor_facturado;
-                                        $pp->fecha_pago = Carbon::createFromFormat("Ymd", $fecha_pago)->format('Y-m-d');
-                                        $pp->id_banco = $objBancoFactura->id;
-                                        $pp->pagado = -1;
-                                        $saved_predio_pago = $pp->save();
-                                        if($saved_predio_pago) {
+                                        $updated = PredioPago::where('factura_pago', strval($numero_recibo))
+                                                    ->where('pagado', 0)
+                                                    ->update([
+                                                        'fecha_pago' => Carbon::createFromFormat("Ymd", $fecha_pago)->format('Y-m-d'),
+                                                        'valor_pago' => DB::raw("CASE WHEN CONVERT(datetime, '" . $fecha_pago . " 00:00:00.000') <= CONVERT(datetime, '" . $predios_pago->primer_fecha . "') THEN total_calculo WHEN CONVERT(datetime, '" . $fecha_pago . " 00:00:00.000') <= CONVERT(datetime, '" . $predios_pago->segunda_fecha . "') THEN total_dos WHEN CONVERT(datetime, '" . $fecha_pago . " 00:00:00.000') <= CONVERT(datetime, '" . $predios_pago->tercera_fecha . "') THEN total_tres END"),
+                                                        'id_banco' => $objBancoFactura->id,
+                                                        'pagado' => -1
+                                                    ]);
+
+
+                                        if($updated) {
                                             // Actualizar ultimo anio pago en la tabla predios
                                             $predio = new Predio;
                                             $predio = Predio::find($pago->id_predio);
-                                            $predio->ultimo_anio_pago = $objPredioPago->ultimo_anio;
+                                            $predio->ultimo_anio_pago = $predios_pago->ultimo_anio;
                                             $predio->save();
                                             $count_pagos_saved += 1;
                                         }

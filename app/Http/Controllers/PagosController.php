@@ -86,61 +86,77 @@ class PagosController extends Controller
             return redirect('/');
         }
 
-        $pago = new Pago();
-        $pago->fecha_pago = $request->fecha_pago;
-        $pago->codigo_barras = $request->filled('codigo_barras') ? $request->codigo_barras : NULL;
-        $pago->numero_recibo = $request->numero_recibo;
-        $pago->id_predio = $request->id_predio;
-        $pago->valor_facturado = $request->valor_facturado;
-        $pago->anio_pago = $request->anio_pago;
-        $pago->fecha_factura = $request->fecha_factura;
-        $pago->id_banco_factura = $request->id_banco_factura;
-        $pago->id_banco_archivo = $request->filled('id_banco_archivo') ? $request->id_banco_archivo : NULL;
-        $pago->paquete_archivo = $request->filled('paquete_archivo') ? $request->paquete_archivo : NULL;
-        $pago->origen = 'M';
-        $query = $pago->save();
         $tab_current = 'li-section-bar-1';
 
-        if($query) {
+        DB::beginTransaction();
+        try {
             // Verificar si el registro ya existe
-            $predios_pago = DB::table('predios_pagos')
-                                ->select('predios_pagos.id')
+            $max_pago = DB::table('predios_pagos')
+                                ->selectRaw("MAX(predios_pagos.ultimo_anio) as ultimo_anio")
                                 ->where('predios_pagos.factura_pago', $request->numero_recibo)
                                 ->where('predios_pagos.pagado', 0)
-                                ->get();
+                                ->first();
+
+            $predios_pago = DB::table('predios_pagos')
+                                ->selectRaw("predios_pagos.primer_fecha, predios_pagos.segunda_fecha, predios_pagos.tercera_fecha")
+                                ->where('predios_pagos.factura_pago', $request->numero_recibo)
+                                ->where('predios_pagos.pagado', 0)
+                                ->where('predios_pagos.ultimo_anio', $max_pago->ultimo_anio)
+                                ->first();
 
             if($predios_pago != null) {
-                $updated = PredioPago::where('factura_pago', $request->numero_recibo)
-                                        ->where('pagado', 0)
-                                        ->update([
-                                            'fecha_pago' => $request->fecha_pago,
-                                            'valor_pago' => $request->valor_facturado,
-                                            'id_banco' => $request->id_banco_factura,
-                                            'pagado' => -1
-                                        ]);
+                $pago = new Pago();
+                $pago->fecha_pago = $request->fecha_pago;
+                $pago->codigo_barras = $request->filled('codigo_barras') ? $request->codigo_barras : NULL;
+                $pago->numero_recibo = $request->numero_recibo;
+                $pago->id_predio = $request->id_predio;
+                $pago->valor_facturado = $request->valor_facturado;
+                $pago->anio_pago = $request->anio_pago;
+                $pago->fecha_factura = $request->fecha_factura;
+                $pago->id_banco_factura = $request->id_banco_factura;
+                $pago->id_banco_archivo = $request->filled('id_banco_archivo') ? $request->id_banco_archivo : NULL;
+                $pago->paquete_archivo = $request->filled('paquete_archivo') ? $request->paquete_archivo : NULL;
+                $pago->origen = 'M';
+                // $query = $pago->save();
 
-                if($updated == count($predios_pago)) {
+                // if($query) {
+                    $updated = PredioPago::where('factura_pago', $request->numero_recibo)
+                                            ->where('pagado', 0)
+                                            ->update([
+                                                'fecha_pago' => $request->fecha_pago,
+                                                'valor_pago' => DB::raw("CASE WHEN CONVERT(datetime, '" . $request->fecha_pago . " 00:00:00.000') <= CONVERT(datetime, '" . $predios_pago->primer_fecha . "') THEN total_calculo WHEN CONVERT(datetime, '" . $request->fecha_pago . " 00:00:00.000') <= CONVERT(datetime, '" . $predios_pago->segunda_fecha . "') THEN total_dos WHEN CONVERT(datetime, '" . $request->fecha_pago . " 00:00:00.000') <= CONVERT(datetime, '" . $predios_pago->tercera_fecha . "') THEN total_tres END"),
+                                                'id_banco' => $request->id_banco_factura,
+                                                'pagado' => -1
+                                            ]);
 
-                    // Actualizar ultimo anio pago en la tabla predios
-                    $predio = new Predio;
-                    $predio = Predio::find($pago->id_predio);
-                    $predio->ultimo_anio_pago = $request->anio_pago;
-                    $query = $predio->save();
+                    // if($updated > 0) {
 
-                    return back()->with(['success' => 'La informaci&oacute;n se guard&oacute; satisfactoriamente.', 'tab_current' => $tab_current]);
-                }
-                else {
-                    $pago->delete();
-                    return back()->with(['fail' => 'No se pudo guardar la informaci&oacute;n de asociaci&oacute;n predio - pago. Intente nuevamente.', 'tab_current' => $tab_current]);
-                }
+                        // Actualizar ultimo anio pago en la tabla predios
+                        $predio = new Predio;
+                        $predio = Predio::find($pago->id_predio);
+                        $predio->ultimo_anio_pago = $request->anio_pago;
+                        // $query = $predio->save();
+
+                        DB::commit();
+
+                        return back()->with(['success' => 'La informaci&oacute;n se guard&oacute; satisfactoriamente.', 'tab_current' => $tab_current]);
+                    // }
+                    // else {
+                    //     $pago->delete();
+                    //     return back()->with(['fail' => 'No se pudo guardar la informaci&oacute;n de asociaci&oacute;n predio - pago. Intente nuevamente.', 'tab_current' => $tab_current]);
+                    // }
+                // }
+                // else {
+                //     return back()->with(['fail' => 'No se pudo guardar la informaci&oacute;n del pago. Intente nuevamente.', 'tab_current' => $tab_current]);
+                // }
             }
             else {
-                $pago->delete();
                 return back()->with(['fail' => 'No existe informaci&oacute;n de asociaci&oacute;n predio - pago. Intente nuevamente.', 'tab_current' => $tab_current]);
             }
         }
-        else {
-            return back()->with(['fail' => 'No se pudo guardar la informaci&oacute;n del pago. Intente nuevamente.', 'tab_current' => $tab_current]);
+        catch(\Exception $e) {
+          DB::rollback();
+          return back()->with(['fail' => $e->getMessage(), 'tab_current' => $tab_current]);
         }
     }
 

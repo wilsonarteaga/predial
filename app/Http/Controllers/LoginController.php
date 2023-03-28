@@ -38,6 +38,16 @@ class LoginController extends Controller
         ->select('usuarios.*', 'tipos_usuarios.view', 'tipos_usuarios.descripcion')
         ->get()->first();
 
+        $admin_text = DB::table('parametros')
+                      ->select('parametros.valor')
+                      ->where('parametros.nombre', 'admin-text')
+                      ->first();
+
+        $admin_text_dark = DB::table('parametros')
+                           ->select('parametros.valor')
+                           ->where('parametros.nombre', 'admin-text-dark')
+                           ->first();
+
         if($usuario) {
             if(md5($request->password) == $usuario->password) {
                 $request->session()->put('userid', $usuario->id);
@@ -47,6 +57,8 @@ class LoginController extends Controller
                 $request->session()->put('userlastname', $usuario->apellidos);
                 $request->session()->put('useremail', $usuario->correo_electronico);
                 $request->session()->put('id_tipo_usuario', $usuario->id_tipo_usuario);
+                $request->session()->put('admin_text', $admin_text->valor);
+                $request->session()->put('admin_text_dark', $admin_text_dark->valor);
                 return redirect('profile');
             }
             else {
@@ -68,6 +80,8 @@ class LoginController extends Controller
         })
         ->select('opciones.*', 'opciones_tipos_usuarios.jerarquia')
         ->where('opciones.estado', 'A')
+        ->orderBy('opciones_tipos_usuarios.jerarquia', 'asc')
+        ->orderBy('opciones_tipos_usuarios.id_opcion', 'asc')
         ->get();
 
         $request->session()->put('opciones', $opciones);

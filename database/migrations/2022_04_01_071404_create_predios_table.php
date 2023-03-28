@@ -16,6 +16,7 @@ class CreatePrediosTable extends Migration
         Schema::create('predios', function (Blueprint $table) {
             $table->id();
             $table->string('codigo_predio', 40);
+            $table->string('codigo_predio_anterior', 40);
             $table->string('direccion', 512);
             $table->decimal('avaluo', $precision = 20, $scale = 2);
             $table->smallInteger('ultimo_anio_pago');
@@ -48,9 +49,16 @@ class CreatePrediosTable extends Migration
 
             $table->boolean('estado')->default(1);
 
-            $table->tinyInteger('ind_ley1995')->nullable()->default(0);
-
             $table->timestamps();
+
+            $table->tinyInteger('ind_excento_impuesto')->default(0);
+            $table->tinyInteger('ind_excento_car')->default(0);
+            $table->tinyInteger('ind_excento')->default(0);
+            $table->tinyInteger('ind_eliminado')->default(0);
+            $table->timestamp('fecha_eliminacion')->nullable();
+            $table->string('descripcion_eliminacion', 100)->nullable();
+            $table->tinyInteger('ind_ley1995')->default(0);
+            $table->tinyInteger('ind_plusvalia')->default(0);
 
             $table->foreign('id_zona')->references('id')->on('zonas');
 

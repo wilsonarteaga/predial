@@ -66,15 +66,15 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="control-label">Nombres</label>
-                                                            <input type="text" id="nom_usu" name="nom_usu" class="form-control" placeholder="Ingrese nombres" value="{{ old('nom_usu') }}">
-                                                            <span class="text-danger">@error('nom_usu') {{ $message }} @enderror</span>
+                                                            <input type="text" id="nombres" name="nombres" class="form-control" placeholder="Ingrese nombres" value="{{ old('nombres') }}">
+                                                            <span class="text-danger">@error('nombres') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="control-label">Apellidos</label>
-                                                            <input type="text" id="ape_usu" name="ape_usu" class="form-control" placeholder="Ingrese apellidos" value="{{ old('ape_usu') }}">
-                                                            <span class="text-danger">@error('ape_usu') {{ $message }} @enderror</span>
+                                                            <input type="text" id="apellidos" name="apellidos" class="form-control" placeholder="Ingrese apellidos" value="{{ old('apellidos') }}">
+                                                            <span class="text-danger">@error('apellidos') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -82,28 +82,27 @@
                                                     <div class="col-lg-3 col-md-5 col-sm-6 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Tipo identificaci&oacute;n</label>
-                                                            <select id="tid_usu" name="tid_usu" class="form-control selectpicker show-tick" title="Seleccione...">
-                                                                <option value="CC" {{ old('tid_usu') == "CC"  || old('tid_usu') == null ? 'selected' : '' }}>C&eacute;dula</option>
-                                                                {{-- <option value="TI" {{ old('tid_usu') == "TI" ? 'selected' : '' }}>Tarjeta Identidad</option> --}}
-                                                                <option value="CE" {{ old('tid_usu') == "CE" ? 'selected' : '' }}>C&eacute;dula extranjer&iacute;a</option>
-                                                                <option value="PS" {{ old('tid_usu') == "PS" ? 'selected' : '' }}>Pasaporte</option>
-                                                                {{-- <option value="RC" {{ old('tid_usu') == "RC" ? 'selected' : '' }}>Registro Civ&iacute;l</option> --}}
+                                                            <select id="id_tipo_identificacion" name="id_tipo_identificacion" class="form-control selectpicker show-tick" title="Seleccione...">
+                                                                <option value="1" {{ old('id_tipo_identificacion') == "1"  || old('id_tipo_identificacion') == null ? 'selected' : '' }}>C&eacute;dula</option>
+                                                                <option value="2" {{ old('id_tipo_identificacion') == "2" ? 'selected' : '' }}>Tarjeta Identidad</option>
+                                                                <option value="3" {{ old('id_tipo_identificacion') == "3" ? 'selected' : '' }}>Pasaporte</option>
+                                                                <option value="4" {{ old('id_tipo_identificacion') == "4" ? 'selected' : '' }}>C&eacute;dula extranjer&iacute;a</option>
                                                             </select>
-                                                            <span class="text-danger">@error('tid_usu') {{ $message }} @enderror</span>
+                                                            <span class="text-danger">@error('id_tipo_identificacion') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-3 col-md-5 col-sm-6 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Identificaci&oacute;n</label>
-                                                            <input type="text" id="ide_usu" name="ide_usu" class="form-control onlyNumbers" placeholder="Ingrese identificaci&oacute;n" value="{{ old('ide_usu') }}">
-                                                            <span class="text-danger">@error('ide_usu') {{ $message }} @enderror</span>
+                                                            <input type="text" id="documento" name="documento" class="form-control onlyNumbers" placeholder="Ingrese identificaci&oacute;n" value="{{ old('documento') }}">
+                                                            <span class="text-danger">@error('documento') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Correo electr&oacute;nico</label>
-                                                            <input type="email" id="cor_usu" name="cor_usu" class="form-control" placeholder="Ingrese correo electr&oacute;nico" value="{{ old('cor_usu') }}">
-                                                            <span class="text-danger">@error('cor_usu') {{ $message }} @enderror</span>
+                                                            <input type="email" id="correo_electronico" name="correo_electronico" class="form-control" placeholder="Ingrese correo electr&oacute;nico" value="{{ old('correo_electronico') }}">
+                                                            <span class="text-danger">@error('correo_electronico') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -113,71 +112,71 @@
                                                             <label class="control-label">Fecha nacimiento</label>
                                                             <div style="position:relative">
                                                                 <div class="input-group">
-                                                                    <input type="text" id="fec_usu" name="fec_usu" class="form-control datepicker withadon" autocomplete="off" placeholder="yyyy-mm-dd" value="{{ old('fec_usu') }}">
+                                                                    <input type="text" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control datepicker withadon" autocomplete="off" placeholder="yyyy-mm-dd" value="{{ old('fecha_nacimiento') }}">
                                                                     <div class="input-group-addon">
                                                                         <span class="glyphicon glyphicon-th"></span>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <span class="text-danger">@error('fec_usu') {{ $message }} @enderror</span>
+                                                            <span class="text-danger">@error('fecha_nacimiento') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-3 col-md-5 col-sm-6 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Tel&eacute;fono</label>
-                                                            <input type="text" id="tel_usu" name="tel_usu" class="form-control onlyNumbers" placeholder="Ingrese tel&eacute;fono" value="{{ old('tel_usu') }}">
-                                                            <span class="text-danger">@error('tel_usu') {{ $message }} @enderror</span>
+                                                            <input type="text" id="telefono" name="telefono" class="form-control onlyNumbers" placeholder="Ingrese tel&eacute;fono" value="{{ old('telefono') }}">
+                                                            <span class="text-danger">@error('telefono') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-6 col-md-10 col-sm-12 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Direcci&oacute;n</label>
-                                                            <input type="text" id="dir_usu" name="dir_usu" class="form-control" placeholder="Ingrese direcci&oacute;n" value="{{ old('dir_usu') }}">
-                                                            <span class="text-danger">@error('dir_usu') {{ $message }} @enderror</span>
+                                                            <input type="text" id="direccion" name="direccion" class="form-control" placeholder="Ingrese direcci&oacute;n" value="{{ old('direccion') }}">
+                                                            <span class="text-danger">@error('direccion') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                                         <div class="form-group">
-                                                            <label for="con_usu" class="control-label">Contrase&ntilde;a:</label>
+                                                            <label for="password" class="control-label">Contrase&ntilde;a:</label>
                                                             <div class="input-group">
-                                                                <input type="password" class="form-control withadon" id="con_usu" name="con_usu" value="{{ old('con_usu') }}">
+                                                                <input type="password" class="form-control withadon" id="password" name="password" value="{{ old('password') }}">
                                                                 <div class="input-group-addon"><i class="ti-lock"></i></div>
                                                             </div>
-                                                            <span class="text-danger">@error('con_usu') {{ $message }} @enderror</span>
+                                                            <span class="text-danger">@error('password') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                                         <div class="form-group">
-                                                            <label for="con_usu_confirmation" class="control-label">Repita la contrase&ntilde;a:</label>
+                                                            <label for="password_confirmation" class="control-label">Repita la contrase&ntilde;a:</label>
                                                             <div class="input-group">
-                                                                <input type="password" class="form-control withadon" id="con_usu_confirmation" name="con_usu_confirmation" value="{{ old('con_usu_confirmation') }}">
+                                                                <input type="password" class="form-control withadon" id="password_confirmation" name="password_confirmation" value="{{ old('password_confirmation') }}">
                                                                 <div class="input-group-addon"><i class="ti-lock"></i></div>
                                                             </div>
-                                                            <span class="text-danger">@error('con_usu_confirmation') {{ $message }} @enderror</span>
+                                                            <span class="text-danger">@error('password_confirmation') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Tipo usuario</label>
-                                                            <select id="ide_tip" name="ide_tip" class="form-control selectpicker show-tick dropdown" data-dropup-auto="false" data-live-search="true" data-size="3" title="Seleccione...">
+                                                            <select id="id_tipo_usuario" name="id_tipo_usuario" class="form-control selectpicker show-tick dropdown" data-dropup-auto="false" data-live-search="true" data-size="3" title="Seleccione...">
                                                                 @if(count($tipos_usuarios) > 0)
                                                                     @foreach($tipos_usuarios as $tipo_usuario)
-                                                                        <option value="{{ $tipo_usuario->ide_tip }}" {{ old('ide_tip') == $tipo_usuario->ide_tip ? 'selected' : '' }}>{{ $tipo_usuario->nom_tip }}</option>
+                                                                        <option value="{{ $tipo_usuario->id }}" {{ old('id_tipo_usuario') == $tipo_usuario->id ? 'selected' : '' }}>{{ $tipo_usuario->descripcion }}</option>
                                                                     @endforeach
                                                                 @endif
                                                             </select>
-                                                            <span class="text-danger">@error('ide_tip') {{ $message }} @enderror</span>
+                                                            <span class="text-danger">@error('id_tipo_usuario') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-3 col-md-2 col-sm-6 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Estado</label>
-                                                            <input id="est_usu" name="est_usu" type="hidden" value="A">
-                                                            <div id="div_est_usu_tmp" class="checkbox checkbox-danger">
-                                                                <input id="est_usu_tmp" name="est_usu_tmp" type="checkbox" checked="">
-                                                                <label id="label_est_usu" for="est_usu_tmp"> Activo </label>
+                                                            <input id="estado" name="estado" type="hidden" value="A">
+                                                            <div id="div_estado_tmp" class="checkbox checkbox-danger">
+                                                                <input id="estado_tmp" name="estado_tmp" type="checkbox" checked="">
+                                                                <label id="label_estado_tmp" for="estado_tmp"> Activo </label>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -229,18 +228,18 @@
                                                     @if(count($usuarios) > 0)
                                                         @foreach($usuarios as $usuario)
                                                         <tr style="cursor: pointer;" json-data='@json($usuario)'>
-                                                            <td class="edit_row">{{ $usuario->tid_usu }}: {{ $usuario->ide_usu }}</td>
-                                                            {{-- <td class="cell_center edit_row">{{ $usuario->tid_usu }}</td> --}}
-                                                            <td class="edit_row">{{ $usuario->nom_usu }}</td>
-                                                            <td class="edit_row">{{ $usuario->ape_usu }}</td>
-                                                            <td class="edit_row">{{ $usuario->cor_usu }}</td>
-                                                            <td class="edit_row">{{ $usuario->tel_usu }}</td>
-                                                            <td class="cell_center edit_row">{{ $usuario->nom_tip }}</td>
-                                                            <td class="cell_center edit_row">{{ $usuario->est_usu }}</td>
+                                                            <td class="edit_row">{{ $usuario->abreviacion }}: {{ $usuario->documento }}</td>
+                                                            {{-- <td class="cell_center edit_row">{{ $usuario->id_tipo_identificacion }}</td> --}}
+                                                            <td class="edit_row">{{ $usuario->nombres }}</td>
+                                                            <td class="edit_row">{{ $usuario->apellidos }}</td>
+                                                            <td class="edit_row">{{ $usuario->correo_electronico }}</td>
+                                                            <td class="edit_row">{{ $usuario->telefono }}</td>
+                                                            <td class="cell_center edit_row">{{ $usuario->descripcion }}</td>
+                                                            <td class="cell_center edit_row">{{ $usuario->estado }}</td>
                                                             <td class="cell_center">
-                                                                <button type="button" ide="{{ $usuario->ide_usu }}" class="modify_row btn btn-info"><i class="fa fa-pencil-square"></i></button>
+                                                                <button type="button" ide="{{ $usuario->id }}" class="modify_row btn btn-info"><i class="fa fa-pencil-square"></i></button>
                                                                 &nbsp;&nbsp;
-                                                                <button type="button" ide="{{ $usuario->ide_usu }}" class="delete_row btn btn-inverse"><i class="fa fa-trash-o"></i></button>
+                                                                <button type="button" ide="{{ $usuario->id }}" class="delete_row btn btn-inverse"><i class="fa fa-trash-o"></i></button>
                                                             </td>
                                                         </tr>
                                                         @endforeach
@@ -270,19 +269,20 @@
                                             @csrf
 
                                             <div class="form-body">
+                                                <input type="hidden" id="id_edit" name="id_edit" value="{{ old('id_edit') }}">
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="control-label">Nombres</label>
-                                                            <input type="text" id="nom_usu_edit" name="nom_usu_edit" class="form-control" placeholder="Ingrese nombres" value="{{ old('nom_usu_edit') }}">
-                                                            <span class="text-danger">@error('nom_usu_edit') {{ $message }} @enderror</span>
+                                                            <input type="text" id="nombres_edit" name="nombres_edit" class="form-control" placeholder="Ingrese nombres" value="{{ old('nombres_edit') }}">
+                                                            <span class="text-danger">@error('nombres_edit') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="control-label">Apellidos</label>
-                                                            <input type="text" id="ape_usu_edit" name="ape_usu_edit" class="form-control" placeholder="Ingrese apellidos" value="{{ old('ape_usu_edit') }}">
-                                                            <span class="text-danger">@error('ape_usu_edit') {{ $message }} @enderror</span>
+                                                            <input type="text" id="apellidos_edit" name="apellidos_edit" class="form-control" placeholder="Ingrese apellidos" value="{{ old('apellidos_edit') }}">
+                                                            <span class="text-danger">@error('apellidos_edit') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -290,28 +290,27 @@
                                                     <div class="col-lg-3 col-md-5 col-sm-6 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Tipo identificaci&oacute;n</label>
-                                                            <select id="tid_usu_edit" name="tid_usu_edit" class="form-control selectpicker show-tick" title="Seleccione...">
-                                                                <option value="CC" {{ old('tid_usu_edit') == "CC"  || old('tid_usu_edit') == null ? 'selected' : '' }}>C&eacute;dula</option>
-                                                                {{-- <option value="TI" {{ old('tid_usu_edit') == "TI" ? 'selected' : '' }}>Tarjeta Identidad</option> --}}
-                                                                <option value="CE" {{ old('tid_usu_edit') == "CE" ? 'selected' : '' }}>C&eacute;dula extranjer&iacute;a</option>
-                                                                <option value="PS" {{ old('tid_usu_edit') == "PS" ? 'selected' : '' }}>Pasaporte</option>
-                                                                {{-- <option value="RC" {{ old('tid_usu_edit') == "RC" ? 'selected' : '' }}>Registro Civ&iacute;l</option> --}}
+                                                            <select id="id_tipo_identificacion_edit" name="id_tipo_identificacion_edit" class="form-control selectpicker show-tick" title="Seleccione...">
+                                                                <option value="1" {{ old('id_tipo_identificacion_edit') == "1"  || old('id_tipo_identificacion_edit') == null ? 'selected' : '' }}>C&eacute;dula</option>
+                                                                <option value="2" {{ old('id_tipo_identificacion_edit') == "2" ? 'selected' : '' }}>Tarjeta Identidad</option>
+                                                                <option value="3" {{ old('id_tipo_identificacion_edit') == "3" ? 'selected' : '' }}>Pasaporte</option>
+                                                                <option value="4" {{ old('id_tipo_identificacion_edit') == "4" ? 'selected' : '' }}>C&eacute;dula extranjer&iacute;a</option>
                                                             </select>
-                                                            <span class="text-danger">@error('tid_usu_edit') {{ $message }} @enderror</span>
+                                                            <span class="text-danger">@error('id_tipo_identificacion_edit') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-3 col-md-5 col-sm-6 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Identificaci&oacute;n</label>
-                                                            <input type="text" id="ide_usu_edit" name="ide_usu_edit" readonly="" class="form-control onlyNumbers" placeholder="Ingrese identificaci&oacute;n" value="{{ old('ide_usu_edit') }}">
-                                                            <span class="text-danger">@error('ide_usu_edit') {{ $message }} @enderror</span>
+                                                            <input type="text" id="documento_edit" name="documento_edit" readonly="" class="form-control onlyNumbers" placeholder="Ingrese identificaci&oacute;n" value="{{ old('documento_edit') }}">
+                                                            <span class="text-danger">@error('documento_edit') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-sm-10 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Correo electr&oacute;nico</label>
-                                                            <input type="email" id="cor_usu_edit" name="cor_usu_edit" class="form-control" placeholder="Ingrese correo electr&oacute;nico" value="{{ old('cor_usu_edit') }}">
-                                                            <span class="text-danger">@error('cor_usu_edit') {{ $message }} @enderror</span>
+                                                            <input type="email" id="correo_electronico_edit" name="correo_electronico_edit" class="form-control" placeholder="Ingrese correo electr&oacute;nico" value="{{ old('correo_electronico_edit') }}">
+                                                            <span class="text-danger">@error('correo_electronico_edit') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -321,71 +320,71 @@
                                                             <label class="control-label">Fecha nacimiento</label>
                                                             <div style="position:relative">
                                                                 <div class="input-group">
-                                                                    <input type="text" id="fec_usu_edit" name="fec_usu_edit" class="form-control datepicker withadon" autocomplete="off" placeholder="yyyy-mm-dd" value="{{ old('fec_usu_edit') }}">
+                                                                    <input type="text" id="fecha_nacimiento_edit" name="fecha_nacimiento_edit" class="form-control datepicker withadon" autocomplete="off" placeholder="yyyy-mm-dd" value="{{ old('fecha_nacimiento_edit') }}">
                                                                     <div class="input-group-addon">
                                                                         <span class="glyphicon glyphicon-th"></span>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <span class="text-danger">@error('fec_usu_edit') {{ $message }} @enderror</span>
+                                                            <span class="text-danger">@error('fecha_nacimiento_edit') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-3 col-md-5 col-sm-6 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Tel&eacute;fono</label>
-                                                            <input type="text" id="tel_usu_edit" name="tel_usu_edit" class="form-control onlyNumbers" placeholder="Ingrese tel&eacute;fono" value="{{ old('tel_usu_edit') }}">
-                                                            <span class="text-danger">@error('tel_usu_edit') {{ $message }} @enderror</span>
+                                                            <input type="text" id="telefono_edit" name="telefono_edit" class="form-control onlyNumbers" placeholder="Ingrese tel&eacute;fono" value="{{ old('telefono_edit') }}">
+                                                            <span class="text-danger">@error('telefono_edit') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Direcci&oacute;n</label>
-                                                            <input type="text" id="dir_usu_edit" name="dir_usu_edit" class="form-control" placeholder="Ingrese direcci&oacute;n" value="{{ old('dir_usu_edit') }}">
-                                                            <span class="text-danger">@error('dir_usu_edit') {{ $message }} @enderror</span>
+                                                            <input type="text" id="direccion_edit" name="direccion_edit" class="form-control" placeholder="Ingrese direcci&oacute;n" value="{{ old('direccion_edit') }}">
+                                                            <span class="text-danger">@error('direccion_edit') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                                         <div class="form-group">
-                                                            <label for="con_usu_edit" class="control-label">Contrase&ntilde;a:</label>
+                                                            <label for="password_edit" class="control-label">Contrase&ntilde;a:</label>
                                                             <div class="input-group">
-                                                                <input type="password" class="form-control withadon" id="con_usu_edit" name="con_usu_edit" value="{{ old('con_usu_edit') }}">
+                                                                <input type="password" class="form-control withadon" id="password_edit" name="password_edit" value="{{ old('password_edit') }}">
                                                                 <div class="input-group-addon"><i class="ti-lock"></i></div>
                                                             </div>
-                                                            <span class="text-danger">@error('con_usu_edit') {{ $message }} @enderror</span>
+                                                            <span class="text-danger">@error('password_edit') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                                         <div class="form-group">
-                                                            <label for="con_usu_edit_confirmation" class="control-label">Repita la contrase&ntilde;a:</label>
+                                                            <label for="password_edit_confirmation" class="control-label">Repita la contrase&ntilde;a:</label>
                                                             <div class="input-group">
-                                                                <input type="password" class="form-control withadon" id="con_usu_edit_confirmation" name="con_usu_edit_confirmation" value="{{ old('con_usu_edit_confirmation') }}">
+                                                                <input type="password" class="form-control withadon" id="password_edit_confirmation" name="password_edit_confirmation" value="{{ old('password_edit_confirmation') }}">
                                                                 <div class="input-group-addon"><i class="ti-lock"></i></div>
                                                             </div>
-                                                            <span class="text-danger">@error('con_usu_edit_confirmation') {{ $message }} @enderror</span>
+                                                            <span class="text-danger">@error('password_edit_confirmation') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Tipo usuario</label>
-                                                            <select id="tipos_usuarios_ide_tip_edit" name="tipos_usuarios_ide_tip_edit" class="form-control selectpicker show-tick dropdown" data-dropup-auto="false" data-live-search="true" data-size="3" title="Seleccione...">
+                                                            <select id="id_tipo_usuario_edit" name="id_tipo_usuario_edit" class="form-control selectpicker show-tick dropdown" data-dropup-auto="false" data-live-search="true" data-size="3" title="Seleccione...">
                                                                 @if(count($tipos_usuarios) > 0)
                                                                     @foreach($tipos_usuarios as $tipo_usuario)
-                                                                        <option value="{{ $tipo_usuario->ide_tip }}" {{ old('tipos_usuarios_ide_tip_edit') == $tipo_usuario->ide_tip ? 'selected' : '' }}>{{ $tipo_usuario->nom_tip }}</option>
+                                                                        <option value="{{ $tipo_usuario->id }}" {{ old('id_tipo_usuario_edit') == $tipo_usuario->id ? 'selected' : '' }}>{{ $tipo_usuario->descripcion }}</option>
                                                                     @endforeach
                                                                 @endif
                                                             </select>
-                                                            <span class="text-danger">@error('tipos_usuarios_ide_tip_edit') {{ $message }} @enderror</span>
+                                                            <span class="text-danger">@error('id_tipo_usuario_edit') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-3 col-md-2 col-sm-6 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Estado</label>
-                                                            <input id="est_usu_edit" name="est_usu_edit" type="hidden" value="">
-                                                            <div id="div_est_usu_tmp_edit" class="checkbox checkbox-danger">
-                                                                <input id="est_usu_tmp_edit" name="est_usu_tmp_edit" type="checkbox">
-                                                                <label id="label_est_usu_edit" for="est_usu_tmp_edit"> Inactivo </label>
+                                                            <input id="estado_edit" name="estado_edit" type="hidden" value="">
+                                                            <div id="div_estado_tmp_edit" class="checkbox checkbox-danger">
+                                                                <input id="estado_tmp_edit" name="estado_tmp_edit" type="checkbox">
+                                                                <label id="label_estado_tmp_edit" for="estado_tmp_edit"> Inactivo </label>
                                                             </div>
                                                         </div>
                                                     </div>

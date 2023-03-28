@@ -95,7 +95,10 @@
             @yield('content')
             @yield('modales')
             @yield('resolucion')
-            <footer class="footer text-center"> 2021 &copy; Freelance </footer>
+            <footer class="footer text-center">
+                <script>document.write(new Date().getFullYear())</script>
+                &copy; ERPSoft Predial - Software Development Team
+            </footer>
         </div>
         <!-- ============================================================== -->
         <!-- End Page Content -->

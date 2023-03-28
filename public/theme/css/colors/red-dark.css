@@ -23,13 +23,19 @@ body {
 }
 /*Top Header Part*/
 .top-left-part {
-  background: #3d3d3d;
+  background: #e20b0b;
 }
 .nav-small-cap {
   color: #cbcbcb;
 }
 .logo i {
   color: #ffffff;
+}
+.top-left-part .logo span .light-logo {
+    display: inline-block;
+}
+.top-left-part .logo span .dark-logo {
+    display: none;
 }
 .navbar-header {
   background: #e20b0b;

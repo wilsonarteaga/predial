@@ -25,11 +25,11 @@ body {
 .logo i {
   color: #4c5667;
 }
-.top-left-part .light-logo {
-  display: inline-block;
-}
-.top-left-part .dark-logo {
+.top-left-part .logo span .light-logo {
   display: none;
+}
+.top-left-part .logo span .dark-logo {
+  display: inline-block;
 }
 .navbar-header {
   background: #ffffff;

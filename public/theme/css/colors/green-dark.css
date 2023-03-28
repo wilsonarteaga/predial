@@ -25,6 +25,12 @@ body {
 .logo i {
   color: #ffffff;
 }
+.top-left-part .logo span .light-logo {
+    display: none;
+}
+.top-left-part .logo span .dark-logo {
+    display: inline-block;
+}
 .navbar-header {
   background: #3cd0cc;
 }
