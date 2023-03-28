@@ -20,6 +20,7 @@ use App\Models\Propietario;
 use App\Models\Resolucion;
 use App\Models\ResolucionPredio;
 use App\Models\PredioPrescripcion;
+use App\Models\Pago;
 
 use Carbon\Carbon;
 use PDF;
@@ -133,46 +134,55 @@ class PrediosController extends Controller
             return redirect('/');
         }
 
-        $predio = new Predio();
-        $predio->codigo_predio = $request->codigo_predio;
-
-        $predio->tipo = $request->filled('tipo') ? $request->tipo : NULL;//2
-        $predio->zona = $request->filled('zona') ? $request->zona : NULL;//2
-
-        $predio->sector = $request->sector;//2
-
-        $predio->comuna = $request->filled('comuna') ? $request->comuna : NULL;//2
-        $predio->barrio = $request->filled('barrio') ? $request->barrio : NULL;//2
-
-        $predio->manzana = $request->manzana;//4
-
-        $predio->predio = $request->predio;//4
-        $predio->terreno = $request->filled('terreno') ? $request->terreno : NULL;//4
-
-        $predio->mejora = $request->mejora;//3
-
-        $predio->condicion = $request->filled('condicion') ? $request->condicion : NULL;//1
-        $predio->edificio_torre = $request->filled('edificio_torre') ? $request->edificio_torre : NULL;//2
-        $predio->piso = $request->filled('piso') ? $request->piso : NULL;//2
-        $predio->propiedad = $request->filled('propiedad') ? $request->propiedad : NULL;//4
-
-        $predio->id_zona = $request->id_zona;
-        $predio->direccion = $request->direccion;
-        $predio->area_metros = str_replace(",", "", $request->area_metros);
-        $predio->area_construida = str_replace(",", "", $request->area_construida);
-        $predio->area_hectareas = str_replace(",", "", $request->area_hectareas);
-        $predio->tarifa_actual = str_replace(",", "", $request->tarifa_actual);
-        $predio->avaluo = str_replace(",", "", $request->avaluo);
-        $predio->ultimo_anio_pago = $request->ultimo_anio_pago;
-        $predio->ind_ley1995 = $request->filled('ind_ley1995') ? intval($request->ind_ley1995) * -1 : 0;
-        $query = $predio->save();
+        $predio = Predio::where('codigo_predio', $request->codigo_predio)->first();
         $tab_current = 'li-section-bar-1';
 
-        if($query) {
-            return back()->with(['success' => 'La información se guardó satisfactoriamente.', 'tab_current' => $tab_current]);
+        if($predio == null) {
+            $predio = new Predio();
+            $predio->codigo_predio = $request->codigo_predio;
+
+            $predio->tipo = $request->filled('tipo') ? $request->tipo : NULL;//2
+            $predio->zona = $request->filled('zona') ? $request->zona : NULL;//2
+
+            $predio->sector = $request->sector;//2
+
+            $predio->comuna = $request->filled('comuna') ? $request->comuna : NULL;//2
+            $predio->barrio = $request->filled('barrio') ? $request->barrio : NULL;//2
+
+            $predio->manzana = $request->manzana;//4
+
+            $predio->predio = $request->predio;//4
+            $predio->terreno = $request->filled('terreno') ? $request->terreno : NULL;//4
+
+            $predio->mejora = $request->mejora;//3
+
+            $predio->condicion = $request->filled('condicion') ? $request->condicion : NULL;//1
+            $predio->edificio_torre = $request->filled('edificio_torre') ? $request->edificio_torre : NULL;//2
+            $predio->piso = $request->filled('piso') ? $request->piso : NULL;//2
+            $predio->propiedad = $request->filled('propiedad') ? $request->propiedad : NULL;//4
+
+            $predio->id_zona = $request->id_zona;
+            $predio->direccion = $request->direccion;
+            $predio->area_metros = str_replace(",", "", $request->area_metros);
+            $predio->area_construida = str_replace(",", "", $request->area_construida);
+            $predio->area_hectareas = str_replace(",", "", $request->area_hectareas);
+            $predio->tarifa_actual = str_replace(",", "", $request->tarifa_actual);
+            $predio->avaluo = str_replace(",", "", $request->avaluo);
+            $predio->ultimo_anio_pago = $request->ultimo_anio_pago;
+            $predio->ind_ley1995 = $request->filled('ind_ley1995') ? intval($request->ind_ley1995) * -1 : 0;
+            $predio->ind_excento_impuesto = $request->filled('ind_excento_impuesto') ? intval($request->ind_excento_impuesto) * -1 : 0;
+            $predio->ind_plusvalia = $request->filled('ind_plusvalia') ? intval($request->ind_plusvalia) * -1 : 0;
+            $query = $predio->save();
+
+            if($query) {
+                return back()->with(['success' => 'La información se guardó satisfactoriamente.', 'tab_current' => $tab_current]);
+            }
+            else {
+                return back()->with(['fail' => 'No se pudo guardar la información. Intente nuevamente.', 'tab_current' => $tab_current]);
+            }
         }
         else {
-            return back()->with(['fail' => 'No se pudo guardar la información. Intente nuevamente.', 'tab_current' => $tab_current]);
+            return back()->with(['fail' => 'No se pudo guardar la información. El código de predio ingresado ya existe. Si lo que desea es realizar un cambio de código de predio anterior, por favor acceda a la sección Opciones de predio y realice la actualización del código antarior por un código nuevo.', 'tab_current' => $tab_current]);
         }
     }
 
@@ -208,74 +218,257 @@ class PrediosController extends Controller
         }
 
         $tab_current = 'li-section-bar-2';
+        $predio_validar = new Predio();
         $predio = new Predio();
-        $predio_tmp = new Predio();
+
         $predio = Predio::find($request->id_edit);
-        $predio_tmp = Predio::find($request->id_edit);
-        $predio->codigo_predio = $request->codigo_predio_edit;
+        $predio_validar = DB::table('predios')
+                        ->where('codigo_predio', $request->codigo_predio_edit)
+                        ->first();
 
-        if((strlen($predio_tmp->codigo_predio) == 15 && strlen($request->codigo_predio_edit) == 25) ||
-           (strlen($predio_tmp->codigo_predio) == 25 && strlen($request->codigo_predio_edit) == 15)) {
-            $predio->codigo_predio_anterior = $predio_tmp->codigo_predio;
-        }
+        if($predio_validar == null || $predio->id == $predio_validar->id) {
+            DB::beginTransaction();
+            try {
+                $predio_tmp = new Predio();
+                $predio_tmp = Predio::find($request->id_edit);
 
-        $predio->tipo = $request->filled('tipo_edit') ? $request->tipo_edit : NULL;//2
-        $predio->zona = $request->filled('zona_edit') ? $request->zona_edit : NULL;//2
+                $predio->codigo_predio = $request->codigo_predio_edit;
 
-        $predio->sector = $request->sector_edit;//2
-
-        $predio->comuna = $request->filled('comuna_edit') ? $request->comuna_edit : NULL;//2
-        $predio->barrio = $request->filled('barrio_edit') ? $request->barrio_edit : NULL;//2
-
-        $predio->manzana = $request->manzana_edit;//4
-
-        $predio->predio = $request->predio_edit;//4
-        $predio->terreno = $request->filled('terreno_edit') ? $request->terreno_edit : NULL;//4
-
-        $predio->mejora = $request->mejora_edit;//3
-
-        $predio->condicion = $request->filled('condicion_edit') ? $request->condicion_edit : NULL;//1
-        $predio->edificio_torre = $request->filled('edificio_torre_edit') ? $request->edificio_torre_edit : NULL;//2
-        $predio->piso = $request->filled('piso_edit') ? $request->piso_edit : NULL;//2
-        $predio->propiedad = $request->filled('propiedad_edit') ? $request->propiedad_edit : NULL;//4
-
-        $predio->id_zona = $request->id_zona_edit;
-        $predio->direccion = $request->direccion_edit;
-        $predio->area_metros = str_replace(",", "", $request->area_metros_edit);
-        $predio->area_construida = str_replace(",", "", $request->area_construida_edit);
-        $predio->area_hectareas = str_replace(",", "", $request->area_hectareas_edit);
-        $predio->tarifa_actual = str_replace(",", "", $request->tarifa_actual_edit);
-        $predio->avaluo = str_replace(",", "", $request->avaluo_edit);
-        $predio->ultimo_anio_pago = $request->ultimo_anio_pago_edit;
-        $predio->ind_ley1995 = $request->filled('ind_ley1995_edit') ? intval($request->ind_ley1995_edit) * -1 : 0;
-        $query = $predio->save();
-
-        if($query) {
-            $resolucion = new Resolucion();
-            $resolucion->numero_resolucion = $request->numero_resolucion;
-            $resolucion->fecha_resolucion = Carbon::createFromFormat("Y-m-d", $request->fecha_resolucion)->format('Y-m-d');
-            $resolucion->firma_resolucion = strtoupper($request->firma_resolucion);
-            $query = $resolucion->save();
-            if($query) {
-                $resolucion_predio = new ResolucionPredio();
-                $resolucion_predio->id_predio = $predio->id;
-                $resolucion_predio->id_resolucion = $resolucion->id;
-                $resolucion_predio->id_usuario = $request->session()->get('userid');
-                $resolucion_predio->descripcion = 'Actualización predio ' . $predio->codigo_predio;
-
-                $query = $resolucion_predio->save();
-                if($query) {
-                    return back()->with(['success' => 'La información se actualizó satisfactoriamente.', 'tab_current' => $tab_current]);
+                if((strlen($predio_tmp->codigo_predio) == 15 && strlen($request->codigo_predio_edit) == 25) ||
+                (strlen($predio_tmp->codigo_predio) == 25 && strlen($request->codigo_predio_edit) == 15)) {
+                    $predio->codigo_predio_anterior = $predio_tmp->codigo_predio;
                 }
-                else {
-                    $resolucion->delete();
-                    $predio_tmp->save();
-                    return back()->with(['fail' => 'No se pudo generar la información de resolución predio. Intente nuevamente.', 'tab_current' => $tab_current]);
-                }
+
+                $predio->tipo = $request->filled('tipo_edit') ? $request->tipo_edit : NULL;//2
+                $predio->zona = $request->filled('zona_edit') ? $request->zona_edit : NULL;//2
+
+                $predio->sector = $request->sector_edit;//2
+
+                $predio->comuna = $request->filled('comuna_edit') ? $request->comuna_edit : NULL;//2
+                $predio->barrio = $request->filled('barrio_edit') ? $request->barrio_edit : NULL;//2
+
+                $predio->manzana = $request->manzana_edit;//4
+
+                $predio->predio = $request->predio_edit;//4
+                $predio->terreno = $request->filled('terreno_edit') ? $request->terreno_edit : NULL;//4
+
+                $predio->mejora = $request->mejora_edit;//3
+
+                $predio->condicion = $request->filled('condicion_edit') ? $request->condicion_edit : NULL;//1
+                $predio->edificio_torre = $request->filled('edificio_torre_edit') ? $request->edificio_torre_edit : NULL;//2
+                $predio->piso = $request->filled('piso_edit') ? $request->piso_edit : NULL;//2
+                $predio->propiedad = $request->filled('propiedad_edit') ? $request->propiedad_edit : NULL;//4
+
+                $predio->id_zona = $request->id_zona_edit;
+                $predio->direccion = $request->direccion_edit;
+                $predio->area_metros = str_replace(",", "", $request->area_metros_edit);
+                $predio->area_construida = str_replace(",", "", $request->area_construida_edit);
+                $predio->area_hectareas = str_replace(",", "", $request->area_hectareas_edit);
+                $predio->tarifa_actual = str_replace(",", "", $request->tarifa_actual_edit);
+                $predio->avaluo = str_replace(",", "", $request->avaluo_edit);
+                $predio->ultimo_anio_pago = $request->ultimo_anio_pago_edit;
+                $predio->ind_ley1995 = $request->filled('ind_ley1995_edit') ? intval($request->ind_ley1995_edit) * -1 : 0;
+                $predio->ind_excento_impuesto = $request->filled('ind_excento_impuesto_edit') ? intval($request->ind_excento_impuesto_edit) * -1 : 0;
+                $predio->ind_plusvalia = $request->filled('ind_plusvalia_edit') ? intval($request->ind_plusvalia_edit) * -1 : 0;
+                //$query = $predio->save();
+                $predio->save();
+
+                // if($query) {
+                    $resolucion = new Resolucion();
+                    $resolucion->numero_resolucion = $request->numero_resolucion;
+                    $resolucion->fecha_resolucion = Carbon::createFromFormat("Y-m-d", $request->fecha_resolucion)->format('Y-m-d');
+                    $resolucion->firma_resolucion = strtoupper($request->firma_resolucion);
+                    // $query = $resolucion->save();
+                    $resolucion->save();
+                    // if($query) {
+                        $resolucion_predio = new ResolucionPredio();
+                        $resolucion_predio->id_predio = $predio->id;
+                        $resolucion_predio->id_resolucion = $resolucion->id;
+                        $resolucion_predio->id_usuario = $request->session()->get('userid');
+                        $resolucion_predio->descripcion = 'Actualización predio ' . $predio->codigo_predio;
+                        // $query = $resolucion_predio->save();
+                        $resolucion_predio->save();
+
+                        DB::commit();
+
+                        // if($query) {
+                            return back()->with(['success' => 'La información se actualizó satisfactoriamente.', 'tab_current' => $tab_current]);
+                        // }
+                        // else {
+                        //     $resolucion->delete();
+                        //     $predio_tmp->save();
+                        //     return back()->with(['fail' => 'No se pudo generar la información de resolución predio. Intente nuevamente.', 'tab_current' => $tab_current]);
+                        // }
+                    // }
+                    // else {
+                    //     $predio_tmp->save();
+                    //     return back()->with(['fail' => 'No se pudo generar la información de resolución. Intente nuevamente.', 'tab_current' => $tab_current]);
+                    // }
+                // }
+                // else {
+                //     return back()->with(['fail' => 'No se pudo actualizar la información. Intente nuevamente.', 'tab_current' => $tab_current]);
+                // }
             }
-            else {
-                $predio_tmp->save();
-                return back()->with(['fail' => 'No se pudo generar la información de resolución. Intente nuevamente.', 'tab_current' => $tab_current]);
+            catch(\Exception $e) {
+              DB::rollback();
+              return back()->with(['fail' => $e->getMessage(), 'tab_current' => $tab_current]);
+            }
+        }
+        else if($predio_validar != null && $predio->id != $predio_validar->id) {
+            // Cambio de cedula catastral
+            DB::beginTransaction();
+            try {
+                //////////// mutar pagos
+                // $pagos = Pago::where('id_predio', $predio->id)->count();
+
+                //if($pagos > 0) {
+                    $updated = Pago::where('id_predio', $predio->id)
+                                ->update([
+                                    'id_predio' => $predio_validar->id
+                                ]);
+
+                    //if($updated == $pagos) {
+                        //////////// mutar predios_pagos
+                        //$predios_pagos = PredioPago::where('id_predio', $predio->id)->count();
+
+                        //if($predios_pagos > 0) {
+
+                            $dt = Carbon::now();
+                            $currentYear = $dt->year;
+
+                            // Verificar si el predio nuevo tiene facturas generadas para el año actual
+                            $facturas_nuevo = PredioPago::where('id_predio', $predio_validar->id)
+                                              ->where('ultimo_anio', $currentYear)
+                                              ->first();
+
+                            // Verificar si el predio anterior tiene facturas generadas para el año actual
+                            $facturas_anterior = PredioPago::where('id_predio', $predio->id)
+                                                 ->where('ultimo_anio', $currentYear)
+                                                 ->first();
+
+                            if($facturas_nuevo != null && $facturas_anterior != null) {
+                                // Dejar la factura mas reciente
+                                // Eliminar la factura menor
+                                if($facturas_nuevo->factura_pago > $facturas_anterior->factura_pago) {
+                                    $deleted = PredioPago::where('id', $facturas_anterior->id)
+                                               ->where('ultimo_anio', $currentYear)
+                                               ->delete();
+                                }
+                                else if($facturas_nuevo->factura_pago < $facturas_anterior->factura_pago) {
+                                    $deleted = PredioPago::where('id', $facturas_nuevo->id)
+                                               ->where('ultimo_anio', $currentYear)
+                                               ->delete();
+                                }
+                            }
+                            else if(($facturas_nuevo != null && $facturas_anterior == null) || ($facturas_nuevo == null && $facturas_anterior != null)) {
+                                // Eliminar todas las facturas anteriores al año actual del nuevo predio
+                                $deleted = PredioPago::where('id_predio', $predio_validar->id)
+                                           ->where('ultimo_anio', '<', $currentYear)
+                                           ->delete();
+                            }
+
+                            // Establecer al los registros del predio anterior, el identificador del nuevo predio
+                            $updated = PredioPago::where('id_predio', $predio->id)
+                                        ->update([
+                                            'id_predio' => $predio_validar->id
+                                        ]);
+
+                            //if($updated == $predios_pagos) {
+                                //////////// mutar predios_propietarios
+                                //$predios_propietarios = PredioPropietario::where('id_predio', $predio->id)->count();
+
+                                //if($predios_propietarios > 0) {
+                                    $deleted = PredioPropietario::where('id_predio', $predio_validar->id)
+                                                ->delete();
+
+                                    $updated = PredioPropietario::where('id_predio', $predio->id)
+                                                ->update([
+                                                    'id_predio' => $predio_validar->id
+                                                ]);
+
+                                    //if($updated == $predios_propietarios) {
+                                        //////////// mutar predios_abonos
+                                        $deleted = PredioAbono::where('id_predio', $predio_validar->id)
+                                                    ->delete();
+
+                                        PredioAbono::where('id_predio', $predio->id)
+                                        ->update([
+                                            'id_predio' => $predio_validar->id
+                                        ]);
+
+                                        //////////// mutar predios_acuerdos_pago
+                                        $deleted = PredioAcuerdoPago::where('id_predio', $predio_validar->id)
+                                                    ->delete();
+
+                                        PredioAcuerdoPago::where('id_predio', $predio->id)
+                                        ->update([
+                                            'id_predio' => $predio_validar->id
+                                        ]);
+
+                                        //////////// mutar predios_calculos
+                                        $deleted = PredioCalculo::where('id_predio', $predio_validar->id)
+                                                    ->delete();
+
+                                        PredioCalculo::where('id_predio', $predio->id)
+                                        ->update([
+                                            'id_predio' => $predio_validar->id
+                                        ]);
+
+                                        //////////// mutar predios_datos
+                                        $deleted = PredioDato::where('id_predio', $predio_validar->id)
+                                                    ->delete();
+
+                                        PredioDato::where('id_predio', $predio->id)
+                                        ->update([
+                                            'id_predio' => $predio_validar->id
+                                        ]);
+
+                                        //////////// mutar resoluciones_predio
+                                        ResolucionPredio::where('id_predio', $predio->id)
+                                        ->update([
+                                            'id_predio' => $predio_validar->id
+                                        ]);
+
+                                        // predios_exoneraciones_vigencia -> NO, se mantiene la informacion asociada al predio anterior
+                                        // predios_prescripciones -> NO, se mantiene la informacion asociada al predio anterior
+
+                                        // Eliminar el predio anterior
+                                        $deleted = Predio::where('id', $predio->id)
+                                        ->delete();
+
+                                        //////////// Asignar al predio nuevo el codigo predio anterior
+                                        Predio::where('id', $predio_validar->id)
+                                        ->update([
+                                            'codigo_predio_anterior' => $predio->codigo_predio
+                                        ]);
+
+                                        $resolucion = new Resolucion();
+                                        $resolucion->numero_resolucion = $request->numero_resolucion;
+                                        $resolucion->fecha_resolucion = Carbon::createFromFormat("Y-m-d", $request->fecha_resolucion)->format('Y-m-d');
+                                        $resolucion->firma_resolucion = strtoupper($request->firma_resolucion);
+                                        $resolucion->save();
+
+                                        $resolucion_predio = new ResolucionPredio();
+                                        $resolucion_predio->id_predio = $predio_validar->id;
+                                        $resolucion_predio->id_resolucion = $resolucion->id;
+                                        $resolucion_predio->id_usuario = $request->session()->get('userid');
+                                        $resolucion_predio->descripcion = 'Actualización cédula catastral. Código anterior: ' . $predio->codigo_predio . ', Código nuevo: ' . $predio_validar->codigo_predio;
+                                        $resolucion_predio->save();
+
+                                        DB::commit();
+
+                                        return back()->with(['success' => 'La información se actualizó satisfactoriamente.', 'tab_current' => $tab_current]);
+
+                                    //}
+                                //}
+                            //}
+                        //}
+                    //}
+                //}
+            }
+            catch(\Exception $e) {
+              DB::rollback();
+              return back()->with(['fail' => $e->getMessage(), 'tab_current' => $tab_current]);
             }
         }
         else {
@@ -445,31 +638,38 @@ class PrediosController extends Controller
         if(array_key_exists('id', $data)) {
             $propietario = Propietario::find($data->{'id'});
         }
-        // else {
-        // }
-        $propietario->identificacion = $data->{'identificacion'};
-        $propietario->nombre = $data->{'nombre'};
-        $propietario->direccion = $data->{'direccion'};
-        $propietario->correo_electronico = $data->{'correo_electronico'};
+        else if(array_key_exists('id_propietario', $data)) {
+            $propietario->id = $data->{'id_propietario'};
+        }
 
-        $query = $propietario->save();
+        if(!array_key_exists('id_propietario', $data)) {
+            $propietario->identificacion = $data->{'identificacion'};
+            $propietario->nombre = $data->{'nombre'};
+            $propietario->direccion = $data->{'direccion'};
+            $propietario->correo_electronico = $data->{'correo_electronico'};
+            $query = $propietario->save();
+        }
+        else {
+            $query = true;
+        }
 
-        $result = array("success"=>$query);
+        $result = array("success" => $query);
 
         if($query) {
 
             if(array_key_exists('id', $data)) {
                 $result['message'] = 'Información de propietario del predio actualizada satisfactoriamente.';
 
-                $propietario = DB::table('predios_propietarios')
+                $propietarios = DB::table('predios_propietarios')
                                    ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
-                                   ->select('propietarios.*', 'predios_propietarios.jerarquia')
-                                   ->where('propietarios.id', $propietario->id)
-                                   ->first();
+                                   ->select('propietarios.*', 'predios_propietarios.jerarquia', 'predios_propietarios.id AS id_predio_propietario')
+                                   ->where('predios_propietarios.id_predio', $data->{'id_predio'})
+                                   ->orderBy('predios_propietarios.jerarquia', 'asc')
+                                   ->get();
 
                 return response()->json([
                     'data' => $result,
-                    'obj' => $propietario
+                    'obj' => $propietarios
                 ]);
             }
             else {
@@ -485,15 +685,16 @@ class PrediosController extends Controller
                 if($query) {
                     $result['message'] = 'Información de propietario del predio actualizada satisfactoriamente.';
 
-                    $propietario = DB::table('predios_propietarios')
-                                   ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
-                                   ->select('propietarios.*', 'predios_propietarios.jerarquia')
-                                   ->where('propietarios.id', $propietario->id)
-                                   ->first();
+                    $propietarios = DB::table('predios_propietarios')
+                                    ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
+                                    ->select('propietarios.*', 'predios_propietarios.jerarquia', 'predios_propietarios.id AS id_predio_propietario')
+                                    ->where('predios_propietarios.id_predio', $data->{'id_predio'})
+                                    ->orderBy('predios_propietarios.jerarquia', 'asc')
+                                    ->get();
 
                     return response()->json([
                         'data' => $result,
-                        'obj' => $propietario
+                        'obj' => $propietarios
                     ]);
                 }
                 else {
@@ -563,7 +764,7 @@ class PrediosController extends Controller
 
         $nuevos_predio_propietarios = DB::table('predios_propietarios')
                                     ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
-                                    ->select('propietarios.*', 'predios_propietarios.jerarquia')
+                                    ->select('propietarios.*', 'predios_propietarios.jerarquia', 'predios_propietarios.id AS id_predio_propietario')
                                     ->where('predios_propietarios.id_predio', $data->{'id_predio'})
                                     ->orderBy('predios_propietarios.jerarquia', 'asc')
                                     ->get();
@@ -571,6 +772,73 @@ class PrediosController extends Controller
         return response()->json([
             'data' => $nuevos_predio_propietarios
         ]);
+    }
+
+    public function store_predios_propietarios_delete(Request $request) {
+        $data = json_decode($request->form);
+
+        DB::beginTransaction();
+        try {
+            $prev_predio_propietario = DB::table('predios_propietarios')
+                                    ->select('predios_propietarios.*')
+                                    ->where('predios_propietarios.id', $data->{'id'})
+                                    ->first();
+
+            $predio_propietarios = DB::table('predios_propietarios')
+                                    ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
+                                    ->select('predios_propietarios.id', 'predios_propietarios.jerarquia')
+                                    ->where('predios_propietarios.id_predio', $prev_predio_propietario->id_predio)
+                                    ->whereRaw('CONVERT(int, predios_propietarios.jerarquia) > ' . intval($prev_predio_propietario->jerarquia))
+                                    ->orderBy('predios_propietarios.jerarquia', 'asc')
+                                    ->get();
+
+            // Eliminar el predio anterior
+            $deleted = PredioPropietario::where('id', $prev_predio_propietario->id)
+            ->delete();
+
+            $count_propietarios = PredioPropietario::where('id_propietario', $prev_predio_propietario->id_propietario)->count();
+
+            if($count_propietarios == 0) {
+                $deleted = Propietario::where('id', $prev_predio_propietario->id_propietario)
+                ->delete();
+            }
+
+            if($deleted) {
+                $init_jerarquia = intval($prev_predio_propietario->jerarquia);
+                foreach ($predio_propietarios as $registro) {
+                    $pp = new PredioPropietario;
+                    $pp = PredioPropietario::find($registro->id);
+                    $pp->jerarquia = str_pad($init_jerarquia, 3, "0", STR_PAD_LEFT);
+                    $pp->save();
+                    $init_jerarquia++;
+                }
+
+                $nuevos_predio_propietarios = DB::table('predios_propietarios')
+                                            ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
+                                            ->select('propietarios.*', 'predios_propietarios.jerarquia', 'predios_propietarios.id AS id_predio_propietario')
+                                            ->where('predios_propietarios.id_predio', $prev_predio_propietario->id_predio)
+                                            ->orderBy('predios_propietarios.jerarquia', 'asc')
+                                            ->get();
+
+                DB::commit();
+
+                return response()->json([
+                    'data' => $nuevos_predio_propietarios
+                ]);
+            }
+            else {
+                DB::rollback();
+                return response()->json([
+                    'error' => 'No se pudo eliminar el propietario asignado al predio. Contacte al administrador del sistema.'
+                ]);
+            }
+        }
+        catch(\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'error' => $e
+            ]);
+        }
     }
 
     public function store_predios_datos_calculo(Request $request) {
@@ -688,7 +956,7 @@ class PrediosController extends Controller
 
         $predio_propietarios = DB::table('predios_propietarios')
                                    ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
-                                   ->select('propietarios.*', 'predios_propietarios.jerarquia')
+                                   ->select('propietarios.*', 'predios_propietarios.jerarquia', 'predios_propietarios.id AS id_predio_propietario')
                                    ->where('predios_propietarios.id_predio', $request->id_predio)
                                    ->orderBy('predios_propietarios.jerarquia', 'asc')
                                    ->get();
@@ -1124,6 +1392,949 @@ class PrediosController extends Controller
         }
     }
 
+    // public function generate_factura_pdf(Request $request, $id, $vistaPrevia, $anio, $cuotas, $fecha_pago) {
+    //     if (!$request->session()->exists('userid')) {
+    //         return redirect('/');
+    //     }
+
+    //     $submit = [];
+    //     $dt = Carbon::now();
+    //     $dt_emision = Carbon::now();
+    //     $fecha_emision = $dt_emision;
+    //     $currentYear = $dt->year;
+    //     $primerCalculo = false;
+    //     $facturaYaPagada = false;
+    //     $numero_factura = new Collection();
+    //     $existe_pago = false;
+    //     $ultimo_anio_pagar = [];
+
+    //     // Numero de cuotas generadas para un año especifico
+    //     $ultimo_anio_pagar = DB::table('predios_pagos')
+    //                         ->where('id_predio', $id)
+    //                         ->where('ultimo_anio', $anio)
+    //                         ->where('anulada', 0)
+    //                         ->orderBy('factura_pago', 'asc')
+    //                         ->get();
+
+    //     // Cuotas ya pagadas en un año especifico
+    //     $cuotas_pagadas = DB::table('predios_pagos')
+    //                             ->where('id_predio', $id)
+    //                             ->where('ultimo_anio', $anio)
+    //                             ->where('pagado', -1)
+    //                             ->where('anulada', 0)
+    //                             ->get();
+
+    //     if(count($ultimo_anio_pagar) == count($cuotas_pagadas) && count($cuotas_pagadas) > 0) {
+    //         $facturaYaPagada = true;
+    //         $existe_pago = true;
+    //     }
+    //     else {
+    //         // Cuotas pendientes por pagar
+    //         $ultimo_anio_pagar = DB::table('predios_pagos')
+    //                             ->where('id_predio', $id)
+    //                             ->where('ultimo_anio', $anio)
+    //                             ->where('pagado', 0)
+    //                             ->where('anulada', 0)
+    //                             ->get();
+
+    //         if(count($cuotas_pagadas) > 0) {
+    //             // En este caso ya no se permite realizar mas calculos ya que se realizo al menos un pago y por ende
+    //             // la informacion calculada es la definitiva.
+    //             $existe_pago = true;
+    //         }
+    //         else if(count($ultimo_anio_pagar) > 0) { // Pilas, los registros existentes ya tienen numero de factura
+    //             // En este caso ya no se puede modificar el calculo para un numero de cuotas menor al ya generado.
+    //             // No se puede eliminar consecutivos de factura.
+    //             // Se deberia primero anular la factura o facturas.
+    //             // Si el numero de cuotas enviado desde el formulario es mayor o igual al numero de cuotas existente
+    //             // en la tabla predios pagos, entonces se recalcula los valores ya que pueden haber cambios en la
+    //             // parametrizacion que se desean aplicar.
+    //             if ($cuotas < count($ultimo_anio_pagar)) {
+    //                 $cuotas = count($ultimo_anio_pagar);
+    //             }
+    //         }
+    //     }
+
+    //     // Si no existe un predio_pago para el año actual, entonces EJECUTAR PROCEDIMIENTO DE CALCULO
+    //     if(count($ultimo_anio_pagar) == 0 || (count($ultimo_anio_pagar) > 0 && !$existe_pago)) {
+    //         $submit = DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?", array($anio, $id, $cuotas, $fecha_pago));
+    //         if (count($ultimo_anio_pagar) == 0) {
+    //             $primerCalculo = true;
+    //         }
+    //     }
+
+    //     if(count($submit) > 0 || count($ultimo_anio_pagar) > 0) {
+    //         $anio_actual = Anio::where('anio', $currentYear)
+    //                        ->first();
+
+    //         $ultimo_numero_factura = 0;
+
+    //         // Si se EJECUTO EL PROCEDIMIENTO DE CALCULO y es la primera vez, entonces se genera un nuevo numero de factura
+    //         if(count($submit) > 0 && $primerCalculo) {
+    //             $init_anio = new Anio;
+    //             $init_anio = Anio::find($anio_actual->id);
+    //             $case_ultimo_numero_factura = 0;
+
+    //             if($anio_actual->numero_factura_actual == null || $anio_actual->numero_factura_actual == 0) {
+    //                 if($anio_actual->numero_factura_inicial == null || $anio_actual->numero_factura_inicial == 0) {
+    //                     $ultimo_numero_factura = 1;
+    //                     $case_ultimo_numero_factura = 1;
+    //                 }
+    //                 else {
+    //                     $ultimo_numero_factura = $anio_actual->numero_factura_inicial;
+    //                     $case_ultimo_numero_factura = 2;
+    //                 }
+    //             }
+    //             else {
+    //                 if($anio_actual->numero_factura_inicial == null || $anio_actual->numero_factura_inicial == 0) {
+    //                     $ultimo_numero_factura = $anio_actual->numero_factura_actual;
+    //                     $case_ultimo_numero_factura = 3;
+    //                 }
+    //                 else if($anio_actual->numero_factura_inicial > $anio_actual->numero_factura_actual) {
+    //                     $ultimo_numero_factura = $anio_actual->numero_factura_inicial;
+    //                     $case_ultimo_numero_factura = 4;
+    //                 }
+    //                 else {
+    //                     $ultimo_numero_factura = $anio_actual->numero_factura_actual;
+    //                 }
+    //             }
+
+    //             // Maximo numero de factura 99999 cada anio
+    //             if($ultimo_numero_factura > 99999) {
+    //                 return null;
+    //             }
+
+    //             if($case_ultimo_numero_factura == 1) {
+    //                 $init_anio->numero_factura_inicial = $ultimo_numero_factura;
+    //                 $init_anio->numero_factura_actual = $ultimo_numero_factura;
+    //                 $init_anio->save();
+    //             }
+    //             else if($case_ultimo_numero_factura == 2 || $case_ultimo_numero_factura == 4) {
+    //                 $init_anio->numero_factura_actual = $ultimo_numero_factura;
+    //                 $init_anio->save();
+    //             }
+    //             else if($case_ultimo_numero_factura == 3) {
+    //                 $init_anio->numero_factura_inicial = $ultimo_numero_factura;
+    //                 $init_anio->save();
+    //             }
+
+    //             // Numero para la factura (Si se envia a generar una sola cuota)
+    //             // O numero de factura de la primera cuota (Si se envia a generar varias cuotas)
+    //             $numero_factura->push($currentYear . (str_pad($ultimo_numero_factura, 5, "0", STR_PAD_LEFT)));
+
+    //             // Configurar informacion del ultimo año a pagar
+    //             if(count($submit) > 0) {
+    //                 $ultimo_anio_pagar = $submit;
+    //             }
+    //         }
+    //         else {
+    //             if(!$facturaYaPagada) {
+    //                 $ultimo_anio_pagar = DB::table('predios_pagos')
+    //                                     ->where('id_predio', $id)
+    //                                     ->where('ultimo_anio', $anio)
+    //                                     ->where('anulada', 0)
+    //                                     ->orderBy('factura_pago', 'asc')
+    //                                     ->get();
+    //             }
+    //             foreach ($ultimo_anio_pagar as $ultimo_pago) {
+    //                 $numero_factura->push($ultimo_pago->factura_pago);
+    //             }
+    //             $fecha_emision = $ultimo_anio_pagar[0]->fecha_emision != null ? Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar[0]->fecha_emision) : $fecha_emision;
+    //         }
+
+    //         // Seleccion de informacion para cada factura
+    //         $predios = DB::table('predios')->join('zonas', function ($join) {
+    //             $join->on('predios.id_zona', '=', 'zonas.id');
+    //         })
+    //         ->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
+    //         ->select(DB::raw('predios.*, zonas.descripcion, CASE WHEN COALESCE(predios_prescripciones.prescribe_hasta, 0) >= YEAR(GETDATE()) THEN 1 ELSE 0 END AS prescrito, predios_prescripciones.prescribe_hasta'))
+    //         ->where('estado', 1)
+    //         ->where('predios.id', $id)
+    //         ->get();
+
+    //         $propietarios = DB::table('predios')
+    //                                 ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+    //                                 ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+    //                                 ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
+    //             ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(TRIM(propietarios.nombre), \'<br />\') AS propietarios, STRING_AGG(propietarios.identificacion, \'<br />\') AS identificaciones'))
+    //             ->where('predios.estado', 1)
+    //             ->where('predios.id', $id)
+    //             ->where('predios_propietarios.jerarquia', '001')
+    //             ->groupBy('predios_propietarios.id_predio')
+    //             ->get();
+
+    //         if($propietarios) {
+    //             foreach ($predios as $key => $predio) {
+    //                 $desired_object = self::findInCollection($propietarios, 'id_predio', $predio->id);
+    //                 if($desired_object) {
+    //                     $predio->propietarios = $desired_object->propietarios;
+    //                     $predio->identificaciones = $desired_object->identificaciones;
+    //                 }
+    //                 else {
+    //                     $predio->propietarios = 'Sin asignar';
+    //                     $predio->identificaciones = 'Sin asignar';
+    //                 }
+    //                 // Se muestra un solo propietario
+    //                 break;
+    //             }
+    //         }
+    //         else {
+    //             foreach ($predios as $key => $predio) {
+    //                 $predio->propietarios = 'Sin asignar';
+    //                 $predio->identificaciones = 'Sin asignar';
+    //             }
+    //         }
+
+    //         $parametro_logo = DB::table('parametros')
+    //                           ->select('parametros.valor')
+    //                           ->where('parametros.nombre', 'logo')
+    //                           ->first();
+
+    //         $parametro_nit = DB::table('parametros')
+    //                          ->select('parametros.valor')
+    //                          ->where('parametros.nombre', 'nit')
+    //                          ->first();
+
+    //         $parametro_ean = DB::table('parametros')
+    //                          ->select('parametros.valor')
+    //                          ->where('parametros.nombre', 'ean')
+    //                          ->first();
+
+    //         $logo = $parametro_logo->valor;
+    //         $nit = $parametro_nit->valor;
+    //         $ean = $parametro_ean->valor;
+    //         $lista_pagos = new Collection();
+    //         $lista_pagos_depurada = new Collection();
+    //         $ultimo_anio_pagado = new Collection();
+    //         $suma_total = new Collection();
+    //         $suma_intereses = 0;
+    //         $suma_descuento_intereses = 0;
+    //         $valores_factura = new Collection();
+    //         $fechas_pago_hasta = new Collection();
+    //         $barras = new Collection();
+    //         $barras_texto = new Collection();
+    //         $porcentajes_descuento = new Collection();
+
+    //         if($primerCalculo) {
+    //             // Obtener informacion del ultimo año pagado
+    //             $ultimo_anio_pagado = DB::table('predios_pagos')
+    //                                 ->where('id_predio', $id)
+    //                                 ->where('pagado', -1)
+    //                                 ->where('ultimo_anio', '<=', $anio)
+    //                                 ->orderBy('ultimo_anio', 'desc')
+    //                                 ->orderBy('factura_pago', 'desc')
+    //                                 ->first();
+    //         }
+    //         else {
+    //             // Obtener informacion del ultimo año pagado
+    //             $ultimo_anio_pagado = DB::table('predios_pagos')
+    //                                     ->where('id_predio', $id)
+    //                                     ->where('pagado', -1)
+    //                                     ->where('ultimo_anio', '<=', $anio)
+    //                                     ->whereNotIn('factura_pago', $numero_factura->toArray())
+    //                                     ->orderBy('ultimo_anio', 'desc')
+    //                                     ->orderBy('factura_pago', 'desc')
+    //                                     ->first();
+    //         }
+
+    //         //establecer años a pagar
+    //         if($ultimo_anio_pagado == null || $ultimo_anio_pagado->ultimo_anio + 1 == $anio) {
+    //             $predio->anios_a_pagar = $anio;
+    //         }
+    //         else {
+    //             $predio->anios_a_pagar = ($ultimo_anio_pagado->ultimo_anio + 1) . ' A ' . $anio;
+    //         }
+
+    //         if ($ultimo_anio_pagado == null) {
+    //             $obj = new StdClass();
+    //             $obj->factura_pago = '';
+    //             $obj->ultimo_anio = '';
+    //             $obj->fecha_pago = '';
+    //             $obj->valor_pago = 0;
+    //             $ultimo_anio_pagado = $obj;
+    //         }
+    //         else {
+    //             $ultimo_anio_pagado->fecha_pago = $ultimo_anio_pagado->fecha_pago !== null ? Carbon::createFromFormat("Y-m-d", substr($ultimo_anio_pagado->fecha_pago, 0, 10))->format('d/m/Y') : 'N/D';
+    //         }
+
+    //         if(!$facturaYaPagada) {
+    //             // Obtener informacion de los pagos pendientes por año
+    //             $pagos_pendientes = DB::table('predios_pagos')
+    //                                 ->where('id_predio', $id)
+    //                                 ->where('pagado', 0)
+    //                                 ->where('ultimo_anio', '<=', $anio)
+    //                                 ->where(function($query) use($vistaPrevia, $numero_factura, $ultimo_anio_pagar) {
+    //                                     $query->whereNull('factura_pago')
+    //                                         ->orWhere('factura_pago', (intval($vistaPrevia) == 0) ? $numero_factura : $ultimo_anio_pagar->factura_pago);
+    //                                 })
+    //                                 ->orderBy('ultimo_anio', 'asc')
+    //                                 ->get();
+    //         }
+    //         else {
+    //             // Obtener informacion de los registros que coinciden con la factura
+    //             $pagos_pendientes = DB::table('predios_pagos')
+    //                                 ->where('id_predio', $id)
+    //                                 ->where('pagado', -1)
+    //                                 ->where('factura_pago', $ultimo_anio_pagar->factura_pago)
+    //                                 ->orderBy('ultimo_anio', 'asc')
+    //                                 ->get();
+    //         }
+
+    //         $suma_total[0] = 0;
+    //         $suma_total[1] = 0;
+    //         $suma_total[2] = 0;
+    //         foreach ($pagos_pendientes as $pago_pendiente) {
+    //             $obj = new StdClass();
+    //             $obj->anio = $pago_pendiente->ultimo_anio;
+    //             $obj->m_tar = $pago_pendiente->tarifa == null ? 0 : $pago_pendiente->tarifa * 1000;
+    //             $obj->avaluo = $pago_pendiente->avaluo == null ? 0 : $pago_pendiente->avaluo;
+    //             $obj->impuesto = $pago_pendiente->valor_concepto1 == null ? 0 : $pago_pendiente->valor_concepto1 + $pago_pendiente->valor_concepto3;
+    //             $obj->interes = $pago_pendiente->valor_concepto2 == null ? 0 : $pago_pendiente->valor_concepto2 + $pago_pendiente->valor_concepto4;
+    //             $obj->descuento_interes = $pago_pendiente->valor_concepto13 == null ? 0 : $pago_pendiente->valor_concepto13;
+    //             $obj->catorce = $pago_pendiente->valor_concepto14 == null ? 0 : $pago_pendiente->valor_concepto14;
+    //             $obj->descuento_15 = $pago_pendiente->valor_concepto15 == null ? 0 : $pago_pendiente->valor_concepto15;
+    //             $obj->blanco = 0;
+    //             $obj->otros = 0;
+    //             $obj->total = $pago_pendiente->total_calculo == null ? 0 : $pago_pendiente->total_calculo;
+
+    //             $suma_total[0] += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->total_calculo : 0; // al ultimo año se le calculan descuentos
+    //             $suma_total[1] += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->total_dos : 0; // al ultimo año se le calculan descuentos
+    //             $suma_total[2] += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->total_tres : 0; // al ultimo año se le calculan descuentos
+
+    //             $suma_intereses += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->valor_concepto2 : 0; // al ultimo año se le calculan descuentos
+    //             $suma_descuento_intereses += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->valor_concepto13 : 0; // al ultimo año se le calculan descuentos
+    //             $lista_pagos->push($obj);
+    //         }
+
+    //         $valores_factura[0] = (round($suma_total[0] + $ultimo_anio_pagar->total_calculo, 0));
+    //         $fechas_pago_hasta[0] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->primer_fecha)->toDateString());
+    //         $porcentajes_descuento[0] = ($ultimo_anio_pagar->porcentaje_uno);
+
+    //         if(count($lista_pagos) == 1) {
+    //             $valores_factura[1] = (round($ultimo_anio_pagar->total_dos, 0));
+    //             $valores_factura[2] = (round($ultimo_anio_pagar->total_tres, 0));
+
+    //             $fechas_pago_hasta[1] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->segunda_fecha)->toDateString());
+    //             $fechas_pago_hasta[2] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->tercera_fecha)->toDateString());
+
+    //             $porcentajes_descuento[1] = ($ultimo_anio_pagar->porcentaje_dos);
+    //             $porcentajes_descuento[2] = ($ultimo_anio_pagar->porcentaje_tres);
+    //         }
+    //         else {
+    //             if(count($lista_pagos) > 5) {
+    //                 $obj = new StdClass();
+    //                 $obj->anio = '< ' . $lista_pagos[count($lista_pagos) - 5]->anio;
+
+    //                 $obj_m_tar = 0;
+    //                 $obj_avaluo = 0;
+    //                 $obj_impuesto = 0;
+    //                 $obj_interes = 0;
+    //                 $obj_descuento_interes = 0;
+    //                 $obj_catorce = 0;
+    //                 $obj_descuento_15 = 0;
+    //                 $obj_blanco = 0;
+    //                 $obj_otros = 0;
+    //                 $obj_total = 0;
+
+    //                 for ($x = 0; $x < count($lista_pagos) - 5; $x++) {
+    //                     $obj_m_tar = $lista_pagos[$x]->m_tar;
+    //                     $obj_avaluo = $lista_pagos[$x]->avaluo;
+    //                     $obj_impuesto += $lista_pagos[$x]->impuesto;
+    //                     $obj_interes += $lista_pagos[$x]->interes;
+    //                     $obj_descuento_interes += $lista_pagos[$x]->descuento_interes;
+    //                     $obj_catorce += $lista_pagos[$x]->catorce;
+    //                     $obj_descuento_15 += $lista_pagos[$x]->descuento_15;
+    //                     $obj_blanco += $lista_pagos[$x]->blanco;
+    //                     $obj_otros += $lista_pagos[$x]->otros;
+    //                     $obj_total += $lista_pagos[$x]->total;
+    //                 }
+
+    //                 $obj->m_tar = $obj_m_tar;
+    //                 $obj->avaluo = $obj_avaluo;
+    //                 $obj->impuesto = $obj_impuesto;
+    //                 $obj->interes = $obj_interes;
+    //                 $obj->descuento_interes = $obj_descuento_interes;
+    //                 $obj->catorce = $obj_catorce;
+    //                 $obj->descuento_15 = $obj_descuento_15;
+    //                 $obj->blanco = $obj_blanco;
+    //                 $obj->otros = $obj_otros;
+    //                 $obj->total = $obj_total;
+
+    //                 $lista_pagos_depurada->push($obj);
+    //                 for ($x = count($lista_pagos) - 5; $x < count($lista_pagos); $x++) {
+    //                     $lista_pagos_depurada->push($lista_pagos[$x]);
+    //                 }
+
+    //                 $lista_pagos = $lista_pagos_depurada;
+
+    //             }
+    //         }
+
+    //         for ($x = 0; $x < count($valores_factura); $x++) {
+    //             $barras[$x] = (chr(241) . '415' . $ean . '8020' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . chr(241) . '3900' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . chr(241) . '96' . str_replace('-', '', $fechas_pago_hasta[$x]));
+    //             $barras_texto[$x] = ('(415)' . $ean . '(8020)' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $fechas_pago_hasta[$x]));
+    //         }
+
+    //         $data = [
+    //             'title' => 'Predio',
+    //             'fecha' => $fecha_emision->format('d/m/Y'),
+    //             'hora' => $fecha_emision->isoFormat('h:mm:ss a'),
+    //             'numero_factura' => $numero_factura,
+    //             'predio' => $predio,
+    //             'ultimo_anio_pagado' => $ultimo_anio_pagado,
+    //             'lista_pagos' => $lista_pagos,
+    //             'barras' => $barras,
+    //             'barras_texto' => $barras_texto,
+    //             'fechas_pago_hasta' => $fechas_pago_hasta,
+    //             'porcentajes_descuento' => $porcentajes_descuento,
+    //             'valores_factura' => $valores_factura,
+    //             'temporal' => $vistaPrevia,
+    //             'facturaYaPagada' => $facturaYaPagada,
+    //             'nit' => $nit,
+    //             'logo' => $logo
+    //         ];
+
+    //         $pdf = PDF::loadView('predios.facturaPDF', $data);
+
+    //         $query = true;
+
+    //         // Actualizar el consecutivo de numero de factura disponible para la proxima impresion
+    //         // Guardar informacion solo si se realizo un nuevo calculo
+    //         if(((count($submit) > 0 && $primerCalculo == 1) || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->factura_pago == null)) && intval($vistaPrevia) == 0) {
+    //             $update_anio = new Anio;
+    //             $update_anio = Anio::find($anio_actual->id);
+    //             $update_anio->numero_factura_actual = $ultimo_numero_factura + 1;
+    //             $query = $update_anio->save();
+    //         }
+
+    //         if($query) {
+    //             // Actualizar datos pago: valor_pago, numero_factura, fecha emision
+    //             // Guardar informacion solo si se realizo un nuevo calculo
+    //             if(((count($submit) > 0 && $primerCalculo == 1) || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->factura_pago == null)) && intval($vistaPrevia) == 0) {
+    //                 foreach ($pagos_pendientes as $pago_pendiente) {
+    //                     $pp = new PredioPago;
+    //                     $pp = PredioPago::find($pago_pendiente->id);
+    //                     $pp->factura_pago = $numero_factura;
+    //                     $pp->fecha_emision = Carbon::createFromFormat("Y-m-d H:i:s", $fecha_emision->toDateTimeString())->format('Y-m-d H:i:s');
+    //                     $pp->save();
+    //                 }
+    //             }
+    //             else if(count($submit) > 0) {
+    //                 foreach ($pagos_pendientes as $pago_pendiente) {
+    //                     $pp = new PredioPago;
+    //                     $pp = PredioPago::find($pago_pendiente->id);
+    //                     $pp->fecha_emision = Carbon::createFromFormat("Y-m-d H:i:s", $fecha_emision->toDateTimeString())->format('Y-m-d H:i:s');
+    //                     $pp->save();
+    //                 }
+    //             }
+
+    //             // Nombre del archivo obtenido a partir de la fecha exacta de solicitud de generación del PDF
+    //             if(intval($vistaPrevia) == 0) {
+    //                 return $pdf->download($numero_factura . '_' . $fecha_emision->toDateString() . '_' . str_replace(':', '-', $fecha_emision->toTimeString()) . '.pdf');
+    //             }
+    //             else {
+    //                 return $pdf->download('temporal_' . $fecha_emision->toDateString() . '_' . str_replace(':', '-', $fecha_emision->toTimeString()) . '.pdf');
+    //             }
+    //         }
+    //         else {
+    //             return null;
+    //         }
+    //     }
+    //     else {
+    //         return null;
+    //     }
+    // }
+
+    public function generate_vista_previa_factura_pdf(Request $request, $id, $vistaPrevia, $anio, $cuotas, $fecha_pago) {
+        if (!$request->session()->exists('userid')) {
+            return redirect('/');
+        }
+
+        $submit = [];
+        $dt = Carbon::now();
+        $dt_emision = Carbon::now();
+        $fecha_emision = $dt_emision;
+        $currentYear = $dt->year;
+        $primerCalculo = 0;
+        $facturaYaPagada = 0;
+        $numero_factura = new Collection();
+        $existe_pago = false;
+        $ultimo_anio_pagar = [];
+
+        // MODO VISTA PREVIA $vistaPrevia = 1
+
+        // Buscar la cuotas temporales que se hayan generado previamente
+        $cuotas_generadas_temporales = DB::table('predios_pagos')
+                                        ->where('id_predio', $id)
+                                        ->where('ultimo_anio', $anio)
+                                        ->whereNull('factura_pago')
+                                        ->where('anulada', 0)
+                                        ->get();
+
+        // Si hay cuotas temporales previas entonces eliminarlas para hacer un nuevo calculo
+        if(count($cuotas_generadas_temporales) > 0) {
+            $deleted = DB::table('predios_pagos')
+                        ->where('id_predio', $id)
+                        ->where('ultimo_anio', $anio)
+                        ->whereNull('factura_pago')
+                        ->where('anulada', 0)
+                        ->delete();
+        }
+        else {
+            // Cuando no hay cuotas temporales es porque se ejecutó un calculo definitivo
+
+            // Numero de cuotas generadas para un año especifico
+            $cuotas_generadas = DB::table('predios_pagos')
+                                ->where('id_predio', $id)
+                                ->where('ultimo_anio', $anio)
+                                ->where('anulada', 0)
+                                ->get();
+
+            // Cuotas ya pagadas en un año especifico
+            $cuotas_pagadas = DB::table('predios_pagos')
+                                    ->where('id_predio', $id)
+                                    ->where('ultimo_anio', $anio)
+                                    ->where('pagado', -1)
+                                    ->where('anulada', 0)
+                                    ->get();
+
+            if(count($cuotas_generadas) == count($cuotas_pagadas) && count($cuotas_pagadas) > 0) {
+                $facturaYaPagada = 1;
+            }
+            else {
+                // Cuotas pendientes por pagar
+                $ultimo_anio_pagar = DB::table('predios_pagos')
+                                    ->where('id_predio', $id)
+                                    ->where('ultimo_anio', $anio)
+                                    ->where('pagado', 0)
+                                    ->where('anulada', 0)
+                                    ->get();
+
+                if(count($cuotas_pagadas) > 0) {
+                    $existe_pago = true;
+                }
+                else { // Que pasa si el numero de cuotas que llega es diferente de las cuotas definitivas existentes ? Pilas, los registros existentes ya tienen numero de factura
+
+                    // if($cuotas != count($ultimo_anio_pagar)) {
+                    //     $deleted = DB::table('predios_pagos')
+                    //                 ->where('id_predio', $id)
+                    //                 ->where('ultimo_anio', $anio)
+                    //                 ->where('pagado', 0)
+                    //                 ->where('anulada', 0)
+                    //                 ->delete();
+                    // }
+                }
+            }
+        }
+
+        // Si no existe un predio_pago para el año actual, entonces EJECUTAR PROCEDIMIENTO DE CALCULO
+        if(count($ultimo_anio_pagar) == 0 ||
+           (count($ultimo_anio_pagar) > 0 &&
+            //$ultimo_anio_pagar[0]->valor_pago == 0 &&
+            //$ultimo_anio_pagar[0]->fecha_pago == null &&
+            //$ultimo_anio_pagar[0]->id_banco == null &&
+            !$existe_pago)
+        ) {
+
+            $submit = DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?", array($anio, $id, $cuotas, $fecha_pago));
+
+            if (count($ultimo_anio_pagar) == 0) {
+                $primerCalculo = 1;
+            }
+            else {
+                $ultimo_anio_pagar = DB::table('predios_pagos')
+                                    ->where('id_predio', $id)
+                                    ->where('ultimo_anio', $anio)
+                                    ->where('pagado', 0)
+                                    ->get();
+            }
+        }
+
+        if(count($submit) > 0 || count($ultimo_anio_pagar) > 0) {
+            $anio_actual = Anio::where('anio', $currentYear)
+                           ->first();
+
+            $ultimo_numero_factura = 0;
+
+            // Si se EJECUTO EL PROCEDIMIENTO DE CALCULO, entonces se genera un nuevo numero de factura
+            // Generar informacion de numero de factura solo si se realizo un nuevo calculo
+            if(((count($submit) > 0 && $primerCalculo == 1) || (count($ultimo_anio_pagar) != 0 && $ultimo_anio_pagar[0]->factura_pago == null)) && intval($vistaPrevia) == 0) {
+                $init_anio = new Anio;
+                $init_anio = Anio::find($anio_actual->id);
+                $case_ultimo_numero_factura = 0;
+
+                if($anio_actual->numero_factura_actual == null || $anio_actual->numero_factura_actual == 0) {
+                    if($anio_actual->numero_factura_inicial == null || $anio_actual->numero_factura_inicial == 0) {
+                        $ultimo_numero_factura = 1;
+                        $case_ultimo_numero_factura = 1;
+                    }
+                    else {
+                        $ultimo_numero_factura = $anio_actual->numero_factura_inicial;
+                        $case_ultimo_numero_factura = 2;
+                    }
+                }
+                else {
+                    if($anio_actual->numero_factura_inicial == null || $anio_actual->numero_factura_inicial == 0) {
+                        $ultimo_numero_factura = $anio_actual->numero_factura_actual;
+                        $case_ultimo_numero_factura = 3;
+                    }
+                    else if($anio_actual->numero_factura_inicial > $anio_actual->numero_factura_actual) {
+                        $ultimo_numero_factura = $anio_actual->numero_factura_inicial;
+                        $case_ultimo_numero_factura = 4;
+                    }
+                    else {
+                        $ultimo_numero_factura = $anio_actual->numero_factura_actual;
+                    }
+                }
+
+                // Maximo numero de factura 99999 cada anio
+                if($ultimo_numero_factura > 99999) {
+                    return null;
+                }
+
+                if($case_ultimo_numero_factura == 1) {
+                    $init_anio->numero_factura_inicial = $ultimo_numero_factura;
+                    $init_anio->numero_factura_actual = $ultimo_numero_factura;
+                    $init_anio->save();
+                }
+                else if($case_ultimo_numero_factura == 2 || $case_ultimo_numero_factura == 4) {
+                    $init_anio->numero_factura_actual = $ultimo_numero_factura;
+                    $init_anio->save();
+                }
+                else if($case_ultimo_numero_factura == 3) {
+                    $init_anio->numero_factura_inicial = $ultimo_numero_factura;
+                    $init_anio->save();
+                }
+
+                $numero_factura = $currentYear . (str_pad($ultimo_numero_factura, 5, "0", STR_PAD_LEFT));
+
+                // Configurar informacion del ultimo año a pagar
+                if(count($submit) > 0) {
+                    $ultimo_anio_pagar = $submit;
+                }
+            }
+            else {
+                if(intval($vistaPrevia) == 0) {
+                    $numero_factura = $ultimo_anio_pagar->factura_pago;
+                }
+                else {
+                    for($i = 0; $i < $cuotas; $i++) {
+                        $numero_factura->push('000000000');
+                    }
+                    $ultimo_anio_pagar = DB::table('predios_pagos')
+                                        ->where('id_predio', $id)
+                                        ->where('ultimo_anio', $anio)
+                                        ->where('pagado', 0)
+                                        ->get();
+                }
+                $fecha_emision = $ultimo_anio_pagar[0]->fecha_emision != null ? Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar[0]->fecha_emision) : $fecha_emision;
+            }
+
+            // Seleccion de informacion para cada factura
+            $predios = DB::table('predios')->join('zonas', function ($join) {
+                $join->on('predios.id_zona', '=', 'zonas.id');
+            })
+            ->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
+            ->select(DB::raw('predios.*, zonas.descripcion, CASE WHEN COALESCE(predios_prescripciones.prescribe_hasta, 0) >= YEAR(GETDATE()) THEN 1 ELSE 0 END AS prescrito, predios_prescripciones.prescribe_hasta'))
+            ->where('estado', 1)
+            ->where('predios.id', $id)
+            ->get();
+
+            $propietarios = DB::table('predios')
+                                    ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                                    ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                                    ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
+                ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(TRIM(propietarios.nombre), \'<br />\') AS propietarios, STRING_AGG(propietarios.identificacion, \'<br />\') AS identificaciones'))
+                ->where('predios.estado', 1)
+                ->where('predios.id', $id)
+                ->where('predios_propietarios.jerarquia', '001')
+                ->groupBy('predios_propietarios.id_predio')
+                ->get();
+
+            if($propietarios) {
+                foreach ($predios as $key => $predio) {
+                    $desired_object = self::findInCollection($propietarios, 'id_predio', $predio->id);
+                    if($desired_object) {
+                        $predio->propietarios = $desired_object->propietarios;
+                        $predio->identificaciones = $desired_object->identificaciones;
+                    }
+                    else {
+                        $predio->propietarios = 'Sin asignar';
+                        $predio->identificaciones = 'Sin asignar';
+                    }
+                    // Se muestra un solo propietario
+                    break;
+                }
+            }
+            else {
+                foreach ($predios as $key => $predio) {
+                    $predio->propietarios = 'Sin asignar';
+                    $predio->identificaciones = 'Sin asignar';
+                }
+            }
+
+            $parametro_logo = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'logo')
+                              ->first();
+
+            $parametro_nit = DB::table('parametros')
+                             ->select('parametros.valor')
+                             ->where('parametros.nombre', 'nit')
+                             ->first();
+
+            $parametro_ean = DB::table('parametros')
+                             ->select('parametros.valor')
+                             ->where('parametros.nombre', 'ean')
+                             ->first();
+
+            $logo = $parametro_logo->valor;
+            $nit = $parametro_nit->valor;
+            $ean = $parametro_ean->valor;
+            $lista_pagos = new Collection();
+            $lista_pagos_depurada = new Collection();
+            $ultimo_anio_pagado = new Collection();
+            $suma_total = new Collection();
+            $suma_intereses = 0;
+            $suma_descuento_intereses = 0;
+            $valores_factura = new Collection();
+            $fechas_pago_hasta = new Collection();
+            $barras = new Collection();
+            $barras_texto = new Collection();
+            $porcentajes_descuento = new Collection();
+
+            if($facturaYaPagada == 0) {
+                // Obtener informacion del ultimo año pagado
+                $ultimo_anio_pagado = DB::table('predios_pagos')
+                                    ->where('id_predio', $id)
+                                    ->where('pagado', -1)
+                                    ->where('ultimo_anio', '<=', $anio)
+                                    ->orderBy('ultimo_anio', 'desc')
+                                    ->first();
+            }
+            else {
+                $facturas = new Collection();
+                foreach($ultimo_anio_pagar as $factura) {
+                    $facturas->push($factura->factura_pago);
+                }
+                // Obtener informacion del ultimo año pagado
+                $ultimo_anio_pagado = DB::table('predios_pagos')
+                                    ->where('id_predio', $id)
+                                    ->where('pagado', -1)
+                                    ->where('ultimo_anio', '<=', $anio)
+                                    ->whereNotIn('factura_pago', $facturas->toArray())
+                                    ->orderBy('ultimo_anio', 'desc')
+                                    ->first();
+            }
+
+            //establecer años a pagar
+            if($ultimo_anio_pagado == null || $ultimo_anio_pagado->ultimo_anio + 1 == $anio) {
+                $predio->anios_a_pagar = $anio;
+            }
+            else {
+                $predio->anios_a_pagar = ($ultimo_anio_pagado->ultimo_anio + 1) . ' A ' . $anio;
+            }
+
+            if ($ultimo_anio_pagado == null) {
+                $obj = new StdClass();
+                $obj->factura_pago = '';
+                $obj->ultimo_anio = '';
+                $obj->fecha_pago = '';
+                $obj->valor_pago = 0;
+                $ultimo_anio_pagado = $obj;
+            }
+            else {
+                $ultimo_anio_pagado->fecha_pago = $ultimo_anio_pagado->fecha_pago !== null ? Carbon::createFromFormat("Y-m-d", substr($ultimo_anio_pagado->fecha_pago, 0, 10))->format('d/m/Y') : 'N/D';
+            }
+
+            if($facturaYaPagada == 0) {
+                // Obtener informacion de los pagos pendientes por año
+                $pagos_pendientes = DB::table('predios_pagos')
+                                    ->where('id_predio', $id)
+                                    ->where('pagado', 0)
+                                    ->where('ultimo_anio', '<=', $anio)
+                                    ->where(function($query) use($vistaPrevia, $numero_factura, $ultimo_anio_pagar) {
+                                        $query->whereNull('factura_pago')
+                                            ->orWhere('factura_pago', (intval($vistaPrevia) == 0) ? $numero_factura : $ultimo_anio_pagar->factura_pago);
+                                    })
+                                    ->orderBy('ultimo_anio', 'asc')
+                                    ->get();
+            }
+            else {
+                // Obtener informacion de los registros que coinciden con la factura
+                $pagos_pendientes = DB::table('predios_pagos')
+                                    ->where('id_predio', $id)
+                                    ->where('pagado', -1)
+                                    ->where('factura_pago', $ultimo_anio_pagar->factura_pago)
+                                    ->orderBy('ultimo_anio', 'asc')
+                                    ->get();
+            }
+
+            $suma_total[0] = 0;
+            $suma_total[1] = 0;
+            $suma_total[2] = 0;
+            foreach ($pagos_pendientes as $pago_pendiente) {
+                $obj = new StdClass();
+                $obj->anio = $pago_pendiente->ultimo_anio;
+                $obj->m_tar = $pago_pendiente->tarifa == null ? 0 : $pago_pendiente->tarifa * 1000;
+                $obj->avaluo = $pago_pendiente->avaluo == null ? 0 : $pago_pendiente->avaluo;
+                $obj->impuesto = $pago_pendiente->valor_concepto1 == null ? 0 : $pago_pendiente->valor_concepto1 + $pago_pendiente->valor_concepto3;
+                $obj->interes = $pago_pendiente->valor_concepto2 == null ? 0 : $pago_pendiente->valor_concepto2 + $pago_pendiente->valor_concepto4;
+                $obj->descuento_interes = $pago_pendiente->valor_concepto13 == null ? 0 : $pago_pendiente->valor_concepto13;
+                $obj->catorce = $pago_pendiente->valor_concepto14 == null ? 0 : $pago_pendiente->valor_concepto14;
+                $obj->descuento_15 = $pago_pendiente->valor_concepto15 == null ? 0 : $pago_pendiente->valor_concepto15;
+                $obj->blanco = 0;
+                $obj->otros = 0;
+                $obj->total = $pago_pendiente->total_calculo == null ? 0 : $pago_pendiente->total_calculo;
+
+                $suma_total[0] += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->total_calculo : 0; // al ultimo año se le calculan descuentos
+                $suma_total[1] += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->total_dos : 0; // al ultimo año se le calculan descuentos
+                $suma_total[2] += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->total_tres : 0; // al ultimo año se le calculan descuentos
+
+                $suma_intereses += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->valor_concepto2 : 0; // al ultimo año se le calculan descuentos
+                $suma_descuento_intereses += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->valor_concepto13 : 0; // al ultimo año se le calculan descuentos
+                $lista_pagos->push($obj);
+            }
+
+            $valores_factura[0] = (round($suma_total[0] + $ultimo_anio_pagar->total_calculo, 0));
+            $fechas_pago_hasta[0] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->primer_fecha)->toDateString());
+            $porcentajes_descuento[0] = ($ultimo_anio_pagar->porcentaje_uno);
+
+            if(count($lista_pagos) == 1) {
+                $valores_factura[1] = (round($ultimo_anio_pagar->total_dos, 0));
+                $valores_factura[2] = (round($ultimo_anio_pagar->total_tres, 0));
+
+                $fechas_pago_hasta[1] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->segunda_fecha)->toDateString());
+                $fechas_pago_hasta[2] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->tercera_fecha)->toDateString());
+
+                $porcentajes_descuento[1] = ($ultimo_anio_pagar->porcentaje_dos);
+                $porcentajes_descuento[2] = ($ultimo_anio_pagar->porcentaje_tres);
+            }
+            else {
+                if(count($lista_pagos) > 5) {
+                    $obj = new StdClass();
+                    $obj->anio = '< ' . $lista_pagos[count($lista_pagos) - 5]->anio;
+
+                    $obj_m_tar = 0;
+                    $obj_avaluo = 0;
+                    $obj_impuesto = 0;
+                    $obj_interes = 0;
+                    $obj_descuento_interes = 0;
+                    $obj_catorce = 0;
+                    $obj_descuento_15 = 0;
+                    $obj_blanco = 0;
+                    $obj_otros = 0;
+                    $obj_total = 0;
+
+                    for ($x = 0; $x < count($lista_pagos) - 5; $x++) {
+                        $obj_m_tar = $lista_pagos[$x]->m_tar;
+                        $obj_avaluo = $lista_pagos[$x]->avaluo;
+                        $obj_impuesto += $lista_pagos[$x]->impuesto;
+                        $obj_interes += $lista_pagos[$x]->interes;
+                        $obj_descuento_interes += $lista_pagos[$x]->descuento_interes;
+                        $obj_catorce += $lista_pagos[$x]->catorce;
+                        $obj_descuento_15 += $lista_pagos[$x]->descuento_15;
+                        $obj_blanco += $lista_pagos[$x]->blanco;
+                        $obj_otros += $lista_pagos[$x]->otros;
+                        $obj_total += $lista_pagos[$x]->total;
+                    }
+
+                    $obj->m_tar = $obj_m_tar;
+                    $obj->avaluo = $obj_avaluo;
+                    $obj->impuesto = $obj_impuesto;
+                    $obj->interes = $obj_interes;
+                    $obj->descuento_interes = $obj_descuento_interes;
+                    $obj->catorce = $obj_catorce;
+                    $obj->descuento_15 = $obj_descuento_15;
+                    $obj->blanco = $obj_blanco;
+                    $obj->otros = $obj_otros;
+                    $obj->total = $obj_total;
+
+                    $lista_pagos_depurada->push($obj);
+                    for ($x = count($lista_pagos) - 5; $x < count($lista_pagos); $x++) {
+                        $lista_pagos_depurada->push($lista_pagos[$x]);
+                    }
+
+                    $lista_pagos = $lista_pagos_depurada;
+
+                }
+            }
+
+            for ($x = 0; $x < count($valores_factura); $x++) {
+                $barras[$x] = (chr(241) . '415' . $ean . '8020' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . chr(241) . '3900' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . chr(241) . '96' . str_replace('-', '', $fechas_pago_hasta[$x]));
+                $barras_texto[$x] = ('(415)' . $ean . '(8020)' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $fechas_pago_hasta[$x]));
+            }
+
+            $data = [
+                'title' => 'Predio',
+                'fecha' => $fecha_emision->format('d/m/Y'),
+                'hora' => $fecha_emision->isoFormat('h:mm:ss a'),
+                'numero_factura' => $numero_factura,
+                'predio' => $predio,
+                'ultimo_anio_pagado' => $ultimo_anio_pagado,
+                'lista_pagos' => $lista_pagos,
+                'barras' => $barras,
+                'barras_texto' => $barras_texto,
+                'fechas_pago_hasta' => $fechas_pago_hasta,
+                'porcentajes_descuento' => $porcentajes_descuento,
+                'valores_factura' => $valores_factura,
+                'temporal' => $vistaPrevia,
+                'facturaYaPagada' => $facturaYaPagada,
+                'nit' => $nit,
+                'logo' => $logo
+            ];
+
+            $pdf = PDF::loadView('predios.facturaPDF', $data);
+
+            $query = true;
+
+            // Actualizar el consecutivo de numero de factura disponible para la proxima impresion
+            // Guardar informacion solo si se realizo un nuevo calculo
+            if(((count($submit) > 0 && $primerCalculo == 1) || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->factura_pago == null)) && intval($vistaPrevia) == 0) {
+                $update_anio = new Anio;
+                $update_anio = Anio::find($anio_actual->id);
+                $update_anio->numero_factura_actual = $ultimo_numero_factura + 1;
+                $query = $update_anio->save();
+            }
+
+            if($query) {
+                // Actualizar datos pago: valor_pago, numero_factura, fecha emision
+                // Guardar informacion solo si se realizo un nuevo calculo
+                if(((count($submit) > 0 && $primerCalculo == 1) || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->factura_pago == null)) && intval($vistaPrevia) == 0) {
+                    foreach ($pagos_pendientes as $pago_pendiente) {
+                        $pp = new PredioPago;
+                        $pp = PredioPago::find($pago_pendiente->id);
+                        $pp->factura_pago = $numero_factura;
+                        $pp->fecha_emision = Carbon::createFromFormat("Y-m-d H:i:s", $fecha_emision->toDateTimeString())->format('Y-m-d H:i:s');
+                        $pp->save();
+                    }
+                }
+                else if(count($submit) > 0) {
+                    foreach ($pagos_pendientes as $pago_pendiente) {
+                        $pp = new PredioPago;
+                        $pp = PredioPago::find($pago_pendiente->id);
+                        $pp->fecha_emision = Carbon::createFromFormat("Y-m-d H:i:s", $fecha_emision->toDateTimeString())->format('Y-m-d H:i:s');
+                        $pp->save();
+                    }
+                }
+
+                // Nombre del archivo obtenido a partir de la fecha exacta de solicitud de generación del PDF
+                if(intval($vistaPrevia) == 0) {
+                    return $pdf->download($numero_factura . '_' . $fecha_emision->toDateString() . '_' . str_replace(':', '-', $fecha_emision->toTimeString()) . '.pdf');
+                }
+                else {
+                    return $pdf->download('temporal_' . $fecha_emision->toDateString() . '_' . str_replace(':', '-', $fecha_emision->toTimeString()) . '.pdf');
+                }
+            }
+            else {
+                return null;
+            }
+        }
+        else {
+            return null;
+        }
+    }
+
     public function generate_paz_pdf(Request $request, $id, $destino, $fecha, $valor) {
         if (!$request->session()->exists('userid')) {
             return redirect('/');
@@ -1172,6 +2383,13 @@ class PrediosController extends Controller
         $numero_certificado = $anio->consecutivo_paz + 1;
         $str_numero_certificado = $currentYear . str_pad($numero_certificado, 5, "0", STR_PAD_LEFT);
 
+        $parametro_logo = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'logo')
+                              ->first();
+
+        $logo = $parametro_logo->valor;
+
         $data = [
             'title' => 'Paz y salvo',
             'fecha_expedicion' => $dt->translatedFormat('l j \d\e F \d\e Y'),
@@ -1185,7 +2403,8 @@ class PrediosController extends Controller
             'ultimo_anio_pagado' => $ultimo_anio_pagado,
             'destino' => strtoupper($destino),
             'fecha_validez' => $fecha,
-            'valor' => $valor
+            'valor' => $valor,
+            'logo' => $logo
         ];
 
         $pdf = PDF::loadView('predios.pazPDF', $data);
@@ -1245,9 +2464,9 @@ class PrediosController extends Controller
                                             ppr.id_predio,
                                             CONCAT(TRIM(pro.nombre), \' - \', pro.identificacion) AS propietarios,
                                             ISNULL(ppa.id_predio, 0) AS tiene_pago
-                                        from predios p inner join
+                                        from predios p left join
                                             predios_propietarios ppr
-                                            on p.id = ppr.id_predio inner join
+                                            on p.id = ppr.id_predio left join
                                             propietarios pro
                                             on (pro.id = ppr.id_propietario and ppr.jerarquia = \'001\') left join
                                             predios_pagos ppa
@@ -1257,6 +2476,47 @@ class PrediosController extends Controller
                                             LOWER(p.codigo_predio) LIKE \'%'.$term.'%\' or
                                             LOWER(pro.nombre) LIKE \'%'.$term.'%\' or
                                             LOWER(pro.identificacion) LIKE \'%'.$term.'%\')
+                                    ) a
+                                    group by
+                                        id,
+                                        text,
+                                        codigo_predio,
+                                        id_predio,
+                                        tiene_pago');
+
+        $result = array("items" => $filter_data, "total_count" => count($filter_data));
+
+        return response()->json($result);
+    }
+
+    public function autocomplete_check(Request $request) {
+        $data = $request->all();
+        $term = preg_replace('/\s/', '%', preg_replace('/\s\s+/', ' ', trim($data['q'])));
+
+        $filter_data = DB::select('select
+                                        id,
+                                        text,
+                                        codigo_predio,
+                                        id_predio,
+                                        STRING_AGG(propietarios, \'<br />\') AS propietarios,
+                                        tiene_pago
+                                    from (
+                                        select
+                                            distinct p.id AS id,
+                                            TRIM(p.direccion) AS text,
+                                            p.codigo_predio,
+                                            ppr.id_predio,
+                                            CONCAT(TRIM(pro.nombre), \' - \', pro.identificacion) AS propietarios,
+                                            ISNULL(ppa.id_predio, 0) AS tiene_pago
+                                        from predios p left join
+                                            predios_propietarios ppr
+                                            on p.id = ppr.id_predio left join
+                                            propietarios pro
+                                            on (pro.id = ppr.id_propietario and ppr.jerarquia = \'001\') left join
+                                            predios_pagos ppa
+                                            on p.id = ppa.id_predio
+                                        where p.estado = 1 and
+                                              LOWER(p.codigo_predio) LIKE \'%'.$term.'%\'
                                     ) a
                                     group by
                                         id,
@@ -1290,8 +2550,9 @@ class PrediosController extends Controller
                                      ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
                                      ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
                                      ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
-                ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(CONCAT(TRIM(propietarios.nombre), \' - \', propietarios.identificacion), \'<br />\') AS propietarios'))
+                ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(CONCAT(\'(\',predios_propietarios.jerarquia, \') \', TRIM(propietarios.nombre), \' - \', propietarios.identificacion), \'<br />\') AS propietarios'))
                 ->where('predios.estado', 1)
+                ->where('predios_propietarios.jerarquia', '001')
                 ->groupBy('predios_propietarios.id_predio')
                 ->get();
 
@@ -1351,7 +2612,7 @@ class PrediosController extends Controller
         if($ultimo_anio_pagar == null) {
             array_unshift($array_anios, ['ultimo_anio' => strval($currentYear), 'factura_pago' => null]);
         }
-        return response()->json(['predio' => $predios, 'anios' => $array_anios, 'anio_actual' => $currentYear]);
+        return response()->json(['predio' => $predios, 'anios' => $array_anios, 'anio_actual' => $currentYear, 'ultimo_anio' => $ultimo_anio_pagar]);
     }
 
     public function avaluos_predio(Request $request) {
@@ -1362,7 +2623,7 @@ class PrediosController extends Controller
                                     CASE WHEN pa.origen = \'M\' THEN \'Manual\' ELSE \'Archivo\' END as tipo_registro,
                                     p.tarifa_actual as tarifa,
                                     pp.tarifa as porcentaje_tarifa,
-                                    CONCAT(b.codigo, \' - \' , b.nombre) as banco,
+                                    CONCAT(b.asobancaria, \' - \' , b.nombre) as banco,
                                     ISNULL(CONVERT(VARCHAR, pp.fecha_pago, 101), \'N/D\') as fecha_pago,
                                     pp.valor_pago,
                                     ISNULL(pp.factura_pago, \'N/D\') as factura_pago,
@@ -1387,9 +2648,102 @@ class PrediosController extends Controller
                                 p.id = '. $data->{'id_predio'} .' and
                                 pp.pagado = -1 and
                                 pp.anulada = 0
-                            order by p.id, pp.ultimo_anio desc');
+                            order by pp.ultimo_anio');
 
         $result = array("predio" => $predio);
         return response()->json($result);
+    }
+
+    public function generate_avaluos_predio_pdf(Request $request, $id) {
+        if (!$request->session()->exists('userid')) {
+            return redirect('/');
+        }
+
+        $dt = Carbon::now();
+
+        $predio =  DB::table('predios')
+                    ->where('predios.estado', 1)
+                    ->where('predios.id', $id)
+                    ->first();
+
+        $avaluos = DB::select('select p.id,
+                                    pp.ultimo_anio as anio,
+                                    pp.avaluo,
+                                    CASE WHEN pa.origen = \'M\' THEN \'Manual\' ELSE \'Archivo\' END as tipo_registro,
+                                    p.tarifa_actual as tarifa,
+                                    pp.tarifa as porcentaje_tarifa,
+                                    CONCAT(b.asobancaria, \' - \' , b.nombre) as banco,
+                                    ISNULL(CONVERT(VARCHAR, pp.fecha_pago, 101), \'N/D\') as fecha_pago,
+                                    pp.valor_pago,
+                                    ISNULL(pp.factura_pago, \'N/D\') as factura_pago,
+                                    CASE
+                                        WHEN pa.fecha_pago <= pp.primer_fecha THEN
+                                            ISNULL(pp.total_calculo, 0)
+                                        WHEN pa.fecha_pago <= pp.segunda_fecha THEN
+                                            ISNULL(pp.total_dos, 0)
+                                        WHEN pa.fecha_pago <= pp.tercera_fecha THEN
+                                            ISNULL(pp.total_tres, 0)
+                                        ELSE
+                                            0
+                                    END AS valor_vigencia
+                            from predios p inner join
+                                predios_pagos pp
+                                on (p.id = pp.id_predio) left join
+                                bancos b
+                                on (pp.id_banco = b.id) left join
+                                pagos pa
+                                on (p.id = pa.id_predio and pp.factura_pago = pa.numero_recibo)
+                            where
+                                p.id = '. $id .' and
+                                pp.pagado = -1 and
+                                pp.anulada = 0
+                            order by pp.ultimo_anio');
+
+        $propietario_ppal = DB::table('predios')
+                            ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                            ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                            ->select(DB::raw('propietarios.*, predios_propietarios.jerarquia'))
+                            ->where('predios_propietarios.jerarquia', '001')
+                            ->where('predios.estado', 1)
+                            ->where('predios.id', $id)
+                            ->first();
+
+        $parametro_logo = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'logo')
+                              ->first();
+
+        $parametro_nit = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'nit')
+                              ->first();
+
+        $logo = $parametro_logo->valor;
+        $nit = $parametro_nit->valor;
+
+        $data = [
+            'title' => 'Avaluos',
+            'usuario' => $request->session()->get('useremail'),
+            'predio' => $predio,
+            'avaluos' => $avaluos,
+            'propietario_ppal' => $propietario_ppal,
+            'logo' => $logo,
+            'nit' => $nit
+        ];
+
+        $pdf = PDF::loadView('predios.avaluosPDF', $data);
+
+        return $pdf->download($dt->toDateString() . '_' . str_replace(':', '-', $dt->toTimeString()) . '.pdf');
+    }
+
+    public function get_propietario_by_identificacion(Request $request) {
+        $data = json_decode($request->form);
+
+        $propietario = DB::table('propietarios')
+                        ->select('propietarios.*')
+                        ->where('propietarios.identificacion', $data->{'identificacion'})
+                        ->first();
+
+        return response()->json(['propietario' => $propietario]);
     }
 }
