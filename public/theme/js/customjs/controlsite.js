@@ -1,9 +1,13 @@
 var global_json = null;
 var global_json_predio = null;
 var global_url_autocomplete_predio = "/autocomplete";
+var global_url_autocomplete_solo_codigo_predio = "/autocomplete_check";
 var global_url_print = '';
 var global_ya_pagado = false;
+var global_predio_con_deuda = false;
 var global_anio_actual = 0;
+var existe_predio = false;
+var codigo_predio_buscando = '';
 var arr_autonumeric = ['porcentaje', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
     'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_abono',
     'valor_facturado', 'avaluoigac', 'area', 'valor_paz'
@@ -42,6 +46,7 @@ $(document).ready(function() {
                     $('.codigo_15').css({
                         'display': ''
                     });
+                    $('.labels_codigo_predio').css('display', 'none');
                 }
 
                 if ($("#pagosTable").length > 0) {
@@ -103,7 +108,11 @@ $(document).ready(function() {
         $('#li-section-bar-2').bind('click', function() {
             if ($('#tab').val() === 'li-section-bar-1') {
                 //$('#btn_cancel_edit').trigger('click');
-                //} else {
+                $('#id_predio_edit.select2').val(null).trigger("change");
+                $('#div_msg_predio_existe').fadeOut('fast');
+                $('#div_msg_predio_disponible').fadeOut('fast');
+                existe_predio = false;
+                codigo_predio_buscando = '';
                 $('.result').empty();
                 if ($('#tab').length > 0) {
                     $('#tab').val('li-section-bar-2');
@@ -167,13 +176,10 @@ $(document).ready(function() {
                 if ($('#div_table').length > 0)
                     $('#div_table').fadeIn();
 
-                // if ($('#timeline_citas').length > 0)
-                //     $('#timeline_citas').fadeIn();
-
-                // if ($('#div_est_usu_tmp_edit').length > 0) {
-                //     $('#label_est_usu_edit').text(' Inactivo');
-                //     $('#est_usu_tmp_edit').prop('checked', false);
-                // }
+                if ($('#div_estado_tmp_edit').length > 0) {
+                    $('#label_estado_edit').text(' Inactivo');
+                    $('#estado_tmp_edit').prop('checked', false);
+                }
 
                 if ($("#create-form").length > 0) {
                     var validatorCreate = $("#create-form").validate();
@@ -399,6 +405,50 @@ $(document).ready(function() {
         });
     }
 
+    if ($('#ind_excento_impuesto').length > 0) {
+        $('#ind_excento_impuesto').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_ind_excento_impuesto').html('SI');
+                $(this).val(1);
+            } else {
+                $('#span_ind_excento_impuesto').html('NO');
+                $(this).val(0);
+            }
+        });
+
+        $('#ind_excento_impuesto_edit').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_ind_excento_impuesto_edit').html('SI');
+                $(this).val(1);
+            } else {
+                $('#span_ind_excento_impuesto_edit').html('NO');
+                $(this).val(0);
+            }
+        });
+    }
+
+    if ($('#ind_plusvalia').length > 0) {
+        $('#ind_plusvalia').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_ind_plusvalia').html('SI');
+                $(this).val(1);
+            } else {
+                $('#span_ind_plusvalia').html('NO');
+                $(this).val(0);
+            }
+        });
+
+        $('#ind_plusvalia_edit').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_ind_plusvalia_edit').html('SI');
+                $(this).val(1);
+            } else {
+                $('#span_ind_plusvalia_edit').html('NO');
+                $(this).val(0);
+            }
+        });
+    }
+
     if ($("#create-form").length > 0) {
         $('#create-form').validate().settings.ignore = '';
         $('#create-form').validate().settings.errorPlacement = function(error, element) {
@@ -553,9 +603,10 @@ $(document).ready(function() {
             language: "es",
             placeholder: "Buscar...",
             allowClear: true,
+            maximumInputLength: 25,
             minimumInputLength: 3,
             ajax: {
-                url: global_url_autocomplete_predio,
+                url: global_url_autocomplete_solo_codigo_predio,
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
@@ -565,18 +616,28 @@ $(document).ready(function() {
                 };
                 },
                 processResults: function (data, params) {
-                // parse the results into the format expected by Select2
-                // since we are using custom formatting functions we do not need to
-                // alter the remote JSON data, except to indicate that infinite
-                // scrolling can be used
-                params.page = params.page || 1;
-
-                return {
-                    results: data.items,
-                    pagination: {
-                    more: (params.page * 30) < data.total_count
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    params.page = params.page || 1;
+                    if(data.items.length === 0) {
+                        $('#div_msg_predio_disponible').fadeIn('fast');
+                        $('#id_predio_edit.select2').val(null).trigger("change");
+                        $('#div_msg_predio_existe').fadeOut('fast');
+                        existe_predio = false;
+                        codigo_predio_buscando = $('.select2-search__field').val();
                     }
-                };
+                    else {
+                        $('#div_msg_predio_disponible').fadeOut('fast');
+                        codigo_predio_buscando = '';
+                    }
+                    return {
+                        results: data.items,
+                        pagination: {
+                        more: (params.page * 30) < data.total_count
+                        }
+                    };
                 },
                 cache: true
             },
@@ -584,21 +645,44 @@ $(document).ready(function() {
             templateSelection: formatRepoSelection
         });
 
-        $('#id_predio_edit.select2').on('select2:select', function (e) {
-            global_json_predio = null;
-            if ($('#id_predio_edit.select2').closest('form').length > 0) {
-                if ($('#id_predio_edit.select2').closest('form').attr('id') === 'update-form') {
-                    $('#update-form').validate().element($('#id_predio_edit.select2'));
+
+        $('#id_predio_edit.select2').on('select2:open', function (e) {
+            $('.select2-search__field').attr('maxlength', 25);
+            $('#div_msg_predio_disponible').fadeOut('fast');
+            existe_predio = true;
+        });
+
+        $('#id_predio_edit.select2').on('select2:close', function (e) {
+            if($('#id_predio_edit').find('option').length === 0 || !existe_predio) {
+                if(codigo_predio_buscando.length > 0) {
+                    $('#div_msg_predio_disponible').fadeOut('fast');
+                    $('#codigo_predio').val(codigo_predio_buscando);
+                    $('#codigo_predio').trigger('keyup');
+                    $('#id_predio_edit.select2').val(null).trigger("change");
+                    $('#id_predio_edit').empty();
+                    existe_predio = false;
+                    codigo_predio_buscando = '';
+                    setTimeout(function() {
+                        $('#codigo_predio').focus();
+                    }, 200);
+                }
+                else {
+                    clearFormCreatePredio();
                 }
             }
         });
 
+        $('#id_predio_edit.select2').on('select2:select', function (e) {
+            $('#div_msg_predio_existe').fadeIn('fast');
+            $('#div_msg_predio_disponible').fadeOut('fast');
+            codigo_predio_buscando = '';
+            clearFormCreatePredio();
+        });
+
         $('#id_predio_edit.select2').on('select2:clear', function (e) {
-            if ($('#id_predio_edit.select2').closest('form').length > 0) {
-                if ($('#id_predio_edit.select2').closest('form').attr('id') === 'update-form') {
-                    $('#update-form').validate().element($('#id_predio_edit.select2'));
-                }
-            }
+            $('#div_msg_predio_existe').fadeOut('fast');
+            $('#div_msg_predio_disponible').fadeOut('fast');
+            codigo_predio_buscando = '';
         });
     }
 
@@ -616,6 +700,20 @@ $(document).ready(function() {
         }
     });
 
+    // $('#generate_factura_definitiva').off('click').on('click', function() {
+    //     $('.btn_pdf').attr('disabled', true);
+    //     if(checkAnioImpresion()) {
+    //         startImpresion(global_url_print + '/0/' + $('#ultimo_anio_facturar').val() + '/' + $('#cuotas_factura').val() + '/1900-01-01', 'Iniciando generación factura definitiva de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
+    //     }
+    // });
+
+    // $('#generate_factura_temporal').off('click').on('click', function() {
+    //     $('.btn_pdf').attr('disabled', true);
+    //     if(checkAnioImpresion()) {
+    //         startImpresion(global_url_print + '/1/' + $('#ultimo_anio_facturar').val() + '/' + $('#cuotas_factura').val() + '/1900-01-01', 'Iniciando generación factura vista previa de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
+    //     }
+    // });
+
     $('#generate_paz').off('click').on('click', function() {
         $('.btn_pdf').attr('disabled', true);
         if(checkFormPaz()) {
@@ -623,7 +721,62 @@ $(document).ready(function() {
         }
     });
 
+    if ($('#div_estado_tmp').length > 0) {
+        $('#estado_tmp').off('click').on('click', function() {
+            $('#div_estado_tmp').trigger('click');
+        });
+        $('#label_estado_tmp').off('click').on('click', function() {
+            $('#div_estado_tmp').trigger('click');
+        });
+        $('#div_estado_tmp').off('click').on('click', function() {
+            if (!$('#estado_tmp').is(':checked')) {
+                $('#estado').val('A');
+                $('#label_estado_tmp').text(' Activo');
+                $('#estado_tmp').prop('checked', true);
+            } else {
+                $('#estado').val('I');
+                $('#label_estado_tmp').text(' Inactivo');
+                $('#estado_tmp').prop('checked', false);
+            }
+        });
+    }
+
+    if ($('#div_estado_tmp_edit').length > 0) {
+        $('#estado_tmp_edit').off('click').on('click', function() {
+            $('#div_estado_tmp_edit').trigger('click');
+        });
+        $('#label_estado_tmp_edit').off('click').on('click', function() {
+            $('#div_estado_tmp_edit').trigger('click');
+        });
+        $('#div_estado_tmp_edit').off('click').on('click', function() {
+            if (!$('#estado_tmp_edit').is(':checked')) {
+                $('#estado_edit').val('A');
+                $('#label_estado_tmp_edit').text(' Activo');
+                $('#estado_tmp_edit').prop('checked', true);
+            } else {
+                $('#estado_edit').val('I');
+                $('#label_estado_tmp_edit').text(' Inactivo');
+                $('#estado_tmp_edit').prop('checked', false);
+            }
+        });
+    }
+
 });
+
+function clearFormCreatePredio() {
+    $("#create-form")[0].reset();
+    $('.text-danger').remove();
+    clear_form_elements("#create-form");
+    var validatorCreate = $("#create-form").validate();
+    validatorCreate.resetForm();
+    $.each($('.has-success'), function(i, el) {
+        $(el).removeClass('has-success');
+    });
+    $.each($('.has-error'), function(i, el) {
+        $(el).removeClass('has-error');
+    });
+    $('#codigo_predio').trigger('keyup');
+}
 
 function setEditRow(initDataTable) {
     if ($('.edit_row').length > 0) {
@@ -740,16 +893,22 @@ function setDownloadFacturaRow() {
             var url_download = $(btn).attr('url');
             global_url_print = url_download;
             $(btn).attr('disabled', true);
+            $('[data-toggle="tooltip"]').tooltip('destroy');
             if(!global_ya_pagado) {
                 $('#modal-impresion-factura').modal({ backdrop: 'static', keyboard: false }, 'show');
                 $('#modal-impresion-factura').on('hidden.bs.modal', function() {
                     $(btn).attr('disabled', false);
                     $('#form-predios-impresion-factura')[0].reset();
                 });
+                $('#modal-impresion-factura').on('shown.bs.modal', function() {
+                    $('[data-toggle="tooltip"]').tooltip();
+                });
             }
             else {
                 startImpresion(global_url_print + '/0/' + global_anio_actual, 'Pago ya registrado. Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
+                // startImpresion(global_url_print + '/0/' + global_anio_actual + '/0/1900-01-01', 'Pago ya registrado. Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
                 $(btn).attr('disabled', false);
+                $('[data-toggle="tooltip"]').tooltip();
             }
         });
     }
@@ -777,12 +936,14 @@ function setDownloadPazRow() {
             $('#fecha_paz').datepicker('setEndDate', formattedEndDate);
             $('#modal-impresion-paz').modal({ backdrop: 'static', keyboard: false }, 'show');
             global_url_print = url_download;
+            $('[data-toggle="tooltip"]').tooltip('destroy');
             $('#modal-impresion-paz').on('hidden.bs.modal', function() {
                 $(btn).attr('disabled', false);
                 $('#form-predios-impresion-paz')[0].reset();
             });
             $('#modal-impresion-paz').on('shown.bs.modal', function() {
                 $('#destino_paz').focus();
+                $('[data-toggle="tooltip"]').tooltip();
             });
         });
     }
@@ -800,9 +961,10 @@ function startImpresion(url_download, message_toast, type_icon, modal) {
             stack: 6,
             afterHidden: function () {
                 if(modal.length > 0) {
-                    $('.btn_pdf').attr('disabled', false);
+                    // $('.btn_pdf').attr('disabled', false);
                     $('#' + modal).modal('hide');
                 }
+                $('.btn_pdf').attr('disabled', false);
             }
         });
         setTimeout(function() {
@@ -833,6 +995,8 @@ function startImpresion(url_download, message_toast, type_icon, modal) {
 function getPredio(id_predio) {
     global_ya_pagado = false;
     global_anio_actual = 0;
+    global_predio_con_deuda = false;
+    $('#div_fecha_pago_factura').css('display', 'none');
     var jsonObj = {};
     jsonObj.id_predio = id_predio;
     $.ajax({
@@ -861,8 +1025,8 @@ function getPredio(id_predio) {
                 var tr = $('<tr style="cursor: pointer;" id="tr_predio_' + predio.id + '" json-data=\'' + JSON.stringify(predio) + '\' class="predio_row"></tr>');
                 var td_1 = $('<td class="edit_row cell_center">' + predio.codigo_predio + '</td>');
                 if(Number(predio.prescrito) > 0) {
-                    td_1.append('&nbsp;&nbsp;<span class="tips" style="color: #25ca59;" title="Prescrito hasta ' + predio.prescribe_hasta + '"><i class="fa fa-info-circle"></i></span>');
-                    classBtn = 'btn-default tips';
+                    td_1.append('&nbsp;&nbsp;<span data-toggle="tooltip" data-placement="bottom" title="Prescrito hasta ' + predio.prescribe_hasta + '" style="color: #f41a0f;"><i class="fa fa-info-circle"></i></span>');
+                    classBtn = 'btn-default';
                     disabledBtnPrescribe = 'disabled="disabled"';
                     disabledBtnCalculo = 'disabled="disabled"';
                     disabledBtnPaz = 'disabled="disabled"';
@@ -884,15 +1048,17 @@ function getPredio(id_predio) {
                 var td_3 = $('<td class="edit_row cell_center">' + predio.propietarios + '</td>');
                 var td_4 = $('<td class="cell_center"></td>');
 
-                var htmlBotones = '<button type="button" ide="' + predio.id + '" class="modify_row btn btn-instagram" req_res="' + opcion.resolucion_edita + '" ' + disabledBtnEdita + '><i class="fa fa-pencil-square"></i></button>' +
+                var htmlBotones = '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Editar predio" ide="' + predio.id + '" class="modify_row btn btn-instagram" req_res="' + opcion.resolucion_edita + '" ' + disabledBtnEdita + '><i class="fa fa-pencil-square"></i></button>' +
                                   '&nbsp;&nbsp;' +
-                                  '<button type="button" ide="' + predio.id + '" class="prescribe_row btn ' + classBtn + '" ' + disabledBtnPrescribe + '><i class="fa fa-clock-o"></i></button>' +
+                                  '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Prescribir predio" ide="' + predio.id + '" class="prescribe_row btn ' + classBtn + '" ' + disabledBtnPrescribe + '><i class="fa fa-clock-o"></i></button>' +
                                   '&nbsp;&nbsp;' +
-                                  '<button type="button" ide="' + predio.id + '" class="download_factura_row btn btn-'+ colorBtnCalculo +'" url="/generate_factura_pdf/' + predio.id + '" msg="¿Está seguro/a que desea ejecutar el cálculo?" ' + disabledBtnCalculo + '><i class="fa ' + classBtnCalculo + '"></i></button>' +
+                                  '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Generar factura" ide="' + predio.id + '" class="download_factura_row btn btn-'+ colorBtnCalculo +'" url="/generate_factura_pdf/' + predio.id + '" msg="¿Está seguro/a que desea ejecutar el cálculo?" ' + disabledBtnCalculo + '><i class="fa ' + classBtnCalculo + '"></i></button>' +
                                   '&nbsp;&nbsp;' +
-                                  '<button type="button" ide="' + predio.id + '" class="download_paz_row btn btn-warning" url="/generate_paz_pdf/' + predio.id + '" msg="¿Está seguro/a que desea generar el paz y salvo?" ' + disabledBtnPaz + '><i class="fa fa-trophy"></i></button>' +
+                                  '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Generar paz y salvo" ide="' + predio.id + '" class="download_paz_row btn btn-warning" url="/generate_paz_pdf/' + predio.id + '" msg="¿Está seguro/a que desea generar el paz y salvo?" ' + disabledBtnPaz + '><i class="fa fa-trophy"></i></button>' +
                                   '&nbsp;&nbsp;' +
-                                  '<button type="button" ide="' + predio.id + '" class="delete_row btn btn-danger" req_res="' + opcion.resolucion_elimina + '" msg="¿Está seguro/a que desea anular el predio?" ' + disabledBtnElimina + '><i class="fa fa-trash-o"></i></button>';
+                                //   '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Ver aval&uacute;os" ide="' + predio.id + '" class="avaluos_row btn btn-default"><i class="fa fa-home"></i></button>' +
+                                //   '&nbsp;&nbsp;' +
+                                  '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Eliminar predio" ide="' + predio.id + '" class="delete_row btn btn-danger" req_res="' + opcion.resolucion_elimina + '" msg="¿Está seguro/a que desea anular el predio?" ' + disabledBtnElimina + '><i class="fa fa-trash-o"></i></button>';
 
                 td_4.html(htmlBotones);
                 tr.append(td_1).append(td_2).append(td_3).append(td_4);
@@ -903,7 +1069,22 @@ function getPredio(id_predio) {
                 $.each(anios, function(i, el){
                     $('#ultimo_anio_facturar').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
                 });
-
+                if(anios.length > 1) {
+                    global_predio_con_deuda = true;
+                    $('#div_fecha_pago_factura').css('display', '');
+                    var today = new Date();
+                    var tomorrow = new Date();
+                    tomorrow.setDate(today.getDate()+1);
+                    var year = tomorrow.toLocaleString("default", { year: "numeric" });
+                    var month = tomorrow.toLocaleString("default", { month: "2-digit" });
+                    var day = tomorrow.toLocaleString("default", { day: "2-digit" });
+                    // Generate yyyy-mm-dd date string
+                    var formattedDate = year + "-" + month + "-" + day;
+                    var formattedEndDate = year + "-" + 12 + "-" + 31;
+                    $('#fecha_pago_factura').datepicker('setDate', formattedDate);
+                    $('#fecha_pago_factura').datepicker('setStartDate', formattedDate);
+                    $('#fecha_pago_factura').datepicker('setEndDate', formattedEndDate);
+                }
                 setTimeout(function() {
                     setEditRow(false);
                     setModifyRow();
@@ -911,13 +1092,47 @@ function getPredio(id_predio) {
                     setDownloadFacturaRow();
                     setDownloadPazRow();
                     setPrescribeRow();
+                    // setAvaluosRow();
                     $('.tips').powerTip({
                         placement: 's' // north-east tooltip position
                     });
+                    $('[data-toggle="tooltip"]').tooltip();
                 }, 500);
             }
         },
         error: function(xhr) {
+            console.log(xhr.responseText);
+        }
+    });
+}
+
+function getAvaluosPredio(id_predio, btn) {
+    var jsonObj = {};
+    jsonObj.id_predio = id_predio;
+    $.ajax({
+        type: 'POST',
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        dataType: 'json',
+        url: '/avaluos_predio',
+        data: {
+            form: JSON.stringify(jsonObj)
+        },
+        success: function(response) {
+            if(btn !== undefined) {
+                $(btn).attr('disabled', false);
+            }
+            console.log(response);
+            if (response.predio.length > 0) {
+                if (DTAvaluos !== null) {
+                    DTAvaluos.clear().draw();
+                    DTAvaluos.rows.add(response.predio).draw();
+                }
+            }
+        },
+        error: function(xhr) {
+            if(btn !== undefined) {
+                $(btn).attr('disabled', false);
+            }
             console.log(xhr.responseText);
         }
     });
@@ -934,19 +1149,27 @@ function setPrescribeRow() {
             $('#modal-prescripciones').modal({ backdrop: 'static', keyboard: false }, 'show');
         });
 
-        $('#modal-prescripciones').on('hidden.bs.modal', function() {
+        // $('#modal-prescripciones').on('hidden.bs.modal', function() {
+        //     $('#form-predios-prescripcion')[0].reset();
+        //     clear_form_elements("#form-predios-prescripcion");
+        //     validatorPrescripciones.resetForm();
+        // });
+        $('#modal-prescripciones').on('shown.bs.modal', function() {
             $('#form-predios-prescripcion')[0].reset();
             clear_form_elements("#form-predios-prescripcion");
             validatorPrescripciones.resetForm();
-        });
-        $('#modal-prescripciones').on('shown.bs.modal', function() {
             $('#prescribe_hasta').focus();
         });
 
         $('#save_prescripcion').off('click').on('click', function() {
             var form = $("#form-predios-prescripcion");
             if (form.valid()) {
-                var input_prescribe_hasta = $('<input class="datohidden" id="prescribe_hasta" name="prescribe_hasta" type="hidden" value="' + $('#prescribe_hasta_modal').val() + '"  />');
+                var input_prescribe_hasta = $('<input id="prescribe_hasta" name="prescribe_hasta" type="hidden" value="' + $('#prescribe_hasta_modal').val() + '"  />');
+
+                if ($('#prescribe_hasta').length > 0) {
+                    input_prescribe_hasta = $('#prescribe_hasta');
+                }
+
                 $('#' + global_form_to_send).prepend(input_prescribe_hasta);
                 $('#modal-resolucion').modal('show');
                 $('#modal-prescripciones').modal('hide');
@@ -971,6 +1194,25 @@ function setPrescribeRow() {
         });
     }
 }
+
+// function setAvaluosRow() {
+//     if ($('.avaluos_row').length > 0) {
+
+//         $('.avaluos_row').off('click').on('click', function(evt) {
+//             var btn = $(this);
+//             $(btn).attr('disabled', true);
+//             getAvaluosPredio($(btn).attr('ide'), btn);
+//             $('#modal-avaluo').modal({ backdrop: 'static', keyboard: false }, 'show');
+//             $('[data-toggle="tooltip"]').tooltip('destroy');
+//         });
+
+//         $('#modal-avaluo').on('hidden.bs.modal', function() {
+//             $('[data-toggle="tooltip"]').tooltip();
+//         });
+//         // $('#modal-avaluo').on('shown.bs.modal', function() {
+//         // });
+//     }
+// }
 
 function formatRepo (repo) {
     if (repo.loading) {
@@ -1057,11 +1299,11 @@ function setData(jsonObj) {
             }
         });
 
-        // if ($('#div_est_usu_tmp_edit').length > 0) {
-        //     if ($('#est_usu_edit').val() === 'A') {
-        //         $('#div_est_usu_tmp_edit').trigger('click');
-        //     }
-        // }
+        if ($('#div_estado_tmp_edit').length > 0) {
+            if ($('#estado_edit').val() === 'A') {
+                $('#div_estado_tmp_edit').trigger('click');
+            }
+        }
 
         $('.selectpicker').selectpicker('refresh');
         $('#div_edit_form').fadeIn();
