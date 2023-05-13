@@ -122,7 +122,7 @@
             <table class="table-header">
                 <tr>
                     <td style="width: 20%;">
-                        <img style="width: 70%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/logo-sesquile.png'))) }}" alt="Logo" />
+                        <img style="width: 70%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/'. $logo))) }}" alt="Logo" />
                     </td>
                     <td>
                         <p class="header">
@@ -144,13 +144,13 @@
         <div id="body">
             <table class="titles" style="width: 100%; margin-top: 0px;">
                 <tr>
-                    @if($temporal > 0 || $facturaYaPagada > 0)
+                    @if($temporal > 0 || $facturaYaPagada)
                     <td style="width: 40%;" rowspan="2">
                         <h3 class="title" style="color: tomato; text-align: left; font-weight: normal;">
                             @if($temporal > 0)
                             Documento no v&aacute;lido para la ejecuci&oacute;n del pago de impuesto predial.
-                            @elseif($facturaYaPagada > 0)
-                            PAGO DE FACTURA YA REGISTRADO.
+                            @elseif($facturaYaPagada)
+                            PAGO DE FACTURA YA REGISTRADO.<br />El predio se encuentra a paz y salvo.
                             @endif
                         </h3>
                     </td>
@@ -316,7 +316,7 @@
                 <table class="info-alcaldia" style="width: 100%; margin-top: 10px;">
                     <tr>
                         <td>ALCALDIA DE SESQUILE</td>
-                        <td>NIT 899.999.415-2</th>
+                        <td>NIT {{ $nit }}</th>
                         <td>IMPUESTO PREDIAL UNIFICADO</td>
                     </tr>
                 </table>
@@ -351,13 +351,13 @@
         </div>
         <div id="footer">
             SECRETAR&Iacute;A DE HACIENDA
-            @if($temporal > 0 || $facturaYaPagada > 0)
+            @if($temporal > 0 || $facturaYaPagada)
                 <br />
                 <span style="color: tomato; font-size: 70%;">
                     @if($temporal > 0)
                     VISTA PREVIA FACTURA DE COBRO
-                    @elseif ($facturaYaPagada > 0)
-                    PAGO DE FACTURA YA REGISTRADO.
+                    @elseif ($facturaYaPagada)
+                    PAGO DE FACTURA YA REGISTRADO. El predio se encuentra a paz y salvo.
                     @endif
                 </span>
             @endif

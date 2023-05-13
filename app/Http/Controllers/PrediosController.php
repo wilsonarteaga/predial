@@ -998,7 +998,7 @@ class PrediosController extends Controller
         $fecha_emision = $dt_emision;
         $currentYear = $dt->year;
         $primerCalculo = 0;
-        $facturaYaPagada = 0;
+        $facturaYaPagada = false;
 
         $ultimo_anio_pagar = DB::table('predios_pagos')
                                 ->where('id_predio', $id)
@@ -1007,7 +1007,7 @@ class PrediosController extends Controller
                                 ->first();
 
         if($ultimo_anio_pagar != null) {
-            $facturaYaPagada = 1;
+            $facturaYaPagada = true;
         }
         else {
             // Verificar si el registro ya existe
@@ -1153,7 +1153,24 @@ class PrediosController extends Controller
                 }
             }
 
-            $nit = '7709998776913';
+            $parametro_logo = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'logo')
+                              ->first();
+
+            $parametro_nit = DB::table('parametros')
+                             ->select('parametros.valor')
+                             ->where('parametros.nombre', 'nit')
+                             ->first();
+
+            $parametro_ean = DB::table('parametros')
+                             ->select('parametros.valor')
+                             ->where('parametros.nombre', 'ean')
+                             ->first();
+
+            $logo = $parametro_logo->valor;
+            $nit = $parametro_nit->valor;
+            $ean = $parametro_ean->valor;
             $lista_pagos = new Collection();
             $lista_pagos_depurada = new Collection();
             $ultimo_anio_pagado = new Collection();
@@ -1166,7 +1183,7 @@ class PrediosController extends Controller
             $barras_texto = new Collection();
             $porcentajes_descuento = new Collection();
 
-            if($facturaYaPagada == 0) {
+            if(!$facturaYaPagada) {
                 // Obtener informacion del ultimo año pagado
                 $ultimo_anio_pagado = DB::table('predios_pagos')
                                     ->where('id_predio', $id)
@@ -1206,7 +1223,7 @@ class PrediosController extends Controller
                 $ultimo_anio_pagado->fecha_pago = $ultimo_anio_pagado->fecha_pago !== null ? Carbon::createFromFormat("Y-m-d", substr($ultimo_anio_pagado->fecha_pago, 0, 10))->format('d/m/Y') : 'N/D';
             }
 
-            if($facturaYaPagada == 0) {
+            if(!$facturaYaPagada) {
                 // Obtener informacion de los pagos pendientes por año
                 $pagos_pendientes = DB::table('predios_pagos')
                                     ->where('id_predio', $id)
@@ -1321,8 +1338,8 @@ class PrediosController extends Controller
             }
 
             for ($x = 0; $x < count($valores_factura); $x++) {
-                $barras[$x] = (chr(241) . '415' . $nit . '8020' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . chr(241) . '3900' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . chr(241) . '96' . str_replace('-', '', $fechas_pago_hasta[$x]));
-                $barras_texto[$x] = ('(415)' . $nit . '(8020)' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $fechas_pago_hasta[$x]));
+                $barras[$x] = (chr(241) . '415' . $ean . '8020' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . chr(241) . '3900' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . chr(241) . '96' . str_replace('-', '', $fechas_pago_hasta[$x]));
+                $barras_texto[$x] = ('(415)' . $ean . '(8020)' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $fechas_pago_hasta[$x]));
             }
 
             $data = [
@@ -1339,7 +1356,9 @@ class PrediosController extends Controller
                 'porcentajes_descuento' => $porcentajes_descuento,
                 'valores_factura' => $valores_factura,
                 'temporal' => $tmp,
-                'facturaYaPagada' => $facturaYaPagada
+                'facturaYaPagada' => $facturaYaPagada,
+                'nit' => $nit,
+                'logo' => $logo
             ];
 
             $pdf = PDF::loadView('predios.facturaPDF', $data);
@@ -1856,7 +1875,7 @@ class PrediosController extends Controller
         $fecha_emision = $dt_emision;
         $currentYear = $dt->year;
         $primerCalculo = 0;
-        $facturaYaPagada = 0;
+        $facturaYaPagada = false;
         $numero_factura = new Collection();
         $existe_pago = false;
         $ultimo_anio_pagar = [];
@@ -1899,7 +1918,7 @@ class PrediosController extends Controller
                                     ->get();
 
             if(count($cuotas_generadas) == count($cuotas_pagadas) && count($cuotas_pagadas) > 0) {
-                $facturaYaPagada = 1;
+                $facturaYaPagada = true;
             }
             else {
                 // Cuotas pendientes por pagar
@@ -2103,7 +2122,7 @@ class PrediosController extends Controller
             $barras_texto = new Collection();
             $porcentajes_descuento = new Collection();
 
-            if($facturaYaPagada == 0) {
+            if(!$facturaYaPagada) {
                 // Obtener informacion del ultimo año pagado
                 $ultimo_anio_pagado = DB::table('predios_pagos')
                                     ->where('id_predio', $id)
@@ -2147,7 +2166,7 @@ class PrediosController extends Controller
                 $ultimo_anio_pagado->fecha_pago = $ultimo_anio_pagado->fecha_pago !== null ? Carbon::createFromFormat("Y-m-d", substr($ultimo_anio_pagado->fecha_pago, 0, 10))->format('d/m/Y') : 'N/D';
             }
 
-            if($facturaYaPagada == 0) {
+            if(!$facturaYaPagada) {
                 // Obtener informacion de los pagos pendientes por año
                 $pagos_pendientes = DB::table('predios_pagos')
                                     ->where('id_predio', $id)
