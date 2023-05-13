@@ -109,7 +109,7 @@ class UploadController extends Controller
                                             ->where('predios_pagos.anulada', 0)
                                             ->first();
 
-                                if($max_pago != null) {
+                                if($max_pago->ultimo_anio != null) {
                                     $predios_pago = DB::table('predios_pagos')
                                                     ->select("predios_pagos.*")
                                                     ->where('predios_pagos.factura_pago', strval($numero_recibo))
