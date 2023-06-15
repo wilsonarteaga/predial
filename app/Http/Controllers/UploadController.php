@@ -262,6 +262,7 @@ class UploadController extends Controller
                         $file->descripcion = $descripcion . $complemento;
                         $file->control_archivo_registros = $control_archivo_registros;
                         $file->control_archivo_recaudo = $control_archivo_recaudo;
+                        $file->fecha_pago = Carbon::createFromFormat("Ymd", $fecha_pago)->format('Y-m-d');
                         $file->save();
                     }
 
