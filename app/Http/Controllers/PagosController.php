@@ -10,6 +10,7 @@ use App\Models\Pago;
 use App\Models\Opcion;
 use App\Models\PredioPago;
 use App\Models\Predio;
+use App\Models\PagosAud;
 
 use Carbon\Carbon;
 
@@ -117,7 +118,7 @@ class PagosController extends Controller
                 $pago->id_banco_archivo = $request->filled('id_banco_archivo') ? $request->id_banco_archivo : NULL;
                 $pago->paquete_archivo = $request->filled('paquete_archivo') ? $request->paquete_archivo : NULL;
                 $pago->origen = 'M';
-                // $query = $pago->save();
+                $pago->save();
 
                 // if($query) {
                     $updated = PredioPago::where('factura_pago', $request->numero_recibo)
@@ -135,7 +136,7 @@ class PagosController extends Controller
                         $predio = new Predio;
                         $predio = Predio::find($pago->id_predio);
                         $predio->ultimo_anio_pago = $request->anio_pago;
-                        // $query = $predio->save();
+                        $predio->save();
 
                         DB::commit();
 
@@ -259,8 +260,16 @@ class PagosController extends Controller
                         ->orderBy('fecha_pago', 'asc')
                         ->get();
 
+        $logs = DB::table('archivos_asobancaria')
+                        ->leftJoin('bancos', 'bancos.id', '=', 'archivos_asobancaria.id_banco')
+                        ->leftJoin('usuarios', 'usuarios.id', '=', 'archivos_asobancaria.id_usuario')
+                        ->where('fecha_pago', Carbon::createFromFormat("Y-m-d", $request->fecha_pago)->format('Y-m-d'))
+                        ->where('id_banco', $request->id_banco_factura)
+                        ->select(DB::raw("archivos_asobancaria.*, CONCAT(usuarios.nombres, ' ', usuarios.apellidos) as usuario, CONCAT(bancos.nombre, ' (', bancos.asobancaria, ')') as banco"))
+                        ->get();
         return response()->json([
-            'pagos' => $pagos
+            'pagos' => $pagos,
+            'logs' => $logs
         ]);
     }
 
@@ -277,6 +286,94 @@ class PagosController extends Controller
                         ->get();
         if(count($predio_pago) > 0)
             return response()->json([$predio_pago[0]]);
+        else
+            return response()->json([]);
+    }
+
+    public function store_pagos_delete(Request $request) {
+        $data = json_decode($request->form);
+
+        DB::beginTransaction();
+        try {
+            $prev_pago = DB::table('pagos')
+                                    ->select('pagos.*')
+                                    ->where('pagos.id', $data->{'id'})
+                                    ->first();
+
+            // Eliminar el pago
+            $deleted = Pago::where('id', $prev_pago->id)
+                       ->delete();
+
+            if($deleted) {
+                $pago = new PagosAud();
+                $pago->id_pago = $prev_pago->id;
+                $pago->fecha_pago = $prev_pago->fecha_pago;
+                $pago->codigo_barras = $prev_pago->codigo_barras;
+                $pago->numero_recibo = $prev_pago->numero_recibo;
+                $pago->id_predio = $prev_pago->id_predio;
+                $pago->valor_facturado = $prev_pago->valor_facturado;
+                $pago->anio_pago = $prev_pago->anio_pago;
+                $pago->fecha_factura = $prev_pago->fecha_factura;
+                $pago->id_banco_factura = $prev_pago->id_banco_factura;
+                $pago->id_banco_archivo = $prev_pago->id_banco_archivo;
+                $pago->paquete_archivo = $prev_pago->paquete_archivo;
+                $pago->origen = $prev_pago->origen;
+                $pago->id_usuario_elimina = $request->session()->get('userid');
+                $pago->save();
+
+                $updated = PredioPago::where('factura_pago', $prev_pago->numero_recibo)
+                ->update([
+                    'valor_pago' => 0,
+                    'fecha_pago' => null,
+                    'id_banco' => null,
+                    'pagado' => 0
+                ]);
+
+                $pagos = DB::table('pagos')->join('bancos', function ($join) {
+                    $join->on('pagos.id_banco_factura', '=', 'bancos.id');
+                })
+                ->where('fecha_pago', Carbon::createFromFormat("Y-m-d", $data->{'fecha_pago'})->format('Y-m-d'))
+                ->where('id_banco_factura', $data->{'id_banco_factura'})
+                ->select('pagos.*', 'bancos.nombre as banco')
+                ->orderBy('fecha_pago', 'asc')
+                ->get();
+
+                DB::commit();
+
+                return response()->json([
+                    'pagos' => $pagos,
+                    'message' => 'La información del pago se eliminó satisfactoriamente.',
+                    'error' => false
+                ]);
+            }
+            else {
+                DB::rollback();
+                return response()->json([
+                    'message' => 'No se pudo eliminar la información del pago. Contacte al administrador del sistema.',
+                    'error' => true
+                ]);
+            }
+        }
+        catch(\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'message' => $e,
+                'error' => true
+            ]);
+        }
+    }
+
+    public function get_info_recibo(Request $request) {
+        $numero_recibo = $request->numero_recibo;
+        $info_recibo = DB::table('pagos')
+                        ->leftJoin('predios_pagos', 'pagos.numero_recibo', '=', 'predios_pagos.factura_pago')
+                        ->leftJoin('bancos', 'bancos.id', '=', 'predios_pagos.id_banco')
+                        ->select(DB::raw("COUNT(predios_pagos.factura_pago) as anios_pagados, predios_pagos.id_predio, predios_pagos.factura_pago as numero, MAX(predios_pagos.ultimo_anio) as anio, predios_pagos.fecha_emision as fecha_emision, CASE WHEN TRY_CONVERT(DATE, predios_pagos.fecha_emision) <= TRY_CONVERT(DATE, MAX(predios_pagos.primer_fecha)) THEN MAX(predios_pagos.primer_fecha) WHEN TRY_CONVERT(DATE, predios_pagos.fecha_emision) <= TRY_CONVERT(DATE, MAX(predios_pagos.segunda_fecha)) THEN MAX(predios_pagos.segunda_fecha) WHEN TRY_CONVERT(DATE, predios_pagos.fecha_emision) <= TRY_CONVERT(DATE, MAX(predios_pagos.tercera_fecha)) THEN MAX(predios_pagos.tercera_fecha) END as fecha_vencimiento, MAX(predios_pagos.avaluo) as valor_avaluo, SUM(predios_pagos.valor_pago) as valor_factura, IIF(predios_pagos.anulada = 0, 'NO', 'SI') as anulado, IIF(predios_pagos.pagado < 0, 'SI', 'NO') as pagado, MAX(predios_pagos.fecha_pago) as fecha_pago, CONCAT(bancos.codigo, ' - ', bancos.nombre, ' (', bancos.asobancaria, ')') as banco"))
+                        ->where('pagos.numero_recibo', $numero_recibo)
+                        ->groupBy('predios_pagos.id_predio', 'predios_pagos.factura_pago', 'predios_pagos.fecha_emision', 'predios_pagos.anulada', 'predios_pagos.pagado', 'bancos.codigo', 'bancos.nombre', 'bancos.asobancaria')
+                        ->get();
+        if(count($info_recibo) > 0)
+            return response()->json([$info_recibo[0]]);
         else
             return response()->json([]);
     }

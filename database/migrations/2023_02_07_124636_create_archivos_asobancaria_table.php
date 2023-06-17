@@ -25,8 +25,11 @@ class CreateArchivosAsobancariaTable extends Migration
             $table->integer('total_fallidos');
             $table->text('descripcion');
             $table->timestamps();
+            $table->date('fecha_pago');
+            $table->unsignedBigInteger('id_banco');
 
             $table->foreign('id_usuario')->references('id')->on('usuarios');
+            $table->foreign('id_banco')->references('id')->on('bancos');
         });
     }
 

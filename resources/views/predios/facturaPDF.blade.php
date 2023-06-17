@@ -320,9 +320,9 @@
                         <td>IMPUESTO PREDIAL UNIFICADO</td>
                     </tr>
                 </table>
-                @if(count($valores_factura) > 0)
+                @if(count($valores_factura) > 0 && !$facturaYaPagada)
                     <table class="info-codigo-barras" style="width: 100%; margin-top: 10px;">
-                        @for ($x = count($valores_factura) > 1 ? 2 : 0; $x < count($valores_factura); $x++)
+                        @for ($x = 0; $x < count($valores_factura); $x++)
                             <tr>
                                 <td style="width: 53%; padding-top: 15px; border: 0px solid #000; text-align: center;">
                                     {{-- {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!} --}}

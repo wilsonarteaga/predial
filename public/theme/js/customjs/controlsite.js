@@ -8,6 +8,7 @@ var global_predio_con_deuda = false;
 var global_anio_actual = 0;
 var existe_predio = false;
 var codigo_predio_buscando = '';
+var global_anio_prescripcion = '';
 var arr_autonumeric = ['porcentaje', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
     'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_abono',
     'valor_facturado', 'avaluoigac', 'area', 'valor_paz'
@@ -785,44 +786,44 @@ function setEditRow(initDataTable) {
             if (!$(row).hasClass('disabled')) {
                 var jsonObj = JSON.parse($(row).attr('json-data'));
                 global_json = jsonObj;
-                if(global_json.prescrito === undefined || Number(global_json.prescrito) < 1) {
-                    $('.result').empty();
-                    if ($(row).hasClass('descuento_row')) {
-                        $('#porcentaje_edit').prop('readonly', false);
-                        $('#fecha_inicio_edit').prop('readonly', true);
-                        $('#fecha_fin_edit').prop('readonly', true);
-                        $('#fecha_fin_edit').datepicker('destroy');
+                // if(global_json.prescrito === undefined || Number(global_json.prescrito) < 1) {
+                $('.result').empty();
+                if ($(row).hasClass('descuento_row')) {
+                    $('#porcentaje_edit').prop('readonly', false);
+                    $('#fecha_inicio_edit').prop('readonly', true);
+                    $('#fecha_fin_edit').prop('readonly', true);
+                    $('#fecha_fin_edit').datepicker('destroy');
 
-                        if (moment($('#fecha_oculta').val()) <= moment(jsonObj.fecha_fin) && moment($('#fecha_oculta').val()) > moment(jsonObj.fecha_inicio)) {
-                            $('#porcentaje_edit').prop('readonly', true);
-                            $('#fecha_fin_edit').prop('readonly', false);
-                            $('#fecha_fin_edit').datepicker({
-                                language: 'es-ES',
-                                format: 'yyyy-mm-dd',
-                                startDate: moment($('#fecha_oculta').val()), // Or '02/14/2014'
-                                hide: function() {
-                                    if ($("#create-form").length > 0) {
-                                        if ($('#' + $(this).attr('id') + '-error').length > 0)
-                                            $('#' + $(this).attr('id') + '-error').remove();
+                    if (moment($('#fecha_oculta').val()) <= moment(jsonObj.fecha_fin) && moment($('#fecha_oculta').val()) > moment(jsonObj.fecha_inicio)) {
+                        $('#porcentaje_edit').prop('readonly', true);
+                        $('#fecha_fin_edit').prop('readonly', false);
+                        $('#fecha_fin_edit').datepicker({
+                            language: 'es-ES',
+                            format: 'yyyy-mm-dd',
+                            startDate: moment($('#fecha_oculta').val()), // Or '02/14/2014'
+                            hide: function() {
+                                if ($("#create-form").length > 0) {
+                                    if ($('#' + $(this).attr('id') + '-error').length > 0)
+                                        $('#' + $(this).attr('id') + '-error').remove();
 
-                                        $('#create-form').validate().element($(this));
-                                    }
-                                    if ($("#update-form").length > 0) {
-                                        if ($('#' + $(this).attr('id') + '-error').length > 0)
-                                            $('#' + $(this).attr('id') + '-error').remove();
-
-                                        $('#update-form').validate().element($(this));
-                                    }
-                                },
-                                pick: function() {
-                                    $('.text-danger').remove();
+                                    $('#create-form').validate().element($(this));
                                 }
-                            });
-                        }
-                    }
+                                if ($("#update-form").length > 0) {
+                                    if ($('#' + $(this).attr('id') + '-error').length > 0)
+                                        $('#' + $(this).attr('id') + '-error').remove();
 
-                    setData(jsonObj);
+                                    $('#update-form').validate().element($(this));
+                                }
+                            },
+                            pick: function() {
+                                $('.text-danger').remove();
+                            }
+                        });
+                    }
                 }
+
+                setData(jsonObj);
+                // }
             }
         });
 
@@ -996,6 +997,7 @@ function getPredio(id_predio) {
     global_ya_pagado = false;
     global_anio_actual = 0;
     global_predio_con_deuda = false;
+    global_anio_prescripcion = '';
     $('#div_fecha_pago_factura').css('display', 'none');
     var jsonObj = {};
     jsonObj.id_predio = id_predio;
@@ -1013,6 +1015,9 @@ function getPredio(id_predio) {
                 var opcion = JSON.parse($('#opcion').val());
                 var predio = response.predio[0];
                 var anios = response.anios;
+                if (response.anio_prescripcion > 0) {
+                    global_anio_prescripcion = response.anio_prescripcion.toString();
+                }
                 global_anio_actual = Number(response.anio_actual);
                 var classBtn = 'btn-info';
                 var classBtnCalculo = 'fa-cogs';
@@ -1024,15 +1029,19 @@ function getPredio(id_predio) {
                 var disabledBtnElimina = '';
                 var tr = $('<tr style="cursor: pointer;" id="tr_predio_' + predio.id + '" json-data=\'' + JSON.stringify(predio) + '\' class="predio_row"></tr>');
                 var td_1 = $('<td class="edit_row cell_center">' + predio.codigo_predio + '</td>');
-                if(Number(predio.prescrito) > 0) {
-                    td_1.append('&nbsp;&nbsp;<span data-toggle="tooltip" data-placement="bottom" title="Prescrito hasta ' + predio.prescribe_hasta + '" style="color: #f41a0f;"><i class="fa fa-info-circle"></i></span>');
-                    classBtn = 'btn-default';
+                // if(Number(predio.prescrito) > 0) {
+                //     td_1.append('&nbsp;&nbsp;<span data-toggle="tooltip" data-placement="bottom" title="Prescrito hasta ' + predio.prescribe_hasta + '" style="color: #f41a0f;"><i class="fa fa-info-circle"></i></span>');
+                //     classBtn = 'btn-default';
+                //     disabledBtnPrescribe = 'disabled="disabled"';
+                //     disabledBtnCalculo = 'disabled="disabled"';
+                //     disabledBtnPaz = 'disabled="disabled"';
+                //     disabledBtnEdita = 'disabled="disabled"';
+                //     disabledBtnElimina = 'disabled="disabled"';
+                // }
+                if (global_anio_prescripcion.length === 0) {
                     disabledBtnPrescribe = 'disabled="disabled"';
-                    disabledBtnCalculo = 'disabled="disabled"';
-                    disabledBtnPaz = 'disabled="disabled"';
-                    disabledBtnEdita = 'disabled="disabled"';
-                    disabledBtnElimina = 'disabled="disabled"';
                 }
+
                 // if(Number(global_json_predio.tiene_pago) === 0) {
                 //     disabledBtnCalculo = 'disabled="disabled"';
                 // }
@@ -1158,7 +1167,8 @@ function setPrescribeRow() {
             $('#form-predios-prescripcion')[0].reset();
             clear_form_elements("#form-predios-prescripcion");
             validatorPrescripciones.resetForm();
-            $('#prescribe_hasta').focus();
+            $('#prescribe_hasta_modal').val(global_anio_prescripcion);
+            $('#prescribe_hasta_modal').focus();
         });
 
         $('#save_prescripcion').off('click').on('click', function() {
@@ -1167,6 +1177,7 @@ function setPrescribeRow() {
                 var input_prescribe_hasta = $('<input id="prescribe_hasta" name="prescribe_hasta" type="hidden" value="' + $('#prescribe_hasta_modal').val() + '"  />');
 
                 if ($('#prescribe_hasta').length > 0) {
+                    $('#prescribe_hasta').val(global_anio_prescripcion);
                     input_prescribe_hasta = $('#prescribe_hasta');
                 }
 
@@ -1309,14 +1320,14 @@ function setData(jsonObj) {
         $('#div_edit_form').fadeIn();
 
         if ($('#codigo_predio').length > 0) {
-            if(jsonObj.prescrito > 0) {
-                $('#span_prescribe_hasta').html(jsonObj.prescribe_hasta);
-                $('#span_prescribe_hasta').parent().fadeIn();
-            }
-            else {
-                $('#span_prescribe_hasta').empty();
-                $('#span_prescribe_hasta').parent().fadeOut();
-            }
+            // if(jsonObj.prescrito > 0) {
+            //     $('#span_prescribe_hasta').html(jsonObj.prescribe_hasta);
+            //     $('#span_prescribe_hasta').parent().fadeIn();
+            // }
+            // else {
+            //     $('#span_prescribe_hasta').empty();
+            //     $('#span_prescribe_hasta').parent().fadeOut();
+            // }
             addButtonsPredios();
         }
 

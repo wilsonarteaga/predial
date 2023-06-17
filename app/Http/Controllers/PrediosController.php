@@ -551,43 +551,57 @@ class PrediosController extends Controller
         }
 
         $tab_current = 'li-section-bar-2';
-        $predio = new Predio();
-        $predio = Predio::find($request->input_prescribe);
-        $predio_prescripcion = new PredioPrescripcion();
 
-        $predio_prescripcion->id_predio = $predio->id;
-        $predio_prescripcion->prescribe_hasta = $request->prescribe_hasta;
-        $query = $predio_prescripcion->save();
-        if($query) {
-            $resolucion = new Resolucion();
-            $resolucion->numero_resolucion = $request->numero_resolucion;
-            $resolucion->fecha_resolucion = Carbon::createFromFormat("Y-m-d", $request->fecha_resolucion)->format('Y-m-d');
-            $resolucion->firma_resolucion = strtoupper($request->firma_resolucion);
-            $query = $resolucion->save();
-            if($query) {
-                $resolucion_predio = new ResolucionPredio();
-                $resolucion_predio->id_predio = $predio->id;
-                $resolucion_predio->id_resolucion = $resolucion->id;
-                $resolucion_predio->id_usuario = $request->session()->get('userid');
-                $resolucion_predio->descripcion = 'Prescripción predio ' . $predio->codigo_predio;
+        DB::beginTransaction();
+        try {
+            $predio = new Predio();
+            $predio = Predio::find($request->input_prescribe);
+            $predio_prescripcion = new PredioPrescripcion();
 
-                $query = $resolucion_predio->save();
-                if($query) {
-                    return back()->with(['success' => 'El predio se prescribio satisfactoriamente.', 'tab_current' => $tab_current]);
-                }
-                else {
-                    $resolucion->delete();
-                    $predio_prescripcion->delete();
-                    return back()->with(['fail' => 'No se pudo generar la información de resolución predio. Intente nuevamente.', 'tab_current' => $tab_current]);
-                }
-            }
-            else {
-                $predio_prescripcion->delete();
-                return back()->with(['fail' => 'No se pudo generar la información de resolución. Intente nuevamente.', 'tab_current' => $tab_current]);
-            }
+            $predio_prescripcion->id_predio = $predio->id;
+            $predio_prescripcion->prescribe_hasta = $request->prescribe_hasta;
+            $query = $predio_prescripcion->save();
+            // if($query) {
+                $resolucion = new Resolucion();
+                $resolucion->numero_resolucion = $request->numero_resolucion;
+                $resolucion->fecha_resolucion = Carbon::createFromFormat("Y-m-d", $request->fecha_resolucion)->format('Y-m-d');
+                $resolucion->firma_resolucion = strtoupper($request->firma_resolucion);
+                $query = $resolucion->save();
+                // if($query) {
+                    $resolucion_predio = new ResolucionPredio();
+                    $resolucion_predio->id_predio = $predio->id;
+                    $resolucion_predio->id_resolucion = $resolucion->id;
+                    $resolucion_predio->id_usuario = $request->session()->get('userid');
+                    $resolucion_predio->descripcion = 'Prescripción predio ' . $predio->codigo_predio . ', prescribe hasta: ' . $request->prescribe_hasta;
+                    $query = $resolucion_predio->save();
+                    // if($query) {
+                        PredioPago::where('id_predio', $predio->id)
+                        ->where('ultimo_anio', '<=', intval($request->prescribe_hasta))
+                        ->where('pagado', 0)
+                        ->update([
+                            'pagado' => -1
+                        ]);
+
+                        return back()->with(['success' => 'El predio se prescribio satisfactoriamente.', 'tab_current' => $tab_current]);
+                    // }
+                    // else {
+                    //     $resolucion->delete();
+                    //     $predio_prescripcion->delete();
+                    //     return back()->with(['fail' => 'No se pudo generar la información de resolución predio. Intente nuevamente.', 'tab_current' => $tab_current]);
+                    // }
+                // }
+                // else {
+                //     $predio_prescripcion->delete();
+                //     return back()->with(['fail' => 'No se pudo generar la información de resolución. Intente nuevamente.', 'tab_current' => $tab_current]);
+                // }
+            // }
+            // else {
+            //     return back()->with(['fail' => 'No se pudo prescribir el predio. Intente nuevamente.', 'tab_current' => $tab_current]);
+            // }
         }
-        else {
-            return back()->with(['fail' => 'No se pudo prescribir el predio. Intente nuevamente.', 'tab_current' => $tab_current]);
+        catch(\Exception $e) {
+          DB::rollback();
+          return back()->with(['fail' => $e->getMessage(), 'tab_current' => $tab_current]);
         }
     }
 
@@ -1337,15 +1351,9 @@ class PrediosController extends Controller
                 }
             }
 
-            if(count($lista_pagos) == 1) {
-                for ($x = 2; $x < count($valores_factura); $x++) {
-                    $barras[$x] = (chr(241) . '415' . $ean . '8020' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . chr(241) . '3900' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . chr(241) . '96' . str_replace('-', '', $fechas_pago_hasta[$x]));
-                    $barras_texto[$x] = ('(415)' . $ean . '(8020)' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $fechas_pago_hasta[$x]));
-                }
-            }
-            else {
-                $barras[0] = (chr(241) . '415' . $ean . '8020' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . chr(241) . '3900' . str_pad($valores_factura[0], 14, "0", STR_PAD_LEFT) . chr(241) . '96' . str_replace('-', '', $fechas_pago_hasta[0]));
-                $barras_texto[0] = ('(415)' . $ean . '(8020)' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valores_factura[0], 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $fechas_pago_hasta[0]));
+            for ($x = 0; $x < count($valores_factura); $x++) {
+                $barras[$x] = (chr(241) . '415' . $ean . '8020' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . chr(241) . '3900' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . chr(241) . '96' . str_replace('-', '', $fechas_pago_hasta[$x]));
+                $barras_texto[$x] = ('(415)' . $ean . '(8020)' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $fechas_pago_hasta[$x]));
             }
 
             $data = [
@@ -2221,19 +2229,30 @@ class PrediosController extends Controller
                 $lista_pagos->push($obj);
             }
 
-            $valores_factura[0] = (round($suma_total[0] + $ultimo_anio_pagar->total_calculo, 0));
-            $fechas_pago_hasta[0] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->primer_fecha)->toDateString());
-            $porcentajes_descuento[0] = ($ultimo_anio_pagar->porcentaje_uno);
+            $inc = 0;
+            // Validar primer fecha
+            if (Carbon::now()->format('Y-m-d H:i:s.u') < Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->primer_fecha)->format('Y-m-d H:i:s.u')) {
+                $valores_factura[$inc] = (round($suma_total[$inc] + $ultimo_anio_pagar->total_calculo, 0));
+                $fechas_pago_hasta[$inc] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->primer_fecha)->toDateString());
+                $porcentajes_descuento[$inc] = ($ultimo_anio_pagar->porcentaje_uno);
+                $inc = $inc + 1;
+            }
 
             if(count($lista_pagos) == 1) {
-                $valores_factura[1] = (round($ultimo_anio_pagar->total_dos, 0));
-                $valores_factura[2] = (round($ultimo_anio_pagar->total_tres, 0));
+                // Validar segunda fecha
+                if (Carbon::now()->format('Y-m-d H:i:s.u') < Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->segunda_fecha)->format('Y-m-d H:i:s.u')) {
+                    $valores_factura[$inc] = (round($ultimo_anio_pagar->total_dos, 0));
+                    $fechas_pago_hasta[$inc] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->segunda_fecha)->toDateString());
+                    $porcentajes_descuento[$inc] = ($ultimo_anio_pagar->porcentaje_dos);
+                    $inc = $inc + 1;
+                }
 
-                $fechas_pago_hasta[1] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->segunda_fecha)->toDateString());
-                $fechas_pago_hasta[2] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->tercera_fecha)->toDateString());
-
-                $porcentajes_descuento[1] = ($ultimo_anio_pagar->porcentaje_dos);
-                $porcentajes_descuento[2] = ($ultimo_anio_pagar->porcentaje_tres);
+                // Validar tercer fecha
+                if (Carbon::now()->format('Y-m-d H:i:s.u') < Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->tercera_fecha)->format('Y-m-d H:i:s.u')) {
+                    $valores_factura[$inc] = (round($ultimo_anio_pagar->total_tres, 0));
+                    $fechas_pago_hasta[$inc] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->tercera_fecha)->toDateString());
+                    $porcentajes_descuento[$inc] = ($ultimo_anio_pagar->porcentaje_tres);
+                }
             }
             else {
                 if(count($lista_pagos) > 5) {
@@ -2283,6 +2302,17 @@ class PrediosController extends Controller
                     $lista_pagos = $lista_pagos_depurada;
 
                 }
+            }
+
+            if (count($valores_factura) == 0) {
+                // TODO: Preguntar si esta validacion esta bien.
+                // Cuando la fecha de generacion es mayor a las tres fechas posibles de pago, entonces,
+                // la fecha de pago hasta debe ser el mismo dia, maximo a las 4pm?
+                $dt_now = Carbon::now();
+                $dt_pago = $dt_now->year($dt->year)->month($dt->month)->day($dt->day)->hour(16)->minute(0)->second(0)->toDateString();
+                $valores_factura[0] = (round($suma_total[0] + $ultimo_anio_pagar->total_calculo, 0));
+                $fechas_pago_hasta[0] = $dt_pago;
+                $porcentajes_descuento[0] = ($ultimo_anio_pagar->porcentaje_uno);
             }
 
             for ($x = 0; $x < count($valores_factura); $x++) {
@@ -2565,8 +2595,9 @@ class PrediosController extends Controller
         $predios =  DB::table('predios')->join('zonas', function ($join) {
                         $join->on('predios.id_zona', '=', 'zonas.id');
                     })
-                    ->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
-                    ->select(DB::raw('predios.*, zonas.descripcion, CASE WHEN COALESCE(predios_prescripciones.prescribe_hasta, 0) >= YEAR(GETDATE()) THEN 1 ELSE 0 END AS prescrito, predios_prescripciones.prescribe_hasta'))
+                    //->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
+                    // ->select(DB::raw('predios.*, zonas.descripcion, CASE WHEN COALESCE(predios_prescripciones.prescribe_hasta, 0) >= YEAR(GETDATE()) THEN 1 ELSE 0 END AS prescrito, predios_prescripciones.prescribe_hasta'))
+                    ->select(DB::raw('predios.*, zonas.descripcion'))
                     ->where('predios.estado', 1)
                     ->where('predios.id', $data->{'id_predio'})
                     ->get();
@@ -2637,7 +2668,28 @@ class PrediosController extends Controller
         if($ultimo_anio_pagar == null) {
             array_unshift($array_anios, ['ultimo_anio' => strval($currentYear), 'factura_pago' => null]);
         }
-        return response()->json(['predio' => $predios, 'anios' => $array_anios, 'anio_actual' => $currentYear, 'ultimo_anio' => $ultimo_anio_pagar]);
+
+        // Verificar prescripcion
+        $anio_prescripcion = -1;
+        $count_no_pagos = PredioPago::where('id_predio', $data->{'id_predio'})->where('pagado', 0)->count();
+        if($count_no_pagos > 5) {
+            $anio_prescripcion = DB::select('select
+                                      pp.ultimo_anio
+                                  from
+                                        predios_pagos pp
+                                  where pp.id = (
+                                        select max(a.id) as ide
+                                        from (select TOP 5
+                                                    pp.id from predios_pagos pp
+                                            where pp.id > (select max(pp.id) from predios_pagos pp where pp.pagado = -1 and pp.id_predio = '. $data->{'id_predio'} .') and
+                                                    pp.id_predio = '. $data->{'id_predio'} .' and
+                                                    pp.pagado = 0
+                                            order by pp.id) a)');
+
+            $anio_prescripcion = strval($anio_prescripcion[0]->ultimo_anio);
+        }
+
+        return response()->json(['predio' => $predios, 'anios' => $array_anios, 'anio_actual' => $currentYear, 'ultimo_anio' => $ultimo_anio_pagar, 'anio_prescripcion' => $anio_prescripcion]);
     }
 
     public function avaluos_predio(Request $request) {

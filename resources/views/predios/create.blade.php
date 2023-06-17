@@ -379,41 +379,6 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @if(count($predios) > 0)
-                                                            @foreach($predios as $predio)
-                                                            <tr style="cursor: pointer;" id="tr_predio_{{ $predio->id }}" json-data='@json($predio)'>
-                                                                {{-- <td class="cell_center edit_row">{{ $predio->ide_acu }}</td>
-                                                                <td class="cell_center edit_row">{{ $predio->tid_acu }}</td> --}}
-                                                                <td class="edit_row cell_center">
-                                                                    {{ $predio->codigo_predio }}
-                                                                    @if($predio->prescrito > 0)
-                                                                    &nbsp;&nbsp;<span class="tips" style="color: #25ca59;" title="Prescrito hasta {{ $predio->prescribe_hasta }}"><i class="fa fa-info-circle"></i></span>
-                                                                    @endif
-                                                                    {{-- @if($predio->prescrito > 0)
-                                                                    <br />
-                                                                    <small class="text-danger" style="font-weight: bold;">Prescrito hasta {{ $predio->prescribe_hasta }}</small>
-                                                                    @endif --}}
-                                                                </td>
-                                                                <td class="edit_row cell_center">{{ $predio->direccion }}</td>
-                                                                <td class="edit_row cell_center">{!! $predio->propietarios !!}</td>
-                                                                {{-- <td class="cell_center edit_row">{{ $predio->tel_acu }}</td>
-                                                                <td class="edit_row">{{ $predio->dir_acu }}</td> --}}
-                                                                <td class="cell_center">
-                                                                    <button type="button" ide="{{ $predio->id }}" class="modify_row btn btn-info" req_res="{{ $opcion->resolucion_edita }}"><i class="fa fa-pencil-square"></i></button>
-                                                                    &nbsp;&nbsp;
-                                                                    <button type="button" ide="{{ $predio->id }}" class="prescribe_row btn {{ $predio->prescrito > 0 ? 'btn-default tips' : 'btn-warning' }}" {{ $predio->prescrito > 0 ? 'disabled="disabled"' : '' }}><i class="fa fa-clock-o"></i></button>
-                                                                    &nbsp;&nbsp;
-                                                                    <button type="button" ide="{{ $predio->id }}" class="download_row btn btn-success" url="{{ route('predios.generarfacturapredio', ['id' => $predio->id]) }}" msg="¿Está seguro/a que desea ejecutar el cálculo?"><i class="fa fa-cogs"></i></button>
-                                                                    &nbsp;&nbsp;
-                                                                    <button type="button" ide="{{ $predio->id }}" class="delete_row btn btn-inverse" req_res="{{ $opcion->resolucion_elimina }}" msg="¿Está seguro/a que desea anular el predio?"><i class="fa fa-trash-o"></i></button>
-                                                                </td>
-                                                            </tr>
-                                                            @endforeach
-                                                        {{-- @else
-                                                        <tr>
-                                                            <td colspan="7">No hay informaci&oacute;n para mostrar</td>
-                                                        </tr> --}}
-                                                        @endif
                                                     </tbody>
                                                 </table>
                                                 {{-- <div class="pagination-blobk">
@@ -434,7 +399,7 @@
                                 <div id="div_edit_form" class="panel panel-info" style="display: none; margin-bottom: 0px">
                                     <div class="panel-heading">
                                         <i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Actualizar informaci&oacute;n del predio
-                                        <small class="text-danger pull-right" style="font-weight: bold; display: none; color: rgb(12, 130, 188); font-size: 20px;">Predio prescrito hasta <span id="span_prescribe_hasta"></span></small>
+                                        {{-- <small class="text-danger pull-right" style="font-weight: bold; display: none; color: rgb(12, 130, 188); font-size: 20px;">Predio prescrito hasta <span id="span_prescribe_hasta"></span></small> --}}
                                     </div>
                                     <div class="panel-wrapper collapse in" aria-expanded="true">
                                         <div class="panel-body">
@@ -833,7 +798,7 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group" style="margin-bottom: 0px;">
                                             <label class="control-label">Prescripci&oacute;n hasta...</label>
-                                            <input type="text" id="prescribe_hasta_modal" name="prescribe_hasta_modal" class="form-control onlyNumbers input-center" autocomplete="off" placeholder="A&ntilde;o" value="{{ old('prescribe_hasta_modal') }}" maxlength="4" style="font-size: 30px; font-weight: bold; height: auto;">
+                                            <input type="text" id="prescribe_hasta_modal" name="prescribe_hasta_modal" class="form-control onlyNumbers input-center" autocomplete="off" placeholder="A&ntilde;o" value="{{ old('prescribe_hasta_modal') }}" maxlength="4" style="font-size: 30px; font-weight: bold; height: auto;" readonly="readonly">
                                             {{-- <span class="text-danger">@error('prescribe_hasta_modal') {{ $message }} @enderror</span> --}}
                                         </div>
                                     </div>

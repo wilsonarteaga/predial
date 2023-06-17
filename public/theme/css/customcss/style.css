@@ -130,3 +130,7 @@ span.span_predio {
 #avaluosTable.table-condensed>tbody>tr>th {
     text-align: center !important;
 }
+
+.icons-tasks:hover {
+    color: #a3a3a3;
+}

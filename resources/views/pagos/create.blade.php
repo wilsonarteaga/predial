@@ -66,7 +66,8 @@
                                 <div class="panel panel-inverse">
                                     <div class="panel-heading">
                                         <i class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Informaci&oacute;n del pago
-                                        <i id="upload-asobancaria" class="fa fa-upload pull-right" style="cursor: pointer;"></i>
+                                        <i id="search-pago" class="fa fa-search pull-right icons-tasks" style="cursor: pointer; padding-left: 10px;"></i>
+                                        <i id="upload-asobancaria" class="fa fa-upload pull-right icons-tasks" style="cursor: pointer;"></i>
                                     </div>
                                     <div class="panel-wrapper collapse in" aria-expanded="true">
                                         <div class="panel-body">
@@ -111,7 +112,7 @@
                                                         <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">N&uacute;mero factura:</label>
-                                                                <input type="text" id="numero_recibo" name="numero_recibo" class="form-control onlyNumbers" autocomplete="off" placeholder="N&uacute;mero de recibo" value="{{ old('numero_recibo') }}" maxlength="9" disabled="disabled">
+                                                                <input type="text" id="numero_recibo" name="numero_recibo" class="form-control onlyNumbers" autocomplete="off" placeholder="N&uacute;mero de factura" value="{{ old('numero_recibo') }}" maxlength="9" disabled="disabled">
                                                                 <span class="text-danger">@error('numero_recibo') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -255,6 +256,12 @@
                                             {{-- @endif --}}
                                         </div>
                                     </div>
+                                </div>
+                                <div id="div_logs" class="row" style="display: none;">
+                                    <hr >
+                                    <h3 class="box-title m-b-0">INFORMACI&Oacute;N DE LOG GENERADA...</h3>
+                                    <table id="logsTable" class="table table-hover table-striped table-bordered">
+                                    </table>
                                 </div>
                                 {{-- <div id="div_edit_form" class="panel panel-info" style="display: none; margin-bottom: 0px">
                                     <div class="panel-heading"><i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Actualizar informaci&oacute;n del pago</div>
@@ -440,6 +447,166 @@
             <div class="modal-footer">
                 <button id="btn_cargar_archivo_asobancaria" type="button" class="btn btn-info"> <i class="fa fa-upload"></i> Cargar archivo</button>
                 <button type="button" class="btn btn-danger btnasobancaria" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-search-recibo" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-search-recibo-label" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                {{-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> --}}
+                <h4 class="modal-title" id="modal-search-recibo-label">B&uacute;squeda factura de pago</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-sm-12">
+                        <div class="form-group">
+                            <label class="control-label">N&uacute;mero factura</label>
+                            <input type="text" id="numero_recibo_search" name="numero_recibo_search" class="form-control onlyNumbers" maxlength="9" value="{{ old('numero_recibo_search') }}">
+                            <span class="text-danger">@error('file') {{ $message }} @enderror</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-3 col-sm-6" style="display: none;">
+                        <br />
+                        <button id="btn_buscar_recibo" type="button" class="btn btn-default" style="margin-top: 5px; padding: 8px 12px;" disabled="disabled"> <i class="fa fa-search"></i></button>
+                    </div>
+                    <div id="div_descargar_factura" class="col-lg-4 col-md-4 col-sm-3 col-sm-12" style="display: none;">
+                        <br />
+                        <button id="print_factura" url="/generate_factura_pdf/" type="button" class="btn btn-youtube btn_pdf" style="margin-top: 5px; padding: 8px 12px;"> <i class="fa fa-file-pdf-o"></i> Generar PDF</button>
+                    </div>
+                </div>
+                <div class="row info_factura" style="display: none;">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        {{-- <div class="white-box"> --}}
+                            {{-- <h3 class="box-title m-b-0">B&uacute;squeda de informaci&oacute;n</h3> --}}
+                            {{-- <p class="text-muted m-b-30 font-13"> Factura de pago </p> --}}
+                            <div class="row">
+                                <div class="col-sm-12 col-xs-12">
+                                    <form id="form-info-factura">
+                                        <input type="hidden" id="info_id_predio">
+                                        <div class="row">
+                                            <div class="col-lg-5">
+                                                <div class="form-group">
+                                                    <label for="info_numero">N&uacute;mero</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="info_numero" placeholder="N&uacute;mero" readonly="readonly">
+                                                        <div class="input-group-addon"><i class="ti-list-ol"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label for="info_anio">A&ntilde;o</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="info_anio" placeholder="A&ntilde;o" readonly="readonly">
+                                                        <div class="input-group-addon"><i class="ti-calendar"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    <label for="info_avaluo">Aval&uacute;o</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="info_avaluo" placeholder="Aval&uacute;o" readonly="readonly">
+                                                        <div class="input-group-addon"><i class="ti-money"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-5">
+                                                <div class="form-group">
+                                                    <label for="info_fecha_emision">Fecha emisi&oacute;n</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="info_fecha_emision" placeholder="Fecha emisi&oacute;n" readonly="readonly">
+                                                        <div class="input-group-addon"><i class="ti-calendar"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    <label for="info_fecha_vencimiento">Fecha vencimiento</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="info_fecha_vencimiento" placeholder="Fecha vencimiento" readonly="readonly">
+                                                        <div class="input-group-addon"><i class="ti-calendar"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label for="info_anulado">Anulado?</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="info_anulado" placeholder="Anulado?" readonly="readonly">
+                                                        <div class="input-group-addon"><i class="ti-close"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label for="info_pagado">Pagado?</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="info_pagado" placeholder="Pagado?" readonly="readonly">
+                                                        <div class="input-group-addon"><i class="ti-check"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5">
+                                                <div class="form-group">
+                                                    <label for="info_valor_factura">Valor factura</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="info_valor_factura" placeholder="Valor factura" readonly="readonly">
+                                                        <div class="input-group-addon"><i class="ti-money"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    <label for="info_fecha_pago">Fecha pago</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="info_fecha_pago" placeholder="Fecha pago" readonly="readonly">
+                                                        <div class="input-group-addon"><i class="ti-calendar"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="info_banco">Banco</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="info_banco" placeholder="Banco" readonly="readonly">
+                                                        <div class="input-group-addon"><i class="ti-home"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        {{-- </div> --}}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-log" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-log-label" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="modal-log-label">Log carga archivo asobancaria</h4>
+            </div>
+            <div id="div_show_log" class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
