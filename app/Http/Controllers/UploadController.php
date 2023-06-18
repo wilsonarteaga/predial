@@ -145,7 +145,7 @@ class UploadController extends Controller
                                                     ->where('pagado', 0)
                                                     ->update([
                                                         'fecha_pago' => Carbon::createFromFormat("Ymd", $fecha_pago)->format('Y-m-d'),
-                                                        'valor_pago' => DB::raw("CASE WHEN CONVERT(datetime, '" . $fecha_pago . " 00:00:00.000') <= CONVERT(datetime, '" . $predios_pago->primer_fecha . "') THEN total_calculo WHEN CONVERT(datetime, '" . $fecha_pago . " 00:00:00.000') <= CONVERT(datetime, '" . $predios_pago->segunda_fecha . "') THEN total_dos WHEN CONVERT(datetime, '" . $fecha_pago . " 00:00:00.000') <= CONVERT(datetime, '" . $predios_pago->tercera_fecha . "') THEN total_tres END"),
+                                                        'valor_pago' => DB::raw("CASE WHEN CONVERT(datetime, '" . $fecha_pago . " 00:00:00.000') <= CONVERT(datetime, '" . $predios_pago->primer_fecha . "') THEN total_calculo WHEN CONVERT(datetime, '" . $fecha_pago . " 00:00:00.000') <= CONVERT(datetime, '" . $predios_pago->segunda_fecha . "') THEN total_dos WHEN CONVERT(datetime, '" . $fecha_pago . " 00:00:00.000') <= CONVERT(datetime, '" . $predios_pago->tercera_fecha . "') THEN total_tres ELSE total_calculo END"),
                                                         'id_banco' => $objBancoFactura->id,
                                                         'pagado' => -1
                                                     ]);
