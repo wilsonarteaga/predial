@@ -1289,7 +1289,7 @@ class PrediosController extends Controller
 
             $inc = 0;
             // Validar primer fecha
-            if (Carbon::now()->format('Y-m-d H:i:s.u') < Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->primer_fecha)->format('Y-m-d H:i:s.u')) {
+            if (Carbon::now()->format('Y-m-d H:i:s.u') <= Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->primer_fecha)->format('Y-m-d H:i:s.u')) {
                 $valores_factura[$inc] = (round($suma_total[$inc] + $ultimo_anio_pagar->total_calculo, 0));
                 $fechas_pago_hasta[$inc] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->primer_fecha)->toDateString());
                 $porcentajes_descuento[$inc] = ($ultimo_anio_pagar->porcentaje_uno);
@@ -1298,7 +1298,7 @@ class PrediosController extends Controller
 
             if(count($lista_pagos) == 1) {
                 // Validar segunda fecha
-                if (Carbon::now()->format('Y-m-d H:i:s.u') < Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->segunda_fecha)->format('Y-m-d H:i:s.u')) {
+                if (Carbon::now()->format('Y-m-d H:i:s.u') <= Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->segunda_fecha)->format('Y-m-d H:i:s.u')) {
                     $valores_factura[$inc] = (round($ultimo_anio_pagar->total_dos, 0));
                     $fechas_pago_hasta[$inc] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->segunda_fecha)->toDateString());
                     $porcentajes_descuento[$inc] = ($ultimo_anio_pagar->porcentaje_dos);
@@ -1306,7 +1306,7 @@ class PrediosController extends Controller
                 }
 
                 // Validar tercer fecha
-                if (Carbon::now()->format('Y-m-d H:i:s.u') < Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->tercera_fecha)->format('Y-m-d H:i:s.u')) {
+                if (Carbon::now()->format('Y-m-d H:i:s.u') <= Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->tercera_fecha)->format('Y-m-d H:i:s.u')) {
                     $valores_factura[$inc] = (round($ultimo_anio_pagar->total_tres, 0));
                     $fechas_pago_hasta[$inc] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->tercera_fecha)->toDateString());
                     $porcentajes_descuento[$inc] = ($ultimo_anio_pagar->porcentaje_tres);
@@ -1365,7 +1365,7 @@ class PrediosController extends Controller
             if (count($valores_factura) == 0) {
                 // TODO: Preguntar si esta validacion esta bien.
                 // Cuando la fecha de generacion es mayor a las tres fechas posibles de pago, entonces,
-                // la fecha de pago hasta debe ser el mismo dia, maximo a las 4pm?
+                // la fecha de pago hasta debe ser el mismo dia, maximo a las 11:59pm
                 $dt_now = Carbon::now();
                 $dt_pago = $dt_now->year($dt->year)->month($dt->month)->day($dt->day)->hour(23)->minute(59)->second(59)->toDateString();
                 $valores_factura[0] = (round($suma_total[0] + $ultimo_anio_pagar->total_calculo, 0));
