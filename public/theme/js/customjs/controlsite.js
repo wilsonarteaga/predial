@@ -11,7 +11,7 @@ var codigo_predio_buscando = '';
 var global_anio_prescripcion = '';
 var arr_autonumeric = ['porcentaje', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
     'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_abono',
-    'valor_facturado', 'avaluoigac', 'area', 'valor_paz'
+    'valor_facturado', 'avaluoigac', 'area', 'valor_paz', 'tasa_diaria', 'tasa_mensual'
 ];
 var ROOT_URL = window.location.protocol + "//" + window.location.host;
 $(document).ready(function() {
@@ -288,6 +288,14 @@ $(document).ready(function() {
                     suffixText: "%",
                     unformatOnSubmit: true
                 });
+            } else if ($('#' + el).hasClass('tasa')) {
+                new AutoNumeric('#' + el, {
+                    // emptyInputBehavior: "zero",
+                    minimumValue: "0",
+                    modifyValueOnWheel: false,
+                    unformatOnSubmit: true,
+                    decimalPlaces: "12"
+                });
             } else {
                 new AutoNumeric('#' + el, {
                     emptyInputBehavior: "zero",
@@ -306,6 +314,14 @@ $(document).ready(function() {
                     modifyValueOnWheel: false,
                     suffixText: "%",
                     unformatOnSubmit: true
+                });
+            } else if ($('#' + el).hasClass('tasa')) {
+                new AutoNumeric('#' + el + '_edit', {
+                    // emptyInputBehavior: "zero",
+                    minimumValue: "0",
+                    modifyValueOnWheel: false,
+                    unformatOnSubmit: true,
+                    decimalPlaces: "12"
                 });
             } else {
                 new AutoNumeric('#' + el + '_edit', {

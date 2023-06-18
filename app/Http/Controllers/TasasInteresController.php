@@ -33,6 +33,7 @@ class TasasInteresController extends Controller
         }
         $opcion = Opcion::where('id','=', base64_decode($id))->first();
         $tasas_interes = DB::table('tasas_interes')
+                         ->selectRaw("tasas_interes.id, tasas_interes.anio, tasas_interes.mes, FORMAT(tasas_interes.tasa_diaria, 'N12') as tasa_diaria, FORMAT(tasas_interes.tasa_mensual, 'N12') as tasa_mensual, tasas_interes.created_at, tasas_interes.updated_at")
                          ->orderByDesc('anio')
                          ->orderByDesc('mes')
                          ->get(); //paginate(5);

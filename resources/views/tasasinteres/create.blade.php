@@ -83,14 +83,14 @@
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tasa diaria:</label>
-                                                                <input type="text" id="tasa_diaria" name="tasa_diaria" class="form-control" autocomplete="off" placeholder="Ingrese tasa diaria" value="{{ old('tasa_diaria') }}">
+                                                                <input type="text" id="tasa_diaria" name="tasa_diaria" class="form-control tasa" autocomplete="off" placeholder="Ingrese tasa diaria" value="{{ old('tasa_diaria') }}">
                                                                 <span class="text-danger">@error('tasa_diaria') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tasa mensual:</label>
-                                                                <input type="text" id="tasa_mensual" name="tasa_mensual" class="form-control" autocomplete="off" placeholder="Ingrese tasa mensual" value="{{ old('tasa_mensual') }}">
+                                                                <input type="text" id="tasa_mensual" name="tasa_mensual" class="form-control tasa" autocomplete="off" placeholder="Ingrese tasa mensual" value="{{ old('tasa_mensual') }}">
                                                                 <span class="text-danger">@error('tasa_mensual') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
@@ -193,14 +193,14 @@
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tasa diaria:</label>
-                                                                <input type="text" id="tasa_diaria_edit" name="tasa_diaria_edit" class="form-control" autocomplete="off" placeholder="Ingrese tasa diaria" value="{{ old('tasa_diaria_edit') }}">
+                                                                <input type="text" id="tasa_diaria_edit" name="tasa_diaria_edit" class="form-control tasa" autocomplete="off" placeholder="Ingrese tasa diaria" value="{{ old('tasa_diaria_edit') }}">
                                                                 <span class="text-danger">@error('tasa_diaria_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tasa mensual:</label>
-                                                                <input type="text" id="tasa_mensual_edit" name="tasa_mensual_edit" class="form-control" autocomplete="off" placeholder="Ingrese tasa mensual" value="{{ old('tasa_mensual_edit') }}">
+                                                                <input type="text" id="tasa_mensual_edit" name="tasa_mensual_edit" class="form-control tasa" autocomplete="off" placeholder="Ingrese tasa mensual" value="{{ old('tasa_mensual_edit') }}">
                                                                 <span class="text-danger">@error('tasa_mensual_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
