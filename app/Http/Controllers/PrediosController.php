@@ -2703,9 +2703,8 @@ class PrediosController extends Controller
                                         select max(a.id) as ide
                                         from (select TOP 5
                                                     pp.id from predios_pagos pp
-                                            where pp.id > (select max(pp.id) from predios_pagos pp where pp.pagado = -1 and pp.id_predio = '. $data->{'id_predio'} .') and
-                                                    pp.id_predio = '. $data->{'id_predio'} .' and
-                                                    pp.pagado = 0
+                                            where pp.id_predio = '. $data->{'id_predio'} .' and
+                                                  pp.pagado = 0
                                             order by pp.id) a)');
 
             $anio_prescripcion = strval($anio_prescripcion[0]->ultimo_anio);
