@@ -315,7 +315,7 @@
                 </table>
                 <table class="info-alcaldia" style="width: 100%; margin-top: 10px;">
                     <tr>
-                        <td>ALCALDIA DE SESQUILE</td>
+                        <td>{{ strtoupper($alcaldia) }}</td>
                         <td>NIT {{ $nit }}</th>
                         <td>IMPUESTO PREDIAL UNIFICADO</td>
                     </tr>

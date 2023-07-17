@@ -1182,9 +1182,15 @@ class PrediosController extends Controller
                              ->where('parametros.nombre', 'ean')
                              ->first();
 
+            $parametro_alcaldia = DB::table('parametros')
+                             ->select('parametros.valor')
+                             ->where('parametros.nombre', 'alcaldia')
+                             ->first();
+
             $logo = $parametro_logo->valor;
             $nit = $parametro_nit->valor;
             $ean = $parametro_ean->valor;
+            $alcaldia = $parametro_alcaldia->valor;
             $lista_pagos = new Collection();
             $lista_pagos_depurada = new Collection();
             $ultimo_anio_pagado = new Collection();
@@ -1394,7 +1400,8 @@ class PrediosController extends Controller
                 'temporal' => $tmp,
                 'facturaYaPagada' => $facturaYaPagada,
                 'nit' => $nit,
-                'logo' => $logo
+                'logo' => $logo,
+                'alcaldia' => $alcaldia
             ];
 
             $pdf = PDF::loadView('predios.facturaPDF', $data);
