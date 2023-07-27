@@ -33,7 +33,7 @@ class TasasInteresController extends Controller
         }
         $opcion = Opcion::where('id','=', base64_decode($id))->first();
         $tasas_interes = DB::table('tasas_interes')
-                         ->selectRaw("tasas_interes.id, tasas_interes.anio, tasas_interes.mes, FORMAT(tasas_interes.tasa_diaria, 'N12') as tasa_diaria, FORMAT(tasas_interes.tasa_mensual, 'N12') as tasa_mensual, tasas_interes.created_at, tasas_interes.updated_at")
+                         ->selectRaw("tasas_interes.id, tasas_interes.anio, tasas_interes.mes, FORMAT(tasas_interes.tasa_diaria, 'N12') as tasa_diaria, FORMAT(tasas_interes.tasa_mensual, 'N12') as tasa_mensual, FORMAT(tasas_interes.tasa_acuerdo, 'N12') as tasa_acuerdo, tasas_interes.created_at, tasas_interes.updated_at")
                          ->orderByDesc('anio')
                          ->orderByDesc('mes')
                          ->get(); //paginate(5);
@@ -79,6 +79,7 @@ class TasasInteresController extends Controller
         $tasa_interes->mes = $request->mes;
         $tasa_interes->tasa_diaria = $request->tasa_diaria;
         $tasa_interes->tasa_mensual = $request->tasa_mensual;
+        $tasa_interes->tasa_acuerdo = $request->tasa_acuerdo;
         $query = $tasa_interes->save();
         $tab_current = 'li-section-bar-1';
 
@@ -129,6 +130,7 @@ class TasasInteresController extends Controller
         $tasa_interes->mes = $request->mes_edit;
         $tasa_interes->tasa_diaria = $request->tasa_diaria_edit;
         $tasa_interes->tasa_mensual = $request->tasa_mensual_edit;
+        $tasa_interes->tasa_acuerdo = $request->tasa_acuerdo_edit;
         $query = $tasa_interes->save();
         $tab_current = 'li-section-bar-2';
 

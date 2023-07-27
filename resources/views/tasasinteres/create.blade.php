@@ -66,32 +66,41 @@
                                                     <!-- <h3 class="box-title">Informaci&oacute;n de la tasa de inter&eacute;s</h3> -->
                                                     <!-- <hr> -->
                                                     <div class="row">
-                                                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">A&ntilde;o</label>
                                                                 <input type="text" id="anio" name="anio" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese a&ntilde;o" value="{{ old('anio') }}" maxlength="4">
                                                                 <span class="text-danger">@error('anio') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Mes</label>
                                                                 <input type="text" id="mes" name="mes" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese mes" value="{{ old('mes') }}" maxlength="2">
                                                                 <span class="text-danger">@error('mes') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tasa diaria:</label>
                                                                 <input type="text" id="tasa_diaria" name="tasa_diaria" class="form-control tasa" autocomplete="off" placeholder="Ingrese tasa diaria" value="{{ old('tasa_diaria') }}">
                                                                 <span class="text-danger">@error('tasa_diaria') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tasa mensual:</label>
                                                                 <input type="text" id="tasa_mensual" name="tasa_mensual" class="form-control tasa" autocomplete="off" placeholder="Ingrese tasa mensual" value="{{ old('tasa_mensual') }}">
                                                                 <span class="text-danger">@error('tasa_mensual') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Tasa acuerdo de pago:</label>
+                                                                <input type="text" id="tasa_acuerdo" name="tasa_acuerdo" class="form-control tasa" autocomplete="off" placeholder="Ingrese tasa acuerdo de pago" value="{{ old('tasa_acuerdo') }}">
+                                                                <span class="text-danger">@error('tasa_acuerdo') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -128,8 +137,9 @@
                                                         <tr>
                                                             <th class="cell_center" style="width: 7%;">A&ntilde;o</th>
                                                             <th class="cell_center" style="width: 7%;">Mes</th>
-                                                            <th class="cell_right">Tasa diaria</th>
-                                                            <th class="cell_right">Tasa mensual</th>
+                                                            <th class="cell_center">Tasa diaria</th>
+                                                            <th class="cell_center">Tasa mensual</th>
+                                                            <th class="cell_center">Tasa acuerdo</th>
                                                             <th class="cell_center" style="width: 10%;">Acciones</th>
                                                         </tr>
                                                     </thead>
@@ -140,7 +150,8 @@
                                                                 <td class="edit_row cell_center">{{ $tasa_interes->anio }}</td>
                                                                 <td class="edit_row cell_center">{{ $tasa_interes->mes }}</td>
                                                                 <td class="edit_row cell_center">{{ $tasa_interes->tasa_diaria }}</td>
-                                                                <td class="edit_row">{{ $tasa_interes->tasa_mensual }}</td>
+                                                                <td class="edit_row cell_center">{{ $tasa_interes->tasa_mensual }}</td>
+                                                                <td class="edit_row cell_center">{{ $tasa_interes->tasa_acuerdo }}</td>
                                                                 <td class="cell_center">
                                                                     <button type="button" ide="{{ $tasa_interes->id }}" class="modify_row btn btn-info"><i class="fa fa-pencil-square"></i></button>
                                                                     &nbsp;&nbsp;
@@ -176,32 +187,41 @@
                                                 <div class="form-body">
                                                     <input type="hidden" id="id_edit" name="id_edit" value="{{ old('id_edit') }}">
                                                     <div class="row">
-                                                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">A&ntilde;o</label>
                                                                 <input type="text" id="anio_edit" name="anio_edit" class="form-control onlyNumbers" placeholder="Ingrese a&ntilde;o" value="{{ old('anio_edit') }}" readonly="readonly">
                                                                 <span class="text-danger">@error('anio_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Mes</label>
                                                                 <input type="text" id="mes_edit" name="mes_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese mes" value="{{ old('mes_edit') }}" readonly="readonly">
                                                                 <span class="text-danger">@error('mes_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tasa diaria:</label>
                                                                 <input type="text" id="tasa_diaria_edit" name="tasa_diaria_edit" class="form-control tasa" autocomplete="off" placeholder="Ingrese tasa diaria" value="{{ old('tasa_diaria_edit') }}">
                                                                 <span class="text-danger">@error('tasa_diaria_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tasa mensual:</label>
                                                                 <input type="text" id="tasa_mensual_edit" name="tasa_mensual_edit" class="form-control tasa" autocomplete="off" placeholder="Ingrese tasa mensual" value="{{ old('tasa_mensual_edit') }}">
                                                                 <span class="text-danger">@error('tasa_mensual_edit') {{ $message }} @enderror</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Tasa acuerdo de pago:</label>
+                                                                <input type="text" id="tasa_acuerdo_edit" name="tasa_acuerdo_edit" class="form-control tasa" autocomplete="off" placeholder="Ingrese tasa acuerdo de pago" value="{{ old('tasa_acuerdo_edit') }}">
+                                                                <span class="text-danger">@error('tasa_acuerdo_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                     </div>

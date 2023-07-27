@@ -672,26 +672,42 @@ class PrediosController extends Controller
         if($query) {
 
             if(array_key_exists('id', $data)) {
-                $result['message'] = 'Información de propietario del predio actualizada satisfactoriamente.';
 
-                $propietarios = DB::table('predios_propietarios')
-                                   ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
-                                   ->select('propietarios.*', 'predios_propietarios.jerarquia', 'predios_propietarios.id AS id_predio_propietario')
-                                   ->where('predios_propietarios.id_predio', $data->{'id_predio'})
-                                   ->orderBy('predios_propietarios.jerarquia', 'asc')
-                                   ->get();
+                $predio_propietario = PredioPropietario::find($data->{'id_predio_propietario'});
+                $predio_propietario->id_propietario = $data->{'id'};
+                $query = $predio_propietario->save();
 
-                return response()->json([
-                    'data' => $result,
-                    'obj' => $propietarios
-                ]);
+                if($query) {
+                    $result['message'] = 'Información de propietario del predio actualizada satisfactoriamente.';
+                    $propietarios = DB::table('predios_propietarios')
+                                    ->join('propietarios', 'predios_propietarios.id_propietario', '=', 'propietarios.id')
+                                    ->select('propietarios.*', 'predios_propietarios.jerarquia', 'predios_propietarios.id AS id_predio_propietario')
+                                    ->where('predios_propietarios.id_predio', $data->{'id_predio'})
+                                    ->orderBy('predios_propietarios.jerarquia', 'asc')
+                                    ->get();
+
+                    return response()->json([
+                        'data' => $result,
+                        'obj' => $propietarios
+                    ]);
+                } else {
+                    $result['message'] = 'No se pudo actualizar la información de propietario del predio.';
+                    return response()->json([
+                        'data' => $result
+                    ]);
+                }
             }
             else {
                 $predio_propietario = new PredioPropietario();
-                $predio_propietario->id_predio = $data->{'id_predio'};
-                $predio_propietario->id_propietario = $propietario->id;
-                $predio_propietario->jerarquia = str_pad(intval($data->{'jerarquia'}), 3, "0", STR_PAD_LEFT);
 
+                if(array_key_exists('id_predio_propietario', $data)) {
+                    $predio_propietario = PredioPropietario::find($data->{'id_predio_propietario'});
+                } else {
+                    $predio_propietario->id_predio = $data->{'id_predio'};
+                    $predio_propietario->jerarquia = str_pad(intval($data->{'jerarquia'}), 3, "0", STR_PAD_LEFT);
+                }
+
+                $predio_propietario->id_propietario = $propietario->id;
                 $query = $predio_propietario->save();
 
                 $result = array("success"=>$query);
@@ -959,6 +975,60 @@ class PrediosController extends Controller
         }
         else {
             $result['message'] = 'No se pudo actualizar la información de abono del predio.';
+            return response()->json([
+                'data' => $result
+            ]);
+        }
+    }
+
+    public function store_predios_datos_acuerdos_pago(Request $request) {
+
+        $data = json_decode($request->form);
+
+        $predio_acuerdo_pago = new PredioAcuerdoPago();
+
+        if(array_key_exists('id', $data)) {
+            $predio_acuerdo_pago = PredioAcuerdoPago::find($data->{'id'});
+            if(!array_key_exists('anulado_acuerdo', $data)) {
+                $numero = $predio_acuerdo_pago->numero_acuerdo;
+            }
+        } else {
+            $numero = DB::table('predios_acuerdos_pago')
+                    ->select(DB::raw('ISNULL(max(numero_acuerdo), 0) + 1 as numero'))
+                    ->first();
+            $numero = $numero->numero;
+        }
+        if(!array_key_exists('anulado_acuerdo', $data)) {
+            $predio_acuerdo_pago->id_predio = $data->{'id_predio'};
+            $predio_acuerdo_pago->numero_acuerdo = $numero;
+            $predio_acuerdo_pago->anio_inicial_acuerdo = $data->{'anio_inicial_acuerdo'};
+            $predio_acuerdo_pago->anio_final_acuerdo = $data->{'anio_final_acuerdo'};
+            $predio_acuerdo_pago->responsable_propietario_acuerdo = array_key_exists('responsable_propietario_acuerdo', $data) ? $data->{'responsable_propietario_acuerdo'} : '0';
+            $predio_acuerdo_pago->identificacion_acuerdo = $data->{'identificacion_acuerdo'};
+            $predio_acuerdo_pago->nombre_acuerdo = trim($data->{'nombre_acuerdo'});
+            $predio_acuerdo_pago->direccion_acuerdo = trim($data->{'direccion_acuerdo'});
+            $predio_acuerdo_pago->telefono_acuerdo = $data->{'telefono_acuerdo'};
+            $predio_acuerdo_pago->cuotas_acuerdo = $data->{'cuotas_acuerdo'};
+            $predio_acuerdo_pago->numero_resolucion_acuerdo = $data->{'numero_resolucion_acuerdo'};
+            $predio_acuerdo_pago->dia_pago_acuerdo = $data->{'dia_pago_acuerdo'};
+            $predio_acuerdo_pago->abono_inicial_acuerdo = str_replace(",", "", $data->{'abono_inicial_acuerdo'});
+        } else {
+            $predio_acuerdo_pago->anulado_acuerdo = $data->{'anulado_acuerdo'};
+        }
+        $query = $predio_acuerdo_pago->save();
+
+        $result = array("success"=>$query);
+
+        if($query) {
+            $predio_acuerdo_pago = PredioAcuerdoPago::find($predio_acuerdo_pago->id);
+            $result['message'] = !array_key_exists('anulado_acuerdo', $data) ? 'Información del acuerdo de pago actualizada satisfactoriamente.' : 'Acuerdo de pago anulado satisfactoriamente.';
+            return response()->json([
+                'data' => $result,
+                'obj' => $predio_acuerdo_pago
+            ]);
+        }
+        else {
+            $result['message'] = !array_key_exists('anulado_acuerdo', $data) ? 'No se pudo actualizar la información del acuerdo de pago.' : 'No se pudo anular el acuerdo de pago.';
             return response()->json([
                 'data' => $result
             ]);
@@ -2621,7 +2691,7 @@ class PrediosController extends Controller
         $currentYear = $dt->year;
         $array_anios = [];
 
-        $predios =  DB::table('predios')->join('zonas', function ($join) {
+        $predio =  DB::table('predios')->join('zonas', function ($join) {
                         $join->on('predios.id_zona', '=', 'zonas.id');
                     })
                     //->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
@@ -2629,7 +2699,7 @@ class PrediosController extends Controller
                     ->select(DB::raw('predios.*, zonas.descripcion'))
                     ->where('predios.estado', 1)
                     ->where('predios.id', $data->{'id_predio'})
-                    ->get();
+                    ->first();
 
         $propietarios = DB::table('predios')
                                      ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
@@ -2638,29 +2708,47 @@ class PrediosController extends Controller
                 ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(CONCAT(\'(\',predios_propietarios.jerarquia, \') \', TRIM(propietarios.nombre), \' - \', propietarios.identificacion), \'<br />\') AS propietarios'))
                 ->where('predios.estado', 1)
                 ->where('predios_propietarios.jerarquia', '001')
+                ->where('predios_propietarios.id_predio', $data->{'id_predio'})
                 ->groupBy('predios_propietarios.id_predio')
                 ->get();
 
         if($propietarios) {
-            foreach ($predios as $key => $predio) {
-                $desired_object = self::findInCollection($propietarios, 'id_predio', $predio->id);
-                if($desired_object) {
-                    $predio->propietarios = $desired_object->propietarios;
-                }
-                else {
-                    $predio->propietarios = 'Sin asignar';
-                }
+            // foreach ($predios as $key => $predio) {
+            $desired_object = self::findInCollection($propietarios, 'id_predio', $predio->id);
+            if($desired_object) {
+                $predio->propietarios = $desired_object->propietarios;
             }
-        }
-        else {
-            foreach ($predios as $key => $predio) {
+            else {
                 $predio->propietarios = 'Sin asignar';
             }
+            // }
+        }
+        else {
+            // foreach ($predios as $key => $predio) {
+            $predio->propietarios = 'Sin asignar';
+            // }
         }
 
+        $acuerdo_pago = PredioAcuerdoPago::where('id_predio', $data->{'id_predio'})
+                        ->where('estado_acuerdo', 1)
+                        ->where('anulado_acuerdo', 0)
+                        ->first();
+
+        $propietario = DB::table('predios')
+                            ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                            ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                        ->select(DB::raw('propietarios.*'))
+                        ->where('predios.estado', 1)
+                        ->where('predios_propietarios.jerarquia', '001')
+                        ->where('predios_propietarios.id_predio', $data->{'id_predio'})
+                        ->first();
+
+        // Para cada factura extraer el maximo año no pagado (Solo para registros que si tienen numero de factura)
+        // Esto debido a que aveces con un mismo numero de factura se liquidan varios años.
         $anios = DB::table('predios_pagos')
                 ->where('id_predio', $data->{'id_predio'})
                 ->where('pagado', 0)
+                ->where('anulada', 0)
                 ->whereNotNull('factura_pago')
                 ->select(DB::raw('MAX(predios_pagos.ultimo_anio) AS ultimo_anio, predios_pagos.factura_pago'))
                 ->groupBy('predios_pagos.factura_pago')
@@ -2668,32 +2756,26 @@ class PrediosController extends Controller
                 ->get();
 
         if(count($anios) == 0) {
+            // Todos los años no pagados y que no tienen numero de factura
             $anios = DB::table('predios_pagos')
                 ->where('id_predio', $data->{'id_predio'})
                 ->where('pagado', 0)
+                ->where('anulada', 0)
                 ->select(DB::raw('predios_pagos.ultimo_anio, predios_pagos.factura_pago'))
                 ->orderBy('ultimo_anio', 'desc')
                 ->get();
         }
-        // Verificar si el año actual ya tiene un calculo sin pago
-        $ultimo_anio_pagar = DB::table('predios_pagos')
-                            ->where('id_predio', $data->{'id_predio'})
-                            ->where('ultimo_anio', $currentYear)
-                            ->where('pagado', 0)
-                            ->first();
-
-        if($ultimo_anio_pagar == null) {
-            $ultimo_anio_pagar = DB::table('predios_pagos')
-                            ->where('id_predio', $data->{'id_predio'})
-                            ->where('ultimo_anio', $currentYear)
-                            ->where('pagado', -1)
-                            ->first();
-        }
 
         $array_anios = $anios->toArray();
 
-        // Si no existe un calculo para el año actual se agrega el año a la lista o
-        // Si el año actual no ha sido aun pagado
+        // Verificar si el año actual ya tiene un calculo con o sin pago
+        $ultimo_anio_pagar = DB::table('predios_pagos')
+                            ->where('id_predio', $data->{'id_predio'})
+                            ->where('ultimo_anio', $currentYear)
+                            ->where('anulada', 0)
+                            ->first();
+
+        // Si no existe un calculo para el año actual se agrega el año a la lista
         if($ultimo_anio_pagar == null) {
             array_unshift($array_anios, ['ultimo_anio' => strval($currentYear), 'factura_pago' => null]);
         }
@@ -2717,7 +2799,17 @@ class PrediosController extends Controller
             $anio_prescripcion = strval($anio_prescripcion[0]->ultimo_anio);
         }
 
-        return response()->json(['predio' => $predios, 'anios' => $array_anios, 'anio_actual' => $currentYear, 'ultimo_anio' => $ultimo_anio_pagar, 'anio_prescripcion' => $anio_prescripcion]);
+        return response()->json(
+            [
+                'predio' => $predio,
+                'acuerdo_pago' => $acuerdo_pago,
+                'propietario' => $propietario,
+                'anios' => $array_anios,
+                'anio_actual' => $currentYear,
+                'ultimo_anio' => $ultimo_anio_pagar,
+                'anio_prescripcion' => $anio_prescripcion
+            ]
+        );
     }
 
     public function avaluos_predio(Request $request) {

@@ -9,9 +9,11 @@ var global_anio_actual = 0;
 var existe_predio = false;
 var codigo_predio_buscando = '';
 var global_anio_prescripcion = '';
+var global_propietario = null;
+var global_acuerdo_pago = null;
 var arr_autonumeric = ['porcentaje', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
     'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_abono',
-    'valor_facturado', 'avaluoigac', 'area', 'valor_paz', 'tasa_diaria', 'tasa_mensual'
+    'valor_facturado', 'avaluoigac', 'area', 'valor_paz', 'tasa_diaria', 'tasa_mensual', 'tasa_acuerdo','abono_inicial_acuerdo'
 ];
 var ROOT_URL = window.location.protocol + "//" + window.location.host;
 $(document).ready(function() {
@@ -596,6 +598,9 @@ $(document).ready(function() {
             else {
                 if($('#id_predio.select2').hasClass('json')) {
                     getPredio($('#id_predio.select2').val());
+                    if ($('#id_predio.select2').find('option').length > 1) {
+                        $('#id_predio.select2').find('option:eq(0)').remove();
+                    }
                 }
             }
         });
@@ -1015,6 +1020,9 @@ function getPredio(id_predio) {
     global_predio_con_deuda = false;
     global_anio_prescripcion = '';
     $('#div_fecha_pago_factura').css('display', 'none');
+    $('#identificacion_acuerdo').attr('readonly', false);
+    $('#nombre_acuerdo').attr('readonly', false);
+    $('#direccion_acuerdo').attr('readonly', false);
     var jsonObj = {};
     jsonObj.id_predio = id_predio;
     $.ajax({
@@ -1027,10 +1035,12 @@ function getPredio(id_predio) {
         },
         success: function(response) {
             $('#myTable').find('tbody').empty();
-            if (response.predio.length > 0) {
+            if (Object.keys(response.predio).length > 0) {
                 var opcion = JSON.parse($('#opcion').val());
-                var predio = response.predio[0];
+                var predio = response.predio;
                 var anios = response.anios;
+                global_acuerdo_pago = response.acuerdo_pago;
+                global_propietario = response.propietario;
                 if (response.anio_prescripcion > 0) {
                     global_anio_prescripcion = response.anio_prescripcion.toString();
                 }
@@ -1058,9 +1068,11 @@ function getPredio(id_predio) {
                     disabledBtnPrescribe = 'disabled="disabled"';
                 }
 
-                // if(Number(global_json_predio.tiene_pago) === 0) {
-                //     disabledBtnCalculo = 'disabled="disabled"';
-                // }
+                if(global_acuerdo_pago) {
+                    disabledBtnCalculo = 'disabled="disabled"';
+                    disabledBtnPaz = 'disabled="disabled"';
+                }
+
                 if(anios.length > 1 || (anios.length === 1 && Number(predio.ultimo_anio_pago) !== Number(anios[0].ultimo_anio))) {
                     disabledBtnPaz = 'disabled="disabled"';
                 }
@@ -1069,6 +1081,7 @@ function getPredio(id_predio) {
                     classBtnCalculo = 'fa-file-pdf-o';
                     colorBtnCalculo = 'success btn-outline';
                 }
+
                 var td_2 = $('<td class="edit_row cell_center">' + predio.direccion + '</td>');
                 var td_3 = $('<td class="edit_row cell_center">' + predio.propietarios + '</td>');
                 var td_4 = $('<td class="cell_center"></td>');
@@ -1083,6 +1096,8 @@ function getPredio(id_predio) {
                                   '&nbsp;&nbsp;' +
                                 //   '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Ver aval&uacute;os" ide="' + predio.id + '" class="avaluos_row btn btn-default"><i class="fa fa-home"></i></button>' +
                                 //   '&nbsp;&nbsp;' +
+                                  (!global_ya_pagado && (anios.length > 0 || global_acuerdo_pago) ? ('<button style="display: none;" type="button" data-toggle="tooltip" data-placement="bottom" title="Acuerdo de pago" ide="' + predio.id + '" class="acuerdos_row btn btn-default"><i class="fa fa-child"></i></button>' +
+                                  '&nbsp;&nbsp;') : '' ) +
                                   '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Eliminar predio" ide="' + predio.id + '" class="delete_row btn btn-danger" req_res="' + opcion.resolucion_elimina + '" msg="¿Está seguro/a que desea anular el predio?" ' + disabledBtnElimina + '><i class="fa fa-trash-o"></i></button>';
 
                 td_4.html(htmlBotones);
@@ -1090,9 +1105,15 @@ function getPredio(id_predio) {
                 $('#myTable').find('tbody').append(tr);
 
                 $('#ultimo_anio_facturar').empty();
+                $('#anio_inicial_acuerdo').empty();
+                $('#anio_final_acuerdo').empty();
                 $('#ultimo_anio_facturar').append('<option value="">Seleccione a&ntilde;o para facturar</option>');
+                $('#anio_inicial_acuerdo').append('<option value="">Seleccione</option>');
+                $('#anio_final_acuerdo').append('<option value="">Seleccione</option>');
                 $.each(anios, function(i, el){
                     $('#ultimo_anio_facturar').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
+                    $('#anio_inicial_acuerdo').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
+                    $('#anio_final_acuerdo').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
                 });
                 if(anios.length > 1) {
                     global_predio_con_deuda = true;
@@ -1118,6 +1139,9 @@ function getPredio(id_predio) {
                     setDownloadPazRow();
                     setPrescribeRow();
                     // setAvaluosRow();
+                    if (!global_ya_pagado) {
+                        setAcuerdoPagoRow();
+                    }
                     $('.tips').powerTip({
                         placement: 's' // north-east tooltip position
                     });
@@ -1240,6 +1264,55 @@ function setPrescribeRow() {
 //         // });
 //     }
 // }
+
+function setAcuerdoPagoRow() {
+    if ($('.acuerdos_row').length > 0) {
+
+        $('.acuerdos_row').off('click').on('click', function(evt) {
+            setDataAcuerdoPagoModalForm();
+            $('#modal-datos-acuerdo-pago').modal({ backdrop: 'static', keyboard: false }, 'show');
+            $('[data-toggle="tooltip"]').tooltip('destroy');
+        });
+
+        $('#modal-datos-acuerdo-pago').on('hidden.bs.modal', function() {
+            $('[data-toggle="tooltip"]').tooltip();
+            $('.datohidden').remove();
+            $('#form-predios-datos-acuerdos-pago')[0].reset();
+            clear_form_elements("#form-predios-datos-acuerdos-pago");
+            validatorAcuerdosPago.resetForm();
+            $('#anio_inicial_acuerdo').removeClass('error');
+            $('#anio_final_acuerdo').removeClass('error');
+        });
+
+        var validatorAcuerdosPago = $("#form-predios-datos-acuerdos-pago").validate({
+            rules: {
+                numero_resolucion_acuerdo: "required",
+                anio_inicial_acuerdo: "required",
+                anio_final_acuerdo: "required",
+                cuotas_acuerdo: "required",
+                dia_pago_acuerdo: "required",
+                abono_inicial_acuerdo: "required",
+                identificacion_acuerdo: "required",
+                nombre_acuerdo: "required",
+                telefono_acuerdo: "required",
+                direccion_acuerdo: "required"
+
+            },
+            messages: {
+                numero_resolucion_acuerdo: "N&uacute;mero requerido",
+                anio_inicial_acuerdo: "A&ntilde;o requerido",
+                anio_final_acuerdo: "A&ntilde;o requerido",
+                cuotas_acuerdo: "Cuotas requerido",
+                dia_pago_acuerdo: "D&iacute;a requerido",
+                abono_inicial_acuerdo: "Abono requerido",
+                identificacion_acuerdo: "Identificaci&oacute;n requerido",
+                nombre_acuerdo: "Nombre requerido",
+                telefono_acuerdo: "Tel&eacute;fono requerido",
+                direccion_acuerdo: "Direcci&oacute;n requerido"
+            }
+        });
+    }
+}
 
 function formatRepo (repo) {
     if (repo.loading) {
@@ -1658,4 +1731,85 @@ function checkFormPaz() {
     else {
         return true;
     }
+}
+
+function setDataAcuerdoPagoModalForm() {
+    if (global_acuerdo_pago) {
+        setFormData('form-predios-datos-acuerdos-pago', global_acuerdo_pago);
+        if (Number(global_acuerdo_pago.responsable_propietario_acuerdo) > 0) {
+            $('#identificacion_acuerdo').attr('readonly', true);
+            $('#nombre_acuerdo').attr('readonly', true);
+            $('#direccion_acuerdo').attr('readonly', true);
+        }
+        disable_form_elements('#form-predios-datos-acuerdos-pago', true);
+        $('#save_dap').attr('disabled', true);
+        $('#save_dap').css('display', 'none');
+        $('#anular_dap').attr('disabled', false);
+        $('#anular_dap').css('display', '');
+    } else {
+        disable_form_elements('#form-predios-datos-acuerdos-pago', false);
+        $('#save_dap').attr('disabled', false);
+        $('#save_dap').css('display', '');
+        $('#anular_dap').attr('disabled', true);
+        $('#anular_dap').css('display', 'none');
+        AutoNumeric.set('#abono_inicial_acuerdo', 0);
+        if (global_propietario) {
+            $('#identificacion_acuerdo').val(global_propietario.identificacion);
+            $('#nombre_acuerdo').val(global_propietario.nombre);
+            $('#direccion_acuerdo').val(global_propietario.direccion);
+            $('#identificacion_acuerdo').attr('readonly', true);
+            $('#nombre_acuerdo').attr('readonly', true);
+            $('#direccion_acuerdo').attr('readonly', true);
+            $('#responsable_propietario_acuerdo').val(1);
+            $('#responsable_propietario_acuerdo').prop('checked', true);
+        }
+    }
+}
+
+function disable_form_elements(ele, status) {
+    $(ele).find(':input').each(function() {
+        switch (this.type) {
+            case 'password':
+            case 'select-multiple':
+            case 'select-one':
+            case 'text':
+            case 'textarea':
+            case 'checkbox':
+            case 'radio':
+                this.disabled = status;
+        }
+
+        // if ($('#' + $(this).attr('id') + '_edit').is('[prev-val]')) {
+        //     $('#' + $(this).attr('id') + '_edit').removeAttr('prev-val');
+        // }
+    });
+
+    // if($(ele).find('.select2').length > 0) {
+    //     $(ele).find('.select2').val(null).trigger('change');
+    //     $(ele).find('.select2').find('option').remove();
+    // }
+
+    // $.each(arr_autonumeric, function(i, el) {
+    //     if ($(ele).find('#' + el).length > 0) {
+    //         AutoNumeric.set('#' + el, 0);
+    //     }
+    //     if ($(ele).find('#' + el + '_edit').length > 0) {
+    //         AutoNumeric.set('#' + el + '_edit', 0);
+    //         if ($(ele).find('#' + el + '_edit').is('[prev-val]')) {
+    //             $(ele).find('#' + el + '_edit').removeAttr('prev-val');
+    //         }
+    //     }
+    // });
+
+    // $.each($(ele).find('.selectpicker'), function(i, el) {
+    //     $(el).selectpicker('val', '');
+    //     $(el).selectpicker('refresh');
+    //     if ($('#' + $(el).attr('id') + '_edit').is('[prev-val]')) {
+    //         $('#' + $(el).attr('id') + '_edit').removeAttr('prev-val');
+    //     }
+    // });
+    // $.each($(ele).find('.selectpicker-noval'), function(i, el) {
+    //     $(el).selectpicker('val', '');
+    //     $(el).selectpicker('refresh');
+    // });
 }

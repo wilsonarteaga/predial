@@ -29,7 +29,8 @@ class TasasInteresUpdateFormRequest extends FormRequest
             'anio_edit'  => 'required|size:4',
             'mes_edit'  => 'required',
             'tasa_diaria_edit'  => 'required',
-            'tasa_mensual_edit'  => 'required'
+            'tasa_mensual_edit'  => 'required',
+            'tasa_acuerdo_edit'  => 'required'
         ];
     }
 
@@ -41,7 +42,8 @@ class TasasInteresUpdateFormRequest extends FormRequest
             // 'anio_edit.unique' => 'La combinación de año y mes debe ser única.',
             'mes_edit.required'  => 'El campo mes es obligatorio.',
             'tasa_diaria_edit.required'  => 'El campo tasa diaria es obligatorio.',
-            'tasa_mensual_edit.required'  => 'El campo tasa mensual es obligatorio.'
+            'tasa_mensual_edit.required'  => 'El campo tasa mensual es obligatorio.',
+            'tasa_acuerdo_edit.required'  => 'El campo tasa acuerdo es obligatorio.'
         ];
     }
 }

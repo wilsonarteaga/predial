@@ -764,11 +764,11 @@
         <span class="hidden-xs">DPA</span> <i class="icon-wallet"></i>
     </a>
 </li> --}}
-<li class="mega-dropdown buttonTareas">
-    <a class="waves-effect waves-light" data-tooltip="tooltip" data-placement="bottom" data-toggle="modal" data-target="#modal-datos-acuerdos-pago" data-backdrop="static" data-keyboard="false" href="#" title="Datos acuerdos de pago">
+{{-- <li class="mega-dropdown buttonTareas">
+    <a class="waves-effect waves-light" data-tooltip="tooltip" data-placement="bottom" data-toggle="modal" data-target="#modal-datos-acuerdo-pago" data-backdrop="static" data-keyboard="false" href="#" title="Datos acuerdos de pago">
         <span class="hidden-xs">DAP</span> <i class="icon-book-open"></i>
     </a>
-</li>
+</li> --}}
 <li class="mega-dropdown buttonTareas">
     <a class="waves-effect waves-light" data-tooltip="tooltip" data-placement="bottom" data-toggle="modal" data-target="#modal-datos-abonos" data-backdrop="static" data-keyboard="false" href="#" title="Datos abonos">
         <span class="hidden-xs">DA</span> <i class="icon-flag"></i>
@@ -1295,12 +1295,12 @@
         </div>
     </div>
 </div> --}}
-<div id="modal-datos-acuerdos-pago" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-datos-acuerdos-pago-label" aria-hidden="true" style="display: none;">
+<div id="modal-datos-acuerdo-pago" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-datos-acuerdo-pago-label" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 {{-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> --}}
-                <h4 class="modal-title" id="modal-datos-acuerdos-pago-label">Informaci&oacute;n adicional - <span>Datos acuerdos de pago</h4>
+                <h4 class="modal-title" id="modal-datos-acuerdo-pago-label">Datos acuerdo de pago</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -1308,42 +1308,100 @@
                         <form id="form-predios-datos-acuerdos-pago">
                             <div class="form-body">
                                 <div class="row">
+                                    <div id="div_acuerdo_numero" class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">N&uacute;mero:</label>
+                                            <input type="text" id="numero_acuerdo" name="numero_acuerdo" class="form-control" autocomplete="off" placeholder="N&uacute;mero acuerdo" value="{{ old('numero_acuerdo') }}" maxlength="10" readonly="readonly">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Resoluci&oacute;n:</label>
+                                            <input type="text" id="numero_resolucion_acuerdo" name="numero_resolucion_acuerdo" class="form-control" autocomplete="off" placeholder="Ingrese resoluci&oacute;n" value="{{ old('numero_resolucion_acuerdo') }}" maxlength="20">
+                                            <span class="text-danger">@error('numero_resolucion_acuerdo') {{ $message }} @enderror</span>
+                                        </div>
+                                    </div>
                                     <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                         <div class="form-group">
-                                            <label class="control-label">Acuerdo n&uacute;mero:</label>
-                                            <input type="text" id="acuerdo_numero" name="acuerdo_numero" class="form-control" autocomplete="off" placeholder="Numero del acuerdo" value="{{ old('acuerdo_numero') }}" maxlength="15" readonly="readonly">
-                                            {{-- <span class="text-danger">@error('acuerdo_numero') {{ $message }} @enderror</span> --}}
+                                            <label class="control-label">Vigencia inicial:</label>
+                                            <select id="anio_inicial_acuerdo" name="anio_inicial_acuerdo" class="form-control" data-size="4" title="Seleccione a&ntilde;o..." data-container="#modal-datos-acuerdo-pago" style="width: 100%">
+                                            </select>
+                                            {{-- <input type="text" id="anio_inicial_acuerdo" name="anio_inicial_acuerdo" class="form-control onlyNumbers" autocomplete="off" placeholder="A&ntilde;o" value="{{ old('anio_inicial_acuerdo') }}" maxlength="4"> --}}
+                                            <span class="text-danger">@error('anio_inicial_acuerdo') {{ $message }} @enderror</span>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                         <div class="form-group">
-                                            <label class="control-label">Cuota:</label>
-                                            <input type="text" id="cuota_acuerdo_pago" name="cuota_acuerdo_pago" class="form-control" autocomplete="off" placeholder="Valor cuota" value="{{ old('cuota_acuerdo_pago') }}" maxlength="15" readonly="readonly">
-                                            {{-- <span class="text-danger">@error('cuota_acuerdo_pago') {{ $message }} @enderror</span> --}}
+                                            <label class="control-label">Vigencia final:</label>
+                                            <select id="anio_final_acuerdo" name="anio_final_acuerdo" class="form-control" data-size="4" title="Seleccione a&ntilde;o..." data-container="#modal-datos-acuerdo-pago" style="width: 100%">
+                                            </select>
+                                            {{-- <input type="text" id="anio_final_acuerdo" name="anio_final_acuerdo" class="form-control onlyNumbers" autocomplete="off" placeholder="A&ntilde;o" value="{{ old('anio_final_acuerdo') }}" maxlength="4"> --}}
+                                            <span class="text-danger">@error('anio_final_acuerdo') {{ $message }} @enderror</span>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                         <div class="form-group">
-                                            <label class="control-label">Fecha:</label>
-                                            <input type="text" id="fecha_acuerdo_pago" name="fecha_acuerdo_pago" class="form-control" autocomplete="off" placeholder="Fecha cuota" value="{{ old('fecha_acuerdo_pago') }}" maxlength="15" readonly="readonly">
-                                            {{-- <span class="text-danger">@error('fecha_acuerdo_pago') {{ $message }} @enderror</span> --}}
+                                            <label class="control-label">Cuotas:</label>
+                                            <input type="text" id="cuotas_acuerdo" name="cuotas_acuerdo" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese cuotas" value="{{ old('cuotas_acuerdo') }}" maxlength="2">
+                                            <span class="text-danger">@error('cuotas_acuerdo') {{ $message }} @enderror</span>
                                         </div>
                                     </div>
                                 </div>
-                                {{-- <div class="row">
-                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="row">
+                                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                                         <div class="form-group">
-                                            <label class="control-label">Valor pago:</label>
-                                            <input type="text" id="valor_pago_" name="valor_pago_" class="form-control" autocomplete="off" placeholder="Ingrese valor pago" value="{{ old('valor_pago_') }}">
+                                            <label class="control-label">D&iacute;a pago:</label>
+                                            <input type="text" id="dia_pago_acuerdo" name="dia_pago_acuerdo" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese d&iacute;a" value="{{ old('dia_pago_acuerdo') }}" maxlength="2">
+                                            <span class="text-danger">@error('dia_pago_acuerdo') {{ $message }} @enderror</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Abono inicial:</label>
+                                            <input type="text" id="abono_inicial_acuerdo" name="abono_inicial_acuerdo" class="form-control" autocomplete="off" placeholder="Ingrese valor" value="{{ old('abono_inicial_acuerdo') }}">
+                                            <span class="text-danger">@error('abono_inicial_acuerdo') {{ $message }} @enderror</span>
                                         </div>
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                                        <div class="form-group">
-                                            <label class="control-label">Fecha pago:</label>
-                                            <input type="text" id="fecha_pago" name="fecha_pago" class="form-control datepickerforms" autocomplete="off" placeholder="Ingrese fecha pago" value="{{ old('fecha_pago') }}">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <label for="responsable_propietario_acuerdo_check" class="control-label" style="display: block;">¿Responsable propietario?</label>
+                                            <input type="checkbox" id="responsable_propietario_acuerdo" name="responsable_propietario_acuerdo" value="{{ old('responsable_propietario_acuerdo') }}" checked>
+                                            <span id="span_responsable_propietario_acuerdo" class="text-muted" style="padding-left: 10px;">SI</span>
                                         </div>
                                     </div>
-                                </div> --}}
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Identificaci&oacute;n:</label>
+                                            <input type="text" id="identificacion_acuerdo" name="identificacion_acuerdo" class="form-control" autocomplete="off" placeholder="Ingrese identificaci&oacute;n" value="{{ old('identificacion_acuerdo') }}" maxlength="30">
+                                            <span class="text-danger">@error('identificacion_acuerdo') {{ $message }} @enderror</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Nombre:</label>
+                                            <input type="text" id="nombre_acuerdo" name="nombre_acuerdo" class="form-control" autocomplete="off" placeholder="Ingrese nombre" value="{{ old('nombre_acuerdo') }}" maxlength="128">
+                                            <span class="text-danger">@error('nombre_acuerdo') {{ $message }} @enderror</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Tel&eacute;fono:</label>
+                                            <input type="text" id="telefono_acuerdo" name="telefono_acuerdo" class="form-control" autocomplete="off" placeholder="Ingrese tel&eacute;fono" value="{{ old('telefono_acuerdo') }}" maxlength="10">
+                                            <span class="text-danger">@error('telefono_acuerdo') {{ $message }} @enderror</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Direcci&oacute;n:</label>
+                                            <input type="text" id="direccion_acuerdo" name="direccion_acuerdo" class="form-control" autocomplete="off" placeholder="Ingrese direcci&oacute;n" value="{{ old('direccion_acuerdo') }}" maxlength="128">
+                                            <span class="text-danger">@error('direccion_acuerdo') {{ $message }} @enderror</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -1351,6 +1409,7 @@
             </div>
             <div class="modal-footer">
                 <button id="save_dap" type="button" class="btn btn-info"> <i class="fa fa-save"></i> Guardar informaci&oacute;n</button>
+                <button id="anular_dap" type="button" class="btn btn-danger"> <i class="fa fa-save"></i> Anular acuerdo de pago</button>
                 <button type="button" class="btn btn-default waves-effect text-left" data-dismiss="modal">Cerrar</button>
             </div>
         </div>

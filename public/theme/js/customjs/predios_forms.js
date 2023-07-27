@@ -26,6 +26,29 @@ $(document).ready(function() {
     setDownloadPazRow();
     setPrescribeRow();
     // setAvaluosRow();
+    setAcuerdoPagoRow();
+
+    var validatorPropietario = $("#form-predios-datos-propietarios").validate({
+        rules: {
+            identificacion: "required",
+            nombre: "required",
+            direccion: "required",
+            correo_electronico: {
+                required: true
+                // email: true
+            }
+
+        },
+        messages: {
+            identificacion: "N&uacute;mero requerido",
+            nombre: "Nombre requerido",
+            direccion: "Direcci&oacute;n requerida",
+            correo_electronico: {
+                required: "Correo electr&oacute;nico requerido"
+                // email: "Formato requerido email@dominio.com"
+            }
+        }
+    });
 
     if ($('#codigo_predio').length > 0) {
         $('#codigo_predio').off('keyup').on('keyup', function() {
@@ -421,6 +444,19 @@ $(document).ready(function() {
         });
     }
 
+    if ($('#responsable_propietario_acuerdo').length > 0) {
+        $('#responsable_propietario_acuerdo').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_responsable_propietario_acuerdo').html('SI');
+                $(this).val(1);
+            } else {
+                $('#span_responsable_propietario_acuerdo').html('NO');
+                $(this).val(0);
+            }
+            checkResponsableAcuerdo();
+        });
+    }
+
     $('.datepickerforms').datepicker({
         //container: $('#modal-datos-pagos'),
         language: 'es-ES',
@@ -433,7 +469,10 @@ $(document).ready(function() {
     });
 
     $('#save_dp').off('click').on('click', function() {
-        saveDatosPredio('form-predios-datos-propietarios', 'modal-datos-propietarios', 'predios_datos_propietarios', 'dp');
+        var form = $("#form-predios-datos-propietarios");
+        if (form.valid()) {
+            saveDatosPredio('form-predios-datos-propietarios', 'modal-datos-propietarios', 'predios_datos_propietarios', 'dp');
+        }
     });
     // $('#save_dc').off('click').on('click', function() {
     //     saveDatosPredio('form-predios-datos-calculo', 'modal-datos-calculo', 'predios_datos_calculo', 'dc');
@@ -444,7 +483,29 @@ $(document).ready(function() {
     // });
 
     $('#save_dap').off('click').on('click', function() {
-        saveDatosPredio('form-predios-datos-acuerdos-pago', 'modal-datos-acuerdos-pago', 'predios_datos_acuerdos_pago', 'dap');
+        var form = $("#form-predios-datos-acuerdos-pago");
+        if (form.valid()) {
+            saveDatosPredio('form-predios-datos-acuerdos-pago', 'modal-datos-acuerdo-pago', 'predios_datos_acuerdos_pago', 'dap');
+        }
+    });
+
+    $('#anular_dap').off('click').on('click', function() {
+        swal({
+            title: "Atención",
+            text: '¿Está seguro que desea anular el acuerdo de pago asociado al predio?',
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Si",
+            cancelButtonText: "No",
+            closeOnConfirm: true,
+            closeOnCancel: true
+        }, function(isConfirm) {
+            if (isConfirm) {
+                $('#form-predios-datos-acuerdos-pago').find('#anulado_acuerdo').val('1');
+                saveDatosPredio('form-predios-datos-acuerdos-pago', 'modal-datos-acuerdo-pago', 'predios_datos_acuerdos_pago', 'dap');
+            }
+        });
     });
 
     $('#save_da').off('click').on('click', function() {
@@ -477,7 +538,9 @@ $(document).ready(function() {
                     identificacion_editando = objJson[0].identificacion;
                     $('#jerarquia').val(objJson[0].jerarquia);
                     $('#form-predios-datos-propietarios').find('#span_jerarquia').html(objJson[0].jerarquia);
-                    $('#span_de_jererquia').html(' de ' + DTPropietarios.rows().data().length);
+                    if (DTPropietarios !== null) {
+                        $('#span_de_jererquia').html(' de ' + DTPropietarios.rows().data().length);
+                    }
                 }
                 $('#new_dp').css('display', '');
                 $('#cancel_dp').css('display', 'none');
@@ -516,7 +579,9 @@ $(document).ready(function() {
         current_page = 0;
         $('#text_page_propietarios').html('Edici&oacute;n<br />P&aacute;gina: 1');
         $('#text_row_propietarios').html('Fila: 1');
+        $('#save_dp').attr('disabled', false);
         $('#cancel_dp').trigger('click');
+        validatorPropietario.resetForm();
     });
 
     /// datos-calculo
@@ -548,18 +613,18 @@ $(document).ready(function() {
     // });
 
     /// datos-acuerdos-pago
-    $('#modal-datos-acuerdos-pago').on('show.bs.modal', function() {
-        if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dap') !== undefined) {
-            var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dap'));
-            setFormData('form-predios-datos-acuerdos-pago', objJson);
-        }
-    });
+    // $('#modal-datos-acuerdo-pago').on('show.bs.modal', function() {
+    //     if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dap') !== undefined) {
+    //         var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dap'));
+    //         setFormData('form-predios-datos-acuerdos-pago', objJson);
+    //     }
+    // });
 
-    $('#modal-datos-acuerdos-pago').on('hidden.bs.modal', function() {
-        $('.datohidden').remove();
-        $('#form-predios-datos-acuerdos-pago')[0].reset();
-        clear_form_elements("#form-predios-datos-acuerdos-pago");
-    });
+    // $('#modal-datos-acuerdo-pago').on('hidden.bs.modal', function() {
+    //     $('.datohidden').remove();
+    //     $('#form-predios-datos-acuerdos-pago')[0].reset();
+    //     clear_form_elements("#form-predios-datos-acuerdos-pago");
+    // });
 
     /// datos-abonos
     $('#modal-datos-abonos').on('show.bs.modal', function() {
@@ -634,10 +699,16 @@ $(document).ready(function() {
         $('.info_propietarios').css('display', 'none');
         $('#form-predios-datos-propietarios')[0].reset();
         clear_form_elements("#form-predios-datos-propietarios");
+        $('#form-predios-datos-propietarios').find('#nombre').prop('readonly', false);
+        $('#form-predios-datos-propietarios').find('#direccion').prop('readonly', false);
+        $('#form-predios-datos-propietarios').find('#correo_electronico').prop('readonly', false);
+
         $('#divPropietariosTable').css('display', 'none');
         if (DTPropietarios !== null) {
             DTPropietarios.$('.row-selected').toggleClass('row-selected');
         }
+        $('#form-predios-datos-propietarios').find('#identificacion').focus();
+        $('#save_dp').attr('disabled', false);
     });
 
     $('#new_da').off('click').on('click', function() {
@@ -827,6 +898,9 @@ $(document).ready(function() {
                 var data = DTPropietarios.row(tr).data();
                 $('.datohidden').remove();
                 setFormData('form-predios-datos-propietarios', data);
+                $('#form-predios-datos-propietarios').find('#nombre').prop('readonly', false);
+                $('#form-predios-datos-propietarios').find('#direccion').prop('readonly', false);
+                $('#form-predios-datos-propietarios').find('#correo_electronico').prop('readonly', false);
                 identificacion_editando = data.identificacion;
                 $('#jerarquia').val(data.jerarquia);
                 $('#form-predios-datos-propietarios').find('#span_jerarquia').html(data.jerarquia);
@@ -845,6 +919,7 @@ $(document).ready(function() {
                 $('#div_set_jerarquia').fadeOut(function() {
                     $('#div_jerarquia').fadeIn();
                 });
+                $('#form-predios-datos-propietarios').find('#identificacion').focus();
             });
 
             $('.deletePropietario').off('click').on('click', function() {
@@ -1005,7 +1080,7 @@ $(document).ready(function() {
     });
 
     $('#identificacion').off('blur').on('blur', function() {
-        if(!is_editando_propietario) {
+        if(!is_editando_propietario && !propietario_autocompletado) {
             autocompletePropietario($(this).val(), true);
         }
     });
@@ -1043,11 +1118,17 @@ $(document).ready(function() {
                             stack: 6,
                             afterHidden: function () {
                                 $('#identificacion').val(identificacion_editando);
+                                // $('#save_dp').attr('disabled', true);
+                                if (idx_update >= 0) {
+                                    DTPropietarios.page(current_page).draw('page');
+                                    DTPropietarios.$('tr:eq(' + idx_update + ')').toggleClass('row-selected');
+                                    DTPropietarios.$('tr:eq(' + idx_update + ')').find('.editPropietario').trigger('click');
+                                }
                                 is_toast = false;
                             }
                         });
                     }
-                    else if(!existe) {
+                    else if(!existe && !is_toast) {
                         autocompletePropietario($('#identificacion').val(), false);
                     }
                 }, 400);//Tiempo de espera despues de presionar una tecla
@@ -1064,12 +1145,27 @@ $(document).ready(function() {
         });
     }
 
+    if($('#anio_inicial_acuerdo').length) {
+        $('#anio_inicial_acuerdo').off('change').on('change', function() {
+            if(Number($('#anio_inicial_acuerdo').val()) > Number($('#anio_final_acuerdo').val())) {
+                $('#anio_final_acuerdo').val('');
+            }
+        });
+    }
+
+    if($('#anio_final_acuerdo').length) {
+        $('#anio_final_acuerdo').off('change').on('change', function() {
+            if(Number($('#anio_final_acuerdo').val()) < Number($('#anio_inicial_acuerdo').val())) {
+                $('#anio_inicial_acuerdo').val('');
+            }
+        });
+    }
 });
 
 function saveDatosPredio(form, modal, path, suffix) {
     var jsonObj = $('#' + form).serializeJSON({ useIntKeysAsArrayIndex: true });
     if (jsonObj.id_predio === undefined) {
-        jsonObj.id_predio = $('#id_edit').val();
+        jsonObj.id_predio = $('#id_edit').val().length > 0 ? $('#id_edit').val() : $('#id_predio.select2').val();
     }
     $.ajax({
         type: 'POST',
@@ -1095,7 +1191,24 @@ function saveDatosPredio(form, modal, path, suffix) {
                                         DTPropietarios.page(current_page).draw('page');
                                         DTPropietarios.$('tr:eq(' + idx_update + ')').toggleClass('row-selected');
                                     }
+                                    if(propietario_autocompletado) {
+                                        $('#form-predios-datos-propietarios').find('#id_propietario').remove();
+                                        $('#form-predios-datos-propietarios').find('#nombre').prop('readonly', false);
+                                        $('#form-predios-datos-propietarios').find('#direccion').prop('readonly', false);
+                                        $('#form-predios-datos-propietarios').find('#correo_electronico').prop('readonly', false);
+                                        identificacion_autocompletada = '';
+                                        propietario_autocompletado = false;
+                                        $('#form-predios-datos-propietarios').find('#identificacion').focus();
+                                    }
                                 } else {
+                                    if(propietario_autocompletado) {
+                                        $('#form-predios-datos-propietarios').find('#id_propietario').remove();
+                                        $('#form-predios-datos-propietarios').find('#nombre').val('').prop('readonly', false);
+                                        $('#form-predios-datos-propietarios').find('#direccion').val('').prop('readonly', false);
+                                        $('#form-predios-datos-propietarios').find('#correo_electronico').val('').prop('readonly', false);
+                                        identificacion_autocompletada = '';
+                                        propietario_autocompletado = false;
+                                    }
                                     info = DTPropietarios.page.info();
                                     DTPropietarios.page(info.pages - 1).draw('page');
                                     last_row = DTPropietarios.row(':last').index();
@@ -1105,18 +1218,11 @@ function saveDatosPredio(form, modal, path, suffix) {
                                     $('#new_dp').css('display', '');
                                     $('#cancel_dp').css('display', 'none');
                                     $('.info_propietarios').css('display', '');
-                                    if(propietario_autocompletado) {
-                                        $('#form-predios-datos-propietarios').find('#id_propietario').remove();
-                                        $('#form-predios-datos-propietarios').find('#nombre').val('').prop('readonly', false);
-                                        $('#form-predios-datos-propietarios').find('#direccion').val('').prop('readonly', false);
-                                        $('#form-predios-datos-propietarios').find('#correo_electronico').val('').prop('readonly', false);
-                                        identificacion_autocompletada = '';
-                                        propietario_autocompletado = false;
-                                    }
                                 }
                             }
                             nuevo_propietario = false;
                             is_editando_propietario = true;
+                            getPredio($('#id_predio.select2').val());
                         } else if (suffix === 'da') {
                             if (DTAbonos !== null) {
                                 $('#tr_predio_' + $('#id_edit').val()).attr('data-da', JSON.stringify(response.obj));
@@ -1139,8 +1245,24 @@ function saveDatosPredio(form, modal, path, suffix) {
                                     $('.info_abonos').css('display', '');
                                 }
                             }
-                        }
-                        else {
+                        } else if (suffix === 'dap') {
+                            if (jsonObj.anulado_acuerdo === undefined) {
+                                global_acuerdo_pago = response.obj;
+                                setDataAcuerdoPagoModalForm();
+                                disable_form_elements('#form-predios-datos-acuerdos-pago', true);
+                                $('#save_dap').attr('disabled', true);
+                                $('#save_dap').css('display', 'none');
+                                $('#anular_dap').attr('disabled', false);
+                                $('#anular_dap').css('display', '');
+                                $('.download_factura_row').attr('disabled', true);
+                            } else {
+                                global_acuerdo_pago = null;
+                                disable_form_elements('#form-predios-datos-acuerdos-pago', false);
+                                $('#modal-datos-acuerdo-pago').modal('hide');
+                                $('.download_factura_row').attr('disabled', false);
+                            }
+
+                        } else {
                             $('#tr_predio_' + $('#id_edit').val()).attr('data-' + suffix, JSON.stringify(response.obj));
                         }
                     }
@@ -1150,7 +1272,7 @@ function saveDatosPredio(form, modal, path, suffix) {
                     title: "Atención",
                     text: response.data.message,
                     type: "warning",
-                    confirmButtonColor: "#DD6B55",
+                    // confirmButtonColor: "#DD6B55",
                     confirmButtonText: "Aceptar",
                     closeOnConfirm: true
                 });
@@ -1204,9 +1326,9 @@ function getJsonPrediosDatos() {
             }
             $('#acuerdo_pago').attr('disabled', true);
 
-            if (response.predio_acuerdo_pago !== undefined && response.predio_acuerdo_pago !== null) {
-                $('#tr_predio_' + $('#id_edit').val()).attr('data-dap', JSON.stringify(response.predio_acuerdo_pago));
-            }
+            // if (response.predio_acuerdo_pago !== undefined && response.predio_acuerdo_pago !== null) {
+            //     $('#tr_predio_' + $('#id_edit').val()).attr('data-dap', JSON.stringify(response.predio_acuerdo_pago));
+            // }
 
             if (response.predio_abonos !== undefined && response.predio_abonos !== null) {
                 $('#tr_predio_' + $('#id_edit').val()).attr('data-da', JSON.stringify(response.predio_abonos));
@@ -1360,6 +1482,7 @@ function saveEliminarPropietario(id_predio_propietario) {
                 DTPropietarios.$('tr:eq(' + first_row + ')').toggleClass('row-selected');
                 DTPropietarios.$('tr:first').find('.editPropietario').trigger('click');
             }
+            getPredio($('#id_predio.select2').val());
             $.unblockUI();
         },
         error: function(xhr) {
@@ -1396,6 +1519,7 @@ function autocompletePropietario(identificacion, append_hidden) {
         },
         success: function(response) {
             if(response.propietario !== null) {
+                is_toast = true;
                 $.toast({
                     heading: 'Atención',
                     text: 'Se ha detectado un propietario ya existente en la base de datos del sistema.',
@@ -1403,18 +1527,31 @@ function autocompletePropietario(identificacion, append_hidden) {
                     loaderBg: '#fff',
                     icon: 'warning',
                     hideAfter: 5000,
-                    stack: 6
+                    stack: 6,
+                    afterHidden: function () {
+                        is_toast = false;
+                    }
                 });
                 if(append_hidden) {
                     $('#form-predios-datos-propietarios').prepend('<input type="hidden" id="id_propietario" name="id_propietario" value="' + response.propietario.id + '">');
+                } else {
+                    if ($('#form-predios-datos-propietarios').find('#id').length > 0) {
+                        $('#form-predios-datos-propietarios').find('#id').val(response.propietario.id);
+                    } else {
+                        $('#form-predios-datos-propietarios').prepend('<input type="hidden" id="id" name="id" value="' + response.propietario.id + '">');
+                    }
                 }
-                $('#form-predios-datos-propietarios').find('#nombre').val(response.propietario.nombre).prop('readonly', true);
-                $('#form-predios-datos-propietarios').find('#direccion').val(response.propietario.direccion).prop('readonly', true);
-                $('#form-predios-datos-propietarios').find('#correo_electronico').val(response.propietario.correo_electronico).prop('readonly', true);
+                $('#form-predios-datos-propietarios').find('#nombre').val(response.propietario.nombre).prop('readonly', false);
+                $('#form-predios-datos-propietarios').find('#direccion').val(response.propietario.direccion).prop('readonly', false);
+                $('#form-predios-datos-propietarios').find('#correo_electronico').val(response.propietario.correo_electronico).prop('readonly', false);
                 identificacion_autocompletada = identificacion;
                 propietario_autocompletado = true;
             }
             else {
+                $('#form-predios-datos-propietarios').find('#id').remove();
+                $('#form-predios-datos-propietarios').find('#nombre').val('').prop('readonly', false);
+                $('#form-predios-datos-propietarios').find('#direccion').val('').prop('readonly', false);
+                $('#form-predios-datos-propietarios').find('#correo_electronico').val('').prop('readonly', false);
                 identificacion_autocompletada = '';
                 propietario_autocompletado = false;
             }
@@ -1425,4 +1562,38 @@ function autocompletePropietario(identificacion, append_hidden) {
             $.unblockUI();
         }
     });
+}
+
+function checkResponsableAcuerdo() {
+    var elem = $('#responsable_propietario_acuerdo');
+    if ($(elem).val() === '0') {
+        if (!global_acuerdo_pago || global_acuerdo_pago.responsable_propietario_acuerdo !== $(elem).val()) {
+            $('#identificacion_acuerdo').val('');
+            $('#nombre_acuerdo').val('');
+            $('#direccion_acuerdo').val('');
+            $('#telefono_acuerdo').val('');
+        } else {
+            $('#identificacion_acuerdo').val(global_acuerdo_pago.identificacion_acuerdo);
+            $('#nombre_acuerdo').val(global_acuerdo_pago.nombre_acuerdo);
+            $('#direccion_acuerdo').val(global_acuerdo_pago.direccion_acuerdo);
+            $('#telefono_acuerdo').val(global_acuerdo_pago.telefono_acuerdo);
+        }
+        $('#identificacion_acuerdo').attr('readonly', false);
+        $('#nombre_acuerdo').attr('readonly', false);
+        $('#direccion_acuerdo').attr('readonly', false);
+    } else {
+        if (global_acuerdo_pago) {
+            $('#identificacion_acuerdo').val(global_acuerdo_pago.identificacion_acuerdo);
+            $('#nombre_acuerdo').val(global_acuerdo_pago.nombre_acuerdo);
+            $('#direccion_acuerdo').val(global_acuerdo_pago.direccion_acuerdo);
+            $('#telefono_acuerdo').val(global_acuerdo_pago.telefono_acuerdo);
+        } else {
+            $('#identificacion_acuerdo').val(global_propietario.identificacion);
+            $('#nombre_acuerdo').val(global_propietario.nombre);
+            $('#direccion_acuerdo').val(global_propietario.direccion);
+        }
+        $('#identificacion_acuerdo').attr('readonly', true);
+        $('#nombre_acuerdo').attr('readonly', true);
+        $('#direccion_acuerdo').attr('readonly', true);
+    }
 }
