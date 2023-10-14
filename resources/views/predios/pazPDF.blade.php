@@ -121,13 +121,12 @@
             <table class="table-header">
                 <tr>
                     <td style="width: 20%;">
-                        <img style="width: 70%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/logo-sesquile.png'))) }}" alt="Logo" />
+                        <img style="width: 70%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/'. $logo))) }}" alt="Logo" />
                     </td>
                     <td>
                         <p class="header">
                             REP&Uacute;BLICA DE COLOMBIA</p>
-                        <p class="header">
-                            ALCALD&Iacute;A MUNICIPAL DE SESQUILE</p>
+                        <p class="header">{{ strtoupper($alcaldia) }}</p>
                         <p class="header">
                             SECRETAR&Iacute;A DE HACIENDA</p>
                         <p class="header">

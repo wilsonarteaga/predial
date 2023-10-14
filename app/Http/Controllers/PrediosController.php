@@ -2542,7 +2542,13 @@ class PrediosController extends Controller
                               ->where('parametros.nombre', 'logo')
                               ->first();
 
+        $parametro_alcaldia = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'alcaldia')
+                              ->first();
+
         $logo = $parametro_logo->valor;
+        $alcaldia = $parametro_alcaldia->valor;
 
         $data = [
             'title' => 'Paz y salvo',
@@ -2558,7 +2564,8 @@ class PrediosController extends Controller
             'destino' => strtoupper($destino),
             'fecha_validez' => $fecha,
             'valor' => $valor,
-            'logo' => $logo
+            'logo' => $logo,
+            'alcaldia' => $alcaldia
         ];
 
         $pdf = PDF::loadView('predios.pazPDF', $data);
