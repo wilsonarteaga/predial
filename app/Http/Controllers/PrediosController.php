@@ -2922,8 +2922,15 @@ class PrediosController extends Controller
                               ->where('parametros.nombre', 'nit')
                               ->first();
 
+        $parametro_alcaldia = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'alcaldia')
+                              ->first();
+
+
         $logo = $parametro_logo->valor;
         $nit = $parametro_nit->valor;
+        $alcaldia = $parametro_alcaldia->valor;
 
         $data = [
             'title' => 'Avaluos',
@@ -2932,7 +2939,8 @@ class PrediosController extends Controller
             'avaluos' => $avaluos,
             'propietario_ppal' => $propietario_ppal,
             'logo' => $logo,
-            'nit' => $nit
+            'nit' => $nit,
+            'alcaldia' => $alcaldia
         ];
 
         $pdf = PDF::loadView('predios.avaluosPDF', $data);

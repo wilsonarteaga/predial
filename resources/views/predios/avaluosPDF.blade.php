@@ -126,8 +126,7 @@
                     <td>
                         <p class="header">
                             REP&Uacute;BLICA DE COLOMBIA</p>
-                        <p class="header">
-                            ALCALD&Iacute;A MUNICIPAL DE SESQUILE</p>
+                        <p class="header">{{ strtoupper($alcaldia) }}</p>
                         <p class="header">
                             NIT {{ $nit }}</p>
                         <p class="header">
