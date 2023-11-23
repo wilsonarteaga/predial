@@ -11,6 +11,7 @@ var codigo_predio_buscando = '';
 var global_anio_prescripcion = '';
 var global_propietario = null;
 var global_acuerdo_pago = null;
+var global_plusvalia = 0;
 var arr_autonumeric = ['porcentaje', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
     'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_abono',
     'valor_facturado', 'avaluoigac', 'area', 'valor_paz', 'tasa_diaria', 'tasa_mensual', 'tasa_acuerdo','abono_inicial_acuerdo'
@@ -468,6 +469,34 @@ $(document).ready(function() {
         });
     }
 
+    if ($('#tipo_factura').length > 0) {
+        $('#tipo_factura').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_tipo_factura').html('SI');
+                $(this).val(1);
+                $('#ultimo_anio_facturar').css('height', '70px');
+                $('#ultimo_anio_facturar').attr('multiple', true);
+                $('#ultimo_anio_facturar option:first').css('display', 'none');
+                $('#ultimo_anio_facturar').off('change').on('change', function(e) {
+                    var selected = $(e.target).val().map(el => Number(el));
+                    var newSelected = new Array();
+                    for (let i = Math.max(...selected); i >= Math.min(...selected); i--) {
+                        newSelected.push(i);
+                    }
+                    $('#ultimo_anio_facturar').val(newSelected);
+                });
+            } else {
+                $('#span_tipo_factura').html('NO');
+                $(this).val(0);
+                $('#ultimo_anio_facturar').css('height', '');
+                $('#ultimo_anio_facturar').removeAttr('multiple');
+                $('#ultimo_anio_facturar option:first').css('display', '');
+                $('#ultimo_anio_facturar').off('change');
+                $('#ultimo_anio_facturar').val('')
+            }
+        });
+    }
+
     if ($("#create-form").length > 0) {
         $('#create-form').validate().settings.ignore = '';
         $('#create-form').validate().settings.errorPlacement = function(error, element) {
@@ -607,6 +636,7 @@ $(document).ready(function() {
 
         $('#id_predio.select2').on('select2:clear', function (e) {
             global_json_predio = null;
+            $('#div_edit_predio').fadeOut();
             if ($('#id_predio.select2').closest('form').length > 0) {
                 if ($('#id_predio.select2').closest('form').attr('id') === 'create-form') {
                     $('#create-form').validate().element($('#id_predio.select2'));
@@ -711,14 +741,34 @@ $(document).ready(function() {
     $('#generate_factura_definitiva').off('click').on('click', function() {
         $('.btn_pdf').attr('disabled', true);
         if(checkAnioImpresion()) {
-            startImpresion(global_url_print + '/0/' + $('#ultimo_anio_facturar').val(), 'Iniciando generación factura definitiva de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
+            var anios = '';
+            if (typeof $('#ultimo_anio_facturar').val() === 'object' && $('#ultimo_anio_facturar').val().length > 1) {
+                var arrayAnios = $('#ultimo_anio_facturar').val().map(el => Number(el));
+                anios = `${Math.min(...arrayAnios)},${Math.max(...arrayAnios)}`;
+            } else if (typeof $('#ultimo_anio_facturar').val() === 'object' && $('#ultimo_anio_facturar').val().length === 1) {
+                anios = $('#ultimo_anio_facturar').val()[0];
+            } else {
+                anios = $('#ultimo_anio_facturar').val();
+            }
+            var max_fecha = $('#fecha_max_pago').val().length > 0 ? $('#fecha_max_pago').val() : '-';
+            startImpresion(global_url_print + '/0/' + anios + '/' + max_fecha + '/0', 'Iniciando generación factura definitiva de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
         }
     });
 
     $('#generate_factura_temporal').off('click').on('click', function() {
         $('.btn_pdf').attr('disabled', true);
         if(checkAnioImpresion()) {
-            startImpresion(global_url_print + '/1/' + $('#ultimo_anio_facturar').val(), 'Iniciando generación factura vista previa de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
+            var anios = '';
+            if (typeof $('#ultimo_anio_facturar').val() === 'object' && $('#ultimo_anio_facturar').val().length > 1) {
+                var arrayAnios = $('#ultimo_anio_facturar').val().map(el => Number(el));
+                anios = `${Math.min(...arrayAnios)},${Math.max(...arrayAnios)}`;
+            } else if (typeof $('#ultimo_anio_facturar').val() === 'object' && $('#ultimo_anio_facturar').val().length === 1) {
+                anios = $('#ultimo_anio_facturar').val()[0];
+            } else {
+                anios = $('#ultimo_anio_facturar').val();
+            }
+            var max_fecha = $('#fecha_max_pago').val().length > 0 ? $('#fecha_max_pago').val() : '-';
+            startImpresion(global_url_print + '/1/' + anios + '/' + max_fecha + '/0', 'Iniciando generación factura vista previa de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
         }
     });
 
@@ -921,13 +971,23 @@ function setDownloadFacturaRow() {
                 $('#modal-impresion-factura').on('hidden.bs.modal', function() {
                     $(btn).attr('disabled', false);
                     $('#form-predios-impresion-factura')[0].reset();
+                    $('#tipo_factura').prop('checked', false);
+                });
+                $('#modal-impresion-factura').on('show.bs.modal', function() {
+                    if (moment($('#fecha_actual').val()) > moment($('#max_fecha_descuentos').val())) {
+                        $('#fecha_max_pago').datepicker('setDate', $('#fecha_actual').val());
+                    } else {
+                        $('#fecha_max_pago').datepicker('clearDates');
+                    }
                 });
                 $('#modal-impresion-factura').on('shown.bs.modal', function() {
+                    $('#tipo_factura').prop('checked', false);
                     $('[data-toggle="tooltip"]').tooltip();
                 });
             }
             else {
-                startImpresion(global_url_print + '/0/' + global_anio_actual, 'Pago ya registrado. Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
+                var max_fecha = $('#fecha_max_pago').val().length > 0 ? $('#fecha_max_pago').val() : '-';
+                startImpresion(global_url_print + '/0/' + global_anio_actual + '/' + max_fecha + '/0', 'Pago ya registrado. Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
                 // startImpresion(global_url_print + '/0/' + global_anio_actual + '/0/1900-01-01', 'Pago ya registrado. Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
                 $(btn).attr('disabled', false);
                 $('[data-toggle="tooltip"]').tooltip();
@@ -940,8 +1000,13 @@ function setDownloadPazRow() {
     if ($('.download_paz_row').length > 0) {
         $('.download_paz_row').off('click').on('click', function(evt) {
             var btn = $(this);
-            var url_download = $(btn).attr('url');
             $(btn).attr('disabled', true);
+
+            var url_download = $(btn).attr('url');
+            var plusv = $(btn).attr('plusv');
+            global_plusvalia = Number(plusv);
+            global_url_print = url_download;
+
             // Create a date object from a date string
             var today = new Date();
             //var tomorrow = new Date();
@@ -956,17 +1021,34 @@ function setDownloadPazRow() {
             $('#fecha_paz').datepicker('setDate', formattedEndDate);
             $('#fecha_paz').datepicker('setStartDate', formattedDate);
             $('#fecha_paz').datepicker('setEndDate', formattedEndDate);
-            $('#modal-impresion-paz').modal({ backdrop: 'static', keyboard: false }, 'show');
-            global_url_print = url_download;
             $('[data-toggle="tooltip"]').tooltip('destroy');
             $('#modal-impresion-paz').on('hidden.bs.modal', function() {
                 $(btn).attr('disabled', false);
                 $('#form-predios-impresion-paz')[0].reset();
+                global_plusvalia = 0;
+                $('#div_message_plusvalia').fadeOut();
             });
             $('#modal-impresion-paz').on('shown.bs.modal', function() {
                 $('#destino_paz').focus();
                 $('[data-toggle="tooltip"]').tooltip();
             });
+            if (global_plusvalia !== 0) {
+                $('#div_message_plusvalia').fadeIn('fast');
+                swal({
+                    title: "Atención",
+                    text: 'El predio seleccionado presenta un indicador de plusvalia activo. Por favor, no olvide realizar el cobro pertinente.',
+                    type: "warning",
+                    // confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Aceptar",
+                    closeOnConfirm: true
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        $('#modal-impresion-paz').modal({ backdrop: 'static', keyboard: false }, 'show');
+                    }
+                });
+            } else {
+                $('#modal-impresion-paz').modal({ backdrop: 'static', keyboard: false }, 'show');
+            }
         });
     }
 }
@@ -1015,6 +1097,22 @@ function startImpresion(url_download, message_toast, type_icon, modal) {
 }
 
 function getPredio(id_predio) {
+    $.blockUI({
+        message: "Ejecutando b&uacute;squeda de predio. Espere un momento.",
+        css: {
+            border: 'none',
+            padding: '15px',
+            backgroundColor: '#000',
+            '-webkit-border-radius': '10px',
+            '-moz-border-radius': '10px',
+            opacity: .5,
+            color: '#fff',
+            zIndex: 9999
+        },
+        overlayCSS:  {
+            zIndex: 1100
+        },
+    });
     global_ya_pagado = false;
     global_anio_actual = 0;
     global_predio_con_deuda = false;
@@ -1092,7 +1190,7 @@ function getPredio(id_predio) {
                                   '&nbsp;&nbsp;' +
                                   '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Generar factura" ide="' + predio.id + '" class="download_factura_row btn btn-'+ colorBtnCalculo +'" url="/generate_factura_pdf/' + predio.id + '" msg="¿Está seguro/a que desea ejecutar el cálculo?" ' + disabledBtnCalculo + '><i class="fa ' + classBtnCalculo + '"></i></button>' +
                                   '&nbsp;&nbsp;' +
-                                  '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Generar paz y salvo" ide="' + predio.id + '" class="download_paz_row btn btn-warning" url="/generate_paz_pdf/' + predio.id + '" msg="¿Está seguro/a que desea generar el paz y salvo?" ' + disabledBtnPaz + '><i class="fa fa-trophy"></i></button>' +
+                                  '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Generar paz y salvo" ide="' + predio.id + '" class="download_paz_row btn btn-warning" url="/generate_paz_pdf/' + predio.id + '" plusv="' + predio.ind_plusvalia + '" msg="¿Está seguro/a que desea generar el paz y salvo?" ' + disabledBtnPaz + '><i class="fa fa-trophy"></i></button>' +
                                   '&nbsp;&nbsp;' +
                                 //   '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Ver aval&uacute;os" ide="' + predio.id + '" class="avaluos_row btn btn-default"><i class="fa fa-home"></i></button>' +
                                 //   '&nbsp;&nbsp;' +
@@ -1115,6 +1213,7 @@ function getPredio(id_predio) {
                     $('#anio_inicial_acuerdo').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
                     $('#anio_final_acuerdo').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
                 });
+                $('#ultimo_anio_facturar').append('<option value="2021">2021</option>');
                 if(anios.length > 1) {
                     global_predio_con_deuda = true;
                     $('#div_fecha_pago_factura').css('display', '');
@@ -1146,11 +1245,17 @@ function getPredio(id_predio) {
                         placement: 's' // north-east tooltip position
                     });
                     $('[data-toggle="tooltip"]').tooltip();
+                    $('#div_edit_predio').fadeIn(function() {
+                        $.unblockUI();
+                    });
                 }, 500);
+            } else {
+                $.unblockUI();
             }
         },
         error: function(xhr) {
             console.log(xhr.responseText);
+            $.unblockUI();
         }
     });
 }
@@ -1170,7 +1275,6 @@ function getAvaluosPredio(id_predio, btn) {
             if(btn !== undefined) {
                 $(btn).attr('disabled', false);
             }
-            console.log(response);
             if (response.predio.length > 0) {
                 if (DTAvaluos !== null) {
                     DTAvaluos.clear().draw();
@@ -1692,7 +1796,7 @@ function checkSaveResolucion(form, desc_operacion) {
 }
 
 function checkAnioImpresion() {
-    if($('#ultimo_anio_facturar').val() === '' || $('#ultimo_anio_facturar').val().length < 4) {
+    if((typeof $('#ultimo_anio_facturar').val() === 'string' && ($('#ultimo_anio_facturar').val() === '' || $('#ultimo_anio_facturar').val().length < 4)) || (typeof $('#ultimo_anio_facturar').val() === 'object' && $('#ultimo_anio_facturar').val().length === 0)) {
         swal({
             title: "Atención",
             text: "Se necesita establecer el último año que se desea facturar.",

@@ -66,7 +66,7 @@
                                 <div class="panel panel-inverse">
                                     <div class="panel-heading">
                                         <i class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Informaci&oacute;n del pago
-                                        <i id="search-pago" class="fa fa-search pull-right icons-tasks" style="cursor: pointer; padding-left: 10px;"></i>
+                                        <i id="search-pago" class="fa fa-search pull-right icons-tasks" style="cursor: pointer; padding-left: 15px;"></i>
                                         <i id="upload-asobancaria" class="fa fa-upload pull-right icons-tasks" style="cursor: pointer;"></i>
                                     </div>
                                     <div class="panel-wrapper collapse in" aria-expanded="true">

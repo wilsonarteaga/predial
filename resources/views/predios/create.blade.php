@@ -20,6 +20,8 @@
 <input type="hidden" id="tab" value="{{ $tab_current }}">
 @endif
 <input type="hidden" id="opcion" value='@json($opcion)'>
+<input type="hidden" id="max_fecha_descuentos" value='{{ $max_fecha_descuentos }}'>
+<input type="hidden" id="fecha_actual" value='{{ $fecha_actual }}'>
 <div class="container-fluid">
     <div class="row bg-title">
         <div class="col-lg-5 col-md-8 col-sm-12 col-xs-12">
@@ -359,7 +361,7 @@
                                                         </div>
                                                     @endif
                                                 </div>
-                                                <div class="row">
+                                                <div class="row" style="{{ !$batchs ? print('min-height: 220px;') : ''}}">
                                                     <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Buscar predio:</label><br />
@@ -367,20 +369,70 @@
                                                             </select>
                                                         </div>
                                                     </div>
+                                                    <div class="col-lg-offset-2 col-lg-6 col-md-offset-2 col-md-6 col-sm-12 col-xs-12">
+                                                        <div class="btn-group">
+                                                            <label class="control-label">Otras operaciones...</label><br />
+                                                            <button aria-expanded="false" data-toggle="dropdown" class="btn btn-default btn-outline dropdown-toggle waves-effect waves-light batch_element" style="height: 38px;{{ $batchs ? print('display: none;') : ''}}" type="button"> <i class="fa fa-gears m-r-5"></i> <span class="caret"></span></button>
+                                                            <ul role="menu" class="dropdown-menu batch_element" style="{{ $batchs ? print('display: none;') : ''}}">
+                                                                <li><a id="btn_batch" href="#" data-toggle="modal" data-target="#modal-batch" data-backdrop="static" data-keyboard="false">Procesar c&aacute;lculo batch</a></li>
+                                                                <li class="divider"></li>
+                                                                <li><a id="btn_cartera" href="#">Reporte de cartera</a></li>
+                                                            </ul>
+                                                            <p class="text-muted batch_message" style="text-align: justify;{{ !$batchs ? print('display: none;') : ''}}">
+                                                                <code style="width: 100%">
+                                                                    Se ha detectado un proceso de c&aacute;lculo predial batch en curso.<br />
+                                                                    Se recomienda <b>no realizar</b> acciones adicionales hasta que el proceso en ejecuci&oacute;n haya finalizado.
+                                                                </code><br />
+                                                                <small><b>Presione la tecla</small> <mark>F5</mark> <small>para actualizar los conteos.</b></small>
+                                                            </p>
+                                                            <div class="row batch_message" style="text-align: justify;{{ !$batchs ? print('display: none;') : ''}}">
+                                                                <div class="col-lg-12">
+                                                                    <table class="table table-hover">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>Total por calular</th>
+                                                                                <th>Procesados</th>
+                                                                                <th>Restantes</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @if($batchs)
+                                                                            <tr>
+                                                                                <td>{{ $batchs->por_calcular }}</td>
+                                                                                <td>{{ $batchs->calculados }}</td>
+                                                                                <td>{{ $batchs->por_calcular - $batchs->calculados }}</td>
+                                                                            </tr>
+                                                                            @else
+                                                                            <tr>
+                                                                                <td id="td_por_calcular"></td>
+                                                                                <td id="td_procesados"></td>
+                                                                                <td id="td_restantes"></td>
+                                                                            </tr>
+                                                                            @endif
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <h2>Opciones de predio</h2>
-                                                <table id="myTable" class="table table-hover table-striped table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="cell_center" style="width: 7%;">C&oacute;digo predio</th>
-                                                            <th class="cell_center" style="width: 7%;">Direcci&oacute;n</th>
-                                                            <th class="cell_center" style="width: 7%;">Propietario/s</th>
-                                                            <th class="cell_center" style="width: 10%;">Acciones</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    </tbody>
-                                                </table>
+                                                <div id="div_edit_predio" class="row" style="display: none;">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <h2>Opciones de predio</h2>
+                                                        <table id="myTable" class="table table-hover table-striped table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="cell_center" style="width: 7%;">C&oacute;digo predio</th>
+                                                                    <th class="cell_center" style="width: 7%;">Direcci&oacute;n</th>
+                                                                    <th class="cell_center" style="width: 7%;">Propietario/s</th>
+                                                                    <th class="cell_center" style="width: 10%;">Acciones</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
                                                 {{-- <div class="pagination-blobk">
                                                     {{ $predios->links('layouts.paginationlinks') }}
                                                 </div> --}}
@@ -835,6 +887,19 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="display: none;">
+                                        <div class="form-group" style="margin-bottom: 0px;">
+                                            <label for="tipo_factura_check" class="control-label" style="display: block;">¿Facturar vigencias especificas?</label>
+                                            <input type="checkbox" id="tipo_factura" name="tipo_factura" value="{{ old('tipo_factura') }}">
+                                            <span id="span_tipo_factura" class="text-muted" style="padding-left: 10px;">NO</span>
+                                        </div>
+                                    </div>
+                                    <div id="div_fecha_max_pago" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-top: 10px; display: none;">
+                                        <div class="form-group" style="margin-bottom: 0px; text-align: center;">
+                                            <label class="control-label">Fecha m&aacute;xima de pago</label>
+                                            <input type="text" id="fecha_max_pago" name="fecha_max_pago" class="form-control datepicker" autocomplete="off" placeholder="Fecha m&aacute;xima" value="{{ old('fecha_max_pago') }}" style="width: 100%;">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </form>
@@ -907,7 +972,7 @@
     </div>
 </div> --}}
 <div id="modal-impresion-paz" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-impresion-paz-label" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 {{-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> --}}
@@ -928,19 +993,22 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">Fecha validez:</label>
                                             <input type="text" id="fecha_paz" name="fecha_paz" class="form-control datepicker" autocomplete="off" placeholder="Fecha validez" value="{{ old('fecha_paz') }}" style="width: 100%;">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">Valor:</label>
                                             <input type="text" id="valor_paz" name="valor_paz" class="form-control" autocomplete="off" placeholder="Valor en pesos" value="{{ old('valor_paz') }}" style="width: 100%;">
                                         </div>
+                                    </div>
+                                </div>
+                                <div id="div_message_plusvalia" class="row" style="display: none;">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="color: #df1c1c; font-weight: 400;">
+                                        <span style="color: #eca00f;"><i class="fa fa-warning"></i></span> El predio seleccionado presenta un indicador de plusvalia activo. Por favor, no olvide realizar el cobro pertinente.
                                     </div>
                                 </div>
                             </div>
@@ -1497,6 +1565,69 @@
             </div>
             <div class="modal-footer">
                 <button id="print_avaluos" url="/generate_avaluos_predio_pdf/" type="button" class="btn btn-youtube pull-left btn_pdf"> <i class="fa fa-file-pdf-o"></i> Descargar PDF</button>
+                <button type="button" class="btn btn-default waves-effect text-left" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-batch" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-batch-label" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg" style="width: 95%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                {{-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> --}}
+                <h4 class="modal-title" id="modal-batch-label">
+                    Procesar c&aacute;lculo batch
+                    <span class="pull-right text-danger">Vigencia: <b id="span_anio_batch"></b></span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                {{-- <table id="batchPrediosTable" class="table table-hover table-condensed table-striped table-bordered" style="margin-bottom: 10px;"></table> --}}
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12">
+                        <form id="form-predios-batch">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                        {{-- <div class="col-lg-6 col-md-6 col-sm-9 col-xs-12"> --}}
+                                            <div class="form-group">
+                                                <label class="control-label">Predio inicial:</label>
+                                                <label class="text-muted pull-right" style="font-weight: normal;">Total predios sin c&aacute;lculo: <h6 id="span_total_predios" class="text-muted" style="display: contents; font-weight: bold;"></h6></label>
+                                                <select id="id_predio_inicial" name="id_predio_inicial" class="form-control" data-live-search="true" data-size="4" title="Sin informaci&oacute;n...">
+                                                </select>
+                                            </div>
+                                        {{-- </div> --}}
+                                    </div>
+                                    <div id="div_id_predio_final" class="col-lg-6 col-md-6 col-sm-12 col-xs-12" style="display: none;">
+                                        {{-- <div class="col-lg-6 col-md-6 col-sm-9 col-xs-12"> --}}
+                                            <div class="form-group">
+                                                <label class="control-label">Predio final:</label>
+                                                <label class="text-muted pull-right" style="font-weight: normal;">Bloque disponible: <h6 id="span_disponibles_predios" class="text-muted" style="display: contents; font-weight: bold;"></h6></label>
+                                                <select id="id_predio_final" name="id_predio_final" class="form-control" data-live-search="true" data-size="4" title="Sin informaci&oacute;n...">
+                                                </select>
+                                            </div>
+                                        {{-- </div> --}}
+                                    </div>
+                                </div>
+                                <div id="div_resumen_batch" class="row resumen_batch" style="display: none;">
+                                    <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
+                                        <h3 class="box-title">Resumen de solicitud ejecuci&oacute;n c&aacute;lculo predial batch</h3>
+                                        <ul class="list-icons">
+                                            <li id="li_predio_inicial" class=" resumen_batch"><i class="fa fa-check text-success"></i> <b>Predio inicial:</b> <span id="span_predio_inicial"></span></li>
+                                            <li id="li_predio_final" class=" resumen_batch"><i class="fa fa-check text-success"></i> <b>Predio final:</b> <span id="span_predio_final"></span></li>
+                                            <li id="li_cantidad" class=" resumen_batch"><i class="fa fa-check text-success"></i> <b>Cantidad de predios para operar:</b> <span id="span_cantidad"></span></li>
+                                        </ul>
+                                    </div>
+                                    <div id="div_btn_ejecutar_calculo_batch" class="col-lg-5 col-md-5 col-sm-12 col-xs-12 resumen_batch">
+                                        <button id="btn_ejecutar_calculo_batch" type="button" class="btn btn-success"> <i class="fa fa-cubes"></i> Ejecutar proceso</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                {{-- <button id="btn_excel_batch_predios" url="/generate_excel_batch_predios/" type="button" class="btn btn-success pull-left"> <i class="fa fa-file-excel-o"></i> Generar excel</button> --}}
                 <button type="button" class="btn btn-default waves-effect text-left" data-dismiss="modal">Cerrar</button>
             </div>
         </div>

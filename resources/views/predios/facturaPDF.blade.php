@@ -96,11 +96,11 @@
         table.table-header tr td { border: 0px; }
 		table.titles tr td { border: 0px; font-size: 80%; }
 
-		table.info-predio tr th { white-space: nowrap; font-size: 70%; }
-		table.info-predio tr td { text-align:center; font-size: 60%; }
+		table.info-predio tr th { white-space: nowrap; font-size: 80%; }
+		table.info-predio tr td { text-align:center; font-size: 80%; }
 
         table.info-pagos tr th { white-space: nowrap; font-size: 70%; }
-		table.info-pagos tr td { text-align:right; font-size: 60%; }
+		table.info-pagos tr td { text-align:right; font-size: 70%; }
 		table.info-pagos tr.totales th { text-align:right; }
 
         table.info-resumen tr th { white-space: nowrap; font-size: 80%; padding: 0px; }
@@ -149,7 +149,7 @@
                         <h3 class="title" style="color: tomato; text-align: left; font-weight: normal;">
                             @if($temporal > 0)
                             Documento no v&aacute;lido para la ejecuci&oacute;n del pago de impuesto predial.
-                            @elseif($facturaYaPagada)
+                            @elseif($facturaYaPagada && $informativa != '1')
                             PAGO DE FACTURA YA REGISTRADO.<br />El predio se encuentra a paz y salvo.
                             @endif
                         </h3>
@@ -163,7 +163,11 @@
                     </td>
                     @endif
                     <td>
+                        @if($fecha == 'INDEFINIDA')
+                        {{ $fecha }}
+                        @elseif($facturaYaPagada)
                         {{ $fecha }}, {{ $hora }}
+                        @endif
                     </td>
                 </tr>
                 <tr>
@@ -224,8 +228,15 @@
                     <th>A&Ntilde;O</th>
                     <th>%M<br />TAR</th>
                     <th>AVAL&Uacute;O</th>
+                    @if(intval($unir_impuesto_car) == 1)
                     <th>IMPUESTO</th>
                     <th>INTER&Eacute;S</th>
+                    @else
+                    <th>IMP.<br />PREDIAL</th>
+                    <th>INT.<br />PREDIAL</th>
+                    <th>CAR</th>
+                    <th>INT.<br />CAR</th>
+                    @endif
                     <th>DSCTO</th>
                     <th>14</th>
                     <th>DSCTO</th>
@@ -237,9 +248,12 @@
                 @if(count($lista_pagos) > 0)
                     @php($suma_impuesto = 0)
                     @php($suma_interes = 0)
+                    @php($suma_impuesto_interes = 0)
+                    @php($suma_car = 0)
+                    @php($suma_car_interes = 0)
                     @php($suma_descuento_interes = 0)
                     @php($suma_catorce = 0)
-                    @php($suma_descuento_15 = 0)
+                    @php($suma_quince = 0)
                     @php($suma_blanco = 0)
                     @php($suma_otros = 0)
                     @php($suma_total = 0)
@@ -248,20 +262,34 @@
                         <td>{{ $pago->anio }}</td>
                         <td>{{ $pago->m_tar }}</td>
                         <td>@money($pago->avaluo)</td>
+                        @if(intval($unir_impuesto_car) == 1)
+                        <td>@money($pago->impuesto + $pago->car)</td>
+                        <td>@money($pago->impuesto_interes + $pago->car_interes)</td>
+                        @else
                         <td>@money($pago->impuesto)</td>
-                        <td>@money($pago->interes)</td>
+                        <td>@money($pago->impuesto_interes)</td>
+                        <td>@money($pago->car)</td>
+                        <td>@money($pago->car_interes)</td>
+                        @endif
                         <td>@money($pago->descuento_interes)</td>
                         <td>@money($pago->catorce)</td>
-                        <td>@money($pago->descuento_15)</td>
+                        <td>@money($pago->quince)</td>
                         <td>@money($pago->blanco)</td>
                         <td>@money($pago->otros)</td>
                         <td>@money($pago->total)</td>
                     </tr>
-                    @php($suma_impuesto += $pago->impuesto)
-                    @php($suma_interes += $pago->interes)
+                    @if(intval($unir_impuesto_car) == 1)
+                        @php($suma_impuesto += ($pago->impuesto + $pago->car))
+                        @php($suma_interes += ($pago->impuesto_interes + $pago->car_interes))
+                    @else
+                        @php($suma_impuesto += $pago->impuesto)
+                        @php($suma_impuesto_interes += $pago->impuesto_interes)
+                        @php($suma_car += $pago->car)
+                        @php($suma_car_interes += $pago->car_interes)
+                    @endif
                     @php($suma_descuento_interes += ($pago->descuento_interes))
                     @php($suma_catorce += $pago->catorce)
-                    @php($suma_descuento_15 += ($pago->descuento_15))
+                    @php($suma_quince += ($pago->quince))
                     @php($suma_blanco += $pago->blanco)
                     @php($suma_otros += $pago->otros)
                     @php($suma_total += $pago->total)
@@ -269,18 +297,29 @@
                     <!----------------------------->
                     <tr class="totales">
                         <th colspan="3">TOTALES</th>
-                        <th>@money($suma_impuesto)</th>
-                        <th>@money($suma_interes)</th>
+                        @if(intval($unir_impuesto_car) == 1)
+                            <th>@money($suma_impuesto)</th>
+                            <th>@money($suma_interes)</th>
+                        @else
+                            <th>@money($suma_impuesto)</th>
+                            <th>@money($suma_impuesto_interes)</th>
+                            <th>@money($suma_car)</th>
+                            <th>@money($suma_car_interes)</th>
+                        @endif
                         <th>@money($suma_descuento_interes)</th>
                         <th>@money($suma_catorce)</th>
-                        <th>@money($suma_descuento_15)</th>
+                        <th>@money($suma_quince)</th>
                         <th>@money($suma_blanco)</th>
                         <th>@money($suma_otros)</th>
                         <th>@money($suma_total)</th>
                     </tr>
                 @else
                 <tr>
+                    @if(intval($unir_impuesto_car) == 1)
                     <td colspan="11" style="text-align: center;">No hay informaci&oacute;n disponible</td>
+                    @else
+                    <td colspan="13" style="text-align: center;">No hay informaci&oacute;n disponible</td>
+                    @endif
                 </tr>
                 @endif
             </table>
@@ -356,7 +395,7 @@
                 <span style="color: tomato; font-size: 70%;">
                     @if($temporal > 0)
                     VISTA PREVIA FACTURA DE COBRO
-                    @elseif ($facturaYaPagada)
+                    @elseif ($facturaYaPagada && $informativa != '1')
                     PAGO DE FACTURA YA REGISTRADO. El predio se encuentra a paz y salvo.
                     @endif
                 </span>

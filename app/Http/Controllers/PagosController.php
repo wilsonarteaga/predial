@@ -365,13 +365,29 @@ class PagosController extends Controller
 
     public function get_info_recibo(Request $request) {
         $numero_recibo = $request->numero_recibo;
-        $info_recibo = DB::table('pagos')
-                        ->leftJoin('predios_pagos', 'pagos.numero_recibo', '=', 'predios_pagos.factura_pago')
-                        ->leftJoin('bancos', 'bancos.id', '=', 'predios_pagos.id_banco')
-                        ->select(DB::raw("COUNT(predios_pagos.factura_pago) as anios_pagados, predios_pagos.id_predio, predios_pagos.factura_pago as numero, MAX(predios_pagos.ultimo_anio) as anio, predios_pagos.fecha_emision as fecha_emision, CASE WHEN TRY_CONVERT(DATE, predios_pagos.fecha_emision) <= TRY_CONVERT(DATE, MAX(predios_pagos.primer_fecha)) THEN MAX(predios_pagos.primer_fecha) WHEN TRY_CONVERT(DATE, predios_pagos.fecha_emision) <= TRY_CONVERT(DATE, MAX(predios_pagos.segunda_fecha)) THEN MAX(predios_pagos.segunda_fecha) WHEN TRY_CONVERT(DATE, predios_pagos.fecha_emision) <= TRY_CONVERT(DATE, MAX(predios_pagos.tercera_fecha)) THEN MAX(predios_pagos.tercera_fecha) ELSE MAX(predios_pagos.primer_fecha) END as fecha_vencimiento, MAX(predios_pagos.avaluo) as valor_avaluo, SUM(predios_pagos.valor_pago) as valor_factura, IIF(predios_pagos.anulada = 0, 'NO', 'SI') as anulado, IIF(predios_pagos.pagado < 0, 'SI', 'NO') as pagado, MAX(predios_pagos.fecha_pago) as fecha_pago, CONCAT(bancos.codigo, ' - ', bancos.nombre, ' (', bancos.asobancaria, ')') as banco"))
-                        ->where('pagos.numero_recibo', $numero_recibo)
-                        ->groupBy('predios_pagos.id_predio', 'predios_pagos.factura_pago', 'predios_pagos.fecha_emision', 'predios_pagos.anulada', 'predios_pagos.pagado', 'bancos.codigo', 'bancos.nombre', 'bancos.asobancaria')
-                        ->get();
+        $anio_recibo = substr($numero_recibo, 0, 4);
+        $dt = Carbon::now();
+        $currentYear = $dt->year;
+
+        if ($currentYear == intval($anio_recibo)) {
+            $info_recibo = DB::table('pagos')
+                            ->leftJoin('predios_pagos', 'pagos.numero_recibo', '=', 'predios_pagos.factura_pago')
+                            ->leftJoin('bancos', 'bancos.id', '=', 'predios_pagos.id_banco')
+                            ->select(DB::raw("COUNT(predios_pagos.factura_pago) as anios_pagados, predios_pagos.id_predio, predios_pagos.factura_pago as numero, MAX(predios_pagos.ultimo_anio) as anio, predios_pagos.fecha_emision as fecha_emision, CASE WHEN TRY_CONVERT(DATE, predios_pagos.fecha_emision) <= TRY_CONVERT(DATE, MAX(predios_pagos.primer_fecha)) THEN MAX(predios_pagos.primer_fecha) WHEN TRY_CONVERT(DATE, predios_pagos.fecha_emision) <= TRY_CONVERT(DATE, MAX(predios_pagos.segunda_fecha)) THEN MAX(predios_pagos.segunda_fecha) WHEN TRY_CONVERT(DATE, predios_pagos.fecha_emision) <= TRY_CONVERT(DATE, MAX(predios_pagos.tercera_fecha)) THEN MAX(predios_pagos.tercera_fecha) ELSE MAX(predios_pagos.primer_fecha) END as fecha_vencimiento, MAX(predios_pagos.avaluo) as valor_avaluo, SUM(predios_pagos.valor_pago) as valor_factura, IIF(predios_pagos.anulada = 0, 'NO', 'SI') as anulado, IIF(predios_pagos.pagado < 0, 'SI', 'NO') as pagado, MAX(predios_pagos.fecha_pago) as fecha_pago, CONCAT(bancos.codigo, ' - ', bancos.nombre, ' (', bancos.asobancaria, ')') as banco"))
+                            ->where('pagos.numero_recibo', $numero_recibo)
+                            ->where('predios_pagos.anulada', 0)
+                            ->groupBy('predios_pagos.id_predio', 'predios_pagos.factura_pago', 'predios_pagos.fecha_emision', 'predios_pagos.anulada', 'predios_pagos.pagado', 'bancos.codigo', 'bancos.nombre', 'bancos.asobancaria')
+                            ->get();
+        } else if ($currentYear > intval($anio_recibo)) {
+            $info_recibo = DB::table('predios_pagos')
+                            ->leftJoin('bancos', 'bancos.id', '=', 'predios_pagos.id_banco')
+                            ->select(DB::raw("COUNT(predios_pagos.factura_pago) as anios_pagados, predios_pagos.id_predio, predios_pagos.factura_pago as numero, MAX(predios_pagos.ultimo_anio) as anio, predios_pagos.fecha_emision as fecha_emision, CASE WHEN TRY_CONVERT(DATE, predios_pagos.fecha_emision) <= TRY_CONVERT(DATE, MAX(predios_pagos.primer_fecha)) THEN MAX(predios_pagos.primer_fecha) WHEN TRY_CONVERT(DATE, predios_pagos.fecha_emision) <= TRY_CONVERT(DATE, MAX(predios_pagos.segunda_fecha)) THEN MAX(predios_pagos.segunda_fecha) WHEN TRY_CONVERT(DATE, predios_pagos.fecha_emision) <= TRY_CONVERT(DATE, MAX(predios_pagos.tercera_fecha)) THEN MAX(predios_pagos.tercera_fecha) ELSE MAX(predios_pagos.primer_fecha) END as fecha_vencimiento, MAX(predios_pagos.avaluo) as valor_avaluo, SUM(predios_pagos.valor_pago) as valor_factura, IIF(predios_pagos.anulada = 0, 'NO', 'SI') as anulado, IIF(predios_pagos.pagado < 0, 'SI', 'NO') as pagado, MAX(predios_pagos.fecha_pago) as fecha_pago, CONCAT(bancos.codigo, ' - ', bancos.nombre, ' (', bancos.asobancaria, ')') as banco"))
+                            ->where('predios_pagos.factura_pago', $numero_recibo)
+                            ->where('predios_pagos.anulada', 0)
+                            ->groupBy('predios_pagos.id_predio', 'predios_pagos.factura_pago', 'predios_pagos.fecha_emision', 'predios_pagos.anulada', 'predios_pagos.pagado', 'bancos.codigo', 'bancos.nombre', 'bancos.asobancaria')
+                            ->get();
+        }
+
         if(count($info_recibo) > 0)
             return response()->json([$info_recibo[0]]);
         else

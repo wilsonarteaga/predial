@@ -374,7 +374,7 @@ $(document).ready(function() {
     if ($('#print_factura').length > 0) {
         $('#print_factura').off("click").on("click", function() {
             var btn = $(this);
-            startImpresion($(btn).attr('url') + $('#info_id_predio').val() + '/0/' + $('#info_anio').val(), 'Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
+            startImpresion($(btn).attr('url') + $('#info_id_predio').val() + '/0/' + $('#info_anio').val() + '/-/1', 'Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
         });
     }
 });
@@ -667,8 +667,8 @@ function getJsonRecibo() {
                 $('#info_numero').val(response[0].numero);
                 $('#info_anio').val(response[0].anio);
                 $('#info_avaluo').val(accounting.formatMoney(Number(response[0].valor_avaluo), "", 2, ",", "."));
-                $('#info_fecha_emision').val(response[0].fecha_emision.substring(0, 19));
-                $('#info_fecha_vencimiento').val(response[0].fecha_vencimiento.substring(0, 10));
+                $('#info_fecha_emision').val(response[0].fecha_emision ? response[0].fecha_emision.substring(0, 19) : 'INDEFINIDA');
+                $('#info_fecha_vencimiento').val(response[0].fecha_vencimiento ? response[0].fecha_vencimiento.substring(0, 10) : 'INDEFINIDA');
                 $('#info_anulado').val(response[0].anulado);
                 $('#info_pagado').val(response[0].pagado);
                 $('#info_fecha_pago').val(response[0].fecha_pago.substring(0, 10));

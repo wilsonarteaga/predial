@@ -16,6 +16,17 @@ $(document).ready(function() {
     // $('.tips').powerTip({
     //     placement: 's' // north-east tooltip position
     // });
+    if (moment($('#fecha_actual').val()) > moment($('#max_fecha_descuentos').val())) {
+        $('#div_fecha_max_pago').fadeIn(function() {
+            $('#fecha_max_pago').datepicker('setDaysOfWeekDisabled', '0,6');
+            $('#fecha_max_pago').datepicker('setStartDate', $('#fecha_actual').val());
+            $('#fecha_max_pago').datepicker('setDate', $('#fecha_actual').val());
+        });
+    } else {
+        $('#div_fecha_max_pago').fadeOut();
+        $('#fecha_max_pago').datepicker('clearDates');
+    }
+
     $('[data-tooltip="tooltip"]').tooltip();
 
     $('.codigo_25').css({
@@ -673,6 +684,88 @@ $(document).ready(function() {
     //     $('#form-predios-datos-procesos-historicos')[0].reset();
     //     clear_form_elements("#form-predios-datos-procesos-historicos");
     // });
+
+    /// calculo batch
+    $('#btn_ejecutar_calculo_batch').off('click').on('click', function() {
+        $('#btn_ejecutar_calculo_batch').attr('disabled', true);
+        ejecutarCalculoBatch($('#id_predio_inicial').val(), $('#id_predio_final').val(), moment($('#fecha_actual').val()).year());
+    });
+
+    $('#modal-batch').on('hidden.bs.modal', function() {
+        $('#span_total_predios').html('');
+        $('#span_disponibles_predios').html('');
+        $('#id_predio_inicial').empty();
+        $('#id_predio_final').empty();
+        $('#div_id_predio_final').fadeOut();
+        $('.resumen_batch').fadeOut();
+    });
+
+    $('#modal-batch').on('show.bs.modal', function() {
+        $('#span_anio_batch').html(moment($('#fecha_actual').val()).year());
+        $('#span_total_predios').html('');
+        $('#span_disponibles_predios').html('');
+        $('#id_predio_inicial').empty();
+        $('#id_predio_final').empty();
+        $('#div_id_predio_final').fadeOut();
+        $('.resumen_batch').fadeOut();
+        getPrediosNoCalculados(0);
+        $('#id_predio_inicial').off('change').on('change', function(e) {
+            $('#li_predio_final').css('display', 'none');
+            $('#li_cantidad').css('display', 'none');
+            $('#div_btn_ejecutar_calculo_batch').css('display', 'none');
+            $('#id_predio_final').empty();
+            $('#span_disponibles_predios').html('');
+            $('#span_predio_final').html('');
+            $('#span_cantidad').html('');
+            getPrediosNoCalculados($(this).val());
+        });
+
+        $('#id_predio_final').off('change').on('change', function(e) {
+            $('#span_predio_final').html($('#id_predio_final option:selected').html());
+            $('#li_predio_final').fadeIn();
+            $('#span_cantidad').html($(this).prop('selectedIndex') + 1);
+            $('#li_cantidad').fadeIn();
+            $('#div_btn_ejecutar_calculo_batch').fadeIn();
+        });
+    });
+
+    $('#btn_cartera').off('click').on('click', function() {
+        // startImpresion('/export-cartera', 'Iniciando generación factura vista previa de impuesto predial. Espere un momento por favor.', 'warning', false);
+        $.blockUI({
+            message: "Generando archivo EXCEL con reporte de cartera.<br />Espere un momento.",
+            css: {
+                border: 'none',
+                padding: '15px',
+                backgroundColor: '#000',
+                '-webkit-border-radius': '10px',
+                '-moz-border-radius': '10px',
+                opacity: .5,
+                color: '#fff',
+                zIndex: 9999
+            },
+            overlayCSS:  {
+                zIndex: 1100
+            },
+        });
+        fetch('/export-cartera')
+        .then(resp => resp.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            // the filename you want
+            a.download = `reporte-cartera.xlsx`; // -${moment().format("YYYY-MM-DD_hh-mm-ssa")}
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            $.unblockUI();
+        })
+        .catch((err) => {
+            $.unblockUI();
+            console.log(err);
+        });
+    });
 
     $('#new_dp').off('click').on('click', function() {
         // $('.datohidden').remove();
@@ -1596,4 +1689,122 @@ function checkResponsableAcuerdo() {
         $('#nombre_acuerdo').attr('readonly', true);
         $('#direccion_acuerdo').attr('readonly', true);
     }
+}
+
+function getPrediosNoCalculados(id_predio_inicial) {
+    $.blockUI({
+        message: "Obteniendo lista de predios. Espere un momento.",
+        css: {
+            border: 'none',
+            padding: '15px',
+            backgroundColor: '#000',
+            '-webkit-border-radius': '10px',
+            '-moz-border-radius': '10px',
+            opacity: .5,
+            color: '#fff',
+            zIndex: 9999
+        },
+        overlayCSS:  {
+            zIndex: 1100
+        },
+    });
+    var jsonObj = {};
+    if (Number(id_predio_inicial) !== 0) {
+        jsonObj.id_predio_inicial = id_predio_inicial;
+    } else {
+        $('#div_id_predio_final').fadeOut();
+    }
+
+    $.ajax({
+        type: 'POST',
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        dataType: 'json',
+        url: '/get_predios_no_calculados',
+        data: {
+            form: JSON.stringify(jsonObj)
+        },
+        success: function(response) {
+            if(response.predios !== null) {
+                if (id_predio_inicial === 0) {
+                    $('#span_total_predios').html(response.predios.length);
+                    $.each(response.predios, function(i, el){
+                        $('#id_predio_inicial').append('<option value="' + el.id + '">' + el.codigo_predio + ' - ' + el.direccion + '</option>');
+                    });
+                    $('#id_predio_inicial').selectpicker("refresh");
+                    $.unblockUI();
+                } else {
+                    $('#span_disponibles_predios').html(response.predios.length);
+                    $.each(response.predios, function(i, el){
+                        $('#id_predio_final').append('<option value="' + el.id + '">' + el.codigo_predio + ' - ' + el.direccion + '</option>');
+                    });
+                    $('#id_predio_final').selectpicker("refresh");
+                    $('#div_id_predio_final').fadeIn(function() {
+                        $('#div_resumen_batch').fadeIn(function() {
+                            $('#span_predio_inicial').html($('#id_predio_inicial option:selected').html());
+                            $('#li_predio_inicial').fadeIn();
+                        });
+                        $.unblockUI();
+                    });
+                }
+            } else {
+                $.unblockUI();
+            }
+        },
+        error: function(xhr) {
+            console.log(xhr.responseText);
+            $.unblockUI();
+        }
+    });
+}
+
+function ejecutarCalculoBatch(id_predio_inicial, id_predio_final, anio) {
+    $.blockUI({
+        message: "Ejecutando operaci&oacute;n solicitada. Espere un momento.",
+        css: {
+            border: 'none',
+            padding: '15px',
+            backgroundColor: '#000',
+            '-webkit-border-radius': '10px',
+            '-moz-border-radius': '10px',
+            opacity: .5,
+            color: '#fff',
+            zIndex: 9999
+        },
+        overlayCSS:  {
+            zIndex: 1100
+        },
+    });
+    var jsonObj = {};
+    jsonObj.id_predio_inicial = id_predio_inicial;
+    jsonObj.id_predio_final = id_predio_final;
+    jsonObj.anio = anio;
+    $.ajax({
+        type: 'POST',
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        dataType: 'json',
+        url: '/ejecutar_calculo_batch',
+        data: {
+            form: JSON.stringify(jsonObj)
+        },
+        success: function(response) {
+            console.log(response.data);
+            if(response.data !== null) {
+                if (response.data?.id ) {
+                    $('#td_por_calcular').html(response.data?.por_calcular);
+                    $('#td_procesados').html(0);
+                    $('#td_restantes').html(response.data?.por_calcular);
+                    $('.batch_element').css('display', 'none');
+                    $('.batch_message').css('display', '');
+                }
+            }
+            $('#btn_ejecutar_calculo_batch').attr('disabled', false);
+            $('#modal-batch').modal('hide');
+            $.unblockUI();
+
+        },
+        error: function(xhr) {
+            console.log(xhr.responseText);
+            $.unblockUI();
+        }
+    });
 }
