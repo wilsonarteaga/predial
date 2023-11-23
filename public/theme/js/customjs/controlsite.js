@@ -230,7 +230,7 @@ $(document).ready(function() {
     $('.datepicker').datepicker({
         language: 'es-ES',
         format: 'yyyy-mm-dd',
-        // autoHide: true,
+        autoHide: true,
         hide: function() {
             if ($("#create-form").length > 0) {
                 if ($('#' + $(this).attr('id') + '-error').length > 0)
