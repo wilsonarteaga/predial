@@ -369,12 +369,12 @@
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-offset-2 col-lg-6 col-md-offset-2 col-md-6 col-sm-12 col-xs-12" style="display: none;">
+                                                    <div class="col-lg-offset-2 col-lg-6 col-md-offset-2 col-md-6 col-sm-12 col-xs-12">
                                                         <div class="btn-group">
                                                             <label class="control-label">Otras operaciones...</label><br />
                                                             <button aria-expanded="false" data-toggle="dropdown" class="btn btn-default btn-outline dropdown-toggle waves-effect waves-light batch_element" style="height: 38px;{{ $batchs ? print('display: none;') : ''}}" type="button"> <i class="fa fa-gears m-r-5"></i> <span class="caret"></span></button>
                                                             <ul role="menu" class="dropdown-menu batch_element" style="{{ $batchs ? print('display: none;') : ''}}">
-                                                                <li><a id="btn_batch" href="#" data-toggle="modal" data-target="#modal-batch" data-backdrop="static" data-keyboard="false">Procesar c&aacute;lculo batch</a></li>
+                                                                <li style="display: none;"><a id="btn_batch" href="#" data-toggle="modal" data-target="#modal-batch" data-backdrop="static" data-keyboard="false">Procesar c&aacute;lculo batch</a></li>
                                                                 <li class="divider"></li>
                                                                 <li><a id="btn_cartera" href="#">Reporte de cartera</a></li>
                                                             </ul>
