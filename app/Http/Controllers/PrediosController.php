@@ -74,19 +74,6 @@ class PrediosController extends Controller
                     ->where('batchs.estado', 1)
                     ->first();
 
-        // $sin_calculo = DB::table('predios')
-        //             ->where('predios.estado', 1)
-        //             ->whereIn('predios.ind_excento', [0])
-        //             ->whereNotIn('predios.id', function($query) {
-        //                 $query->select(DB::raw('distinct id_predio'))
-        //                     ->from('predios_pagos')
-        //                     ->where('ultimo_anio', Carbon::now()->year)
-        //                     ->where('anulada', 0)
-        //                     ->where('pagado', -1);
-        //             })
-        //             ->orderBy('predios.codigo_predio')
-        //             ->count();
-
         $dt = Carbon::now();
         $current_time = $dt->timestamp;
         $currentYear = $dt->year;
@@ -115,7 +102,6 @@ class PrediosController extends Controller
                                      'max_fecha_descuentos' => $maxFechaDescuentos->max_fecha,
                                      'fecha_actual' => $dt->toDateString(),
                                      'batchs' => $batchs
-                                    //  'sin_calculo' => $sin_calculo
                                     ]);
     }
 

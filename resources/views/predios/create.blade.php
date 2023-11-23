@@ -369,7 +369,7 @@
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-offset-2 col-lg-6 col-md-offset-2 col-md-6 col-sm-12 col-xs-12">
+                                                    <div class="col-lg-offset-2 col-lg-6 col-md-offset-2 col-md-6 col-sm-12 col-xs-12" style="display: none;">
                                                         <div class="btn-group">
                                                             <label class="control-label">Otras operaciones...</label><br />
                                                             <button aria-expanded="false" data-toggle="dropdown" class="btn btn-default btn-outline dropdown-toggle waves-effect waves-light batch_element" style="height: 38px;{{ $batchs ? print('display: none;') : ''}}" type="button"> <i class="fa fa-gears m-r-5"></i> <span class="caret"></span></button>

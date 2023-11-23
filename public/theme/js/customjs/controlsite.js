@@ -1213,7 +1213,6 @@ function getPredio(id_predio) {
                     $('#anio_inicial_acuerdo').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
                     $('#anio_final_acuerdo').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
                 });
-                $('#ultimo_anio_facturar').append('<option value="2021">2021</option>');
                 if(anios.length > 1) {
                     global_predio_con_deuda = true;
                     $('#div_fecha_pago_factura').css('display', '');
