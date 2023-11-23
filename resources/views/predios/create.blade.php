@@ -361,7 +361,8 @@
                                                         </div>
                                                     @endif
                                                 </div>
-                                                <div class="row" style="{{ !$batchs ? print('min-height: 220px;') : ''}}">
+                                                {{-- <div class="row" style="{{ !$batchs ? print('min-height: 220px;') : ''}}"> --}}
+                                                <div class="row">
                                                     <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Buscar predio:</label><br />
