@@ -54,11 +54,11 @@
             <td style="text-align: center;" width="13">{{ $registro->factura_pago }}</td>
             <td style="text-align: center;" width="27">{{ $registro->codigo_predio }}</td>
             <td width="60">{{ $registro->nombre_propietario }}</td>
-            <td style="text-align: right;" width="20">@money2($registro->predial)</td>
-            <td style="text-align: right;" width="17">@money2($registro->interespredial)</td>
-            <td style="text-align: right;" width="17">@money2($registro->car)</td>
-            <td style="text-align: right;" width="17">@money2($registro->interescar)</td>
-            <td style="text-align: right;" width="17">@money2($registro->totalvigencia)</td>
+            <td style="text-align: right;" width="20" data-format="$#,##0_-">{{ $registro->predial }}</td>
+            <td style="text-align: right;" width="17" data-format="$#,##0_-">{{ $registro->interespredial }}</td>
+            <td style="text-align: right;" width="17" data-format="$#,##0_-">{{ $registro->car }}</td>
+            <td style="text-align: right;" width="17" data-format="$#,##0_-">{{ $registro->interescar }}</td>
+            <td style="text-align: right;" width="17" data-format="$#,##0_-">{{ $registro->totalvigencia }}</td>
         </tr>
         @php($predial += $registro->predial)
         @php($interespredial += $registro->interespredial)
@@ -68,11 +68,11 @@
         @endforeach
         <tr>
             <td style="background-color: #ededed; text-align: right; vertical-align: middle; border: 1px solid #000;" colspan="4"><b>TOTAL:</b></td>
-            <td style="background-color: #ededed; text-align: right; vertical-align: middle; border: 1px solid #000;">@money2($predial)</td>
-            <td style="background-color: #ededed; text-align: right; vertical-align: middle; border: 1px solid #000;">@money2($interespredial)</td>
-            <td style="background-color: #ededed; text-align: right; vertical-align: middle; border: 1px solid #000;">@money2($car)</td>
-            <td style="background-color: #ededed; text-align: right; vertical-align: middle; border: 1px solid #000;">@money2($interescar)</td>
-            <td style="background-color: #ededed; text-align: right; vertical-align: middle; border: 1px solid #000;">@money2($totalvigencia)</td>
+            <td style="background-color: #ededed; text-align: right; vertical-align: middle; border: 1px solid #000;" data-format="$#,##0_-">{{ $predial }}</td>
+            <td style="background-color: #ededed; text-align: right; vertical-align: middle; border: 1px solid #000;" data-format="$#,##0_-">{{ $interespredial }}</td>
+            <td style="background-color: #ededed; text-align: right; vertical-align: middle; border: 1px solid #000;" data-format="$#,##0_-">{{ $car }}</td>
+            <td style="background-color: #ededed; text-align: right; vertical-align: middle; border: 1px solid #000;" data-format="$#,##0_-">{{ $interescar }}</td>
+            <td style="background-color: #ededed; text-align: right; vertical-align: middle; border: 1px solid #000;" data-format="$#,##0_-">{{ $totalvigencia }}</td>
         </tr>
     </tbody>
 </table>
