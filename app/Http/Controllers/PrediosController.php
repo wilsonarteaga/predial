@@ -25,6 +25,7 @@ use App\Models\PredioPrescripcion;
 use App\Models\Pago;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 use \stdClass;
@@ -1896,7 +1897,7 @@ class PrediosController extends Controller
 
             if(count($lista_pagos) == 1 && $ultimo_anio_pagar->primer_fecha != null) {
                 // Validar segunda fecha
-                if ($ultimo_anio_pagar->segunda_fecha != null && Carbon::now()->format('Y-m-d H:i:s.u') <= Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->segunda_fecha)->format('Y-m-d H:i:s.u') && Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->primer_fecha)->format('Y-m-d H:i:s.u') != Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->segunda_fecha)->format('Y-m-d H:i:s.u')) {
+                if ($ultimo_anio_pagar->segunda_fecha != null && Carbon::now()->format('Y-m-d H:i:s.u') <= Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->segunda_fecha)->format('Y-m-d H:i:s.u') && Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->primer_fecha)->format('Y-m-d H:i:s.u') < Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->segunda_fecha)->format('Y-m-d H:i:s.u')) {
                     $valores_factura[$inc] = (round($ultimo_anio_pagar->total_dos, 0));
                     $fechas_pago_hasta[$inc] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->segunda_fecha)->toDateString());
                     $porcentajes_descuento[$inc] = ($ultimo_anio_pagar->porcentaje_dos);
@@ -1904,13 +1905,18 @@ class PrediosController extends Controller
                 }
 
                 // Validar tercer fecha
-                if ($ultimo_anio_pagar->tercera_fecha != null && Carbon::now()->format('Y-m-d H:i:s.u') <= Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->tercera_fecha)->format('Y-m-d H:i:s.u') && Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->primer_fecha)->format('Y-m-d H:i:s.u') != Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->tercera_fecha)->format('Y-m-d H:i:s.u')) {
+                if ($ultimo_anio_pagar->tercera_fecha != null && Carbon::now()->format('Y-m-d H:i:s.u') <= Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->tercera_fecha)->format('Y-m-d H:i:s.u') && Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->segunda_fecha)->format('Y-m-d H:i:s.u') < Carbon::createFromFormat("Y-m-d H:i:s.u", $ultimo_anio_pagar->tercera_fecha)->format('Y-m-d H:i:s.u')) {
                     $valores_factura[$inc] = (round($ultimo_anio_pagar->total_tres, 0));
                     $fechas_pago_hasta[$inc] = (Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->tercera_fecha)->toDateString());
                     $porcentajes_descuento[$inc] = ($ultimo_anio_pagar->porcentaje_tres);
                 }
             }
             else if(count($lista_pagos) > 1 && $ultimo_anio_pagar->primer_fecha != null) {
+                Log::info('**************************************************************');
+                Log::info($alcaldia);
+                Log::info('**************************************************************');
+                Log::info(strtolower($alcaldia));
+
                 if(count($lista_pagos) > 5 && !str_contains(strtolower($alcaldia), 'guateque') && !str_contains(strtolower($alcaldia), 'sutatenza')) {
                     $obj = new StdClass();
                     $obj->anio = '< ' . $lista_pagos[count($lista_pagos) - 5]->anio;
