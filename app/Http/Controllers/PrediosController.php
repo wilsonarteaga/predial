@@ -1910,7 +1910,7 @@ class PrediosController extends Controller
                     $porcentajes_descuento[$inc] = ($ultimo_anio_pagar->porcentaje_tres);
                 }
             }
-            else {
+            else if(count($lista_pagos) > 1 && $ultimo_anio_pagar->primer_fecha != null) {
                 if(count($lista_pagos) > 5 && !str_contains(strtolower($alcaldia), 'guateque') && !str_contains(strtolower($alcaldia), 'sutatenza')) {
                     $obj = new StdClass();
                     $obj->anio = '< ' . $lista_pagos[count($lista_pagos) - 5]->anio;
