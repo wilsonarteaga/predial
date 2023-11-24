@@ -1911,7 +1911,7 @@ class PrediosController extends Controller
                 }
             }
             else {
-                if(count($lista_pagos) > 5) {
+                if(count($lista_pagos) > 5 && !str_contains(strtolower($alcaldia), 'guateque') && !str_contains(strtolower($alcaldia), 'sutatenza')) {
                     $obj = new StdClass();
                     $obj->anio = '< ' . $lista_pagos[count($lista_pagos) - 5]->anio;
 
