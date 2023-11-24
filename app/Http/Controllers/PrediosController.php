@@ -3429,7 +3429,7 @@ class PrediosController extends Controller
                                 on (p.id = pa.id_predio and pp.factura_pago = pa.numero_recibo)
                             where
                                 p.id = '. $data->{'id_predio'} .' and
-                                pp.pagado = -1 and
+                                pp.pagado <> 0 and
                                 pp.anulada = 0
                             order by pp.ultimo_anio');
 
@@ -3478,7 +3478,7 @@ class PrediosController extends Controller
                                 on (p.id = pa.id_predio and pp.factura_pago = pa.numero_recibo)
                             where
                                 p.id = '. $id .' and
-                                pp.pagado = -1 and
+                                pp.pagado <> 0 and
                                 pp.anulada = 0
                             order by pp.ultimo_anio');
 
