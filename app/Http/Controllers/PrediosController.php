@@ -1032,7 +1032,7 @@ class PrediosController extends Controller
 
         $predio_pago = PredioPago::select('id', 'id_predio', 'ultimo_anio', 'valor_pago', 'fecha_pago', 'factura_pago', 'id_banco')
                         ->where('id_predio', $request->id_predio)
-                        ->where('pagado', -1)
+                        ->where('pagado', '<>', 0)
                         ->orderBy('id', 'desc')
                         ->first();
 
@@ -1079,7 +1079,7 @@ class PrediosController extends Controller
         $ultimo_anio_pagar = DB::table('predios_pagos')
                                 ->where('id_predio', $id)
                                 ->where('ultimo_anio', $anio_ini)
-                                ->where('pagado', -1)
+                                ->where('pagado', '<>', 0)
                                 ->first();
 
         if($ultimo_anio_pagar != null) {
@@ -1281,7 +1281,7 @@ class PrediosController extends Controller
                 // Obtener informacion del ultimo año pagado
                 $ultimo_anio_pagado = DB::table('predios_pagos')
                                     ->where('id_predio', $id)
-                                    ->where('pagado', -1)
+                                    ->where('pagado', '<>', 0)
                                     ->where('ultimo_anio', '<=', $anio_ini)
                                     ->orderBy('ultimo_anio', 'desc')
                                     ->first();
@@ -1290,7 +1290,7 @@ class PrediosController extends Controller
                 // Obtener informacion del ultimo año pagado
                 $ultimo_anio_pagado = DB::table('predios_pagos')
                                     ->where('id_predio', $id)
-                                    ->where('pagado', -1)
+                                    ->where('pagado', '<>', 0)
                                     ->where('ultimo_anio', '<=', $anio_ini)
                                     ->where('factura_pago', '<>', $ultimo_anio_pagar->factura_pago)
                                     ->orderBy('ultimo_anio', 'desc')
@@ -1334,7 +1334,7 @@ class PrediosController extends Controller
                 // Obtener informacion de los registros que coinciden con la factura
                 $pagos_pendientes = DB::table('predios_pagos')
                                     ->where('id_predio', $id)
-                                    ->where('pagado', -1)
+                                    ->where('pagado', '<>', 0)
                                     ->where('factura_pago', $ultimo_anio_pagar->factura_pago)
                                     ->orderBy('ultimo_anio', 'asc')
                                     ->get();
@@ -1357,7 +1357,6 @@ class PrediosController extends Controller
                 $obj->car_interes = $pago_pendiente->valor_concepto4 == null ? 0 : $pago_pendiente->valor_concepto4;
 
                 $obj->descuento_interes = $pago_pendiente->valor_concepto13 == null ? 0 : $pago_pendiente->valor_concepto13;
-
                 $obj->catorce = $pago_pendiente->valor_concepto14 == null ? 0 : $pago_pendiente->valor_concepto14;
                 $obj->quince = $pago_pendiente->valor_concepto15 == null ? 0 : $pago_pendiente->valor_concepto15;
                 $obj->dieciseis = $pago_pendiente->valor_concepto16 == null ? 0 : $pago_pendiente->valor_concepto16;
@@ -1410,11 +1409,6 @@ class PrediosController extends Controller
                 }
             }
             else if(count($lista_pagos) > 1 && $ultimo_anio_pagar->primer_fecha != null) {
-                Log::info('**************************************************************');
-                Log::info($alcaldia);
-                Log::info('**************************************************************');
-                Log::info(strtolower($alcaldia));
-
                 if(count($lista_pagos) > 5 && !str_contains(strtolower($alcaldia), 'guateque') && !str_contains(strtolower($alcaldia), 'sutatenza')) {
                     $obj = new StdClass();
                     $obj->anio = '< ' . $lista_pagos[count($lista_pagos) - 5]->anio;
@@ -1587,7 +1581,7 @@ class PrediosController extends Controller
         $ultimo_anio_pagar = DB::table('predios_pagos')
                                 ->where('id_predio', $id)
                                 ->where('ultimo_anio', $anios)
-                                ->where('pagado', -1)
+                                ->where('pagado', '<>', 0)
                                 ->first();
 
         if($ultimo_anio_pagar != null) {
@@ -1623,7 +1617,7 @@ class PrediosController extends Controller
 
             $ultimo_numero_factura = 0;
 
-            // Si se EJECUTA EL PROCEDIMIENTO DE CALCULO, entonces se genera un nuevo numero de factura
+            // Si se EJECUTO EL PROCEDIMIENTO DE CALCULO, entonces se genera un nuevo numero de factura
             // Generar informacion de numero de factura solo si se realizo un nuevo calculo
             if(((count($submit) > 0 && $primerCalculo == 1) || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->factura_pago == null)) && intval($tmp) == 0) {
                 $init_anio = new Anio;
@@ -1789,7 +1783,7 @@ class PrediosController extends Controller
                 // Obtener informacion del ultimo año pagado
                 $ultimo_anio_pagado = DB::table('predios_pagos')
                                     ->where('id_predio', $id)
-                                    ->where('pagado', -1)
+                                    ->where('pagado', '<>', 0)
                                     ->where('ultimo_anio', '<=', $anios)
                                     ->orderBy('ultimo_anio', 'desc')
                                     ->first();
@@ -1798,7 +1792,7 @@ class PrediosController extends Controller
                 // Obtener informacion del ultimo año pagado
                 $ultimo_anio_pagado = DB::table('predios_pagos')
                                     ->where('id_predio', $id)
-                                    ->where('pagado', -1)
+                                    ->where('pagado', '<>', 0)
                                     ->where('ultimo_anio', '<=', $anios)
                                     ->where('factura_pago', '<>', $ultimo_anio_pagar->factura_pago)
                                     ->orderBy('ultimo_anio', 'desc')
@@ -1842,7 +1836,7 @@ class PrediosController extends Controller
                 // Obtener informacion de los registros que coinciden con la factura
                 $pagos_pendientes = DB::table('predios_pagos')
                                     ->where('id_predio', $id)
-                                    ->where('pagado', -1)
+                                    ->where('pagado', '<>', 0)
                                     ->where('factura_pago', $ultimo_anio_pagar->factura_pago)
                                     ->orderBy('ultimo_anio', 'asc')
                                     ->get();
@@ -2108,7 +2102,7 @@ class PrediosController extends Controller
     //     $cuotas_pagadas = DB::table('predios_pagos')
     //                             ->where('id_predio', $id)
     //                             ->where('ultimo_anio', $anio)
-    //                             ->where('pagado', -1)
+    //                             ->where('pagado', '<>', 0)
     //                             ->where('anulada', 0)
     //                             ->get();
 
@@ -2307,7 +2301,7 @@ class PrediosController extends Controller
     //             // Obtener informacion del ultimo año pagado
     //             $ultimo_anio_pagado = DB::table('predios_pagos')
     //                                 ->where('id_predio', $id)
-    //                                 ->where('pagado', -1)
+    //                                 ->where('pagado', '<>', 0)
     //                                 ->where('ultimo_anio', '<=', $anio)
     //                                 ->orderBy('ultimo_anio', 'desc')
     //                                 ->orderBy('factura_pago', 'desc')
@@ -2317,7 +2311,7 @@ class PrediosController extends Controller
     //             // Obtener informacion del ultimo año pagado
     //             $ultimo_anio_pagado = DB::table('predios_pagos')
     //                                     ->where('id_predio', $id)
-    //                                     ->where('pagado', -1)
+    //                                     ->where('pagado', '<>', 0)
     //                                     ->where('ultimo_anio', '<=', $anio)
     //                                     ->whereNotIn('factura_pago', $numero_factura->toArray())
     //                                     ->orderBy('ultimo_anio', 'desc')
@@ -2362,7 +2356,7 @@ class PrediosController extends Controller
     //             // Obtener informacion de los registros que coinciden con la factura
     //             $pagos_pendientes = DB::table('predios_pagos')
     //                                 ->where('id_predio', $id)
-    //                                 ->where('pagado', -1)
+    //                                 ->where('pagado', '<>', 0)
     //                                 ->where('factura_pago', $ultimo_anio_pagar->factura_pago)
     //                                 ->orderBy('ultimo_anio', 'asc')
     //                                 ->get();
@@ -2590,7 +2584,7 @@ class PrediosController extends Controller
             $cuotas_pagadas = DB::table('predios_pagos')
                                     ->where('id_predio', $id)
                                     ->where('ultimo_anio', $anio)
-                                    ->where('pagado', -1)
+                                    ->where('pagado', '<>', 0)
                                     ->where('anulada', 0)
                                     ->get();
 
@@ -2803,7 +2797,7 @@ class PrediosController extends Controller
                 // Obtener informacion del ultimo año pagado
                 $ultimo_anio_pagado = DB::table('predios_pagos')
                                     ->where('id_predio', $id)
-                                    ->where('pagado', -1)
+                                    ->where('pagado', '<>', 0)
                                     ->where('ultimo_anio', '<=', $anio)
                                     ->orderBy('ultimo_anio', 'desc')
                                     ->first();
@@ -2816,7 +2810,7 @@ class PrediosController extends Controller
                 // Obtener informacion del ultimo año pagado
                 $ultimo_anio_pagado = DB::table('predios_pagos')
                                     ->where('id_predio', $id)
-                                    ->where('pagado', -1)
+                                    ->where('pagado', '<>', 0)
                                     ->where('ultimo_anio', '<=', $anio)
                                     ->whereNotIn('factura_pago', $facturas->toArray())
                                     ->orderBy('ultimo_anio', 'desc')
@@ -2860,7 +2854,7 @@ class PrediosController extends Controller
                 // Obtener informacion de los registros que coinciden con la factura
                 $pagos_pendientes = DB::table('predios_pagos')
                                     ->where('id_predio', $id)
-                                    ->where('pagado', -1)
+                                    ->where('pagado', '<>', 0)
                                     ->where('factura_pago', $ultimo_anio_pagar->factura_pago)
                                     ->orderBy('ultimo_anio', 'asc')
                                     ->get();
@@ -3099,7 +3093,7 @@ class PrediosController extends Controller
         // Obtener informacion del ultimo año pagado
         $ultimo_anio_pagado = DB::table('predios_pagos')
                                 ->where('id_predio', $id)
-                                ->where('pagado', -1)
+                                ->where('pagado', '<>', 0)
                                 ->orderBy('ultimo_anio', 'desc')
                                 ->first();
 
@@ -3561,7 +3555,7 @@ class PrediosController extends Controller
                                     ->from('predios_pagos')
                                     ->where('ultimo_anio', Carbon::now()->year)
                                     ->where('anulada', 0)
-                                    ->where('pagado', -1);
+                                    ->where('pagado', '<>', 0);
                             })
                             ->orderBy('predios.codigo_predio')
                             ->get();
@@ -3584,7 +3578,7 @@ class PrediosController extends Controller
                                     ->join('predios', 'predios.id', '=', 'predios_pagos.id_predio')
                                     ->where('ultimo_anio', Carbon::now()->year)
                                     ->where('anulada', 0)
-                                    ->where('pagado', -1)
+                                    ->where('pagado', '<>', 0)
                                     ->whereIn('predios.ind_excento', [0])
                                     ->where('predios.codigo_predio', '>', $predio->codigo_predio);
                             })
