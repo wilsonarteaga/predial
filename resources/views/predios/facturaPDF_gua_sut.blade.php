@@ -265,8 +265,8 @@
                         <td>@money($pago->car)</td>
                         <td>@money($pago->car_interes)</td>
                         @endif
-                        <td>@money($pago->dieciocho)</td>
                         <td>@money($pago->dieciseis)</td>
+                        <td>@money($pago->dieciocho)</td>
                         <td>@money($pago->total)</td>
                     </tr>
                     @if(intval($unir_impuesto_car) == 1)
@@ -294,8 +294,8 @@
                             <th>@money($suma_car)</th>
                             <th>@money($suma_car_interes)</th>
                         @endif
-                        <th>@money($suma_dieciocho)</th>
                         <th>@money($suma_dieciseis)</th>
+                        <th>@money($suma_dieciocho)</th>
                         <th>@money($suma_total)</th>
                     </tr>
                 @else
