@@ -1076,6 +1076,10 @@ class PrediosController extends Controller
         $primerCalculo = 0;
         $facturaYaPagada = false;
 
+        if ($fecha_pago == '-') {
+            $fecha_pago = $fecha_emision->format('Y-m-d');
+        }
+
         $ultimo_anio_pagar = DB::table('predios_pagos')
                                 ->where('id_predio', $id)
                                 ->where('ultimo_anio', $anio_ini)
