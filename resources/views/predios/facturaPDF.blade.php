@@ -165,7 +165,7 @@
                     <td>
                         @if($fecha == 'INDEFINIDA')
                         {{ $fecha }}
-                        @elseif($facturaYaPagada)
+                        @else
                         {{ $fecha }}, {{ $hora }}
                         @endif
                     </td>
