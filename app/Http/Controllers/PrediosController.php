@@ -3124,7 +3124,7 @@ class PrediosController extends Controller
             'title' => 'Paz y salvo',
             'fecha_expedicion' => $dt->translatedFormat('l j \d\e F \d\e Y'),
             'fecha_validez' => $dt->format('d/m/Y'),
-            'usuario' => $request->session()->get('useremail'),
+            'usuario' => $request->session()->get('username') . ' ' . $request->session()->get('userlastname'),
             'numero_certificado' => $str_numero_certificado,
             'codigo_postal' => $codigo_postal,
             'predio' => $predio,
