@@ -288,9 +288,8 @@
                         @php($suma_car += $pago->car)
                         @php($suma_car_interes += $pago->car_interes)
                     @endif
-                    @php($suma_descuento_interes += ($pago->descuento_interes + $pago->quince))
+                    @php($suma_descuento_interes += (($pago->descuento_interes + ($pago->quince)))
                     @php($suma_catorce += $pago->catorce)
-                    {{-- @php($suma_quince += ($pago->quince)) --}}
                     @php($suma_quince += (0))
                     @php($suma_blanco += $pago->blanco)
                     @php($suma_otros += $pago->dieciocho)
