@@ -271,7 +271,7 @@
                         <td>@money($pago->car)</td>
                         <td>@money($pago->car_interes)</td>
                         @endif
-                        <td>@money(intval($pago->descuento_interes + $pago->quince))</td>
+                        <td>@money($pago->descuento_interes + $pago->quince)</td>
                         <td>@money($pago->catorce)</td>
                         <td>@money(0)</td>
                         <td>@money($pago->blanco)</td>
@@ -287,7 +287,7 @@
                         @php($suma_car += $pago->car)
                         @php($suma_car_interes += $pago->car_interes)
                     @endif
-                    @php($suma_descuento_interes += intval($pago->descuento_interes + $pago->quince))
+                    @php($suma_descuento_interes += ($pago->descuento_interes + $pago->quince))
                     @php($suma_catorce += $pago->catorce)
                     @php($suma_quince += 0)
                     @php($suma_blanco += $pago->blanco)
