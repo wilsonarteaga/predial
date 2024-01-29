@@ -3117,8 +3117,14 @@ class PrediosController extends Controller
                               ->where('parametros.nombre', 'alcaldia')
                               ->first();
 
+        $parametro_formato_paz = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'formato-paz')
+                              ->first();
+
         $logo = $parametro_logo->valor;
         $alcaldia = $parametro_alcaldia->valor;
+        $formato_paz = $parametro_formato_paz->valor;
 
         $data = [
             'title' => 'Paz y salvo',
@@ -3138,7 +3144,7 @@ class PrediosController extends Controller
             'alcaldia' => $alcaldia
         ];
 
-        $pdf = PDF::loadView('predios.pazPDF', $data);
+        $pdf = PDF::loadView($formato_paz, $data);
 
         $update_anio = new Anio;
         $update_anio = Anio::find($anio->id);
