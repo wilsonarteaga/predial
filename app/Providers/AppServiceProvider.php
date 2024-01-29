@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('money', function ($amount) {
                 return "<?php
                     if($amount < 0) {
-                        $amount *= -1;
+                        intval($amount) *= -1;
                         echo '-$ ' . number_format($amount, 2);
                     } else {
                         echo '$ ' . number_format($amount, 2);
