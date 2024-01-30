@@ -166,16 +166,16 @@
                     <td class="text-center">{{ $avaluo->factura_pago }}</td>
                     <td class="text-center">{{ $avaluo->fecha_pago }}</td>
                     <td class="text-center">{{ $avaluo->banco }}</td>
-                    <td class="text-right">@money($avaluo->valor_pago)</td>
+                    <td class="text-right">@money($avaluo->valor_pago, 2)</td>
                     <td class="text-center">{{ $avaluo->anio }}</td>
-                    <td class="text-right">@money($avaluo->avaluo)</td>
+                    <td class="text-right">@money($avaluo->avaluo, 2)</td>
                     <td class="text-center">Vigencia</td>
                 </tr>
                 @php($suma_impuesto += $avaluo->valor_pago)
                 @endforeach
                 <tr class="totales">
                     <th class="text-right" colspan="3">TOTAL PAGO</th>
-                    <th class="text-right">@money($suma_impuesto)</th>
+                    <th class="text-right">@money($suma_impuesto, 2)</th>
                     <th colspan="3" style="background-color: #FFFFFF; border-right: 0px; border-bottom: 0px;"></th>
                 </tr>
             </table>
