@@ -93,11 +93,14 @@
         p.previa { color: tomato; width: 100%; text-align:center; font-weight: bold; padding: 0px; margin: 0px; }
 		h3.title { width: 100%; text-align:right; }
 
+        table.no-border tr td { border: 0px; }
         table.table-header tr td { border: 0px; }
 		table.titles tr td { border: 0px; font-size: 80%; }
 
-		table.info-predio tr th { white-space: nowrap; font-size: 80%; }
-		table.info-predio tr td { text-align:center; font-size: 80%; }
+		table.info-predio tr th { border: 0px; background-color: #f3efef; }
+		table.info-predio tr td { border: 0px; background-color: #f3efef; }
+        table.info-predio tr th { white-space: nowrap; font-size: 70%; text-align: left; }
+		table.info-predio tr td { text-align:left; font-size: 70%; }
 
         table.info-pagos tr th { white-space: nowrap; font-size: 70%; }
 		table.info-pagos tr td { text-align:right; font-size: 70%; }
@@ -110,6 +113,9 @@
 
 		table.info-codigo-barras tr td { border: 0px; text-align: center; font-size: 80%; }
 
+        table.info-persona-barras tr th { width: 30%; border: 0px; text-align: left; white-space: nowrap; font-size: 100%; padding: 0px; background-color: #ffffff; }
+        table.info-persona-barras tr td { border: 0px; text-align: left; white-space: nowrap; font-size: 100%; padding: 0px; background-color: #ffffff; }
+
         .info { font-size: 70%; }
 		.negrilla {font-weight: bold;}
 		.marca-agua { color: #c0c0c0;}
@@ -121,112 +127,102 @@
         <div id="header">
             <table class="table-header">
                 <tr>
-                    <td style="width: 20%;">
-                        <img style="width: 70%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/'. $logo))) }}" alt="Logo" />
-                    </td>
-                    <td>
-                        <p class="header">
-                            SECRETAR&Iacute;A DE HACIENDA</p>
-                        <p class="header">
-                            IMPUESTO PREDIAL UNIFICADO</p>
+                    <td style="width: 50%; text-align: center; vertical-align: bottom;">
                         @if($temporal > 0)
                         <p class="previa">
-                            VISTA PREVIA FACTURA DE COBRO</p>
-                        @else
-                        <p class="header">
-                            FACTURA DE COBRO</p>
+                            VISTA PREVIA FACTURA DE COBRO
+                        </p>
                         @endif
+                        @if($temporal > 0 || $facturaYaPagada)
+                            <h3 class="title" style="color: tomato; text-align: left; font-weight: normal;">
+                                @if($temporal > 0)
+                                Documento no v&aacute;lido para la ejecuci&oacute;n del pago de impuesto predial.
+                                @elseif($facturaYaPagada && $informativa != '1')
+                                PAGO DE FACTURA YA REGISTRADO.<br />El predio se encuentra a paz y salvo.
+                                @endif
+                            </h3>
+                        @endif
+                    </td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>
+                                    <p class="header">
+                                        IMPUESTO PREDIAL UNIFICADO Y COMPLEMENTARIOS
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p class="header">
+                                        LIQUIDACI&Oacute;N OFICIAL No. {{ $numero_factura }}
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: justify; font-size: 85%;">
+                                    <p>
+                                        La Direcci&oacute;n de Impuestos del Municipio de Paipa seg&uacute;n el Acuerdo 019 de 2022, Decreto 009 de 2017, Decreto 011 de 2017, Resoluci&oacute;n 090 de 2017 y Resoluci&oacute;n 004 de 2024, determina oficialmente los siguientes periodos gravables del Impuesto Predial Unificado, seg&uacute;n los valores e informaci&oacute;n siguiente:
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
             </table>
 
         </div>
         <div id="body">
-            <table class="titles" style="width: 100%; margin-top: 0px;">
-                <tr>
-                    @if($temporal > 0 || $facturaYaPagada)
-                    <td style="width: 40%;" rowspan="2">
-                        <h3 class="title" style="color: tomato; text-align: left; font-weight: normal;">
-                            @if($temporal > 0)
-                            Documento no v&aacute;lido para la ejecuci&oacute;n del pago de impuesto predial.
-                            @elseif($facturaYaPagada && $informativa != '1')
-                            PAGO DE FACTURA YA REGISTRADO.<br />El predio se encuentra a paz y salvo.
-                            @endif
-                        </h3>
-                    </td>
-                    <td style="width: 40%;">
-                        <h3 class="title">Fecha emisi&oacute;n:</h3>
-                    </td>
-                    @else
-                    <td style="width: 80%;">
-                        <h3 class="title">Fecha emisi&oacute;n:</h3>
-                    </td>
-                    @endif
-                    <td>
-                        @if($fecha == 'INDEFINIDA')
-                        {{ $fecha }}
-                        @else
-                        {{ $fecha }}, {{ $hora }}
-                        @endif
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h3 class="title">No. factura:</h3>
-                    </td>
-                    <td>
-                        {{ $numero_factura }}
-                    </td>
-                </tr>
-            </table>
             <table class="info-predio" style="width: 100%; margin-top: 15px;">
                 <tr>
-                    <th style="width: 15%;">C&oacute;digo catastral</th>
-                    <th style="width: 19%;">C&oacute;digo catastral ant.</th>
-                    <th style="width: 10%;">Nit. / C.C.</th>
-                    <th style="width: 14%;">No. recibo ant.</th>
-                    <th style="width: 14%;">&Aacute;rea Ha.</th>
-                    <th style="width: 14%;">&Aacute;rea M2.</th>
-                    <th style="width: 14%;">&Aacute;rea Cont.</th>
+                    <th style="width: 15%;">C&Oacute;DIGO CATASTRAL:</th>
+                    <td style="width: 35%;">{{ $predio->codigo_predio }}</td>
+                    <th style="width: 15%;">C&Oacute;DIGO ANTERIOR:</th>
+                    <td style="width: 35%;">{{ $predio->codigo_predio_anterior != null ? $predio->codigo_predio_anterior : '' }}</td>
                 </tr>
                 <tr>
-                    <td>{{ $predio->codigo_predio }}</td>
-                    <td>{{ $predio->codigo_predio_anterior != null ? $predio->codigo_predio_anterior : '' }}</td>
+                    <th>PROPIETARIO:</th>
+                    <td>{{ $predio->propietarios }}</td>
+                    <th>C.C. O NIT:</th>
                     <td>{{ $predio->identificaciones }}</td>
-                    <td>{{ $ultimo_anio_pagado->factura_pago }}</td>
+                </tr>
+                <tr>
+                    <th>DIRECCI&Oacute;N DE COBRO:</th>
+                    <td></td>
+                    <th>DIRECCI&Oacute;N:</th>
+                    <td>{{ $predio->direccion }}</td>
+                </tr>
+            </table>
+            <table class="info-predio" style="width: 100%; margin-top: 5px;">
+                <tr>
+                    <th style="width: 15%;">No RECIBO ANT</th>
+                    <th style="width: 15%;">A&Ntilde;OS A PAGAR</th>
+                    <th style="width: 15%;">PAGUE ANTES DE</th>
+                    <th style="width: 5%;"></th>
+                    <th>&Aacute;REA HA</th>
                     <td>{{ number_format($predio->area_hectareas, 2) }}</td>
+                    <th>&Aacute;REA M2</th>
                     <td>{{ number_format($predio->area_metros, 2) }}</td>
+                    <th>CONSTRUIDA</th>
                     <td>{{ number_format($predio->area_construida, 2) }}</td>
                 </tr>
                 <tr>
-                    <th colspan="3">Propietario</th>
-                    <th colspan="4">Direcci&oacute;n</th>
-                </tr>
-                <tr>
-                    <td colspan="3">{{ $predio->propietarios }}</td>
-                    <td colspan="4">{{ $predio->direccion }}</td>
-                </tr>
-            </table>
-            <table class="info-predio" style="width: 100%; margin-top: 0px;">
-                <tr>
-                    <th style="width: 20%;">A&ntilde;os a pagar</th>
-                    <th style="width: 20%;">Aval&uacute;o</th>
-                    <th style="width: 20%;">&Uacute;ltimo a&ntilde;o pago</th>
-                    <th style="width: 20%;">Fecha pago</th>
-                    <th style="width: 20%;">Valor pagado</th>
-                </tr>
-                <tr>
+                    <td>{{ $ultimo_anio_pagado->factura_pago }}</td>
                     <td>{{ $predio->anios_a_pagar }}</td>
-                    <td>@money($predio->avaluo)</td>
+                    <td>{{ $fechas_pago_hasta[count($valores_factura) - 2] }}</td>
+                    <td></td>
+                    <th>&Uacute;LT A&Ntilde;O PAG</th>
                     <td>{{ $predio->ultimo_anio_pago }}</td>
+                    <th>FECHA PAG</th>
                     <td>{{ $ultimo_anio_pagado->fecha_pago }}</td>
+                    <th>VALOR PAGADO</th>
                     <td>@money($ultimo_anio_pagado->valor_pago)</td>
                 </tr>
             </table>
             <table class="info-pagos" style="width: 100%; margin-top: 10px;">
                 <tr>
                     <th>A&Ntilde;O</th>
-                    <th>%M<br />TAR</th>
+                    <th>%Mil TAR</th>
                     <th>AVAL&Uacute;O</th>
                     @if(intval($unir_impuesto_car) == 1)
                     <th>IMPUESTO</th>
@@ -237,10 +233,8 @@
                     <th>CAR</th>
                     <th>INT.<br />CAR</th>
                     @endif
-                    <th>DSCTO</th>
-                    <th>14</th>
-                    <th>DSCTO</th>
-                    <th></th>
+                    <th>DESCUENTO IMP</th>
+                    <th>ALUMBRADO</th>
                     <th>Otros</th>
                     <th>TOTAL</th>
                 </tr>
@@ -253,8 +247,6 @@
                     @php($suma_car_interes = 0)
                     @php($suma_descuento_interes = 0)
                     @php($suma_catorce = 0)
-                    @php($suma_quince = 0)
-                    @php($suma_blanco = 0)
                     @php($suma_otros = 0)
                     @php($suma_total = 0)
                     @foreach($lista_pagos as $pago)
@@ -273,8 +265,6 @@
                         @endif
                         <td>@money($pago->descuento_interes + $pago->quince)</td>
                         <td>@money($pago->catorce)</td>
-                        <td>@money(0)</td>
-                        <td>@money($pago->blanco)</td>
                         <td>@money($pago->dieciocho)</td>
                         <td>@money($pago->total)</td>
                     </tr>
@@ -289,8 +279,6 @@
                     @endif
                     @php($suma_descuento_interes += ($pago->descuento_interes + $pago->quince))
                     @php($suma_catorce += $pago->catorce)
-                    @php($suma_quince += 0)
-                    @php($suma_blanco += $pago->blanco)
                     @php($suma_otros += $pago->dieciocho)
                     @php($suma_total += $pago->total)
                     @endforeach
@@ -308,8 +296,6 @@
                         @endif
                         <th>@money($suma_descuento_interes)</th>
                         <th>@money($suma_catorce)</th>
-                        <th>@money($suma_quince)</th>
-                        <th>@money($suma_blanco)</th>
                         <th>@money($suma_otros)</th>
                         <th>@money($suma_total)</th>
                     </tr>
@@ -323,63 +309,93 @@
                 </tr>
                 @endif
             </table>
-            <div class="negrilla info" style="padding-top: 15px; padding-bottom: 15px; width: 100%; text-align: center;">
-                USUARIO
-            </div>
-            <div class="info" style="padding-bottom: 15px; width: 100%; text-align: center;">
-                ESTA FACTURA PRESTA MERITO EJECUTIVO CONFORME AL ART. 828 DEL E.T.
+            <div style="padding-top: 0px; padding-bottom: 5px; width: 100%; text-align: left; font-size: 50%;">
+                Los intereses deber&aacute;n ser cancelados de acuerdo al valor causado por cada d&iacute;a calendario de retardo hasta la fecha efectiva de pago.
             </div>
             @if(count($lista_pagos) > 0)
-                <hr style="border: 1px dashed #000;
-                    border-style: none none dashed;
-                    color: #fff;
-                    background-color: #fff;" />
-                <table class="info-resumen" style="width: 100%; margin-top: 5px;">
-                    <tr>
-                        <th>Predio</th>
-                        <td>{{ $predio->codigo_predio }}</th>
-                        <th>A&ntilde;os a pagar</th>
-                        <td>{{ $predio->anios_a_pagar }}</td>
-                        <th>N&uacute;mero factura</th>
-                        <td class="negrilla" style="font-size: 120%;">{{ $numero_factura }}</td>
-                    </tr>
-                    <tr>
-                        <th>Propietario</th>
-                        <td colspan="5">{{ $predio->propietarios }}</th>
-                    </tr>
-                    <tr>
-                        <th>Direcci&oacute;n</th>
-                        <td colspan="5">{{ $predio->direccion }}</th>
-                    </tr>
-                </table>
-                <table class="info-alcaldia" style="width: 100%; margin-top: 10px;">
-                    <tr>
-                        <td>{{ strtoupper($alcaldia) }}</td>
-                        <td>NIT {{ $nit }}</th>
-                        <td>IMPUESTO PREDIAL UNIFICADO</td>
-                    </tr>
-                </table>
-                @if(count($valores_factura) > 0 && !$facturaYaPagada)
-                    <table class="info-codigo-barras" style="width: 100%; margin-top: 10px;">
-                        @for ($x = 0; $x < count($valores_factura); $x++)
+                @php($labels = ['-ENTIDAD-', '-BANCO-'])
+                @php($numero_boletas = 2)
+                @for ($boletas = 0; $boletas < $numero_boletas; $boletas++)
+                    <hr style="border: 1px dashed #000;
+                        padding-top: 15px;
+                        border-style: none none dashed;
+                        color: #fff;
+                        background-color: #fff;" />
+                    @if(count($valores_factura) > 0 && !$facturaYaPagada)
+                        <table class="no-border" style="width: 100%; font-size: 60%;">
                             <tr>
-                                <td style="width: 53%; padding-top: 15px; border: 0px solid #000; text-align: center;">
-                                    {{-- {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!} --}}
-                                    <img style="padding-left: 5px; padding-top: 5px;" src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras[$x], 'C128') }}" height="77" width="371" />
-                                    <span style="width: 100%; font-size: 80%;">{{ $barras_texto[$x] }}</span>
-                                </td>
-                                <td style="width: 19%;">
-                                    <table style="width: 100%; font-size: 120%;">
-                                        <tr><td class="negrilla">Pague hasta {{ $fechas_pago_hasta[$x] }}</td></tr>
-                                        <tr><td>Descuento {{ intval($porcentajes_descuento[$x]) }}%</td></tr>
-                                        <tr><td class="negrilla">@money($valores_factura[$x])</td></tr>
-                                    </table>
-                                </td>
-                                <td class="marca-agua">SELLO BANCO</td>
+                                <td style="width: 50%;"></td>
+                                <td class="negrilla">Formulario No</td>
+                                <td>{{ $numero_factura }}</td>
+                                <td class="negrilla">Referencia No</td>
+                                <td>{{ str_pad($numero_factura, 24, "0", STR_PAD_LEFT) }}</td>
                             </tr>
-                        @endfor
-                    </table>
-                @endif
+                        </table>
+                        <table class="info-codigo-barras" style="width: 100%; margin-top: 0px;">
+                            @for ($x = 0; $x < count($valores_factura) - 1; $x++)
+                                <tr>
+                                    @if($x == 0)
+                                    <td>
+                                        <table class="info-persona-barras" style="width: 100%; margin-top: 0px;">
+                                            <tr>
+                                                <th>C&Oacute;DIGO CATASTRAL:</th>
+                                                <td>{{ $predio->codigo_predio }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>PROPIETARIO:</th>
+                                                <td>{{ $predio->propietarios }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>C.C. O NIT:</th>
+                                                <td>{{ $predio->identificaciones }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>DIRECCI&Oacute;N DE COBRO</th>
+                                                <td>{{ $predio->direccion }}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    @else
+                                    <td></td>
+                                    @endif
+                                    <td style="width: 53%; padding-top: 0px; border: 0px solid #000; text-align: center;">
+                                        <table style="width: 100%; font-size: 100%;">
+                                            <tr>
+                                                <td class="negrilla">Pague hasta {{ $fechas_pago_hasta[$x] }}</td>
+                                                <td>Descuento {{ intval($porcentajes_descuento[$x]) }}%</td>
+                                                <td class="negrilla">@money($valores_factura[$x])</td>
+                                            </tr>
+                                        </table>
+                                        {{-- {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!} --}}
+                                        <img style="padding-left: 5px; padding-top: 5px;" src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras[$x], 'C128') }}" height="77" width="371" />
+                                        <span style="width: 100%; font-size: 80%;">{{ $barras_texto[$x] }}</span>
+                                        @if($x + 1 == count($valores_factura) - 1)
+                                        <table style="width: 100%; font-size: 100%; padding-top: 10px;">
+                                            <tr>
+                                                <td class="negrilla">{{ $labels[$boletas] }}</td>
+                                                <td class="negrilla">
+                                                    @if($fecha == 'INDEFINIDA')
+                                                    {{ $fecha }}
+                                                    @else
+                                                    {{ $fecha }}, {{ $hora }}
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        @endif
+                                    </td>
+                                    {{-- <td style="width: 19%;">
+                                        <table style="width: 100%; font-size: 120%;">
+                                            <tr><td class="negrilla">Pague hasta {{ $fechas_pago_hasta[$x] }}</td></tr>
+                                            <tr><td>Descuento {{ intval($porcentajes_descuento[$x]) }}%</td></tr>
+                                            <tr><td class="negrilla">@money($valores_factura[$x])</td></tr>
+                                        </table>
+                                    </td> --}}
+                                </tr>
+                            @endfor
+                        </table>
+                    @endif
+                @endfor
             @else
                 <table class="info-resumen" style="width: 100%; margin-top: 5px;">
                     <tr>
