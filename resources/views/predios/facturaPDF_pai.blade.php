@@ -120,6 +120,11 @@
 		.negrilla {font-weight: bold;}
 		.marca-agua { color: #c0c0c0;}
 
+        .div-codigos {
+            position: absolute;
+            top: 30%;
+        }
+
     </style>
 </head>
 @php($numero_codigos = count($valores_factura) > 2 ? count($valores_factura) - 1 : count($valores_factura))
@@ -321,6 +326,7 @@
                 Los intereses deber&aacute;n ser cancelados de acuerdo al valor causado por cada d&iacute;a calendario de retardo hasta la fecha efectiva de pago.
             </div>
             @if(count($lista_pagos) > 0)
+                <div class="div-codigos">
                 @php($labels = ['-ENTIDAD-', '-BANCO-'])
                 @php($numero_boletas = 2)
                 @for ($boletas = 0; $boletas < $numero_boletas; $boletas++)
@@ -404,6 +410,7 @@
                         </table>
                     @endif
                 @endfor
+                </div>
             @else
                 <table class="info-resumen" style="width: 100%; margin-top: 5px;">
                     <tr>
