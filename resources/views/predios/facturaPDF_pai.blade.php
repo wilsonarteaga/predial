@@ -125,6 +125,11 @@
             top: 30%;
         }
 
+        .logo {
+            position: absolute;
+            top: 5%;
+        }
+
     </style>
 </head>
 @php($numero_codigos = count($valores_factura) > 2 ? count($valores_factura) - 1 : count($valores_factura))
@@ -133,21 +138,24 @@
         <div id="header">
             <table class="table-header">
                 <tr>
-                    <td style="width: 50%; text-align: center; vertical-align: bottom;">
-                        @if($temporal > 0)
-                        <p class="previa">
-                            VISTA PREVIA FACTURA DE COBRO
-                        </p>
-                        @endif
-                        @if($temporal > 0 || $facturaYaPagada)
-                            <h3 class="title" style="color: tomato; text-align: left; font-weight: normal;">
-                                @if($temporal > 0)
-                                Documento no v&aacute;lido para la ejecuci&oacute;n del pago de impuesto predial.
-                                @elseif($facturaYaPagada && $informativa != '1')
-                                PAGO DE FACTURA YA REGISTRADO.<br />El predio se encuentra a paz y salvo.
-                                @endif
-                            </h3>
-                        @endif
+                    <td style="width: 50%; text-align: left; vertical-align: bottom;">
+                        <img class="logo" style="width: 15%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/'. $logo))) }}" alt="Logo" />
+                        <div style="padding-left: 80px; padding-right: 20px;">
+                            @if($temporal > 0)
+                            <p class="previa">
+                                VISTA PREVIA FACTURA DE COBRO
+                            </p>
+                            @endif
+                            @if($temporal > 0 || $facturaYaPagada)
+                                <h3 class="title" style="color: tomato; text-align: left; font-weight: normal;">
+                                    @if($temporal > 0)
+                                    Documento no v&aacute;lido para la ejecuci&oacute;n del pago de impuesto predial.
+                                    @elseif($facturaYaPagada && $informativa != '1')
+                                    PAGO DE FACTURA YA REGISTRADO.<br />El predio se encuentra a paz y salvo.
+                                    @endif
+                                </h3>
+                            @endif
+                        </div>
                     </td>
                     <td>
                         <table>
