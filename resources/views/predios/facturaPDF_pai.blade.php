@@ -302,9 +302,9 @@
                 @else
                 <tr>
                     @if(intval($unir_impuesto_car) == 1)
-                    <td colspan="11" style="text-align: center;">No hay informaci&oacute;n disponible</td>
+                    <td colspan="9" style="text-align: center;">No hay informaci&oacute;n disponible</td>
                     @else
-                    <td colspan="13" style="text-align: center;">No hay informaci&oacute;n disponible</td>
+                    <td colspan="11" style="text-align: center;">No hay informaci&oacute;n disponible</td>
                     @endif
                 </tr>
                 @endif
