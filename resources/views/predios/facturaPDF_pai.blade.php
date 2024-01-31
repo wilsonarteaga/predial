@@ -122,6 +122,7 @@
 
     </style>
 </head>
+@php($numero_codigos = count($valores_factura) > 2 ? count($valores_factura) - 1 : count($valores_factura))
 <body>
     <div id="container">
         <div id="header">
@@ -209,7 +210,7 @@
                 <tr>
                     <td>{{ $ultimo_anio_pagado->factura_pago }}</td>
                     <td>{{ $predio->anios_a_pagar }}</td>
-                    <td>{{ $fechas_pago_hasta[count($valores_factura) - 2] }}</td>
+                    <td>{{ $fechas_pago_hasta[$numero_codigos - 1] }}</td>
                     <td></td>
                     <th>&Uacute;LT A&Ntilde;O PAG</th>
                     <td>{{ $predio->ultimo_anio_pago }}</td>
@@ -321,7 +322,7 @@
                         border-style: none none dashed;
                         color: #fff;
                         background-color: #fff;" />
-                    @if(count($valores_factura) > 0 && !$facturaYaPagada)
+                    @if($numero_codigos > 0 && !$facturaYaPagada)
                         <table class="no-border" style="width: 100%; font-size: 60%;">
                             <tr>
                                 <td style="width: 50%;"></td>
@@ -332,7 +333,7 @@
                             </tr>
                         </table>
                         <table class="info-codigo-barras" style="width: 100%; margin-top: 0px;">
-                            @for ($x = 0; $x < count($valores_factura) - 1; $x++)
+                            @for ($x = 0; $x < $numero_codigos; $x++)
                                 <tr>
                                     @if($x == 0)
                                     <td>
@@ -369,7 +370,7 @@
                                         {{-- {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!} --}}
                                         <img style="padding-left: 5px; padding-top: 5px;" src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras[$x], 'C128') }}" height="77" width="371" />
                                         <span style="width: 100%; font-size: 80%;">{{ $barras_texto[$x] }}</span>
-                                        @if($x + 1 == count($valores_factura) - 1)
+                                        @if($x + 1 == $numero_codigos)
                                         <table style="width: 100%; font-size: 100%; padding-top: 10px;">
                                             <tr>
                                                 <td class="negrilla">{{ $labels[$boletas] }}</td>
