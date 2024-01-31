@@ -217,10 +217,10 @@
                 </tr>
                 <tr>
                     <td>{{ $predio->anios_a_pagar }}</td>
-                    <td>@money($predio->avaluo, 2)</td>
+                    <td>@money($predio->avaluo)</td>
                     <td>{{ $predio->ultimo_anio_pago }}</td>
                     <td>{{ $ultimo_anio_pagado->fecha_pago }}</td>
-                    <td>@money($ultimo_anio_pagado->valor_pago, 2)</td>
+                    <td>@money($ultimo_anio_pagado->valor_pago)</td>
                 </tr>
             </table>
             <table class="info-pagos" style="width: 100%; margin-top: 10px;">
@@ -261,22 +261,22 @@
                     <tr>
                         <td>{{ $pago->anio }}</td>
                         <td>{{ $pago->m_tar }}</td>
-                        <td>@money($pago->avaluo, 2)</td>
+                        <td>@money($pago->avaluo)</td>
                         @if(intval($unir_impuesto_car) == 1)
-                        <td>@money($pago->impuesto + $pago->car, 2)</td>
-                        <td>@money($pago->impuesto_interes + $pago->car_interes, 2)</td>
+                        <td>@money($pago->impuesto + $pago->car)</td>
+                        <td>@money($pago->impuesto_interes + $pago->car_interes)</td>
                         @else
-                        <td>@money($pago->impuesto, 2)</td>
-                        <td>@money($pago->impuesto_interes, 2)</td>
-                        <td>@money($pago->car, 2)</td>
-                        <td>@money($pago->car_interes, 2)</td>
+                        <td>@money($pago->impuesto)</td>
+                        <td>@money($pago->impuesto_interes)</td>
+                        <td>@money($pago->car)</td>
+                        <td>@money($pago->car_interes)</td>
                         @endif
-                        <td>@money($pago->descuento_interes, 2)</td>
-                        <td>@money($pago->catorce, 2)</td>
-                        <td>@money($pago->quince, 2)</td>
-                        <td>@money($pago->blanco, 2)</td>
-                        <td>@money($pago->otros, 2)</td>
-                        <td>@money($pago->total, 2)</td>
+                        <td>@money($pago->descuento_interes)</td>
+                        <td>@money($pago->catorce)</td>
+                        <td>@money($pago->quince)</td>
+                        <td>@money($pago->blanco)</td>
+                        <td>@money($pago->otros)</td>
+                        <td>@money($pago->total)</td>
                     </tr>
                     @if(intval($unir_impuesto_car) == 1)
                         @php($suma_impuesto += ($pago->impuesto + $pago->car))
@@ -298,20 +298,20 @@
                     <tr class="totales">
                         <th colspan="3">TOTALES</th>
                         @if(intval($unir_impuesto_car) == 1)
-                            <th>@money($suma_impuesto, 2)</th>
-                            <th>@money($suma_interes, 2)</th>
+                            <th>@money($suma_impuesto)</th>
+                            <th>@money($suma_interes)</th>
                         @else
-                            <th>@money($suma_impuesto, 2)</th>
-                            <th>@money($suma_impuesto_interes, 2)</th>
-                            <th>@money($suma_car, 2)</th>
-                            <th>@money($suma_car_interes, 2)</th>
+                            <th>@money($suma_impuesto)</th>
+                            <th>@money($suma_impuesto_interes)</th>
+                            <th>@money($suma_car)</th>
+                            <th>@money($suma_car_interes)</th>
                         @endif
-                        <th>@money($suma_descuento_interes, 2)</th>
-                        <th>@money($suma_catorce, 2)</th>
-                        <th>@money($suma_quince, 2)</th>
-                        <th>@money($suma_blanco, 2)</th>
-                        <th>@money($suma_otros, 2)</th>
-                        <th>@money($suma_total, 2)</th>
+                        <th>@money($suma_descuento_interes)</th>
+                        <th>@money($suma_catorce)</th>
+                        <th>@money($suma_quince)</th>
+                        <th>@money($suma_blanco)</th>
+                        <th>@money($suma_otros)</th>
+                        <th>@money($suma_total)</th>
                     </tr>
                 @else
                 <tr>
@@ -372,7 +372,7 @@
                                     <table style="width: 100%; font-size: 120%;">
                                         <tr><td class="negrilla">Pague hasta {{ $fechas_pago_hasta[$x] }}</td></tr>
                                         <tr><td>Descuento {{ intval($porcentajes_descuento[$x]) }}%</td></tr>
-                                        <tr><td class="negrilla">@money($valores_factura[$x], 2)</td></tr>
+                                        <tr><td class="negrilla">@money($valores_factura[$x])</td></tr>
                                     </table>
                                 </td>
                                 <td class="marca-agua">SELLO BANCO</td>

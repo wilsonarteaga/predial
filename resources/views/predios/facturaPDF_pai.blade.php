@@ -216,7 +216,7 @@
                     <th>FECHA PAG</th>
                     <td>{{ $ultimo_anio_pagado->fecha_pago }}</td>
                     <th>VALOR PAGADO</th>
-                    <td>@money($ultimo_anio_pagado->valor_pago, 2)</td>
+                    <td>@money($ultimo_anio_pagado->valor_pago)</td>
                 </tr>
             </table>
             <table class="info-pagos" style="width: 100%; margin-top: 10px;">
@@ -253,20 +253,20 @@
                     <tr>
                         <td>{{ $pago->anio }}</td>
                         <td>{{ $pago->m_tar }}</td>
-                        <td>@money($pago->avaluo, 2)</td>
+                        <td>@money($pago->avaluo)</td>
                         @if(intval($unir_impuesto_car) == 1)
-                        <td>@money($pago->impuesto + $pago->car, 2)</td>
-                        <td>@money($pago->impuesto_interes + $pago->car_interes, 2)</td>
+                        <td>@money($pago->impuesto + $pago->car)</td>
+                        <td>@money($pago->impuesto_interes + $pago->car_interes)</td>
                         @else
-                        <td>@money($pago->impuesto, 2)</td>
-                        <td>@money($pago->impuesto_interes, 2)</td>
-                        <td>@money($pago->car, 2)</td>
-                        <td>@money($pago->car_interes, 2)</td>
+                        <td>@money($pago->impuesto)</td>
+                        <td>@money($pago->impuesto_interes)</td>
+                        <td>@money($pago->car)</td>
+                        <td>@money($pago->car_interes)</td>
                         @endif
-                        <td>@money($pago->descuento_interes + $pago->quince, 2)</td>
-                        <td>@money($pago->catorce, 2)</td>
-                        <td>@money($pago->dieciocho, 2)</td>
-                        <td>@money($pago->total, 2)</td>
+                        <td>@money($pago->descuento_interes + $pago->quince)</td>
+                        <td>@money($pago->catorce)</td>
+                        <td>@money($pago->dieciocho)</td>
+                        <td>@money($pago->total)</td>
                     </tr>
                     @if(intval($unir_impuesto_car) == 1)
                         @php($suma_impuesto += ($pago->impuesto + $pago->car))
@@ -286,18 +286,18 @@
                     <tr class="totales">
                         <th colspan="3">TOTALES</th>
                         @if(intval($unir_impuesto_car) == 1)
-                            <th>@money($suma_impuesto, 2)</th>
-                            <th>@money($suma_interes, 2)</th>
+                            <th>@money($suma_impuesto)</th>
+                            <th>@money($suma_interes)</th>
                         @else
-                            <th>@money($suma_impuesto, 2)</th>
-                            <th>@money($suma_impuesto_interes, 2)</th>
-                            <th>@money($suma_car, 2)</th>
-                            <th>@money($suma_car_interes, 2)</th>
+                            <th>@money($suma_impuesto)</th>
+                            <th>@money($suma_impuesto_interes)</th>
+                            <th>@money($suma_car)</th>
+                            <th>@money($suma_car_interes)</th>
                         @endif
-                        <th>@money($suma_descuento_interes, 2)</th>
-                        <th>@money($suma_catorce, 2)</th>
-                        <th>@money($suma_otros, 2)</th>
-                        <th>@money($suma_total, 2)</th>
+                        <th>@money($suma_descuento_interes)</th>
+                        <th>@money($suma_catorce)</th>
+                        <th>@money($suma_otros)</th>
+                        <th>@money($suma_total)</th>
                     </tr>
                 @else
                 <tr>
@@ -363,7 +363,7 @@
                                             <tr>
                                                 <td class="negrilla">Pague hasta {{ $fechas_pago_hasta[$x] }}</td>
                                                 <td>Descuento {{ intval($porcentajes_descuento[$x]) }}%</td>
-                                                <td class="negrilla">@money($valores_factura[$x], 2)</td>
+                                                <td class="negrilla">@money($valores_factura[$x])</td>
                                             </tr>
                                         </table>
                                         {{-- {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!} --}}
@@ -384,6 +384,13 @@
                                         </table>
                                         @endif
                                     </td>
+                                    {{-- <td style="width: 19%;">
+                                        <table style="width: 100%; font-size: 120%;">
+                                            <tr><td class="negrilla">Pague hasta {{ $fechas_pago_hasta[$x] }}</td></tr>
+                                            <tr><td>Descuento {{ intval($porcentajes_descuento[$x]) }}%</td></tr>
+                                            <tr><td class="negrilla">@money($valores_factura[$x])</td></tr>
+                                        </table>
+                                    </td> --}}
                                 </tr>
                             @endfor
                         </table>

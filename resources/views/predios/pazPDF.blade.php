@@ -186,7 +186,7 @@
                     <td class="text-center">{{ $predio->area_hectareas == '.00' ? 0 : str_replace('.00', '', $predio->area_hectareas) }}</td>
                     <td class="text-center">{{ $predio->area_metros == '.00' ? 0 : str_replace('.00', '', $predio->area_metros) }}</td>
                     <td class="text-center">{{ $predio->area_construida == '.00' ? 0 : str_replace('.00', '', $predio->area_construida) }}</td>
-                    <td class="text-center">@money($ultimo_anio_pagado->avaluo, 2)</td>
+                    <td class="text-center">@money($ultimo_anio_pagado->avaluo)</td>
                     <td class="text-center">{{ $ultimo_anio_pagado->ultimo_anio }}</td>
                 </tr>
             </table>

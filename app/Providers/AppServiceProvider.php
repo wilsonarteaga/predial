@@ -33,22 +33,22 @@ class AppServiceProvider extends ServiceProvider
             return strlen($value) == 3 || strlen($value) == 13;
         });
 
-        Blade::directive('money', function ($amount, $places) {
+        Blade::directive('money', function ($amount) {
                 return "<?php
                     if($amount < 0) {
-                        echo '-$ ' . number_format(abs($amount), $places);
+                        echo '-$ ' . number_format(abs($amount), 2);
                     } else {
-                        echo '$ ' . number_format($amount, $places);
+                        echo '$ ' . number_format($amount, 2);
                     }
                 ?>";
         });
 
-        Blade::directive('money2', function ($amount, $places) {
+        Blade::directive('money2', function ($amount) {
             return "<?php
                 if($amount < 0) {
-                    echo '-$' . number_format(abs($amount), $places);
+                    echo '-$' . number_format(abs($amount), 2);
                 } else {
-                    echo '$' . number_format($amount, $places);
+                    echo '$' . number_format($amount, 2);
                 }
             ?>";
     });
