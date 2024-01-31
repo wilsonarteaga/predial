@@ -222,6 +222,13 @@
             </table>
             <table class="info-pagos" style="width: 100%; margin-top: 10px;">
                 <tr>
+                    @if(intval($unir_impuesto_car) == 1)
+                    <th colspan="9" style="text-align: center;">DETALLE DE PAGO</th>
+                    @else
+                    <th colspan="11" style="text-align: center;">DETALLE DE PAGO</th>
+                    @endif
+                </tr>
+                <tr>
                     <th>A&Ntilde;O</th>
                     <th>%Mil TAR</th>
                     <th>AVAL&Uacute;O</th>
@@ -310,7 +317,7 @@
                 </tr>
                 @endif
             </table>
-            <div style="padding-top: 0px; padding-bottom: 5px; width: 100%; text-align: left; font-size: 50%;">
+            <div style="padding-top: 0px; padding-bottom: 60px; width: 100%; text-align: left; font-size: 50%;">
                 Los intereses deber&aacute;n ser cancelados de acuerdo al valor causado por cada d&iacute;a calendario de retardo hasta la fecha efectiva de pago.
             </div>
             @if(count($lista_pagos) > 0)
