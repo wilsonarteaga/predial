@@ -122,7 +122,7 @@
 
         .div-codigos {
             position: absolute;
-            top: 30%;
+            top: 32%;
         }
 
         .logo {
