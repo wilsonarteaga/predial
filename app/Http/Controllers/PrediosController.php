@@ -1274,7 +1274,7 @@ class PrediosController extends Controller
             $ultimo_anio_pagado = new Collection();
             $suma_total = new Collection();
             $suma_intereses = 0;
-            $suma_descuento_intereses = 0;
+            $suma_trece = 0;
             $valores_factura = new Collection();
             $fechas_pago_hasta = new Collection();
             $barras = new Collection();
@@ -1360,7 +1360,7 @@ class PrediosController extends Controller
                 $obj->car = $pago_pendiente->valor_concepto3 == null ? 0 : $pago_pendiente->valor_concepto3;
                 $obj->car_interes = $pago_pendiente->valor_concepto4 == null ? 0 : $pago_pendiente->valor_concepto4;
 
-                $obj->descuento_interes = $pago_pendiente->valor_concepto13 == null ? 0 : $pago_pendiente->valor_concepto13;
+                $obj->trece = $pago_pendiente->valor_concepto13 == null ? 0 : $pago_pendiente->valor_concepto13;
                 $obj->catorce = $pago_pendiente->valor_concepto14 == null ? 0 : $pago_pendiente->valor_concepto14;
                 $obj->quince = $pago_pendiente->valor_concepto15 == null ? 0 : $pago_pendiente->valor_concepto15;
                 $obj->dieciseis = $pago_pendiente->valor_concepto16 == null ? 0 : $pago_pendiente->valor_concepto16;
@@ -1374,7 +1374,7 @@ class PrediosController extends Controller
                 $suma_total[2] += $pago_pendiente->ultimo_anio < $anio_ini ? $pago_pendiente->total_tres : 0; // al ultimo año se le calculan descuentos
 
                 $suma_intereses += $pago_pendiente->ultimo_anio < $anio_ini ? $pago_pendiente->valor_concepto2 : 0; // al ultimo año se le calculan descuentos
-                $suma_descuento_intereses += $pago_pendiente->ultimo_anio < $anio_ini ? $pago_pendiente->valor_concepto13 : 0; // al ultimo año se le calculan descuentos
+                $suma_trece += $pago_pendiente->ultimo_anio < $anio_ini ? $pago_pendiente->valor_concepto13 : 0; // al ultimo año se le calculan descuentos
                 $lista_pagos->push($obj);
             }
 
@@ -1426,7 +1426,7 @@ class PrediosController extends Controller
                     $obj_car = 0;
                     $obj_car_interes = 0;
 
-                    $obj_descuento_interes = 0;
+                    $obj_trece = 0;
                     $obj_catorce = 0;
                     $obj_quince = 0;
                     $obj_dieciseis = 0;
@@ -1445,7 +1445,7 @@ class PrediosController extends Controller
                         $obj_car = $lista_pagos[$x]->car;
                         $obj_car_interes = $lista_pagos[$x]->car_interes;
 
-                        $obj_descuento_interes += $lista_pagos[$x]->descuento_interes;
+                        $obj_trece += $lista_pagos[$x]->trece;
                         $obj_catorce += $lista_pagos[$x]->catorce;
                         $obj_quince += $lista_pagos[$x]->quince;
                         $obj_dieciseis += $lista_pagos[$x]->dieciseis;
@@ -1464,7 +1464,7 @@ class PrediosController extends Controller
                     $obj->car = $obj_car;
                     $obj->car_interes = $obj_car_interes;
 
-                    $obj->descuento_interes = $obj_descuento_interes;
+                    $obj->trece = $obj_trece;
                     $obj->catorce = $obj_catorce;
                     $obj->quince = $obj_quince;
                     $obj->dieciseis = $obj_dieciseis;
@@ -1776,7 +1776,7 @@ class PrediosController extends Controller
             $ultimo_anio_pagado = new Collection();
             $suma_total = new Collection();
             $suma_intereses = 0;
-            $suma_descuento_intereses = 0;
+            $suma_trece = 0;
             $valores_factura = new Collection();
             $fechas_pago_hasta = new Collection();
             $barras = new Collection();
@@ -1862,7 +1862,7 @@ class PrediosController extends Controller
                 $obj->car = $pago_pendiente->valor_concepto3 == null ? 0 : $pago_pendiente->valor_concepto3;
                 $obj->car_interes = $pago_pendiente->valor_concepto4 == null ? 0 : $pago_pendiente->valor_concepto4;
 
-                $obj->descuento_interes = $pago_pendiente->valor_concepto13 == null ? 0 : $pago_pendiente->valor_concepto13;
+                $obj->trece = $pago_pendiente->valor_concepto13 == null ? 0 : $pago_pendiente->valor_concepto13;
                 $obj->catorce = $pago_pendiente->valor_concepto14 == null ? 0 : $pago_pendiente->valor_concepto14;
                 $obj->quince = $pago_pendiente->valor_concepto15 == null ? 0 : $pago_pendiente->valor_concepto15;
                 $obj->dieciseis = $pago_pendiente->valor_concepto16 == null ? 0 : $pago_pendiente->valor_concepto16;
@@ -1876,7 +1876,7 @@ class PrediosController extends Controller
                 $suma_total[2] += $pago_pendiente->ultimo_anio < $anios ? $pago_pendiente->total_tres : 0; // al ultimo año se le calculan descuentos
 
                 $suma_intereses += $pago_pendiente->ultimo_anio < $anios ? $pago_pendiente->valor_concepto2 : 0; // al ultimo año se le calculan descuentos
-                $suma_descuento_intereses += $pago_pendiente->ultimo_anio < $anios ? $pago_pendiente->valor_concepto13 : 0; // al ultimo año se le calculan descuentos
+                $suma_trece += $pago_pendiente->ultimo_anio < $anios ? $pago_pendiente->valor_concepto13 : 0; // al ultimo año se le calculan descuentos
                 $lista_pagos->push($obj);
             }
 
@@ -1933,7 +1933,7 @@ class PrediosController extends Controller
                     $obj_car = 0;
                     $obj_car_interes = 0;
 
-                    $obj_descuento_interes = 0;
+                    $obj_trece = 0;
                     $obj_catorce = 0;
                     $obj_quince = 0;
                     $obj_dieciseis = 0;
@@ -1952,7 +1952,7 @@ class PrediosController extends Controller
                         $obj_car = $lista_pagos[$x]->car;
                         $obj_car_interes = $lista_pagos[$x]->car_interes;
 
-                        $obj_descuento_interes += $lista_pagos[$x]->descuento_interes;
+                        $obj_trece += $lista_pagos[$x]->trece;
                         $obj_catorce += $lista_pagos[$x]->catorce;
                         $obj_quince += $lista_pagos[$x]->quince;
                         $obj_dieciseis += $lista_pagos[$x]->dieciseis;
@@ -1971,7 +1971,7 @@ class PrediosController extends Controller
                     $obj->car = $obj_car;
                     $obj->car_interes = $obj_car_interes;
 
-                    $obj->descuento_interes = $obj_descuento_interes;
+                    $obj->trece = $obj_trece;
                     $obj->catorce = $obj_catorce;
                     $obj->quince = $obj_quince;
                     $obj->dieciseis = $obj_dieciseis;
@@ -2294,7 +2294,7 @@ class PrediosController extends Controller
     //         $ultimo_anio_pagado = new Collection();
     //         $suma_total = new Collection();
     //         $suma_intereses = 0;
-    //         $suma_descuento_intereses = 0;
+    //         $suma_trece = 0;
     //         $valores_factura = new Collection();
     //         $fechas_pago_hasta = new Collection();
     //         $barras = new Collection();
@@ -2376,7 +2376,7 @@ class PrediosController extends Controller
     //             $obj->avaluo = $pago_pendiente->avaluo == null ? 0 : $pago_pendiente->avaluo;
     //             $obj->impuesto = $pago_pendiente->valor_concepto1 == null ? 0 : $pago_pendiente->valor_concepto1 + $pago_pendiente->valor_concepto3;
     //             $obj->interes = $pago_pendiente->valor_concepto2 == null ? 0 : $pago_pendiente->valor_concepto2 + $pago_pendiente->valor_concepto4;
-    //             $obj->descuento_interes = $pago_pendiente->valor_concepto13 == null ? 0 : $pago_pendiente->valor_concepto13;
+    //             $obj->trece = $pago_pendiente->valor_concepto13 == null ? 0 : $pago_pendiente->valor_concepto13;
     //             $obj->catorce = $pago_pendiente->valor_concepto14 == null ? 0 : $pago_pendiente->valor_concepto14;
     //             $obj->quince = $pago_pendiente->valor_concepto15 == null ? 0 : $pago_pendiente->valor_concepto15;
     //             $obj->dieciseis = $pago_pendiente->valor_concepto16 == null ? 0 : $pago_pendiente->valor_concepto16;
@@ -2390,7 +2390,7 @@ class PrediosController extends Controller
     //             $suma_total[2] += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->total_tres : 0; // al ultimo año se le calculan descuentos
 
     //             $suma_intereses += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->valor_concepto2 : 0; // al ultimo año se le calculan descuentos
-    //             $suma_descuento_intereses += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->valor_concepto13 : 0; // al ultimo año se le calculan descuentos
+    //             $suma_trece += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->valor_concepto13 : 0; // al ultimo año se le calculan descuentos
     //             $lista_pagos->push($obj);
     //         }
 
@@ -2417,7 +2417,7 @@ class PrediosController extends Controller
     //                 $obj_avaluo = 0;
     //                 $obj_impuesto = 0;
     //                 $obj_interes = 0;
-    //                 $obj_descuento_interes = 0;
+    //                 $obj_trece = 0;
     //                 $obj_catorce = 0;
     //                 $obj_quince = 0;
     //                 $obj_dieciseis = 0;
@@ -2431,7 +2431,7 @@ class PrediosController extends Controller
     //                     $obj_avaluo = $lista_pagos[$x]->avaluo;
     //                     $obj_impuesto += $lista_pagos[$x]->impuesto;
     //                     $obj_interes += $lista_pagos[$x]->interes;
-    //                     $obj_descuento_interes += $lista_pagos[$x]->descuento_interes;
+    //                     $obj_trece += $lista_pagos[$x]->trece;
     //                     $obj_catorce += $lista_pagos[$x]->catorce;
     //                     $obj_quince += $lista_pagos[$x]->quince;
     //                     $obj_dieciseis += $lista_pagos[$x]->dieciseis;
@@ -2445,7 +2445,7 @@ class PrediosController extends Controller
     //                 $obj->avaluo = $obj_avaluo;
     //                 $obj->impuesto = $obj_impuesto;
     //                 $obj->interes = $obj_interes;
-    //                 $obj->descuento_interes = $obj_descuento_interes;
+    //                 $obj->trece = $obj_trece;
     //                 $obj->catorce = $obj_catorce;
     //                 $obj->quince = $obj_quince;
     //                 $obj->dieciseis = $obj_dieciseis;
@@ -2790,7 +2790,7 @@ class PrediosController extends Controller
             $ultimo_anio_pagado = new Collection();
             $suma_total = new Collection();
             $suma_intereses = 0;
-            $suma_descuento_intereses = 0;
+            $suma_trece = 0;
             $valores_factura = new Collection();
             $fechas_pago_hasta = new Collection();
             $barras = new Collection();
@@ -2874,7 +2874,7 @@ class PrediosController extends Controller
                 $obj->avaluo = $pago_pendiente->avaluo == null ? 0 : $pago_pendiente->avaluo;
                 $obj->impuesto = $pago_pendiente->valor_concepto1 == null ? 0 : $pago_pendiente->valor_concepto1 + $pago_pendiente->valor_concepto3;
                 $obj->interes = $pago_pendiente->valor_concepto2 == null ? 0 : $pago_pendiente->valor_concepto2 + $pago_pendiente->valor_concepto4;
-                $obj->descuento_interes = $pago_pendiente->valor_concepto13 == null ? 0 : $pago_pendiente->valor_concepto13;
+                $obj->trece = $pago_pendiente->valor_concepto13 == null ? 0 : $pago_pendiente->valor_concepto13;
                 $obj->catorce = $pago_pendiente->valor_concepto14 == null ? 0 : $pago_pendiente->valor_concepto14;
                 $obj->quince = $pago_pendiente->valor_concepto15 == null ? 0 : $pago_pendiente->valor_concepto15;
                 $obj->dieciseis = $pago_pendiente->valor_concepto16 == null ? 0 : $pago_pendiente->valor_concepto16;
@@ -2888,7 +2888,7 @@ class PrediosController extends Controller
                 $suma_total[2] += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->total_tres : 0; // al ultimo año se le calculan descuentos
 
                 $suma_intereses += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->valor_concepto2 : 0; // al ultimo año se le calculan descuentos
-                $suma_descuento_intereses += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->valor_concepto13 : 0; // al ultimo año se le calculan descuentos
+                $suma_trece += $pago_pendiente->ultimo_anio < $anio ? $pago_pendiente->valor_concepto13 : 0; // al ultimo año se le calculan descuentos
                 $lista_pagos->push($obj);
             }
 
@@ -2926,7 +2926,7 @@ class PrediosController extends Controller
                     $obj_avaluo = 0;
                     $obj_impuesto = 0;
                     $obj_interes = 0;
-                    $obj_descuento_interes = 0;
+                    $obj_trece = 0;
                     $obj_catorce = 0;
                     $obj_quince = 0;
                     $obj_dieciseis = 0;
@@ -2940,7 +2940,7 @@ class PrediosController extends Controller
                         $obj_avaluo = $lista_pagos[$x]->avaluo;
                         $obj_impuesto += $lista_pagos[$x]->impuesto;
                         $obj_interes += $lista_pagos[$x]->interes;
-                        $obj_descuento_interes += $lista_pagos[$x]->descuento_interes;
+                        $obj_trece += $lista_pagos[$x]->trece;
                         $obj_catorce += $lista_pagos[$x]->catorce;
                         $obj_quince += $lista_pagos[$x]->quince;
                         $obj_dieciseis += $lista_pagos[$x]->dieciseis;
@@ -2954,7 +2954,7 @@ class PrediosController extends Controller
                     $obj->avaluo = $obj_avaluo;
                     $obj->impuesto = $obj_impuesto;
                     $obj->interes = $obj_interes;
-                    $obj->descuento_interes = $obj_descuento_interes;
+                    $obj->trece = $obj_trece;
                     $obj->catorce = $obj_catorce;
                     $obj->quince = $obj_quince;
                     $obj->dieciseis = $obj_dieciseis;

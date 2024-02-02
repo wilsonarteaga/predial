@@ -266,7 +266,7 @@
                     @php($suma_impuesto_interes = 0)
                     @php($suma_car = 0)
                     @php($suma_car_interes = 0)
-                    @php($suma_descuento_interes = 0)
+                    @php($suma_trece = 0)
                     @php($suma_dieciocho = 0)
                     @php($suma_otros = 0)
                     @php($suma_total = 0)
@@ -284,7 +284,7 @@
                         <td>@money($pago->car)</td>
                         <td>@money($pago->car_interes)</td>
                         @endif
-                        <td>@money($pago->descuento_interes + $pago->quince)</td>
+                        <td>@money($pago->trece + $pago->quince)</td>
                         <td>@money($pago->dieciocho)</td>
                         <td>@money($pago->catorce)</td>
                         <td>@money($pago->total)</td>
@@ -298,7 +298,7 @@
                         @php($suma_car += $pago->car)
                         @php($suma_car_interes += $pago->car_interes)
                     @endif
-                    @php($suma_descuento_interes += ($pago->descuento_interes + $pago->quince))
+                    @php($suma_trece += ($pago->trece + $pago->quince))
                     @php($suma_dieciocho += $pago->dieciocho)
                     @php($suma_otros += $pago->catorce)
                     @php($suma_total += $pago->total)
@@ -315,7 +315,7 @@
                             <th>@money($suma_car)</th>
                             <th>@money($suma_car_interes)</th>
                         @endif
-                        <th>@money($suma_descuento_interes)</th>
+                        <th>@money($suma_trece)</th>
                         <th>@money($suma_dieciocho)</th>
                         <th>@money($suma_otros)</th>
                         <th>@money($suma_total)</th>

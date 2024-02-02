@@ -237,10 +237,8 @@
                     <th>CAR</th>
                     <th>INT.<br />CAR</th>
                     @endif
-                    <th>DSCTO</th>
-                    <th>14</th>
-                    <th>DSCTO</th>
-                    <th></th>
+                    <th>TASA<br />BOMBERIL</th>
+                    <th>DESCUENTO IMP</th>
                     <th>Otros</th>
                     <th>TOTAL</th>
                 </tr>
@@ -251,11 +249,9 @@
                     @php($suma_impuesto_interes = 0)
                     @php($suma_car = 0)
                     @php($suma_car_interes = 0)
+                    @php($suma_dieciseis = 0)
                     @php($suma_trece = 0)
-                    @php($suma_catorce = 0)
-                    @php($suma_quince = 0)
-                    @php($suma_blanco = 0)
-                    @php($suma_otros = 0)
+                    @php($suma_dieciocho = 0)
                     @php($suma_total = 0)
                     @foreach($lista_pagos as $pago)
                     <tr>
@@ -271,11 +267,9 @@
                         <td>@money($pago->car)</td>
                         <td>@money($pago->car_interes)</td>
                         @endif
+                        <td>@money($pago->dieciseis)</td>
                         <td>@money($pago->trece)</td>
-                        <td>@money($pago->catorce)</td>
-                        <td>@money($pago->quince)</td>
-                        <td>@money($pago->blanco)</td>
-                        <td>@money($pago->otros)</td>
+                        <td>@money($pago->dieciocho)</td>
                         <td>@money($pago->total)</td>
                     </tr>
                     @if(intval($unir_impuesto_car) == 1)
@@ -287,11 +281,9 @@
                         @php($suma_car += $pago->car)
                         @php($suma_car_interes += $pago->car_interes)
                     @endif
-                    @php($suma_trece += ($pago->trece))
-                    @php($suma_catorce += $pago->catorce)
-                    @php($suma_quince += ($pago->quince))
-                    @php($suma_blanco += $pago->blanco)
-                    @php($suma_otros += $pago->otros)
+                    @php($suma_dieciseis += $pago->dieciseis)
+                    @php($suma_trece += $pago->trece)
+                    @php($suma_dieciocho += $pago->dieciocho)
                     @php($suma_total += $pago->total)
                     @endforeach
                     <!----------------------------->
@@ -306,19 +298,17 @@
                             <th>@money($suma_car)</th>
                             <th>@money($suma_car_interes)</th>
                         @endif
+                        <th>@money($suma_dieciseis)</th>
                         <th>@money($suma_trece)</th>
-                        <th>@money($suma_catorce)</th>
-                        <th>@money($suma_quince)</th>
-                        <th>@money($suma_blanco)</th>
-                        <th>@money($suma_otros)</th>
+                        <th>@money($suma_dieciocho)</th>
                         <th>@money($suma_total)</th>
                     </tr>
                 @else
                 <tr>
                     @if(intval($unir_impuesto_car) == 1)
-                    <td colspan="11" style="text-align: center;">No hay informaci&oacute;n disponible</td>
+                    <td colspan="9" style="text-align: center;">No hay informaci&oacute;n disponible</td>
                     @else
-                    <td colspan="13" style="text-align: center;">No hay informaci&oacute;n disponible</td>
+                    <td colspan="11" style="text-align: center;">No hay informaci&oacute;n disponible</td>
                     @endif
                 </tr>
                 @endif
