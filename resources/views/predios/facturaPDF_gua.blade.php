@@ -238,7 +238,7 @@
                     <th>INT.<br />CAR</th>
                     @endif
                     <th>TASA<br />BOMBERIL</th>
-                    <th>DESCUENTO IMP</th>
+                    <th>DESCUENTO<br />IMP</th>
                     <th>Otros</th>
                     <th>TOTAL</th>
                 </tr>
