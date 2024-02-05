@@ -1060,14 +1060,14 @@ class PrediosController extends Controller
         }
 
         if (count(explode(',', $anios)) > 1) {
-            return self::generate_factura_pdf_vigencias($id, $tmp, explode(',', $anios)[0], explode(',', $anios)[1], $fecha_pago, $informativa);
+            return self::generate_factura_pdf_vigencias($request, $id, $tmp, explode(',', $anios)[0], explode(',', $anios)[1], $fecha_pago, $informativa);
         } else {
-            return self::generate_factura_pdf_no_vigencias($id, $tmp, $anios, $fecha_pago, $informativa);
+            return self::generate_factura_pdf_no_vigencias($request, $id, $tmp, $anios, $fecha_pago, $informativa);
         }
     }
 
     // Impresion para un solo anio enviado desde la interfaz
-    public function generate_factura_pdf_no_vigencias($id, $tmp, $anio_ini, $fecha_pago, $informativa) {
+    public function generate_factura_pdf_no_vigencias($request, $id, $tmp, $anio_ini, $fecha_pago, $informativa) {
         $submit = [];
         $dt = Carbon::now();
         $dt_emision = Carbon::now();
@@ -1518,7 +1518,8 @@ class PrediosController extends Controller
                 'logo' => $logo,
                 'alcaldia' => $alcaldia,
                 'informativa' => $informativa,
-                'unir_impuesto_car' => $unir_impuesto_car
+                'unir_impuesto_car' => $unir_impuesto_car,
+                'usuario' => $request->session()->get('username') . ' ' . $request->session()->get('userlastname'),
             ];
 
             $pdf = PDF::loadView($formato_factura, $data);
@@ -1572,7 +1573,7 @@ class PrediosController extends Controller
     }
 
     // Impresion para vigencia inicial y vigencia final enviados desde la interfaz
-    public function generate_factura_pdf_vigencias($id, $tmp, $anio_ini, $anio_fin, $fecha_pago, $informativa) {
+    public function generate_factura_pdf_vigencias($request, $id, $tmp, $anio_ini, $anio_fin, $fecha_pago, $informativa) {
         $anios = $anio_fin;
         $submit = [];
         $dt = Carbon::now();
@@ -2025,7 +2026,8 @@ class PrediosController extends Controller
                 'logo' => $logo,
                 'alcaldia' => $alcaldia,
                 'informativa' => $informativa,
-                'unir_impuesto_car' => $unir_impuesto_car
+                'unir_impuesto_car' => $unir_impuesto_car,
+                'usuario' => $request->session()->get('username') . ' ' . $request->session()->get('userlastname'),
             ];
 
             $pdf = PDF::loadView($formato_factura, $data);

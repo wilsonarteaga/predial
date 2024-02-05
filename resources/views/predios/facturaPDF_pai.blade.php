@@ -90,8 +90,8 @@
         td { padding: 1px; }
         th { padding: 1px; background-color: #f3efef; }
 		p.header { width: 100%; text-align:center; font-weight: bold; padding: 0px; margin: 0px; }
-        p.previa { color: tomato; width: 100%; text-align:center; font-weight: bold; padding: 0px; margin: 0px; }
-		h3.title { width: 100%; text-align:right; }
+        p.previa { color: tomato; width: 100%; text-align:left; font-weight: bold; padding: 0px; margin: 0px; }
+		h3.title { width: 100%; text-align:left; }
 
         table.no-border tr td { border: 0px; }
         table.table-header tr td { border: 0px; }
@@ -139,8 +139,8 @@
             <table class="table-header">
                 <tr>
                     <td style="width: 50%; text-align: left; vertical-align: bottom;">
-                        <img class="logo" style="width: 15%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/'. $logo))) }}" alt="Logo" />
-                        <div style="padding-left: 80px; padding-right: 20px;">
+                        <img class="logo" style="width: 80%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/paipa-factura.png'))) }}" alt="Logo" />
+                        {{-- <div style="padding-left: 80px; padding-right: 20px;">
                             @if($temporal > 0)
                             <p class="previa">
                                 VISTA PREVIA FACTURA DE COBRO
@@ -155,7 +155,7 @@
                                     @endif
                                 </h3>
                             @endif
-                        </div>
+                        </div> --}}
                     </td>
                     <td>
                         <table>
@@ -332,10 +332,26 @@
             </table>
             <div style="padding-top: 0px; padding-bottom: 60px; width: 100%; text-align: left; font-size: 50%;">
                 Los intereses deber&aacute;n ser cancelados de acuerdo al valor causado por cada d&iacute;a calendario de retardo hasta la fecha efectiva de pago.
+                {{-- <div style="font-size: 130%;">
+                    @if($temporal > 0)
+                    <p class="previa">
+                        VISTA PREVIA FACTURA DE COBRO
+                    </p>
+                    @endif
+                    @if($temporal > 0 || $facturaYaPagada)
+                        <h3 class="title" style="color: tomato; text-align: left; font-weight: normal;">
+                            @if($temporal > 0)
+                            Documento no v&aacute;lido para la ejecuci&oacute;n del pago de impuesto predial.
+                            @elseif($facturaYaPagada && $informativa != '1')
+                            PAGO DE FACTURA YA REGISTRADO.<br />El predio se encuentra a paz y salvo.
+                            @endif
+                        </h3>
+                    @endif
+                </div> --}}
             </div>
             @if(count($lista_pagos) > 0)
                 <div class="div-codigos">
-                @php($labels = ['-ENTIDAD-', '-BANCO-'])
+                @php($labels = ['-'. $usuario .'-', '-BANCO-'])
                 @php($numero_boletas = 2)
                 @for ($boletas = 0; $boletas < $numero_boletas; $boletas++)
                     <hr style="border: 1px dashed #000;
@@ -376,6 +392,17 @@
                                                 <td>{{ $predio->direccion }}</td>
                                             </tr>
                                         </table>
+                                        @if($numero_codigos == 1)
+                                        <table class="info-persona-barras" style="width: 100%; margin-top: 10px;">
+                                            <tr><th colspan="2">PUNTOS DE PAGO:</th></tr>
+                                            <tr><th>AGRARIO</th><td>1511-007245-4</td></tr>
+                                            <tr><th>BANCOLOMBIA</th><td>038-851044-27</td></tr>
+                                            <tr><th>BBVA</th><td>001380660100000027</td></tr>
+                                            <tr><th>CONFIAR COOP</th><td>450006242</td></tr>
+                                            <tr><th>DAVIVIENDA</th><td>41600000803-5</td></tr>
+                                            <tr><th>POPULAR</th><td>261-72007-2</td></tr>
+                                        </table>
+                                        @endif
                                     </td>
                                     @else
                                     <td>
@@ -438,12 +465,12 @@
             @endif
         </div>
         <div id="footer">
-            SECRETAR&Iacute;A DE HACIENDA
             @if($temporal > 0 || $facturaYaPagada)
                 <br />
                 <span style="color: tomato; font-size: 70%;">
                     @if($temporal > 0)
-                    VISTA PREVIA FACTURA DE COBRO
+                    VISTA PREVIA FACTURA DE COBRO<br>
+                    Documento no v&aacute;lido para la ejecuci&oacute;n del pago de impuesto predial.
                     @elseif ($facturaYaPagada && $informativa != '1')
                     PAGO DE FACTURA YA REGISTRADO. El predio se encuentra a paz y salvo.
                     @endif
