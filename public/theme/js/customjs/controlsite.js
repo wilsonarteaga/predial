@@ -11,6 +11,7 @@ var codigo_predio_buscando = '';
 var global_anio_prescripcion = '';
 var global_propietario = null;
 var global_acuerdo_pago = null;
+var global_ultima_factura = null;
 var global_plusvalia = 0;
 var arr_autonumeric = ['porcentaje', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
     'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_abono',
@@ -962,37 +963,59 @@ function setDownloadFacturaRow() {
     if ($('.download_factura_row').length > 0) {
         $('.download_factura_row').off('click').on('click', function(evt) {
             var btn = $(this);
-            var url_download = $(btn).attr('url');
-            global_url_print = url_download;
-            $(btn).attr('disabled', true);
-            $('[data-toggle="tooltip"]').tooltip('destroy');
-            if(!global_ya_pagado) {
-                $('#modal-impresion-factura').modal({ backdrop: 'static', keyboard: false }, 'show');
-                $('#modal-impresion-factura').on('hidden.bs.modal', function() {
-                    $(btn).attr('disabled', false);
-                    $('#form-predios-impresion-factura')[0].reset();
-                    $('#tipo_factura').prop('checked', false);
-                });
-                $('#modal-impresion-factura').on('show.bs.modal', function() {
-                    if (moment($('#fecha_actual').val()) > moment($('#max_fecha_descuentos').val())) {
-                        $('#fecha_max_pago').datepicker('setDate', $('#fecha_actual').val());
-                    } else {
-                        $('#fecha_max_pago').datepicker('clearDates');
+            if (global_ultima_factura && !global_ya_pagado) {
+                swal({
+                    title: "Atención",
+                    text: `La solicitud de generación de factura ya fue realizada previamente.\n\nFactura No. ${global_ultima_factura['factura_pago']}\n\n¿Desea volver a generarla?`,
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Si",
+                    cancelButtonText: "No",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        downloadFacturaRowProcesar(btn);
                     }
                 });
-                $('#modal-impresion-factura').on('shown.bs.modal', function() {
-                    $('#tipo_factura').prop('checked', false);
-                    $('[data-toggle="tooltip"]').tooltip();
-                });
-            }
-            else {
-                var max_fecha = $('#fecha_max_pago').val().length > 0 ? $('#fecha_max_pago').val() : '-';
-                startImpresion(global_url_print + '/0/' + global_anio_actual + '/' + max_fecha + '/0', 'Pago ya registrado. Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
-                // startImpresion(global_url_print + '/0/' + global_anio_actual + '/0/1900-01-01', 'Pago ya registrado. Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
-                $(btn).attr('disabled', false);
-                $('[data-toggle="tooltip"]').tooltip();
+            } else {
+                downloadFacturaRowProcesar(btn);
             }
         });
+    }
+}
+
+function downloadFacturaRowProcesar(btn) {
+    var url_download = $(btn).attr('url');
+    global_url_print = url_download;
+    $(btn).attr('disabled', true);
+    $('[data-toggle="tooltip"]').tooltip('destroy');
+    if(!global_ya_pagado) {
+        $('#modal-impresion-factura').modal({ backdrop: 'static', keyboard: false }, 'show');
+        $('#modal-impresion-factura').on('hidden.bs.modal', function() {
+            $(btn).attr('disabled', false);
+            $('#form-predios-impresion-factura')[0].reset();
+            $('#tipo_factura').prop('checked', false);
+        });
+        $('#modal-impresion-factura').on('show.bs.modal', function() {
+            if (moment($('#fecha_actual').val()) > moment($('#max_fecha_descuentos').val())) {
+                $('#fecha_max_pago').datepicker('setDate', $('#fecha_actual').val());
+            } else {
+                $('#fecha_max_pago').datepicker('clearDates');
+            }
+        });
+        $('#modal-impresion-factura').on('shown.bs.modal', function() {
+            $('#tipo_factura').prop('checked', false);
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    }
+    else {
+        var max_fecha = $('#fecha_max_pago').val().length > 0 ? $('#fecha_max_pago').val() : '-';
+        startImpresion(global_url_print + '/0/' + global_anio_actual + '/' + max_fecha + '/0', 'Pago ya registrado. Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
+        // startImpresion(global_url_print + '/0/' + global_anio_actual + '/0/1900-01-01', 'Pago ya registrado. Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
+        $(btn).attr('disabled', false);
+        $('[data-toggle="tooltip"]').tooltip();
     }
 }
 
@@ -1139,6 +1162,7 @@ function getPredio(id_predio) {
                 var anios = response.anios;
                 global_acuerdo_pago = response.acuerdo_pago;
                 global_propietario = response.propietario;
+                global_ultima_factura = response.ultimo_anio;
                 if (response.anio_prescripcion > 0) {
                     global_anio_prescripcion = response.anio_prescripcion.toString();
                 }
