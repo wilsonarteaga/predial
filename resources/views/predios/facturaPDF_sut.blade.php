@@ -69,10 +69,10 @@
             position:relative;
         }
         #header {
-            padding:10px;
+            padding:2px;
         }
         #body {
-            padding:10px;
+            padding:2px;
         }
         #footer {
             position:absolute;
@@ -122,7 +122,7 @@
             <table class="table-header">
                 <tr>
                     <td style="width: 20%;">
-                        <img style="width: 70%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/'. $logo))) }}" alt="Logo" />
+                        <img style="width: 40%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/'. $logo))) }}" alt="Logo" />
                     </td>
                     <td>
                         <p class="header">
@@ -139,7 +139,6 @@
                     </td>
                 </tr>
             </table>
-
         </div>
         <div id="body">
             <table class="titles" style="width: 100%; margin-top: 0px;">
@@ -179,7 +178,7 @@
                     </td>
                 </tr>
             </table>
-            <table class="info-predio" style="width: 100%; margin-top: 15px;">
+            <table class="info-predio" style="width: 100%; margin-top: 10px;">
                 <tr>
                     <th style="width: 15%;">C&oacute;digo catastral</th>
                     <th style="width: 19%;">C&oacute;digo catastral ant.</th>
@@ -308,10 +307,10 @@
                 </tr>
                 @endif
             </table>
-            <div class="negrilla info" style="padding-top: 15px; padding-bottom: 15px; width: 100%; text-align: center;">
+            <div class="negrilla info" style="padding-top: 10px; padding-bottom: 10px; width: 100%; text-align: center;">
                 USUARIO
             </div>
-            <div class="info" style="padding-bottom: 15px; width: 100%; text-align: center;">
+            <div class="info" style="padding-bottom: 5px; width: 100%; text-align: center;">
                 ESTA FACTURA PRESTA MERITO EJECUTIVO CONFORME AL ART. 828 DEL E.T.
             </div>
             @if(count($lista_pagos) > 0)
@@ -345,8 +344,9 @@
                     </tr>
                 </table>
                 @if(count($valores_factura) > 0 && !$facturaYaPagada)
-                    <table class="info-codigo-barras" style="width: 100%; margin-top: 10px;">
-                        @for ($x = 0; $x < count($valores_factura); $x++)
+                    <table class="info-codigo-barras" style="width: 100%; margin-top: 10px; padding-bottom: 10px;">
+                        {{-- @for ($x = 0; $x < count($valores_factura); $x++) --}}
+                        @for ($x = 0; $x < 1; $x++)
                             <tr>
                                 <td style="width: 53%; padding-top: 15px; border: 0px solid #000; text-align: center;">
                                     {{-- {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!} --}}
@@ -363,6 +363,142 @@
                                 <td class="marca-agua">SELLO BANCO</td>
                             </tr>
                         @endfor
+                    </table>
+                    <hr style="border: 1px dashed #000;
+                        border-style: none none dashed;
+                        color: #fff;
+                        background-color: #fff;" />
+                    {{-- Replica de encabezado BANCO --}}
+                    <div class="negrilla info" style="padding-top: 10px; padding-bottom: 5px; width: 100%; text-align: center;">
+                        - BANCO -
+                    </div>
+                    <table class="info-predio" style="width: 100%; margin-top: 0px; font-size: 65%;">
+                        <tr>
+                            <th style="width: 15%;">C&oacute;digo catastral</th>
+                            <th style="width: 19%;">C&oacute;digo catastral ant.</th>
+                            <th style="width: 10%;">Nit. / C.C.</th>
+                            <th style="width: 14%;">No. recibo ant.</th>
+                            <th style="width: 14%;">&Aacute;rea Ha.</th>
+                            <th style="width: 14%;">&Aacute;rea M2.</th>
+                            <th style="width: 14%;">&Aacute;rea Cont.</th>
+                        </tr>
+                        <tr>
+                            <td>{{ $predio->codigo_predio }}</td>
+                            <td>{{ $predio->codigo_predio_anterior != null ? $predio->codigo_predio_anterior : '' }}</td>
+                            <td>{{ $predio->identificaciones }}</td>
+                            <td>{{ $ultimo_anio_pagado->factura_pago }}</td>
+                            <td>{{ number_format($predio->area_hectareas, 2) }}</td>
+                            <td>{{ number_format($predio->area_metros, 2) }}</td>
+                            <td>{{ number_format($predio->area_construida, 2) }}</td>
+                        </tr>
+                        <tr>
+                            <th colspan="3">Propietario</th>
+                            <th colspan="4">Direcci&oacute;n</th>
+                        </tr>
+                        <tr>
+                            <td colspan="3">{{ $predio->propietarios }}</td>
+                            <td colspan="4">{{ $predio->direccion }}</td>
+                        </tr>
+                    </table>
+                    <table class="info-predio" style="width: 100%; margin-top: 0px; font-size: 65%;">
+                        <tr>
+                            <th style="width: 20%;">A&ntilde;os a pagar</th>
+                            <th style="width: 20%;">Aval&uacute;o</th>
+                            <th style="width: 20%;">&Uacute;ltimo a&ntilde;o pago</th>
+                            <th style="width: 20%;">Fecha pago</th>
+                            <th style="width: 20%;">Valor pagado</th>
+                        </tr>
+                        <tr>
+                            <td>{{ $predio->anios_a_pagar }}</td>
+                            <td>@money($predio->avaluo)</td>
+                            <td>{{ $predio->ultimo_anio_pago }}</td>
+                            <td>{{ $ultimo_anio_pagado->fecha_pago }}</td>
+                            <td>@money($ultimo_anio_pagado->valor_pago)</td>
+                        </tr>
+                    </table>
+                    <table class="info-predio" style="width: 100%; margin-top: 5px; font-size: 75%; padding-bottom: 10px;">
+                        <tr>
+                            <th style="width: 10%;">No. factura:</th>
+                            <th style="width: 23%;">{{ $numero_factura }}</th>
+                            <th style="width: 10%;">Fecha emisi&oacute;n:</th>
+                            <th style="width: 23%;">
+                                @if($fecha == 'INDEFINIDA')
+                                {{ $fecha }}
+                                @else
+                                {{ $fecha }}, {{ $hora }}
+                                @endif
+                            </th>
+                            <th style="width: 11%;">Valor a pagar:</th>
+                            <th style="width: 23%;">@money($valores_factura[0])</th>
+                        </tr>
+                    </table>
+                    {{-- Replica de encabezado ALCALDIA --}}
+                    <hr style="border: 1px dashed #000;
+                        border-style: none none dashed;
+                        color: #fff;
+                        background-color: #fff;" />
+                    <div class="negrilla info" style="padding-top: 10px; padding-bottom: 5px; width: 100%; text-align: center;">
+                        - ALCALD&Iacute;A -
+                    </div>
+                    <table class="info-predio" style="width: 100%; margin-top: 0px; font-size: 65%;">
+                        <tr>
+                            <th style="width: 15%;">C&oacute;digo catastral</th>
+                            <th style="width: 19%;">C&oacute;digo catastral ant.</th>
+                            <th style="width: 10%;">Nit. / C.C.</th>
+                            <th style="width: 14%;">No. recibo ant.</th>
+                            <th style="width: 14%;">&Aacute;rea Ha.</th>
+                            <th style="width: 14%;">&Aacute;rea M2.</th>
+                            <th style="width: 14%;">&Aacute;rea Cont.</th>
+                        </tr>
+                        <tr>
+                            <td>{{ $predio->codigo_predio }}</td>
+                            <td>{{ $predio->codigo_predio_anterior != null ? $predio->codigo_predio_anterior : '' }}</td>
+                            <td>{{ $predio->identificaciones }}</td>
+                            <td>{{ $ultimo_anio_pagado->factura_pago }}</td>
+                            <td>{{ number_format($predio->area_hectareas, 2) }}</td>
+                            <td>{{ number_format($predio->area_metros, 2) }}</td>
+                            <td>{{ number_format($predio->area_construida, 2) }}</td>
+                        </tr>
+                        <tr>
+                            <th colspan="3">Propietario</th>
+                            <th colspan="4">Direcci&oacute;n</th>
+                        </tr>
+                        <tr>
+                            <td colspan="3">{{ $predio->propietarios }}</td>
+                            <td colspan="4">{{ $predio->direccion }}</td>
+                        </tr>
+                    </table>
+                    <table class="info-predio" style="width: 100%; margin-top: 0px; font-size: 65%;">
+                        <tr>
+                            <th style="width: 20%;">A&ntilde;os a pagar</th>
+                            <th style="width: 20%;">Aval&uacute;o</th>
+                            <th style="width: 20%;">&Uacute;ltimo a&ntilde;o pago</th>
+                            <th style="width: 20%;">Fecha pago</th>
+                            <th style="width: 20%;">Valor pagado</th>
+                        </tr>
+                        <tr>
+                            <td>{{ $predio->anios_a_pagar }}</td>
+                            <td>@money($predio->avaluo)</td>
+                            <td>{{ $predio->ultimo_anio_pago }}</td>
+                            <td>{{ $ultimo_anio_pagado->fecha_pago }}</td>
+                            <td>@money($ultimo_anio_pagado->valor_pago)</td>
+                        </tr>
+                    </table>
+                    <table class="info-predio" style="width: 100%; margin-top: 5px; font-size: 75%;">
+                        <tr>
+                            <th style="width: 10%;">No. factura:</th>
+                            <th style="width: 23%;">{{ $numero_factura }}</th>
+                            <th style="width: 10%;">Fecha emisi&oacute;n:</th>
+                            <th style="width: 23%;">
+                                @if($fecha == 'INDEFINIDA')
+                                {{ $fecha }}
+                                @else
+                                {{ $fecha }}, {{ $hora }}
+                                @endif
+                            </th>
+                            <th style="width: 11%;">Valor a pagar:</th>
+                            <th style="width: 23%;">@money($valores_factura[0])</th>
+                        </tr>
                     </table>
                 @endif
             @else
