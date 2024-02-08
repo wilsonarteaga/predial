@@ -202,8 +202,8 @@
                 @foreach($propietarios as $propietario)
                 <tr>
                     <td class="text-left">{{ strlen($propietario->jerarquia) < 3 ? str_pad(trim($propietario->jerarquia), 3, "0", STR_PAD_LEFT) : $propietario->jerarquia }}</td>
-                    <td class="text-left">{{ $propietario->identificacion }}</th>
-                    <td class="text-left">{{ $propietario->nombre }}</th>
+                    <td class="text-left">{{ $propietario->identificacion }}</td>
+                    <td class="text-left">{{ $propietario->nombre }}</td>
                 </tr>
                 @endforeach
             </table>

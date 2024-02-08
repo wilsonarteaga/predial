@@ -351,7 +351,7 @@
             </div>
             @if(count($lista_pagos) > 0)
                 <div class="div-codigos">
-                @php($labels = ['-'. $usuario .'-', '-BANCO-'])
+                @php($labels = ['-USUARIO-', '-BANCO-'])
                 @php($numero_boletas = 2)
                 @for ($boletas = 0; $boletas < $numero_boletas; $boletas++)
                     <hr style="border: 1px dashed #000;
@@ -375,6 +375,11 @@
                                     @if($x == 0)
                                     <td>
                                         <table class="info-persona-barras" style="width: 100%; margin-top: 0px;">
+                                            <tr>
+                                                <td colspan="2" style="padding-bottom: 10px;">
+                                                    <img style="width: 30%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/paipa-factura.png'))) }}" alt="Logo1" />
+                                                </td>
+                                            </tr>
                                             <tr>
                                                 <th>C&Oacute;DIGO CATASTRAL:</th>
                                                 <td>{{ $predio->codigo_predio }}</td>

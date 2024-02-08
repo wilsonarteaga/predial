@@ -199,12 +199,26 @@
                     <th class="text-left" style="width: 10%;">C&eacute;dula / NIT</th>
                     <th class="text-left">Nombre</th>
                 </tr>
+                @php($cont_propietarios = 0)
                 @foreach($propietarios as $propietario)
-                <tr>
-                    <td class="text-left">{{ strlen($propietario->jerarquia) < 3 ? str_pad(trim($propietario->jerarquia), 3, "0", STR_PAD_LEFT) : $propietario->jerarquia }}</td>
-                    <td class="text-left">{{ $propietario->identificacion }}</th>
-                    <td class="text-left">{{ $propietario->nombre }}</th>
-                </tr>
+                    @if($cont_propietarios < 5)
+                        <tr>
+                            <td class="text-left">{{ strlen($propietario->jerarquia) < 3 ? str_pad(trim($propietario->jerarquia), 3, "0", STR_PAD_LEFT) : $propietario->jerarquia }}</td>
+                            <td class="text-left">{{ $propietario->identificacion }}</td>
+                            <td class="text-left">{{ $propietario->nombre }}</td>
+                        </tr>
+                    @elseif ($cont_propietarios == 5)
+                        <tr>
+                            <td class="text-left" colspan="3">
+                                <p>
+                                    La lista de propietarios se extiende m&aacute;s all&aacute; de la cantidad permitida para mostrar en este documento. Por defecto se muestran los 5 primeros.<br /><b>N&uacute;mero total de propietarios: {{ count($propietarios) }}</b>.
+                                </p>
+                            </td>
+                        </tr>
+                    @else
+                        @break;
+                    @endif
+                    @php($cont_propietarios += 1)
                 @endforeach
             </table>
             <div class="info" style="padding-top: 25px; width: 100%;">
