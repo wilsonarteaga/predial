@@ -356,7 +356,14 @@
                 @for ($boletas = 0; $boletas < $numero_boletas; $boletas++)
                     @if($boletas == 0)
                     <div class="negrilla" style="padding-top: 0px; padding-bottom: 0px; width: 100%; text-align: center; font-size: 52%;">
-                        -USUARIO-
+                        <span style="width: 50%;">-USUARIO-</span>
+                        <span style="width: 50%; text-align: center; position: relative; float: right;">
+                            @if($fecha == 'INDEFINIDA')
+                            {{ $fecha }}
+                            @else
+                            {{ $fecha }}, {{ $hora }}
+                            @endif
+                        </span>
                     </div>
                     @endif
                     <hr style="border: 1px dashed #000;
