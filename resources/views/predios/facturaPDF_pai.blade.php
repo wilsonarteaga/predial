@@ -351,11 +351,16 @@
             </div>
             @if(count($lista_pagos) > 0)
                 <div class="div-codigos">
-                @php($labels = ['-USUARIO-', '-BANCO-'])
+                @php($labels = ['-ENTIDAD-', '-BANCO-'])
                 @php($numero_boletas = 2)
                 @for ($boletas = 0; $boletas < $numero_boletas; $boletas++)
+                    @if($boletas == 0)
+                    <div class="negrilla" style="padding-top: 0px; padding-bottom: 0px; width: 100%; text-align: center; font-size: 52%;">
+                        -USUARIO-
+                    </div>
+                    @endif
                     <hr style="border: 1px dashed #000;
-                        padding-top: 15px;
+                        padding-top: 5px;
                         border-style: none none dashed;
                         color: #fff;
                         background-color: #fff;" />
