@@ -126,7 +126,7 @@ Route::post('delete_predios', [PrediosController::class, 'destroy'])->name('pred
 Route::post('prescribe_predios', [PrediosController::class, 'prescribe'])->name('predios.prescribe_predios')->middleware('checkdb');
 
 Route::get('/show/predios_datos', [PrediosController::class, 'show_predios_datos']);
-Route::get('generate_factura_pdf/{id}/{tmp}/{anios}/{fecha_pago}/{informativa}', [PrediosController::class, 'generate_factura_pdf'])->middleware('checkdb');
+Route::get('generate_factura_pdf/{id}/{tmp}/{anios}/{fecha_pago}/{informativa}/{propietario}', [PrediosController::class, 'generate_factura_pdf'])->middleware('checkdb');
 // Route::get('generate_factura_pdf/{id}/{vistaPrevia}/{anio}/{cuotas}/{fecha_pago}', [PrediosController::class, 'generate_factura_pdf'])->middleware('checkdb');
 Route::get('generate_paz_pdf/{id}/{destino}/{fecha}/{valor}', [PrediosController::class, 'generate_paz_pdf'])->middleware('checkdb');
 Route::get('generate_avaluos_predio_pdf/{id}', [PrediosController::class, 'generate_avaluos_predio_pdf'])->middleware('checkdb');

@@ -1054,20 +1054,20 @@ class PrediosController extends Controller
         ]);
     }
 
-    public function generate_factura_pdf(Request $request, $id, $tmp, $anios, $fecha_pago, $informativa) {
+    public function generate_factura_pdf(Request $request, $id, $tmp, $anios, $fecha_pago, $informativa, $propietario) {
         if (!$request->session()->exists('userid')) {
             return redirect('/');
         }
 
         if (count(explode(',', $anios)) > 1) {
-            return self::generate_factura_pdf_vigencias($request, $id, $tmp, explode(',', $anios)[0], explode(',', $anios)[1], $fecha_pago, $informativa);
+            return self::generate_factura_pdf_vigencias($request, $id, $tmp, explode(',', $anios)[0], explode(',', $anios)[1], $fecha_pago, $informativa, $propietario);
         } else {
-            return self::generate_factura_pdf_no_vigencias($request, $id, $tmp, $anios, $fecha_pago, $informativa);
+            return self::generate_factura_pdf_no_vigencias($request, $id, $tmp, $anios, $fecha_pago, $informativa, $propietario);
         }
     }
 
     // Impresion para un solo anio enviado desde la interfaz
-    public function generate_factura_pdf_no_vigencias($request, $id, $tmp, $anio_ini, $fecha_pago, $informativa) {
+    public function generate_factura_pdf_no_vigencias($request, $id, $tmp, $anio_ini, $fecha_pago, $informativa, $propietario) {
         $submit = [];
         $dt = Carbon::now();
         $dt_emision = Carbon::now();
@@ -1200,16 +1200,29 @@ class PrediosController extends Controller
             ->where('predios.id', $id)
             ->get();
 
-            $propietarios = DB::table('predios')
-                                    ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
-                                    ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
-                                    ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
-                ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(TRIM(propietarios.nombre), \'<br />\') AS propietarios, STRING_AGG(propietarios.identificacion, \'<br />\') AS identificaciones'))
-                ->where('predios.estado', 1)
-                ->where('predios.id', $id)
-                ->where('predios_propietarios.jerarquia', '001')
-                ->groupBy('predios_propietarios.id_predio')
-                ->get();
+            if ($propietario == '-1') {
+                $propietarios = DB::table('predios')
+                                        ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                                        ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                                        ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
+                    ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(TRIM(propietarios.nombre), \'<br />\') AS propietarios, STRING_AGG(propietarios.identificacion, \'<br />\') AS identificaciones'))
+                    ->where('predios.estado', 1)
+                    ->where('predios.id', $id)
+                    ->where('predios_propietarios.jerarquia', '001')
+                    ->groupBy('predios_propietarios.id_predio')
+                    ->get();
+            } else {
+                $propietarios = DB::table('predios')
+                                        ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                                        ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                                        ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
+                    ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(TRIM(propietarios.nombre), \'<br />\') AS propietarios, STRING_AGG(propietarios.identificacion, \'<br />\') AS identificaciones'))
+                    ->where('predios.estado', 1)
+                    ->where('predios.id', $id)
+                    ->where('predios_propietarios.id', $propietario)
+                    ->groupBy('predios_propietarios.id_predio')
+                    ->get();
+            }
 
             if($propietarios) {
                 foreach ($predios as $key => $predio) {
@@ -1573,7 +1586,7 @@ class PrediosController extends Controller
     }
 
     // Impresion para vigencia inicial y vigencia final enviados desde la interfaz
-    public function generate_factura_pdf_vigencias($request, $id, $tmp, $anio_ini, $anio_fin, $fecha_pago, $informativa) {
+    public function generate_factura_pdf_vigencias($request, $id, $tmp, $anio_ini, $anio_fin, $fecha_pago, $informativa, $propietario) {
         $anios = $anio_fin;
         $submit = [];
         $dt = Carbon::now();
@@ -1703,16 +1716,29 @@ class PrediosController extends Controller
             ->where('predios.id', $id)
             ->get();
 
-            $propietarios = DB::table('predios')
+            if ($propietario == '-1') {
+                $propietarios = DB::table('predios')
+                                        ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                                        ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                                        ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
+                    ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(TRIM(propietarios.nombre), \'<br />\') AS propietarios, STRING_AGG(propietarios.identificacion, \'<br />\') AS identificaciones'))
+                    ->where('predios.estado', 1)
+                    ->where('predios.id', $id)
+                    ->where('predios_propietarios.jerarquia', '001')
+                    ->groupBy('predios_propietarios.id_predio')
+                    ->get();
+            } else {
+                $propietarios = DB::table('predios')
                                     ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
                                     ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
                                     ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
                 ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(TRIM(propietarios.nombre), \'<br />\') AS propietarios, STRING_AGG(propietarios.identificacion, \'<br />\') AS identificaciones'))
                 ->where('predios.estado', 1)
                 ->where('predios.id', $id)
-                ->where('predios_propietarios.jerarquia', '001')
+                ->where('predios_propietarios.id', $propietario)
                 ->groupBy('predios_propietarios.id_predio')
                 ->get();
+            }
 
             if($propietarios) {
                 foreach ($predios as $key => $predio) {
@@ -3299,7 +3325,17 @@ class PrediosController extends Controller
                     ->where('predios.id', $data->{'id_predio'})
                     ->first();
 
-        $propietarios = DB::table('predios')
+        $lista_propietarios = DB::table('predios')
+                    ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                    ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                    ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
+            ->select(DB::raw('predios_propietarios.id, predios_propietarios.jerarquia, TRIM(propietarios.nombre) as nombre'))
+            ->where('predios.estado', 1)
+            ->where('predios_propietarios.id_predio', $data->{'id_predio'})
+            ->orderBy('predios_propietarios.jerarquia')
+            ->get();
+
+        $propietario_ppal = DB::table('predios')
                                      ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
                                      ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
                                      ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
@@ -3310,9 +3346,9 @@ class PrediosController extends Controller
                 ->groupBy('predios_propietarios.id_predio')
                 ->get();
 
-        if($propietarios) {
+        if($propietario_ppal) {
             // foreach ($predios as $key => $predio) {
-            $desired_object = self::findInCollection($propietarios, 'id_predio', $predio->id);
+            $desired_object = self::findInCollection($propietario_ppal, 'id_predio', $predio->id);
             if($desired_object) {
                 $predio->propietarios = $desired_object->propietarios;
             }
@@ -3402,6 +3438,7 @@ class PrediosController extends Controller
                 'predio' => $predio,
                 'acuerdo_pago' => $acuerdo_pago,
                 'propietario' => $propietario,
+                'propietarios' => $lista_propietarios,
                 'anios' => $array_anios,
                 'anio_actual' => $currentYear,
                 'ultimo_anio' => $ultimo_anio_pagar,

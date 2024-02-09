@@ -366,12 +366,12 @@
                         </span>
                     </div>
                     @endif
-                    <hr style="border: 1px dashed #000;
-                        padding-top: 5px;
-                        border-style: none none dashed;
-                        color: #fff;
-                        background-color: #fff;" />
                     @if($numero_codigos > 0 && !$facturaYaPagada)
+                        <hr style="border: 1px dashed #000;
+                            padding-top: 5px;
+                            border-style: none none dashed;
+                            color: #fff;
+                            background-color: #fff;" />
                         <table class="no-border" style="width: 100%; font-size: 60%;">
                             <tr>
                                 <td style="width: 50%;"></td>

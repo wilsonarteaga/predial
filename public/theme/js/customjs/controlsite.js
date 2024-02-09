@@ -10,6 +10,7 @@ var existe_predio = false;
 var codigo_predio_buscando = '';
 var global_anio_prescripcion = '';
 var global_propietario = null;
+var global_propietarios = null;
 var global_acuerdo_pago = null;
 var global_ultima_factura = null;
 var global_plusvalia = 0;
@@ -752,7 +753,8 @@ $(document).ready(function() {
                 anios = $('#ultimo_anio_facturar').val();
             }
             var max_fecha = $('#fecha_max_pago').val().length > 0 ? $('#fecha_max_pago').val() : '-';
-            startImpresion(global_url_print + '/0/' + anios + '/' + max_fecha + '/0', 'Iniciando generación factura definitiva de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
+            var propietario_facturar = $('#propietario_facturar').val();
+            startImpresion(global_url_print + '/0/' + anios + '/' + max_fecha + '/0/' + propietario_facturar, 'Iniciando generación factura definitiva de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
         }
     });
 
@@ -769,23 +771,10 @@ $(document).ready(function() {
                 anios = $('#ultimo_anio_facturar').val();
             }
             var max_fecha = $('#fecha_max_pago').val().length > 0 ? $('#fecha_max_pago').val() : '-';
-            startImpresion(global_url_print + '/1/' + anios + '/' + max_fecha + '/0', 'Iniciando generación factura vista previa de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
+            var propietario_facturar = $('#propietario_facturar').val();
+            startImpresion(global_url_print + '/1/' + anios + '/' + max_fecha + '/0/' + propietario_facturar, 'Iniciando generación factura vista previa de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
         }
     });
-
-    // $('#generate_factura_definitiva').off('click').on('click', function() {
-    //     $('.btn_pdf').attr('disabled', true);
-    //     if(checkAnioImpresion()) {
-    //         startImpresion(global_url_print + '/0/' + $('#ultimo_anio_facturar').val() + '/' + $('#cuotas_factura').val() + '/1900-01-01', 'Iniciando generación factura definitiva de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
-    //     }
-    // });
-
-    // $('#generate_factura_temporal').off('click').on('click', function() {
-    //     $('.btn_pdf').attr('disabled', true);
-    //     if(checkAnioImpresion()) {
-    //         startImpresion(global_url_print + '/1/' + $('#ultimo_anio_facturar').val() + '/' + $('#cuotas_factura').val() + '/1900-01-01', 'Iniciando generación factura vista previa de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
-    //     }
-    // });
 
     $('#generate_paz').off('click').on('click', function() {
         $('.btn_pdf').attr('disabled', true);
@@ -1012,8 +1001,8 @@ function downloadFacturaRowProcesar(btn) {
     }
     else {
         var max_fecha = $('#fecha_max_pago').val().length > 0 ? $('#fecha_max_pago').val() : '-';
-        startImpresion(global_url_print + '/0/' + global_anio_actual + '/' + max_fecha + '/0', 'Pago ya registrado. Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
-        // startImpresion(global_url_print + '/0/' + global_anio_actual + '/0/1900-01-01', 'Pago ya registrado. Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
+        var propietario_facturar = $('#propietario_facturar').val();
+        startImpresion(global_url_print + '/0/' + global_anio_actual + '/' + max_fecha + '/0/' + propietario_facturar, 'Pago ya registrado. Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
         $(btn).attr('disabled', false);
         $('[data-toggle="tooltip"]').tooltip();
     }
@@ -1162,6 +1151,7 @@ function getPredio(id_predio) {
                 var anios = response.anios;
                 global_acuerdo_pago = response.acuerdo_pago;
                 global_propietario = response.propietario;
+                global_propietarios = response.propietarios;
                 global_ultima_factura = response.ultimo_anio;
                 if (response.anio_prescripcion > 0) {
                     global_anio_prescripcion = response.anio_prescripcion.toString();
@@ -1197,11 +1187,13 @@ function getPredio(id_predio) {
 
                 if(anios.length > 1 || (anios.length === 1 && Number(predio.ultimo_anio_pago) !== Number(anios[0].ultimo_anio))) {
                     disabledBtnPaz = 'disabled="disabled"';
+                    $('#div_propietario_facturar').css('display', '');
                 }
                 else if(anios.length === 0) {
                     global_ya_pagado = true;
                     classBtnCalculo = 'fa-file-pdf-o';
                     colorBtnCalculo = 'success btn-outline';
+                    $('#div_propietario_facturar').css('display', 'none');
                 }
 
                 var td_2 = $('<td class="edit_row cell_center">' + predio.direccion + '</td>');
@@ -1226,12 +1218,20 @@ function getPredio(id_predio) {
                 tr.append(td_1).append(td_2).append(td_3).append(td_4);
                 $('#myTable').find('tbody').append(tr);
 
+                $('#propietario_facturar').empty();
                 $('#ultimo_anio_facturar').empty();
                 $('#anio_inicial_acuerdo').empty();
                 $('#anio_final_acuerdo').empty();
-                $('#ultimo_anio_facturar').append('<option value="">Seleccione a&ntilde;o para facturar</option>');
+                $('#ultimo_anio_facturar').append('<option value="">Seleccione a&ntilde;o...</option>');
                 $('#anio_inicial_acuerdo').append('<option value="">Seleccione</option>');
                 $('#anio_final_acuerdo').append('<option value="">Seleccione</option>');
+                $.each(global_propietarios, function(i, el) {
+                    if (el.jerarquia === '001') {
+                        $('#propietario_facturar').append('<option selected value="' + el.id + '">' + el.jerarquia + ' - ' + el.nombre + '</option>');
+                    } else {
+                        $('#propietario_facturar').append('<option value="' + el.id + '">' + el.jerarquia + ' - ' + el.nombre + '</option>');
+                    }
+                });
                 $.each(anios, function(i, el){
                     $('#ultimo_anio_facturar').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
                     $('#anio_inicial_acuerdo').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');

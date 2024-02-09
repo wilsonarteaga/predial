@@ -869,11 +869,11 @@
     </div>
 </div>
 <div id="modal-impresion-factura" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-impresion-factura-label" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-sm" style="width: 24%;">
         <div class="modal-content">
             <div class="modal-header">
                 {{-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> --}}
-                <h4 class="modal-title" id="modal-impresion-factura-label">Atenci&oacute;n!</h4>
+                <h4 class="modal-title" id="modal-impresion-factura-label">Generaci&oacute;n de factura de cobro impuesto predial.</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -883,7 +883,12 @@
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group" style="margin-bottom: 0px; text-align: center;">
-                                            <label class="control-label">Generaci&oacute;n de factura de cobro impuesto predial.</label>
+                                            {{-- <label class="control-label">Generaci&oacute;n de factura de cobro impuesto predial.</label> --}}
+                                            <div id="div_propietario_facturar" style="width: 100%; text-align: left; padding-bottom: 20px;">
+                                                <label style="width: 100%;" class="control-label">Propietario:</label>
+                                                <select id="propietario_facturar" name="propietario_facturar" class="form-control" data-size="4" title="Seleccione propietario..." data-container="#modal-impresion-factura" style="width: 100%;">
+                                                </select>
+                                            </div>
                                             <select id="ultimo_anio_facturar" name="ultimo_anio_facturar" class="form-control" data-size="4" title="Seleccione a&ntilde;o..." data-container="#modal-impresion-factura" style="width: 100%">
                                             </select>
                                         </div>

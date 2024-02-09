@@ -730,7 +730,6 @@ $(document).ready(function() {
     });
 
     $('#btn_cartera').off('click').on('click', function() {
-        // startImpresion('/export-cartera', 'Iniciando generación factura vista previa de impuesto predial. Espere un momento por favor.', 'warning', false);
         $.blockUI({
             message: "Generando archivo EXCEL con reporte de cartera.<br />Espere un momento.",
             css: {

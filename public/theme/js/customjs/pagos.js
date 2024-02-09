@@ -374,7 +374,7 @@ $(document).ready(function() {
     if ($('#print_factura').length > 0) {
         $('#print_factura').off("click").on("click", function() {
             var btn = $(this);
-            startImpresion($(btn).attr('url') + $('#info_id_predio').val() + '/0/' + $('#info_anio').val() + '/-/1', 'Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
+            startImpresion($(btn).attr('url') + $('#info_id_predio').val() + '/0/' + $('#info_anio').val() + '/-/1/-1', 'Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
         });
     }
 });
