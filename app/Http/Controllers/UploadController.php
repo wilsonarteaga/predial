@@ -120,6 +120,8 @@ class UploadController extends Controller
 
                                     $valor_facturado = floatval(substr($line, 50, 12) . ',' . substr($line, 62, 2));
                                     $banco_factura = substr($line, 80, 3);
+                                    if ($banco_factura == '000')
+                                        $banco_factura = $banco_archivo;
                                     $objBancoFactura = DB::table('bancos')
                                                         ->select('bancos.id')
                                                         ->where('bancos.asobancaria', $banco_factura)
