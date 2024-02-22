@@ -3459,16 +3459,7 @@ class PrediosController extends Controller
                                     ISNULL(CONVERT(VARCHAR, pp.fecha_pago, 101), \'N/D\') as fecha_pago,
                                     pp.valor_pago,
                                     ISNULL(pp.factura_pago, \'N/D\') as factura_pago,
-                                    CASE
-                                        WHEN pa.fecha_pago <= pp.primer_fecha THEN
-                                            ISNULL(pp.total_calculo, 0)
-                                        WHEN pa.fecha_pago <= pp.segunda_fecha THEN
-                                            ISNULL(pp.total_dos, 0)
-                                        WHEN pa.fecha_pago <= pp.tercera_fecha THEN
-                                            ISNULL(pp.total_tres, 0)
-                                        ELSE
-                                            0
-                                    END AS valor_vigencia
+                                    pp.valor_pago AS valor_vigencia
                             from predios p inner join
                                 predios_pagos pp
                                 on (p.id = pp.id_predio) left join
