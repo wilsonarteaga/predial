@@ -112,6 +112,7 @@
         .info { font-size: 70%; }
         .text-small { font-size: 40%; }
 		.negrilla {font-weight: bold;}
+        .leyenda { font-size: 55%; }
 
     </style>
 </head>
@@ -230,6 +231,14 @@
             <div class="info" style="padding-top: 10px; width: 100%;">
                 Se expide con destino a: <b>{{ $destino }}</b>
             </div>
+            <div class="leyenda" style="padding-top: 20px; width: 100%;">
+                <p>
+                    Actualmente el municipio de Paipa no tiene adoptada la contribuci&oacute;n de valorizaci&oacute;n para predios ubicados dentro de su jurisdicci&oacute;n.
+                </p>
+                <p>
+                    La presente certificaci&oacute;n se expide en relaci&oacute;n con el predio identificado con c&eacute;dula catastral No. <b>{{ $predio->codigo_predio }}</b>
+                </p>
+            </div>
             <table class="info-validez" style="width: 100%; margin-top: 50px;">
                 <tr>
                     <td style="width: 50%;">
@@ -243,9 +252,9 @@
                     <td>Valor <b>{{ $valor }}</b> Pesos m/cte.</td>
                     <td style="text-align: center;">TESORERO(A) MUNICIPAL</td>
                 </tr>
-                <tr>
+                {{-- <tr>
                     <td style="padding-top: 20px;" colspan="2">NO SE COBRA IMPUESTO POR VALORIZACI&Oacute;N.</td>
-                </tr>
+                </tr> --}}
                 <tr>
                     <td class="text-small" colspan="2">P&aacute;gina 1 de 1</td>
                 </tr>
