@@ -112,7 +112,6 @@
         .info { font-size: 70%; }
         .text-small { font-size: 40%; }
 		.negrilla {font-weight: bold;}
-        .leyenda { font-size: 55%; }
 
     </style>
 </head>
@@ -231,7 +230,7 @@
             <div class="info" style="padding-top: 10px; width: 100%;">
                 Se expide con destino a: <b>{{ $destino }}</b>
             </div>
-            <div class="leyenda" style="padding-top: 20px; width: 100%;">
+            <div class="info" style="padding-top: 15px; width: 100%;">
                 <p>
                     Actualmente el municipio de Paipa no tiene adoptada la contribuci&oacute;n de valorizaci&oacute;n para predios ubicados dentro de su jurisdicci&oacute;n.
                 </p>
