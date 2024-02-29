@@ -1185,7 +1185,8 @@ function getPredio(id_predio) {
                     disabledBtnPaz = 'disabled="disabled"';
                 }
 
-                if(anios.length > 1 || (anios.length === 1 && Number(predio.ultimo_anio_pago) !== Number(anios[0].ultimo_anio))) {
+                // if(anios.filter(a => a.factura_pago === null).length > 0) {
+                if (anios.length > 0 || (anios.length === 1 && Number(predio.ultimo_anio_pago) !== Number(anios[0].ultimo_anio))) {
                     disabledBtnPaz = 'disabled="disabled"';
                     $('#div_propietario_facturar').css('display', '');
                 }

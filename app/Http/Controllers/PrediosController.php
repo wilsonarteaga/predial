@@ -1033,7 +1033,7 @@ class PrediosController extends Controller
         $predio_pago = PredioPago::select('id', 'id_predio', 'ultimo_anio', 'valor_pago', 'fecha_pago', 'factura_pago', 'id_banco')
                         ->where('id_predio', $request->id_predio)
                         ->where('pagado', '<>', 0)
-                        ->orderBy('id', 'desc')
+                        ->orderBy('ultimo_anio', 'desc')
                         ->first();
 
         $predio_acuerdo_pago = PredioAcuerdoPago::where('id_predio', $request->id_predio)->first();
