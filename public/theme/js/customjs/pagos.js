@@ -7,6 +7,7 @@ var bar = $('.bar.one');
 var percent = $('.porciento.one');
 var ROOT_URL = window.location.protocol + "//" + window.location.host;
 var visualizando_factura = false;
+var selected_banco_factura = 'default';
 $(document).ready(function() {
     $('#numero_recibo').bind('keyup', function() {
         if($.trim($(this).val()).length === 9) {
@@ -377,6 +378,10 @@ $(document).ready(function() {
             startImpresion($(btn).attr('url') + $('#info_id_predio').val() + '/0/' + $('#info_anio').val() + '/-/1/-1', 'Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
         });
     }
+
+    $('#id_banco_factura').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+        selected_banco_factura = $('#id_banco_factura').selectpicker('val');
+    });
 });
 
 function getJsonPagos() {
@@ -491,6 +496,8 @@ function getInfoPago() {
                 else {
                     $('#paquete_archivo').val('');
                 }
+
+                $('#id_banco_factura').val(selected_banco_factura).selectpicker("refresh");
 
                 if(Number(response[0].pagado) < 0) {
                     $('#btn_save_info').attr('disabled', true);
