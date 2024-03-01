@@ -346,23 +346,25 @@
                 @if(count($valores_factura) > 0 && !$facturaYaPagada)
                     <table class="info-codigo-barras" style="width: 100%; margin-top: 10px; padding-bottom: 10px;">
                         {{-- @for ($x = 0; $x < count($valores_factura); $x++) --}}
-                        @for ($x = 0; $x < 1; $x++)
-                            <tr>
-                                <td style="width: 53%; padding-top: 15px; border: 0px solid #000; text-align: center;">
-                                    {{-- {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!} --}}
-                                    <img style="padding-left: 5px; padding-top: 5px;" src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras[$x], 'C128') }}" height="77" width="371" />
-                                    <span style="width: 100%; font-size: 80%;">{{ $barras_texto[$x] }}</span>
-                                </td>
-                                <td style="width: 19%;">
-                                    <table style="width: 100%; font-size: 120%;">
-                                        <tr><td class="negrilla">Pague hasta {{ $fechas_pago_hasta[$x] }}</td></tr>
-                                        <tr><td>Descuento {{ intval($porcentajes_descuento[$x]) }}%</td></tr>
-                                        <tr><td class="negrilla">@money($valores_factura[$x])</td></tr>
-                                    </table>
-                                </td>
-                                <td class="marca-agua">SELLO BANCO</td>
-                            </tr>
-                        @endfor
+                        {{-- @for ($x = 0; $x < 1; $x++) --}}
+                        {{-- @php($x = 0) --}} {{-- // primer codigo de barras --}}
+                        @php($x = 1) {{-- segundo codigo de barras --}}
+                        <tr>
+                            <td style="width: 53%; padding-top: 15px; border: 0px solid #000; text-align: center;">
+                                {{-- {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!} --}}
+                                <img style="padding-left: 5px; padding-top: 5px;" src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras[$x], 'C128') }}" height="77" width="371" />
+                                <span style="width: 100%; font-size: 80%;">{{ $barras_texto[$x] }}</span>
+                            </td>
+                            <td style="width: 19%;">
+                                <table style="width: 100%; font-size: 120%;">
+                                    <tr><td class="negrilla">Pague hasta {{ $fechas_pago_hasta[$x] }}</td></tr>
+                                    <tr><td>Descuento {{ intval($porcentajes_descuento[$x]) }}%</td></tr>
+                                    <tr><td class="negrilla">@money($valores_factura[$x])</td></tr>
+                                </table>
+                            </td>
+                            <td class="marca-agua">SELLO BANCO</td>
+                        </tr>
+                        {{-- @endfor --}}
                     </table>
                     <hr style="border: 1px dashed #000;
                         border-style: none none dashed;
