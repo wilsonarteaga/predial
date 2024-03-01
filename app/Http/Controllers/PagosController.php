@@ -43,6 +43,7 @@ class PagosController extends Controller
 
         $bancos = DB::table('bancos')
                             ->select('bancos.id', 'bancos.codigo', 'bancos.asobancaria', 'bancos.nombre')
+                            ->orderBy('bancos.codigo')
                             ->get();
 
         // $pagos = DB::table('pagos')->join('bancos', function ($join) {

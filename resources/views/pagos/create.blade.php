@@ -93,7 +93,7 @@
                                                         <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Banco factura:</label>
-                                                                <select id="id_banco_factura" name="id_banco_factura" class="form-control selectpicker show-tick" data-live-search="true" data-size="4" title="Sin informaci&oacute;n...">
+                                                                <select id="id_banco_factura" name="id_banco_factura" class="form-control selectpicker show-tick" data-live-search="true" data-container="body" data-size="4" title="Sin informaci&oacute;n...">
                                                                     @if(count($bancos) > 0)
                                                                         @foreach($bancos as $banco)
                                                                         <option value="{{ $banco->id }}" {{ old('id_banco_factura') == $banco->id ? 'selected' : '' }}>{{ $banco->codigo }} - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>
@@ -226,7 +226,7 @@
                                                         <div class="col-lg-6 col-md-6 col-sm-7 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Seleccione banco:</label>
-                                                                <select id="id_banco" name="id_banco" class="form-control selectpicker-noval show-tick" data-live-search="true" data-size="4" title="Sin informaci&oacute;n...">
+                                                                <select id="id_banco" name="id_banco" class="form-control selectpicker-noval show-tick" data-live-search="true" data-container="body" data-size="4" title="Sin informaci&oacute;n...">
                                                                     @if(count($bancos) > 0)
                                                                         @foreach($bancos as $banco)
                                                                         <option value="{{ $banco->id }}" {{ old('id_banco') == $banco->id ? 'selected' : '' }}>{{ $banco->codigo }} - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>
