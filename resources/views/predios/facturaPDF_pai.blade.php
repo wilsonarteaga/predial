@@ -445,8 +445,10 @@
                                             </tr>
                                         </table>
                                         {{-- {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!} --}}
+                                        @if($temporal == 0)
                                         <img style="padding-left: 5px; padding-top: 5px;" src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras[$x], 'C128') }}" height="77" width="371" />
                                         <span style="width: 100%; font-size: 80%;">{{ $barras_texto[$x] }}</span>
+                                        @endif
                                         @if($x + 1 == $numero_codigos)
                                         <table style="width: 100%; font-size: 100%; padding-top: 10px;">
                                             <tr>
