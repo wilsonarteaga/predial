@@ -348,7 +348,7 @@
                         {{-- @for ($x = 0; $x < count($valores_factura); $x++) --}}
                         {{-- @for ($x = 0; $x < 1; $x++) --}}
                         {{-- @php($x = 0) --}} {{-- // primer codigo de barras --}}
-                        @php($x = 1) {{-- segundo codigo de barras --}}
+                        @php($x = count($valores_factura) > 1 ? 1 : 0) {{-- segundo codigo de barras --}}
                         <tr>
                             <td style="width: 53%; padding-top: 15px; border: 0px solid #000; text-align: center;">
                                 {{-- {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!} --}}
