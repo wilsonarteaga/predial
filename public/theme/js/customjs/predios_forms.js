@@ -541,6 +541,10 @@ $(document).ready(function() {
 
     /// datos-propietarios
     $('#modal-datos-propietarios').on('show.bs.modal', function() {
+        if (global_propietarios.length === 0) {
+            disable_form_elements('#form-predios-datos-propietarios', true);
+            $('#save_dp').attr('disabled', true);
+        }
         if ($('#tr_predio_' + $('#id_edit').val()).attr('data-dp') !== undefined) {
             var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-dp'));
             if (objJson.length !== undefined) {
@@ -791,6 +795,8 @@ $(document).ready(function() {
         $('.info_propietarios').css('display', 'none');
         $('#form-predios-datos-propietarios')[0].reset();
         clear_form_elements("#form-predios-datos-propietarios");
+        disable_form_elements('#form-predios-datos-propietarios', false);
+        $('#save_dp').attr('disabled', false);
         $('#form-predios-datos-propietarios').find('#nombre').prop('readonly', false);
         $('#form-predios-datos-propietarios').find('#direccion').prop('readonly', false);
         $('#form-predios-datos-propietarios').find('#correo_electronico').prop('readonly', false);
@@ -1172,7 +1178,7 @@ $(document).ready(function() {
     });
 
     $('#identificacion').off('blur').on('blur', function() {
-        if(!is_editando_propietario && !propietario_autocompletado) {
+        if(!is_editando_propietario && !propietario_autocompletado && global_propietarios.length > 0) {
             autocompletePropietario($(this).val(), true);
         }
     });
