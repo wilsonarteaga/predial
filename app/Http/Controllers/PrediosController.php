@@ -1100,7 +1100,7 @@ class PrediosController extends Controller
 
         // Si no existe un predio_pago para el año actual, entonces EJECUTAR PROCEDIMIENTO DE CALCULO
         if($ultimo_anio_pagar == null || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->valor_pago == 0 && $ultimo_anio_pagar->fecha_pago == null && $ultimo_anio_pagar->id_banco == null)) {
-            $submit = DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?", array($anio_ini, 0, $id, Carbon::createFromFormat("Y-m-d H:i:s", $fecha_pago . ' 00:00:00')->format('Y-m-d H:i:s')));
+            $submit = DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?,?", array($request->session()->get('userid'), $anio_ini, 0, $id, Carbon::createFromFormat("Y-m-d H:i:s", $fecha_pago . ' 00:00:00')->format('Y-m-d H:i:s')));
             if ($ultimo_anio_pagar == null) {
                 $primerCalculo = 1;
             }
@@ -1616,7 +1616,7 @@ class PrediosController extends Controller
 
         // Si no existe un predio_pago para el año actual, entonces EJECUTAR PROCEDIMIENTO DE CALCULO
         if($ultimo_anio_pagar == null || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->valor_pago == 0 && $ultimo_anio_pagar->fecha_pago == null && $ultimo_anio_pagar->id_banco == null)) {
-            $submit = DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?", array($anio_ini, $anio_fin, $id, Carbon::createFromFormat("Y-m-d H:i:s", $fecha_pago . ' 00:00:00')->format('Y-m-d H:i:s')));
+            $submit = DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?,?", array($request->session()->get('userid'), $anio_ini, $anio_fin, $id, Carbon::createFromFormat("Y-m-d H:i:s", $fecha_pago . ' 00:00:00')->format('Y-m-d H:i:s')));
             if ($ultimo_anio_pagar == null) {
                 $primerCalculo = 1;
             }
@@ -2658,7 +2658,7 @@ class PrediosController extends Controller
             !$existe_pago)
         ) {
 
-            $submit = DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?", array($anio, $id, $cuotas, Carbon::createFromFormat("Y-m-d H:i:s", $fecha_pago . ' 00:00:00')->format('Y-m-d H:i:s')));
+            $submit = DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?,?", array($request->session()->get('userid'), $anio, $id, $cuotas, Carbon::createFromFormat("Y-m-d H:i:s", $fecha_pago . ' 00:00:00')->format('Y-m-d H:i:s')));
 
             if (count($ultimo_anio_pagar) == 0) {
                 $primerCalculo = 1;
