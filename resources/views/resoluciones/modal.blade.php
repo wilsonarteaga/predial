@@ -25,7 +25,7 @@
                                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="control-label">Fecha:</label>
-                                            <input type="text" id="fecha_resolucion_modal" name="fecha_resolucion_modal" class="form-control datepicker" autocomplete="off" placeholder="Ingrese fecha resoluci&oacute;n">
+                                            <input type="text" id="fecha_resolucion_modal" name="fecha_resolucion_modal" class="form-control datepicker novalidate" autocomplete="off" placeholder="Ingrese fecha resoluci&oacute;n" readonly style="background-color: white;">
                                             {{-- <span class="text-danger">@error('fecha_resolucion_modal') {{ $message }} @enderror</span> --}}
                                         </div>
                                     </div>

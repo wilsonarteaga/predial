@@ -238,7 +238,7 @@ $(document).ready(function() {
                 if ($('#' + $(this).attr('id') + '-error').length > 0)
                     $('#' + $(this).attr('id') + '-error').remove();
 
-                if ($('#create-form').is(':visible')) {
+                if ($('#create-form').is(':visible') && !$(this).hasClass('novalidate')) {
                     $('#create-form').validate().element($(this));
                 }
             }
@@ -246,7 +246,7 @@ $(document).ready(function() {
                 if ($('#' + $(this).attr('id') + '-error').length > 0)
                     $('#' + $(this).attr('id') + '-error').remove();
 
-                if ($('#update-form').is(':visible')) {
+                if ($('#update-form').is(':visible') && !$(this).hasClass('novalidate')) {
                     $('#update-form').validate().element($(this));
                 }
             }
@@ -263,7 +263,7 @@ $(document).ready(function() {
                     if ($('#' + $(this).attr('id') + '-error').length > 0)
                         $('#' + $(this).attr('id') + '-error').remove();
 
-                    if ($('#create-form').is(':visible')) {
+                    if ($('#create-form').is(':visible') && !$(this).hasClass('novalidate')) {
                         $('#create-form').validate().element($(this));
                     }
                 }
@@ -271,7 +271,7 @@ $(document).ready(function() {
                     if ($('#' + $(this).attr('id') + '-error').length > 0)
                         $('#' + $(this).attr('id') + '-error').remove();
 
-                    if ($('#update-form').is(':visible')) {
+                    if ($('#update-form').is(':visible') && !$(this).hasClass('novalidate')) {
                         $('#update-form').validate().element($(this));
                     }
                 }
