@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\CalculoBatch;
-use App\Exports\ExportPrediosPagos;
+use App\Exports\ExportCartera;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
@@ -3150,9 +3150,15 @@ class PrediosController extends Controller
                               ->where('parametros.nombre', 'formato-paz')
                               ->first();
 
+        $parametro_nit = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'nit')
+                              ->first();
+
         $logo = $parametro_logo->valor;
         $alcaldia = $parametro_alcaldia->valor;
         $formato_paz = $parametro_formato_paz->valor;
+        $nit = $parametro_nit->valor;
 
         $data = [
             'title' => 'Paz y salvo',
@@ -3169,7 +3175,8 @@ class PrediosController extends Controller
             'fecha_validez' => $fecha,
             'valor' => $valor,
             'logo' => $logo,
-            'alcaldia' => $alcaldia
+            'alcaldia' => $alcaldia,
+            "nit" => $nit
         ];
 
         $pdf = PDF::loadView($formato_paz, $data);
@@ -3652,7 +3659,7 @@ class PrediosController extends Controller
     }
 
     public function exportCartera(Request $request){
-        return Excel::download(new ExportPrediosPagos, 'predios_pagos.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+        return Excel::download(new ExportCartera, 'predios_pagos.xlsx', \Maatwebsite\Excel\Excel::XLSX);
 
         // $parametro_logo = DB::table('parametros')
         //                       ->select('parametros.valor')
@@ -3667,6 +3674,6 @@ class PrediosController extends Controller
         //                       ->select('parametros.valor')
         //                       ->where('parametros.nombre', 'alcaldia')
         //                       ->first();
-        // return (new ExportPrediosPagos($parametro_logo->valor, $parametro_nit->valor, $parametro_alcaldia->valor))->download('predios_pagos.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+        // return (new ExportCartera($parametro_logo->valor, $parametro_nit->valor, $parametro_alcaldia->valor))->download('predios_pagos.xlsx', \Maatwebsite\Excel\Excel::XLSX);
     }
 }

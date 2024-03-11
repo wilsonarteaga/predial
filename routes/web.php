@@ -115,6 +115,8 @@ Route::post('/list/pagos_fecha', [PagosController::class, 'list_pagos_fecha']);
 Route::post('/get_info_pago', [PagosController::class, 'get_info_pago']);
 // recibo
 Route::post('/get_info_recibo', [PagosController::class, 'get_info_recibo']);
+Route::get('/export-pagos/{fechainicial}/{fechafinal}/{bancoinicial}/{bancofinal}',[PagosController::class, 'exportPagos']);
+
 
 //PrediosController
 Route::get('registro_predios/{id}', [PrediosController::class, 'create'])->middleware('checkdb');

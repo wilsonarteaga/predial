@@ -62,6 +62,17 @@ $(document).ready(function() {
                         clear_form_elements("#pagos-filtro-form");
                     }
                 }
+                if ($('#fecha_pago_final').length > 0) {
+                    $('#fecha_pago_final').datepicker('setStartDate', null);
+                    $('#btn_descargar_pagos').fadeOut();
+                }
+                if ($('#id_banco_final').length > 0) {
+                    $.each($('#id_banco_final').find('option'), function(i, el) {
+                        $(el).css('display', '');
+                    });
+                    $('#id_banco_final').attr('disabled', true);
+                    $('#id_banco_final').selectpicker('refresh');
+                }
                 $('.result').empty();
                 if ($('#tab').length > 0) {
                     $('#tab').val('li-section-bar-1');

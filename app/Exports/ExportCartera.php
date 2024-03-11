@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\ViewPredialFacturado;
+use App\Models\ViewPredialCartera;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
@@ -25,23 +25,21 @@ use PhpOffice\PhpSpreadsheet\Style\Style;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ExportPrediosPagos implements FromView, WithTitle
+class ExportCartera implements FromView, WithTitle
     // implements FromCollection, WithHeadings, WithCustomStartCell, ShouldAutoSize,
     // WithColumnFormatting, WithMapping, WithStyles, WithDrawings //, WithDefaultStyles, FromView
 {
     // use Exportable;
 
-    protected $fechaInicial;
-    protected $fechaFinal;
-    protected $bancoInicial;
-    protected $bancoFinal;
+    // protected $pathImage;
+    // protected $nit;
+    // protected $alcaldia;
 
-    public function __construct(string $fechaInicial, string $fechaFinal, string $bancoInicial, string $bancoFinal) {
-        $this->fechaInicial = $fechaInicial;
-        $this->fechaFinal = $fechaFinal;
-        $this->bancoInicial = intval($bancoInicial);
-        $this->bancoFinal = intval($bancoFinal);
-    }
+    // public function __construct(string $pathImage, string $nit, string $alcaldia) {
+    //     $this->pathImage = $pathImage;
+    //     $this->nit = $nit;
+    //     $this->alcaldia = $alcaldia;
+    // }
 
     // /**
     // * @return \Illuminate\Support\Collection
@@ -64,7 +62,7 @@ class ExportPrediosPagos implements FromView, WithTitle
     // * @return \Illuminate\Support\Collection
     // */
     // public function collection() {
-    //     return ViewPredialFacturado::select(
+    //     return ViewPredialCartera::select(
     //         'ultimo_anio',
     //         'factura_pago',
     //         'codigo_predio',
@@ -188,44 +186,29 @@ class ExportPrediosPagos implements FromView, WithTitle
                               ->where('parametros.nombre', 'ubicacion')
                               ->first();
 
-        return view('exports.reporteFacturadoEXCEL', [
-            'registros' => ViewPredialFacturado::select(
+        return view('exports.reporteCarteraEXCEL', [
+            'registros' => ViewPredialCartera::select(
                         'ultimo_anio',
                         'factura_pago',
                         'codigo_predio',
                         'nombre_propietario',
-                        'predialanoactual',
-                        'descuentopredial',
-                        'predialanosanteriores',
-                        'interesespredial',
-                        'interesespredialanosanteriores',
-                        'total_predial',
-                        'caranoactual',
-                        'descuentocar',
-                        'caranoanteriores',
-                        'interesescaractual',
-                        'interesescaranteriores',
-                        'totalcar',
-                        'valor_facturado',
+                        'predial',
+                        'interespredial',
+                        'car',
+                        'interescar',
+                        'totalvigencia',
                     )
-                    ->whereBetween('fechapago', array(
-                        $this->fechaInicial,
-                        $this->fechaFinal
-                    ))
-                    ->whereBetween('id_banco', array(
-                        $this->bancoInicial,
-                        $this->bancoFinal
-                    ))
+                    ->where('ultimo_anio', '<=', Carbon::now()->year)
                     ->orderBy('codigo_predio', 'asc')
                     ->orderBy('ultimo_anio', 'asc')
                     ->get(),
+            'anio' => Carbon::now()->year,
             'logo' => $parametro_logo->valor,
             'nit' => $parametro_nit->valor,
             'alcaldia' => $parametro_alcaldia->valor,
             'direccion' => $parametro_direccion->valor,
             'ubicacion' => $parametro_ubicacion->valor,
-            'fecha_inicial' => $this->fechaInicial,
-            'fecha_final' => $this->fechaFinal
+            'fecha' => Carbon::now()->format('d/m/Y, h:i:s A')
         ]);
     }
 }

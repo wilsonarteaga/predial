@@ -2,7 +2,7 @@
     <thead>
         <tr style="border: 1px solid #000;">
             <td style="border: 1px solid #000; width: 88%; padding: 10px;" colspan="2" rowspan="3">
-                <img src="{{ public_path('/theme/plugins/images/'.$logo) }}" width="120px" height="auto" alt="logo" class="dark-logo" style="margin: 10px;" />
+                <img src="{{ public_path('/theme/plugins/images/'.$logo) }}" width="auto" height="120px" alt="logo" class="dark-logo" style="margin: 10px;" />
             </td>
             <td style="border: 1px solid #000; width: 88%; text-align: center; vertical-align: middle;" colspan="2" rowspan="3">
                 <h4><b>{{ $alcaldia }}</b></h4>

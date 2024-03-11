@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Factura predial</title>
+    <title>Paz y Salvo {{ $alcaldia }}</title>
     <style>
         @page {
             margin: 0;
@@ -78,9 +78,9 @@
             position:absolute;
             bottom:0;
             width:100%;
-            height:35px;   /* Height of the footer */
+            height:40px;   /* Height of the footer */
             text-align: center;
-            font-size: 80%;
+            font-size: 60%;
             border-top: 1px solid #c0c0c0;
         }
 
@@ -91,7 +91,7 @@
 		/* h3.title { width: 100%; text-align: center; } */
 
         table.table-header tr td { border: 0px; font-size: 100%; }
-        p.header { width: 100%; text-align:center; font-weight: bold; padding: 0px; margin: 0px; }
+        p.header { width: 100%; text-align:center; font-weight: bold; padding: 0px; margin: 0px; font-size: 70%; }
 		table.titles tr td { border: 0px; font-size: 80%; text-align: center; }
 
 		table.info-encabezado tr th { text-align:justify; font-size: 80%; }
@@ -120,17 +120,22 @@
         <div id="header">
             <table class="table-header">
                 <tr>
-                    <td style="width: 20%;">
-                        <img style="width: 70%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/'. $logo))) }}" alt="Logo" />
+                    <td style="width: 20%; font-size: 60%; text-align: center;">
+                        <img style="margin-top: 20px; width: 50%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/'. $logo))) }}" alt="Logo" />
                     </td>
                     <td>
                         <p class="header">
-                            REP&Uacute;BLICA DE COLOMBIA</p>
-                        <p class="header">{{ strtoupper($alcaldia) }}</p>
+                            REP&Uacute;BLICA DE COLOMBIA
+                        </p>
                         <p class="header">
-                            SECRETAR&Iacute;A DE HACIENDA</p>
+                            {{ strtoupper($alcaldia) }}
+                        </p>
                         <p class="header">
-                            CERTIFICADO DE PAZ Y SALVO - IMPUESTO PREDIAL</p>
+                            SECRETAR&Iacute;A DE HACIENDA
+                        </p>
+                        <p class="header">
+                            CERTIFICADO DE PAZ Y SALVO - IMPUESTO PREDIAL
+                        </p>
                     </td>
                 </tr>
             </table>
