@@ -1484,6 +1484,7 @@ class PrediosController extends Controller
                     $obj->catorce = $obj_catorce;
                     $obj->quince = $obj_quince;
                     $obj->dieciseis = $obj_dieciseis;
+                    $obj->diecisiete = $obj_diecisiete;
                     $obj->dieciocho = $obj_dieciocho;
                     $obj->blanco = $obj_blanco;
                     $obj->otros = $obj_otros;
@@ -2008,6 +2009,7 @@ class PrediosController extends Controller
                     $obj->catorce = $obj_catorce;
                     $obj->quince = $obj_quince;
                     $obj->dieciseis = $obj_dieciseis;
+                    $obj->diecisiete = $obj_diecisiete;
                     $obj->dieciocho = $obj_dieciocho;
                     $obj->blanco = $obj_blanco;
                     $obj->otros = $obj_otros;
@@ -2486,6 +2488,7 @@ class PrediosController extends Controller
     //                 $obj->catorce = $obj_catorce;
     //                 $obj->quince = $obj_quince;
     //                 $obj->dieciseis = $obj_dieciseis;
+    //                 $obj->diecisiete = $obj_diecisiete;
     //                 $obj->dieciocho = $obj_dieciocho;
     //                 $obj->blanco = $obj_blanco;
     //                 $obj->otros = $obj_otros;
@@ -2998,6 +3001,7 @@ class PrediosController extends Controller
                     $obj->catorce = $obj_catorce;
                     $obj->quince = $obj_quince;
                     $obj->dieciseis = $obj_dieciseis;
+                    $obj->diecisiete = $obj_diecisiete;
                     $obj->dieciocho = $obj_dieciocho;
                     $obj->blanco = $obj_blanco;
                     $obj->otros = $obj_otros;
