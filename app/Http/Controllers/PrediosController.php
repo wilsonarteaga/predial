@@ -1377,6 +1377,7 @@ class PrediosController extends Controller
                 $obj->catorce = $pago_pendiente->valor_concepto14 == null ? 0 : $pago_pendiente->valor_concepto14;
                 $obj->quince = $pago_pendiente->valor_concepto15 == null ? 0 : $pago_pendiente->valor_concepto15;
                 $obj->dieciseis = $pago_pendiente->valor_concepto16 == null ? 0 : $pago_pendiente->valor_concepto16;
+                $obj->diecisiete = $pago_pendiente->valor_concepto17 == null ? 0 : $pago_pendiente->valor_concepto17;
                 $obj->dieciocho = $pago_pendiente->valor_concepto18 == null ? 0 : $pago_pendiente->valor_concepto18;
                 $obj->blanco = 0;
                 $obj->otros = 0;
@@ -1443,6 +1444,7 @@ class PrediosController extends Controller
                     $obj_catorce = 0;
                     $obj_quince = 0;
                     $obj_dieciseis = 0;
+                    $obj_diecisiete = 0;
                     $obj_dieciocho = 0;
                     $obj_blanco = 0;
                     $obj_otros = 0;
@@ -1462,6 +1464,7 @@ class PrediosController extends Controller
                         $obj_catorce += $lista_pagos[$x]->catorce;
                         $obj_quince += $lista_pagos[$x]->quince;
                         $obj_dieciseis += $lista_pagos[$x]->dieciseis;
+                        $obj_diecisiete += $lista_pagos[$x]->diecisiete;
                         $obj_dieciocho += $lista_pagos[$x]->dieciocho;
                         $obj_blanco += $lista_pagos[$x]->blanco;
                         $obj_otros += $lista_pagos[$x]->otros;
@@ -1893,6 +1896,7 @@ class PrediosController extends Controller
                 $obj->catorce = $pago_pendiente->valor_concepto14 == null ? 0 : $pago_pendiente->valor_concepto14;
                 $obj->quince = $pago_pendiente->valor_concepto15 == null ? 0 : $pago_pendiente->valor_concepto15;
                 $obj->dieciseis = $pago_pendiente->valor_concepto16 == null ? 0 : $pago_pendiente->valor_concepto16;
+                $obj->diecisiete = $pago_pendiente->valor_concepto17 == null ? 0 : $pago_pendiente->valor_concepto17;
                 $obj->dieciocho = $pago_pendiente->valor_concepto18 == null ? 0 : $pago_pendiente->valor_concepto18;
                 $obj->blanco = 0;
                 $obj->otros = 0;
@@ -1964,6 +1968,7 @@ class PrediosController extends Controller
                     $obj_catorce = 0;
                     $obj_quince = 0;
                     $obj_dieciseis = 0;
+                    $obj_diecisiete = 0;
                     $obj_dieciocho = 0;
                     $obj_blanco = 0;
                     $obj_otros = 0;
@@ -1983,6 +1988,7 @@ class PrediosController extends Controller
                         $obj_catorce += $lista_pagos[$x]->catorce;
                         $obj_quince += $lista_pagos[$x]->quince;
                         $obj_dieciseis += $lista_pagos[$x]->dieciseis;
+                        $obj_diecisiete += $lista_pagos[$x]->diecisiete;
                         $obj_dieciocho += $lista_pagos[$x]->dieciocho;
                         $obj_blanco += $lista_pagos[$x]->blanco;
                         $obj_otros += $lista_pagos[$x]->otros;
@@ -2408,6 +2414,7 @@ class PrediosController extends Controller
     //             $obj->catorce = $pago_pendiente->valor_concepto14 == null ? 0 : $pago_pendiente->valor_concepto14;
     //             $obj->quince = $pago_pendiente->valor_concepto15 == null ? 0 : $pago_pendiente->valor_concepto15;
     //             $obj->dieciseis = $pago_pendiente->valor_concepto16 == null ? 0 : $pago_pendiente->valor_concepto16;
+    //             $obj->diecisiete = $pago_pendiente->valor_concepto17 == null ? 0 : $pago_pendiente->valor_concepto17;
     //             $obj->dieciocho = $pago_pendiente->valor_concepto18 == null ? 0 : $pago_pendiente->valor_concepto18;
     //             $obj->blanco = 0;
     //             $obj->otros = 0;
@@ -2449,6 +2456,7 @@ class PrediosController extends Controller
     //                 $obj_catorce = 0;
     //                 $obj_quince = 0;
     //                 $obj_dieciseis = 0;
+    //                 $obj_diecisiete = 0;
     //                 $obj_dieciocho = 0;
     //                 $obj_blanco = 0;
     //                 $obj_otros = 0;
@@ -2463,6 +2471,7 @@ class PrediosController extends Controller
     //                     $obj_catorce += $lista_pagos[$x]->catorce;
     //                     $obj_quince += $lista_pagos[$x]->quince;
     //                     $obj_dieciseis += $lista_pagos[$x]->dieciseis;
+    //                     $obj_diecisiete += $lista_pagos[$x]->diecisiete;
     //                     $obj_dieciocho += $lista_pagos[$x]->dieciocho;
     //                     $obj_blanco += $lista_pagos[$x]->blanco;
     //                     $obj_otros += $lista_pagos[$x]->otros;
@@ -2906,6 +2915,7 @@ class PrediosController extends Controller
                 $obj->catorce = $pago_pendiente->valor_concepto14 == null ? 0 : $pago_pendiente->valor_concepto14;
                 $obj->quince = $pago_pendiente->valor_concepto15 == null ? 0 : $pago_pendiente->valor_concepto15;
                 $obj->dieciseis = $pago_pendiente->valor_concepto16 == null ? 0 : $pago_pendiente->valor_concepto16;
+                $obj->diecisiete = $pago_pendiente->valor_concepto17 == null ? 0 : $pago_pendiente->valor_concepto17;
                 $obj->dieciocho = $pago_pendiente->valor_concepto18 == null ? 0 : $pago_pendiente->valor_concepto18;
                 $obj->blanco = 0;
                 $obj->otros = 0;
@@ -2958,6 +2968,7 @@ class PrediosController extends Controller
                     $obj_catorce = 0;
                     $obj_quince = 0;
                     $obj_dieciseis = 0;
+                    $obj_diecisiete = 0;
                     $obj_dieciocho = 0;
                     $obj_blanco = 0;
                     $obj_otros = 0;
@@ -2972,6 +2983,7 @@ class PrediosController extends Controller
                         $obj_catorce += $lista_pagos[$x]->catorce;
                         $obj_quince += $lista_pagos[$x]->quince;
                         $obj_dieciseis += $lista_pagos[$x]->dieciseis;
+                        $obj_diecisiete += $lista_pagos[$x]->diecisiete;
                         $obj_dieciocho += $lista_pagos[$x]->dieciocho;
                         $obj_blanco += $lista_pagos[$x]->blanco;
                         $obj_otros += $lista_pagos[$x]->otros;

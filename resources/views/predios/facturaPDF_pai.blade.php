@@ -286,7 +286,7 @@
                         @endif
                         <td>@money($pago->trece + $pago->quince)</td>
                         <td>@money($pago->dieciocho)</td>
-                        <td>@money($pago->catorce)</td>
+                        <td>@money($pago->diecisiete)</td>
                         <td>@money($pago->total)</td>
                     </tr>
                     @if(intval($unir_impuesto_car) == 1)
@@ -300,7 +300,7 @@
                     @endif
                     @php($suma_trece += ($pago->trece + $pago->quince))
                     @php($suma_dieciocho += $pago->dieciocho)
-                    @php($suma_otros += $pago->catorce)
+                    @php($suma_otros += $pago->diecisiete)
                     @php($suma_total += $pago->total)
                     @endforeach
                     <!----------------------------->
