@@ -3341,12 +3341,42 @@ class PrediosController extends Controller
         $predio =  DB::table('predios')->join('zonas', function ($join) {
                         $join->on('predios.id_zona', '=', 'zonas.id');
                     })
-                    //->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
-                    // ->select(DB::raw('predios.*, zonas.descripcion, CASE WHEN COALESCE(predios_prescripciones.prescribe_hasta, 0) >= YEAR(GETDATE()) THEN 1 ELSE 0 END AS prescrito, predios_prescripciones.prescribe_hasta'))
                     ->select(DB::raw('predios.*, zonas.descripcion'))
                     ->where('predios.estado', 1)
                     ->where('predios.id', $data->{'id_predio'})
                     ->first();
+
+        // seleccionar minimo ultimo_año predios pagos
+        // maximo año seria el actual
+        // verificar si hay años intermedios que no tengan calculo
+        // si hay años intermedios, ejecutar calculo, sino no ejecutar
+
+        $minAnioCalculado = DB::table('predios_pagos')
+                            ->select(DB::raw('min(ultimo_anio) as min_anio_calculo'))
+                            ->where('predios_pagos.id_predio', $data->{'id_predio'})
+                            ->first();
+
+        $listaAnios = [];
+        for($i = intval($minAnioCalculado->min_anio_calculo); $i <= $currentYear; $i++) {
+            array_push($listaAnios, $i); // implode(",", $listaAnios)
+        }
+
+        $distinct_calcs = DB::table('predios_pagos')
+            ->select(DB::raw('distinct ultimo_anio as ultimo_anio'))
+            ->where('predios_pagos.id_predio', $data->{'id_predio'})
+            ->get();
+
+        // Solo si hay años intermedios sin calculo, se ejecutaria el calculo para poder
+        // tener la lista de años con deuda
+        if (count($distinct_calcs) < count($listaAnios)) {
+            DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?,?", array(
+                intval($request->session()->get('userid')),
+                $currentYear,
+                0, // vista previa
+                $data->{'id_predio'},
+                Carbon::createFromFormat("Y-m-d H:i:s", $dt->format('Y-m-d') . ' 00:00:00')->format('Y-m-d H:i:s')
+            ));
+        }
 
         $lista_propietarios = DB::table('predios')
                     ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
