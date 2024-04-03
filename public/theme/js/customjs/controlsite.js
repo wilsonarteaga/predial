@@ -963,7 +963,7 @@ function setDownloadFacturaRow() {
     if ($('.download_factura_row').length > 0) {
         $('.download_factura_row').off('click').on('click', function(evt) {
             var btn = $(this);
-            if (global_ultima_factura && !global_ya_pagado) {
+            if (global_ultima_factura && global_ultima_factura['factura_pago'] && !global_ya_pagado) {
                 swal({
                     title: "Atención",
                     text: `La solicitud de generación de factura ya fue realizada previamente.\n\nFactura No. ${global_ultima_factura['factura_pago']}\n\n¿Desea volver a generarla?`,
