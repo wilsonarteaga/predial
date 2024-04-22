@@ -1336,7 +1336,7 @@ class PrediosController extends Controller
                     $ultimo_anio_pagado = DB::table('predios_pagos')
                                         ->where('id_predio', $id)
                                         // ->where('pagado', '<>', 0)
-                                        ->whereNotNull('factura_pago')
+                                        ->whereNotNull('factura_pago') // TODO: ejemplo: imprimir 2023 por vigencias, despues imprimir 2024 normal, esto deberia incluir 2020 y 2024, buscar: 30207000
                                         ->where('ultimo_anio', '<=', $anio_ini)
                                         ->orderBy('ultimo_anio', 'desc')
                                         ->first();
@@ -2530,7 +2530,7 @@ class PrediosController extends Controller
 
         // Si no existe un calculo para el año actual o si el calculo existe pero aun no tiene un numero
         // de factura asignado, entonces, se agrega el año a la lista
-        if(!$exists_current_anio) {
+        if(!$exists_current_anio && count($array_anios) > 0) {
             array_unshift($array_anios, ['ultimo_anio' => strval($currentYear), 'factura_pago' => null]);
         }
 
