@@ -1066,7 +1066,7 @@ class PrediosController extends Controller
         }
     }
 
-    // Impresion para un solo anio enviado desde la interfaz
+    // TODO: Impresion para un solo anio enviado desde la interfaz
     public function generate_factura_pdf_no_vigencias($request, $id, $tmp, $anio_ini, $fecha_pago, $informativa, $propietario) {
         DB::beginTransaction();
         try {
@@ -1085,24 +1085,41 @@ class PrediosController extends Controller
             $ultimo_anio_pagar = DB::table('predios_pagos')
                                     ->where('id_predio', $id)
                                     ->where('ultimo_anio', $anio_ini)
-                                    ->where('pagado', '<>', 0)
+                                    // ->where('pagado', '<>', 0) // 0: Pendiente, -1: Pagado
                                     ->first();
 
-            if($ultimo_anio_pagar != null) {
+            if($ultimo_anio_pagar != null && intval($ultimo_anio_pagar->pagado) != 0) {
                 $facturaYaPagada = true;
             }
-            else {
-                // Verificar si el registro ya existe
-                $ultimo_anio_pagar = DB::table('predios_pagos')
-                                    ->where('id_predio', $id)
-                                    ->where('ultimo_anio', $anio_ini)
-                                    ->where('pagado', 0)
-                                    ->first();
-            }
+            // else {
+            //     // Verificar si el registro ya existe
+            //     $ultimo_anio_pagar = DB::table('predios_pagos')
+            //                         ->where('id_predio', $id)
+            //                         ->where('ultimo_anio', $anio_ini)
+            //                         ->where('pagado', 0)
+            //                         ->first();
+            // }
 
             // Si no existe un predio_pago para el año actual, entonces EJECUTAR PROCEDIMIENTO DE CALCULO
-            if($ultimo_anio_pagar == null || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->valor_pago == 0 && $ultimo_anio_pagar->fecha_pago == null && $ultimo_anio_pagar->id_banco == null)) {
-                $submit = DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?,?", array(intval($request->session()->get('userid')), $anio_ini, 0, $id, Carbon::createFromFormat("Y-m-d H:i:s", $fecha_pago . ' 00:00:00')->format('Y-m-d H:i:s')));
+            if($ultimo_anio_pagar == null ||
+                ($ultimo_anio_pagar != null &&
+                 $ultimo_anio_pagar->valor_pago == 0 &&
+                 $ultimo_anio_pagar->fecha_pago == null &&
+                 $ultimo_anio_pagar->id_banco == null)
+            ) {
+                if(intval($tmp) == 0 && $ultimo_anio_pagar != null) {
+                    $fecha_emision = $ultimo_anio_pagar->fecha_emision != null ? Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->fecha_emision) : $fecha_emision;
+                }
+
+                $submit = DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?,?",
+                    array(
+                        intval($request->session()->get('userid')),                                                 // @USUARIO_ID
+                        $anio_ini,                                                                                  // @ANO
+                        0,                                                                                          // @ANO_FIN
+                        $id,                                                                                        // @PREDIO_ID
+                        Carbon::createFromFormat("Y-m-d H:i:s", $fecha_pago . ' 00:00:00')->format('Y-m-d H:i:s')   // @FECHA_PAGO
+                    )
+                );
                 if ($ultimo_anio_pagar == null) {
                     $primerCalculo = 1;
                 }
@@ -1123,7 +1140,12 @@ class PrediosController extends Controller
 
                 // Si se EJECUTO EL PROCEDIMIENTO DE CALCULO, entonces se genera un nuevo numero de factura
                 // Generar informacion de numero de factura solo si se realizo un nuevo calculo
-                if(((count($submit) > 0 && $primerCalculo == 1) || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->factura_pago == null)) && intval($tmp) == 0) {
+                if (
+                    (
+                     (count($submit) > 0 && $primerCalculo == 1) ||
+                     ($ultimo_anio_pagar != null && $ultimo_anio_pagar->factura_pago == null)
+                    ) && intval($tmp) == 0
+                ) {
                     $init_anio = new Anio;
                     $init_anio = Anio::find($anio->id);
                     $case_ultimo_numero_factura = 0;
@@ -1196,7 +1218,7 @@ class PrediosController extends Controller
                                 ->where('pagado', 0)
                                 ->first();
                     }
-                    $fecha_emision = $ultimo_anio_pagar->fecha_emision != null ? Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->fecha_emision) : $fecha_emision;
+                    // $fecha_emision = $ultimo_anio_pagar->fecha_emision != null ? Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->fecha_emision) : $fecha_emision;
                 }
 
                 $predios = DB::table('predios')->join('zonas', function ($join) {
@@ -1437,16 +1459,12 @@ class PrediosController extends Controller
                     if(count($lista_pagos) > 5 && !str_contains(strtolower($alcaldia), 'guateque') && !str_contains(strtolower($alcaldia), 'sutatenza')) {
                         $obj = new StdClass();
                         $obj->anio = '< ' . $lista_pagos[count($lista_pagos) - 5]->anio;
-
                         $obj_m_tar = 0;
                         $obj_avaluo = 0;
-
                         $obj_impuesto = 0;
                         $obj_impuesto_interes = 0;
-
                         $obj_car = 0;
                         $obj_car_interes = 0;
-
                         $obj_trece = 0;
                         $obj_catorce = 0;
                         $obj_quince = 0;
@@ -1460,13 +1478,10 @@ class PrediosController extends Controller
                         for ($x = 0; $x < count($lista_pagos) - 5; $x++) {
                             $obj_m_tar = $lista_pagos[$x]->m_tar;
                             $obj_avaluo = $lista_pagos[$x]->avaluo;
-
                             $obj_impuesto = $lista_pagos[$x]->impuesto;
                             $obj_impuesto_interes = $lista_pagos[$x]->impuesto_interes;
-
                             $obj_car = $lista_pagos[$x]->car;
                             $obj_car_interes = $lista_pagos[$x]->car_interes;
-
                             $obj_trece += $lista_pagos[$x]->trece;
                             $obj_catorce += $lista_pagos[$x]->catorce;
                             $obj_quince += $lista_pagos[$x]->quince;
@@ -1480,13 +1495,10 @@ class PrediosController extends Controller
 
                         $obj->m_tar = $obj_m_tar;
                         $obj->avaluo = $obj_avaluo;
-
                         $obj->impuesto = $obj_impuesto;
                         $obj->impuesto_interes = $obj_impuesto_interes;
-
                         $obj->car = $obj_car;
                         $obj->car_interes = $obj_car_interes;
-
                         $obj->trece = $obj_trece;
                         $obj->catorce = $obj_catorce;
                         $obj->quince = $obj_quince;
@@ -1589,7 +1601,7 @@ class PrediosController extends Controller
         }
     }
 
-    // Impresion para vigencia inicial y vigencia final enviados desde la interfaz
+    // TODO: Impresion para vigencia inicial y vigencia final enviados desde la interfaz
     public function generate_factura_pdf_vigencias($request, $id, $tmp, $anio_ini, $anio_fin, $fecha_pago, $informativa, $propietario) {
         DB::beginTransaction();
         try {
@@ -1602,27 +1614,50 @@ class PrediosController extends Controller
             $primerCalculo = 0;
             $facturaYaPagada = false;
 
+            if ($fecha_pago == '-') {
+                $fecha_pago = $fecha_emision->format('Y-m-d');
+            }
+
             $ultimo_anio_pagar = DB::table('predios_pagos')
                                     ->where('id_predio', $id)
                                     ->where('ultimo_anio', $anios)
-                                    ->where('pagado', '<>', 0)
+                                    // ->where('pagado', '<>', 0) // 0: Pendiente, -1: Pagado
                                     ->first();
 
-            if($ultimo_anio_pagar != null) {
+            if($ultimo_anio_pagar != null && intval($ultimo_anio_pagar->pagado) != 0) {
                 $facturaYaPagada = true;
             }
-            else {
-                // Verificar si el registro ya existe
-                $ultimo_anio_pagar = DB::table('predios_pagos')
-                                    ->where('id_predio', $id)
-                                    ->where('ultimo_anio', $anios)
-                                    ->where('pagado', 0)
-                                    ->first();
-            }
+            // else {
+            //     // Verificar si el registro ya existe
+            //     $ultimo_anio_pagar = DB::table('predios_pagos')
+            //                         ->where('id_predio', $id)
+            //                         ->where('ultimo_anio', $anios)
+            //                         ->where('pagado', 0)
+            //                         ->first();
+            // }
 
             // Si no existe un predio_pago para el año actual, entonces EJECUTAR PROCEDIMIENTO DE CALCULO
-            if($ultimo_anio_pagar == null || ($ultimo_anio_pagar != null && $ultimo_anio_pagar->valor_pago == 0 && $ultimo_anio_pagar->fecha_pago == null && $ultimo_anio_pagar->id_banco == null)) {
-                $submit = DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?,?", array(intval($request->session()->get('userid')), $anio_ini, $anio_fin, $id, Carbon::createFromFormat("Y-m-d H:i:s", $fecha_pago . ' 00:00:00')->format('Y-m-d H:i:s')));
+            if($ultimo_anio_pagar == null ||
+              ($ultimo_anio_pagar != null &&
+               $ultimo_anio_pagar->valor_pago == 0 &&
+               $ultimo_anio_pagar->fecha_pago == null &&
+               $ultimo_anio_pagar->id_banco == null)
+            ) {
+                if(intval($tmp) == 0 && $ultimo_anio_pagar != null) {
+                    $fecha_emision = $ultimo_anio_pagar->fecha_emision != null ? Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->fecha_emision) : $fecha_emision;
+                }
+
+                $submit = DB::select(
+                    "SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?,?",
+                    array(
+                        intval($request->session()->get('userid')),
+                        $anio_ini,
+                        $anio_fin,
+                        $id,
+                        Carbon::createFromFormat("Y-m-d H:i:s", $fecha_pago . ' 00:00:00')->format('Y-m-d H:i:s')
+                    )
+                );
+
                 if ($ultimo_anio_pagar == null) {
                     $primerCalculo = 1;
                 }
@@ -1715,7 +1750,7 @@ class PrediosController extends Controller
                                 ->where('pagado', 0)
                                 ->first();
                     }
-                    $fecha_emision = $ultimo_anio_pagar->fecha_emision != null ? Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->fecha_emision) : $fecha_emision;
+                    // $fecha_emision = $ultimo_anio_pagar->fecha_emision != null ? Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->fecha_emision) : $fecha_emision;
                 }
 
                 $predios = DB::table('predios')->join('zonas', function ($join) {
@@ -1842,12 +1877,12 @@ class PrediosController extends Controller
                 }
 
                 //establecer años a pagar
-                if($ultimo_anio_pagado == null || $ultimo_anio_pagado->ultimo_anio + 1 == $anios) {
-                    $predio->anios_a_pagar = $anios;
-                }
-                else {
-                    $predio->anios_a_pagar = ($ultimo_anio_pagado->ultimo_anio + 1) . ' A ' . $anios;
-                }
+                // if($ultimo_anio_pagado == null || $ultimo_anio_pagado->ultimo_anio + 1 == $anios) {
+                //     $predio->anios_a_pagar = $anios;
+                // }
+                // else {
+                $predio->anios_a_pagar = $anio_ini . ' A ' . $anio_fin;
+                // }
 
                 if ($ultimo_anio_pagado == null) {
                     $obj = new StdClass();
@@ -1866,7 +1901,10 @@ class PrediosController extends Controller
                     $pagos_pendientes = DB::table('predios_pagos')
                                         ->where('id_predio', $id)
                                         ->where('pagado', 0)
-                                        ->where('ultimo_anio', '<=', $anios)
+                                        ->whereBetween('ultimo_anio', array(
+                                            $anio_ini,
+                                            $anio_fin
+                                        ))
                                         ->where(function($query) use($tmp, $numero_factura, $ultimo_anio_pagar) {
                                             $query->whereNull('factura_pago')
                                                 ->orWhere('factura_pago', (intval($tmp) == 0) ? $numero_factura : $ultimo_anio_pagar->factura_pago);
@@ -1953,24 +1991,15 @@ class PrediosController extends Controller
                     }
                 }
                 else if(count($lista_pagos) > 1 && $ultimo_anio_pagar->primer_fecha != null) {
-                    Log::info('**************************************************************');
-                    Log::info($alcaldia);
-                    Log::info('**************************************************************');
-                    Log::info(strtolower($alcaldia));
-
                     if(count($lista_pagos) > 5 && !str_contains(strtolower($alcaldia), 'guateque') && !str_contains(strtolower($alcaldia), 'sutatenza')) {
                         $obj = new StdClass();
                         $obj->anio = '< ' . $lista_pagos[count($lista_pagos) - 5]->anio;
-
                         $obj_m_tar = 0;
                         $obj_avaluo = 0;
-
                         $obj_impuesto = 0;
                         $obj_impuesto_interes = 0;
-
                         $obj_car = 0;
                         $obj_car_interes = 0;
-
                         $obj_trece = 0;
                         $obj_catorce = 0;
                         $obj_quince = 0;
@@ -1984,13 +2013,10 @@ class PrediosController extends Controller
                         for ($x = 0; $x < count($lista_pagos) - 5; $x++) {
                             $obj_m_tar = $lista_pagos[$x]->m_tar;
                             $obj_avaluo = $lista_pagos[$x]->avaluo;
-
                             $obj_impuesto = $lista_pagos[$x]->impuesto;
                             $obj_impuesto_interes = $lista_pagos[$x]->impuesto_interes;
-
                             $obj_car = $lista_pagos[$x]->car;
                             $obj_car_interes = $lista_pagos[$x]->car_interes;
-
                             $obj_trece += $lista_pagos[$x]->trece;
                             $obj_catorce += $lista_pagos[$x]->catorce;
                             $obj_quince += $lista_pagos[$x]->quince;
@@ -2004,13 +2030,10 @@ class PrediosController extends Controller
 
                         $obj->m_tar = $obj_m_tar;
                         $obj->avaluo = $obj_avaluo;
-
                         $obj->impuesto = $obj_impuesto;
                         $obj->impuesto_interes = $obj_impuesto_interes;
-
                         $obj->car = $obj_car;
                         $obj->car_interes = $obj_car_interes;
-
                         $obj->trece = $obj_trece;
                         $obj->catorce = $obj_catorce;
                         $obj->quince = $obj_quince;
@@ -2464,6 +2487,12 @@ class PrediosController extends Controller
         }
 
         $array_anios = $anios->toArray();
+        $exists_current_anio = false;
+        foreach ($array_anios as $anio) {
+            if ($anio->ultimo_anio == $currentYear) {
+                $exists_current_anio = true;
+            }
+        }
 
         // Verificar si el año actual ya tiene un calculo con o sin pago
         $ultimo_anio_pagar = DB::table('predios_pagos')
@@ -2472,8 +2501,9 @@ class PrediosController extends Controller
                             ->where('anulada', 0)
                             ->first();
 
-        // Si no existe un calculo para el año actual se agrega el año a la lista
-        if($ultimo_anio_pagar == null) {
+        // Si no existe un calculo para el año actual o si el calculo existe pero aun no tiene un numero
+        // de factura asignado, entonces, se agrega el año a la lista
+        if(!$exists_current_anio) {
             array_unshift($array_anios, ['ultimo_anio' => strval($currentYear), 'factura_pago' => null]);
         }
 

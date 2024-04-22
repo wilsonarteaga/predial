@@ -893,14 +893,14 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="display: none;">
-                                        <div class="form-group" style="margin-bottom: 0px;">
+                                    <div id="div_vigencias_impresion" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group" style="margin-bottom: 0px; margin-top: 10px;">
                                             <label for="tipo_factura_check" class="control-label" style="display: block;">¿Facturar vigencias especificas?</label>
                                             <input type="checkbox" id="tipo_factura" name="tipo_factura" value="{{ old('tipo_factura') }}">
                                             <span id="span_tipo_factura" class="text-muted" style="padding-left: 10px;">NO</span>
                                         </div>
                                     </div>
-                                    <div id="div_fecha_max_pago" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-top: 10px; display: none;">
+                                    <div id="div_fecha_max_pago" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-top: 10px;">
                                         <div class="form-group" style="margin-bottom: 0px; text-align: center;">
                                             <label class="control-label">Fecha m&aacute;xima de pago</label>
                                             <input type="text" id="fecha_max_pago" name="fecha_max_pago" class="form-control datepicker" autocomplete="off" placeholder="Fecha m&aacute;xima" value="{{ old('fecha_max_pago') }}" style="width: 100%;">
