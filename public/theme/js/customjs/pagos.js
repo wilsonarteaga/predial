@@ -82,22 +82,40 @@ $(document).ready(function() {
     $("#btn_buscar_pagos").off("click").on("click", function() {
             var form = $("#pagos-filtro-form");
             if (form.valid()) {
-                var input_fecha_pago_listar = $(
-                    '<input class="datohidden" id="fecha_pago" name="fecha_pago" type="hidden" value="' +
-                    $("#fecha_pago_listar").val() +
+                var input_fecha_pago_inicial = $(
+                    '<input class="datohidden" id="fecha_pago_inicial" name="fecha_pago_inicial" type="hidden" value="' +
+                    $("#fecha_pago_inicial").val() +
                     '"  />'
                 );
                 $("#" + global_filtroform_to_send).prepend(
-                    input_fecha_pago_listar
+                    input_fecha_pago_inicial
                 );
 
-                var input_banco_pago_listar = $(
-                    '<input class="datohidden" id="banco_pago" name="banco_pago" type="hidden" value="' +
-                    $("#id_banco").val() +
+                var input_fecha_pago_final = $(
+                    '<input class="datohidden" id="fecha_pago_final" name="fecha_pago_final" type="hidden" value="' +
+                    $("#fecha_pago_final").val() +
                     '"  />'
                 );
                 $("#" + global_filtroform_to_send).prepend(
-                    input_banco_pago_listar
+                    input_fecha_pago_final
+                );
+
+                var input_banco_pago_inicial = $(
+                    '<input class="datohidden" id="banco_pago_inicial" name="banco_pago_inicial" type="hidden" value="' +
+                    $("#id_banco_inicial").val() +
+                    '"  />'
+                );
+                $("#" + global_filtroform_to_send).prepend(
+                    input_banco_pago_inicial
+                );
+
+                var input_banco_pago_final = $(
+                    '<input class="datohidden" id="banco_pago_final" name="banco_pago_final" type="hidden" value="' +
+                    $("#id_banco_final").val() +
+                    '"  />'
+                );
+                $("#" + global_filtroform_to_send).prepend(
+                    input_banco_pago_final
                 );
 
                 $("#" + global_filtroform_to_send)
@@ -372,6 +390,45 @@ $(document).ready(function() {
         });
     });
 
+    $('#fecha_pago_inicial').on('pick.datepicker', function (e) {
+        if (e.date !== null) {
+            $('#fecha_pago_final').datepicker('setStartDate', moment($('#fecha_pago_inicial').datepicker('getDate').toISOString().slice(0, 10)).toDate());
+            if ($('#fecha_pago_final').datepicker('getDate') < $('#fecha_pago_inicial').datepicker('getDate')) {
+                $('#fecha_pago_final').datepicker('setDate', '');
+                $('#fecha_pago_final').val('');
+            }
+        }
+    });
+
+    $('#id_banco_inicial').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+        $('#id_banco_final').attr('disabled', false);
+        $.each($('#id_banco_final').find('option'), function(i, el) {
+            $(el).css('display', '');
+        });
+        $.each($('#id_banco_final').find('option'), function(i, el) {
+            if (parseInt($(el).attr('value')) < parseInt($('#id_banco_inicial').selectpicker('val'))) {
+                $(el).css('display', 'none');
+            }
+        });
+        $('#id_banco_final').selectpicker('refresh');
+        if ($('#id_banco_final').selectpicker('val') !== '') {
+            if (parseInt($('#id_banco_final').selectpicker('val')) < parseInt($('#id_banco_inicial').selectpicker('val'))) {
+                $('#id_banco_final').selectpicker('val', '');
+                $('#id_banco_final').selectpicker('refresh');
+            }
+        }
+    });
+
+    $('#id_banco_final').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+        // console.log($('#id_banco_final').selectpicker('val'));
+        if ($('#id_banco_inicial').selectpicker('val') !== '') {
+            if (parseInt($('#id_banco_final').selectpicker('val')) < parseInt($('#id_banco_inicial').selectpicker('val'))) {
+                $('#id_banco_inicial').selectpicker('val', '');
+                $('#id_banco_inicial').selectpicker('refresh');
+            }
+        }
+    });
+
     if ($('#print_factura').length > 0) {
         $('#print_factura').off("click").on("click", function() {
             var btn = $(this);
@@ -382,9 +439,52 @@ $(document).ready(function() {
     $('#id_banco_factura').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
         selected_banco_factura = $('#id_banco_factura').selectpicker('val');
     });
+
+    $('#btn_descargar_pagos').off('click').on('click', function() {
+        var fecha_pago_inicial = $('#fecha_pago_inicial').val();
+        var fecha_pago_final = $('#fecha_pago_final').val();
+        var id_banco_inicial = $('#id_banco_inicial').selectpicker('val');
+        var id_banco_final = $('#id_banco_final').selectpicker('val');
+
+        $.blockUI({
+            message: `Generando archivo EXCEL con reporte de pagos desde ${fecha_pago_inicial} hasta ${fecha_pago_final}.<br />Espere un momento.`,
+            css: {
+                border: 'none',
+                padding: '15px',
+                backgroundColor: '#000',
+                '-webkit-border-radius': '10px',
+                '-moz-border-radius': '10px',
+                opacity: .5,
+                color: '#fff',
+                zIndex: 9999
+            },
+            overlayCSS:  {
+                zIndex: 1100
+            },
+        });
+        fetch(`/export-pagos/${fecha_pago_inicial}/${fecha_pago_final}/${id_banco_inicial}/${id_banco_final}`)
+        .then(resp => resp.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            // the filename you want
+            a.download = `reporte-pagos.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            $.unblockUI();
+        })
+        .catch((err) => {
+            $.unblockUI();
+            console.log(err);
+        });
+    });
 });
 
 function getJsonPagos() {
+    $.blockUI({ message: null });
     $.ajax({
         type: "POST",
         headers: {
@@ -393,8 +493,10 @@ function getJsonPagos() {
         dataType: "json",
         url: "/list/pagos_fecha",
         data: {
-            fecha_pago: $("#fecha_pago_listar").val(),
-            id_banco_factura: $("#id_banco").selectpicker("val"),
+            fecha_pago_inicial: $("#fecha_pago_inicial").val(),
+            id_banco_factura_inicial: $("#id_banco_inicial").selectpicker("val"),
+            fecha_pago_final: $("#fecha_pago_final").val(),
+            id_banco_factura_final: $("#id_banco_final").selectpicker("val"),
         },
         success: function(response) {
             if (response.pagos !== undefined && response.pagos !== null) {
@@ -402,6 +504,7 @@ function getJsonPagos() {
                     if (DTPagos !== null) {
                         DTPagos.clear().draw();
                         DTPagos.rows.add(response.pagos).draw();
+                        $('#btn_descargar_pagos').fadeIn();
                     }
                 } else {
                     DTPagos.clear().draw();
@@ -424,8 +527,10 @@ function getJsonPagos() {
                 DTLogs.clear().draw();
                 $("#div_logs").fadeOut();
             }
+            $.unblockUI();
         },
         error: function(xhr) {
+            $.unblockUI();
             console.log(xhr.responseText);
         },
     });
@@ -556,12 +661,16 @@ function stringToDate(str_date) {
 
 var validatorFiltro = $("#pagos-filtro-form").validate({
     rules: {
-        fecha_pago_listar: "required",
-        id_banco: "required",
+        fecha_pago_inicial: "required",
+        id_banco_inicial: "required",
+        fecha_pago_final: "required",
+        id_banco_final: "required",
     },
     messages: {
-        fecha_pago_listar: "Fecha de pago requerido",
-        id_banco: "Banco requerido",
+        fecha_pago_inicial: "Fecha inicial requerida",
+        id_banco_inicial: "Banco inicial requerido",
+        fecha_pago_final: "Fecha final requerida",
+        id_banco_final: "Banco final requerido",
     },
 });
 
@@ -596,7 +705,7 @@ function saveEliminarPago(id_pago) {
     });
     var jsonObj = {};
     jsonObj.id = id_pago;
-    jsonObj.fecha_pago = $("#fecha_pago_listar").val();
+    jsonObj.fecha_pago = $("#fecha_pago_inicial").val();
     jsonObj.id_banco_factura = $("#id_banco").selectpicker("val");
     $.ajax({
         type: 'POST',

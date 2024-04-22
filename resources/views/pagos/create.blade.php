@@ -218,28 +218,49 @@
                                                     <div class="row">
                                                         <div class="col-lg-3 col-md-3 col-sm-5 col-xs-12">
                                                             <div class="form-group">
-                                                                <label class="control-label">Seleccione fecha pago:</label>
-                                                                <input type="text" id="fecha_pago_listar" name="fecha_pago_listar" class="form-control datepicker" autocomplete="off" placeholder="Selecione  fecha pago" value="{{ old('fecha_pago_listar') }}">
-                                                                {{-- <span class="text-danger">@error('fecha_pago_listar') {{ $message }} @enderror</span> --}}
+                                                                <label class="control-label">Fecha inicial:</label>
+                                                                <input type="text" id="fecha_pago_inicial" name="fecha_pago_inicial" class="form-control datepicker" autocomplete="off" placeholder="Selecione  fecha pago inicial" value="{{ old('fecha_pago_inicial') }}" readonly="readonly" style="background-color: white;">
+                                                                {{-- <span class="text-danger">@error('fecha_pago_inicial') {{ $message }} @enderror</span> --}}
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-6 col-md-6 col-sm-7 col-xs-12">
+                                                        <div class="col-lg-3 col-md-3 col-sm-5 col-xs-12">
                                                             <div class="form-group">
-                                                                <label class="control-label">Seleccione banco:</label>
-                                                                <select id="id_banco" name="id_banco" class="form-control selectpicker-noval show-tick" data-live-search="true" data-container="body" data-size="4" title="Sin informaci&oacute;n...">
+                                                                <label class="control-label">Fecha final:</label>
+                                                                <input type="text" id="fecha_pago_final" name="fecha_pago_final" class="form-control datepicker" autocomplete="off" placeholder="Selecione  fecha pago final" value="{{ old('fecha_pago_final') }}" readonly="readonly" style="background-color: white;">
+                                                                {{-- <span class="text-danger">@error('fecha_pago_final') {{ $message }} @enderror</span> --}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Seleccione banco inicial:</label>
+                                                                <select id="id_banco_inicial" name="id_banco_inicial" class="form-control selectpicker-noval show-tick" data-live-search="true" data-container="body" data-size="4" title="Sin informaci&oacute;n...">
                                                                     @if(count($bancos) > 0)
                                                                         @foreach($bancos as $banco)
-                                                                        <option value="{{ $banco->id }}" {{ old('id_banco') == $banco->id ? 'selected' : '' }}>{{ $banco->codigo }} - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>
+                                                                        <option value="{{ $banco->id }}" {{ old('id_banco_inicial') == $banco->id ? 'selected' : '' }}>({{ $banco->id }}) - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>
                                                                         @endforeach
                                                                     @endif
                                                                 </select>
-                                                                {{-- <span class="text-danger">@error('id_banco') {{ $message }} @enderror</span> --}}
+                                                                {{-- <span class="text-danger">@error('id_banco_inicial') {{ $message }} @enderror</span> --}}
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Seleccione banco final:</label>
+                                                                <select id="id_banco_final" name="id_banco_final" class="form-control selectpicker-noval show-tick" data-live-search="true" data-container="body" data-size="4" title="Sin informaci&oacute;n..." disabled="disabled">
+                                                                    @if(count($bancos) > 0)
+                                                                        @foreach($bancos as $banco)
+                                                                        <option value="{{ $banco->id }}" {{ old('id_banco_final') == $banco->id ? 'selected' : '' }}>({{ $banco->id }}) - {{ $banco->nombre }} ({{ $banco->asobancaria }})</option>
+                                                                        @endforeach
+                                                                    @endif
+                                                                </select>
+                                                                {{-- <span class="text-danger">@error('id_banco_final') {{ $message }} @enderror</span> --}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label" style="display: block;"><br /></label>
                                                                 <button type="button"  id="btn_buscar_pagos" class="btn btn-info"><i class="fa fa-save"></i> Filtrar pagos</button>
+                                                                <button type="button"  id="btn_descargar_pagos" class="btn btn-success pull-right" style="display: none;"><i class="fa fa-download"></i> Descargar EXCEL</button>
                                                             </div>
                                                         </div>
                                                     </div>

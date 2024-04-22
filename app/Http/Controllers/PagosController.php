@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Exports\ExportPrediosPagos;
 use App\Http\Requests\PagosCreateFormRequest;
 use App\Http\Requests\PagosUpdateFormRequest;
 use App\Models\Pago;
@@ -11,8 +12,10 @@ use App\Models\Opcion;
 use App\Models\PredioPago;
 use App\Models\Predio;
 use App\Models\PagosAud;
+use App\Models\ViewPredialFacturado;
 
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PagosController extends Controller
 {
@@ -43,7 +46,7 @@ class PagosController extends Controller
 
         $bancos = DB::table('bancos')
                             ->select('bancos.id', 'bancos.codigo', 'bancos.asobancaria', 'bancos.nombre')
-                            ->orderBy('bancos.codigo')
+                            ->orderBy('bancos.id')
                             ->get();
 
         // $pagos = DB::table('pagos')->join('bancos', function ($join) {
@@ -252,20 +255,53 @@ class PagosController extends Controller
     }
 
     public function list_pagos_fecha(Request $request) {
+        $fecha_inicial = Carbon::createFromFormat("Y-m-d", $request->fecha_pago_inicial);
+        $fecha_final = Carbon::createFromFormat("Y-m-d", $request->fecha_pago_final);
+        $fecha_tmp = Carbon::createFromFormat("Y-m-d", $request->fecha_pago_inicial);
+
+        if ($fecha_inicial > $fecha_final) {
+            $fecha_inicial = $fecha_final;
+            $fecha_final = $fecha_tmp;
+        }
+
+        $id_banco_inicial = intval($request->id_banco_factura_inicial);
+        $id_banco_final = intval($request->id_banco_factura_final);
+        $id_banco_tmp = intval($request->id_banco_factura_inicial);
+
+        if ($id_banco_inicial > $id_banco_final) {
+            $id_banco_inicial = $id_banco_final;
+            $id_banco_final = $id_banco_tmp;
+        }
+
         $pagos = DB::table('pagos')->join('bancos', function ($join) {
                             $join->on('pagos.id_banco_factura', '=', 'bancos.id');
                         })
-                        ->where('fecha_pago', Carbon::createFromFormat("Y-m-d", $request->fecha_pago)->format('Y-m-d'))
-                        ->where('id_banco_factura', $request->id_banco_factura)
+                        ->whereBetween('fecha_pago', array(
+                            $fecha_inicial->format('Y-m-d'),
+                            $fecha_final->format('Y-m-d')
+                        ))
+                        ->whereBetween('id_banco_factura', array(
+                            $id_banco_inicial,
+                            $id_banco_final
+                        ))
                         ->select('pagos.*', 'bancos.nombre as banco')
                         ->orderBy('fecha_pago', 'asc')
                         ->get();
 
+        // $rawSql = vsprintf(str_replace(['?'], ['\'%s\''], $pagos->toSql()), $pagos->getBindings());
+        // dd($rawSql);
+
         $logs = DB::table('archivos_asobancaria')
                         ->leftJoin('bancos', 'bancos.id', '=', 'archivos_asobancaria.id_banco')
                         ->leftJoin('usuarios', 'usuarios.id', '=', 'archivos_asobancaria.id_usuario')
-                        ->where('fecha_pago', Carbon::createFromFormat("Y-m-d", $request->fecha_pago)->format('Y-m-d'))
-                        ->where('id_banco', $request->id_banco_factura)
+                        ->whereBetween('fecha_pago', array(
+                            $fecha_inicial->format('Y-m-d'),
+                            $fecha_final->format('Y-m-d')
+                        ))
+                        ->whereBetween('id_banco', array(
+                            $request->id_banco_inicial,
+                            $request->id_banco_final
+                        ))
                         ->select(DB::raw("archivos_asobancaria.*, CONCAT(usuarios.nombres, ' ', usuarios.apellidos) as usuario, CONCAT(bancos.nombre, ' (', bancos.asobancaria, ')') as banco"))
                         ->get();
         return response()->json([
@@ -393,5 +429,24 @@ class PagosController extends Controller
             return response()->json([$info_recibo[0]]);
         else
             return response()->json([]);
+    }
+
+    public function exportPagos(Request $request, $fechainicial, $fechafinal, $bancoinicial, $bancofinal) {
+        return Excel::download(new ExportPrediosPagos($fechainicial, $fechafinal, $bancoinicial, $bancofinal), 'pagos.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+
+        // $parametro_logo = DB::table('parametros')
+        //                       ->select('parametros.valor')
+        //                       ->where('parametros.nombre', 'logo')
+        //                       ->first();
+        // $parametro_nit = DB::table('parametros')
+        //                       ->select('parametros.valor')
+        //                       ->where('parametros.nombre', 'nit')
+        //                       ->first();
+
+        // $parametro_alcaldia = DB::table('parametros')
+        //                       ->select('parametros.valor')
+        //                       ->where('parametros.nombre', 'alcaldia')
+        //                       ->first();
+        // return (new ExportPrediosPagos($parametro_logo->valor, $parametro_nit->valor, $parametro_alcaldia->valor))->download('predios_pagos.xlsx', \Maatwebsite\Excel\Excel::XLSX);
     }
 }
