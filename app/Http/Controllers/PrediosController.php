@@ -1360,6 +1360,16 @@ class PrediosController extends Controller
                     $predio->anios_a_pagar = ($ultimo_anio_pagado->ultimo_anio + 1) . ' A ' . $anio_ini;
                 }
 
+                if(!$facturaYaPagada) {
+                    // Obtener informacion del ultimo año pagado
+                    $ultimo_anio_pagado = DB::table('predios_pagos')
+                                        ->where('id_predio', $id)
+                                        ->where('pagado', '<>', 0)
+                                        ->where('ultimo_anio', '<=', $anio_ini)
+                                        ->orderBy('ultimo_anio', 'desc')
+                                        ->first();
+                }
+
                 if ($ultimo_anio_pagado == null) {
                     $obj = new StdClass();
                     $obj->factura_pago = '';
