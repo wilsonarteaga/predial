@@ -796,7 +796,8 @@ $(document).ready(function() {
             }
             var max_fecha = $('#fecha_max_pago').val().length > 0 ? $('#fecha_max_pago').val() : '-';
             var propietario_facturar = $('#propietario_facturar').val();
-            startImpresion(global_url_print + '/0/' + anios + '/' + max_fecha + '/0/' + propietario_facturar, 'Iniciando generación factura definitiva de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
+            var vigencias = $('#tipo_factura').val() || 0;
+            startImpresion(global_url_print + '/0/' + anios + '/' + max_fecha + '/0/' + propietario_facturar + '/' + vigencias, 'Iniciando generación factura definitiva de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
         }
     });
 
@@ -814,7 +815,8 @@ $(document).ready(function() {
             }
             var max_fecha = $('#fecha_max_pago').val().length > 0 ? $('#fecha_max_pago').val() : '-';
             var propietario_facturar = $('#propietario_facturar').val();
-            startImpresion(global_url_print + '/1/' + anios + '/' + max_fecha + '/0/' + propietario_facturar, 'Iniciando generación factura vista previa de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
+            var vigencias = $('#tipo_factura').val() || 0;
+            startImpresion(global_url_print + '/1/' + anios + '/' + max_fecha + '/0/' + propietario_facturar + '/' + vigencias, 'Iniciando generación factura vista previa de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
         }
     });
 

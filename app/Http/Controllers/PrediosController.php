@@ -1054,13 +1054,20 @@ class PrediosController extends Controller
         ]);
     }
 
-    public function generate_factura_pdf(Request $request, $id, $tmp, $anios, $fecha_pago, $informativa, $propietario) {
+    public function generate_factura_pdf(Request $request, $id, $tmp, $anios, $fecha_pago, $informativa, $propietario, $vigencias) {
         if (!$request->session()->exists('userid')) {
             return redirect('/');
         }
 
-        if (count(explode(',', $anios)) > 1) {
-            return self::generate_factura_pdf_vigencias($request, $id, $tmp, explode(',', $anios)[0], explode(',', $anios)[1], $fecha_pago, $informativa, $propietario);
+        if (count(explode(',', $anios)) > 1 || $vigencias == 1) {
+            if (count(explode(',', $anios)) == 1) {
+                $anio_ini = explode(',', $anios)[0];
+                $anio_fin = explode(',', $anios)[0];
+            } else {
+                $anio_ini = explode(',', $anios)[0];
+                $anio_fin = explode(',', $anios)[1];
+            }
+            return self::generate_factura_pdf_vigencias($request, $id, $tmp, $anio_ini, $anio_fin, $fecha_pago, $informativa, $propietario);
         } else {
             return self::generate_factura_pdf_no_vigencias($request, $id, $tmp, $anios, $fecha_pago, $informativa, $propietario);
         }
@@ -1328,7 +1335,8 @@ class PrediosController extends Controller
                     // Obtener informacion del ultimo año pagado
                     $ultimo_anio_pagado = DB::table('predios_pagos')
                                         ->where('id_predio', $id)
-                                        ->where('pagado', '<>', 0)
+                                        // ->where('pagado', '<>', 0)
+                                        ->whereNotNull('factura_pago')
                                         ->where('ultimo_anio', '<=', $anio_ini)
                                         ->orderBy('ultimo_anio', 'desc')
                                         ->first();
@@ -1881,7 +1889,11 @@ class PrediosController extends Controller
                 //     $predio->anios_a_pagar = $anios;
                 // }
                 // else {
-                $predio->anios_a_pagar = $anio_ini . ' A ' . $anio_fin;
+                if ($anio_ini == $anio_fin) {
+                    $predio->anios_a_pagar = $anio_ini;
+                } else {
+                    $predio->anios_a_pagar = $anio_ini . ' A ' . $anio_fin;
+                }
                 // }
 
                 if ($ultimo_anio_pagado == null) {
@@ -2465,7 +2477,7 @@ class PrediosController extends Controller
 
         // Para cada factura extraer el maximo año no pagado (Solo para registros que si tienen numero de factura)
         // Esto debido a que aveces con un mismo numero de factura se liquidan varios años.
-        $anios = DB::table('predios_pagos')
+        $anios_con_factura = DB::table('predios_pagos')
                 ->where('id_predio', $data->{'id_predio'})
                 ->where('pagado', 0)
                 ->where('anulada', 0)
@@ -2475,18 +2487,33 @@ class PrediosController extends Controller
                 ->orderBy('ultimo_anio', 'desc')
                 ->get();
 
-        if(count($anios) == 0) {
-            // Todos los años no pagados y que no tienen numero de factura
-            $anios = DB::table('predios_pagos')
-                ->where('id_predio', $data->{'id_predio'})
-                ->where('pagado', 0)
-                ->where('anulada', 0)
-                ->select(DB::raw('predios_pagos.ultimo_anio, predios_pagos.factura_pago'))
-                ->orderBy('ultimo_anio', 'desc')
-                ->get();
+        // if(count($anios) == 0) {
+        // Todos los años no pagados y que no tienen numero de factura
+        $anios_sin_factura = DB::table('predios_pagos')
+            ->where('id_predio', $data->{'id_predio'})
+            ->where('pagado', 0)
+            ->where('anulada', 0)
+            ->whereNull('factura_pago')
+            ->select(DB::raw('predios_pagos.ultimo_anio, predios_pagos.factura_pago'))
+            ->orderBy('ultimo_anio', 'desc')
+            ->get();
+        // }
+
+        $anios = [];
+        $array_anios = [];
+
+        foreach ($anios_con_factura as $anio) {
+            array_push($anios, $anio);
+        }
+        foreach ($anios_sin_factura as $anio) {
+            array_push($anios, $anio);
         }
 
-        $array_anios = $anios->toArray();
+        rsort($anios);
+        foreach ($anios as $anio) {
+            array_push($array_anios, $anio);
+        }
+
         $exists_current_anio = false;
         foreach ($array_anios as $anio) {
             if ($anio->ultimo_anio == $currentYear) {
