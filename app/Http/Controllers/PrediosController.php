@@ -1353,7 +1353,7 @@ class PrediosController extends Controller
                 }
 
                 //establecer años a pagar
-                if($ultimo_anio_pagado == null || $ultimo_anio_pagado->ultimo_anio + 1 == $anio_ini) {
+                if($ultimo_anio_pagado == null || $ultimo_anio_pagado->ultimo_anio + 1 == $anio_ini || $ultimo_anio_pagado->ultimo_anio == $currentYear) {
                     $predio->anios_a_pagar = $anio_ini;
                 }
                 else {
