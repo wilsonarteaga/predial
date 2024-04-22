@@ -251,7 +251,7 @@
                         V&aacute;lido hasta <b>{{ $fecha_validez }}</b>
                     </td>
                     <td style="text-align: center;">
-                        {{-- <img style="position: absolute; top: -30px; width: 20%; height: auto; margin-left: 100px;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/firma-paz-y-salvo-paipa.png'))) }}" alt="Firma" /> --}}
+                        <img style="position: absolute; top: -30px; width: 20%; height: auto; margin-left: 100px;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/firma-paz-y-salvo-paipa-2.png'))) }}" alt="Firma" />
                         <hr style="margin: 0 auto; border: 1px solid #302f2f; width: 80%;">
                     </td>
                 </tr>
