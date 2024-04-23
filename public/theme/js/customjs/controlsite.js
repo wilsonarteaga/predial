@@ -1067,7 +1067,7 @@ function downloadFacturaRowProcesar(btn) {
     else {
         var max_fecha = $('#fecha_max_pago').val().length > 0 ? $('#fecha_max_pago').val() : '-';
         var propietario_facturar = $('#propietario_facturar').val();
-        startImpresion(global_url_print + '/0/' + global_anio_actual + '/' + max_fecha + '/0/' + propietario_facturar, 'Pago ya registrado. Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
+        startImpresion(global_url_print + '/0/' + global_anio_actual + '/' + max_fecha + '/0/' + propietario_facturar + '/0', 'Pago ya registrado. Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
         $(btn).attr('disabled', false);
         $('[data-toggle="tooltip"]').tooltip();
     }
