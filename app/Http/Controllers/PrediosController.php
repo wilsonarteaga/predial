@@ -1115,7 +1115,7 @@ class PrediosController extends Controller
                  $ultimo_anio_pagar->id_banco == null)
             ) {
                 // if(intval($tmp) == 0 && $ultimo_anio_pagar != null) {
-                //     $fecha_emision = $ultimo_anio_pagar->fecha_emision != null ? Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->fecha_emision) : $fecha_emision;
+                    $fecha_emision = $ultimo_anio_pagar->fecha_emision != null && $facturaYaPagada ? Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->fecha_emision) : $fecha_emision;
                 // }
 
                 $submit = DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?,?",
@@ -1669,7 +1669,7 @@ class PrediosController extends Controller
                $ultimo_anio_pagar->id_banco == null)
             ) {
                 // if(intval($tmp) == 0 && $ultimo_anio_pagar != null) {
-                //     $fecha_emision = $ultimo_anio_pagar->fecha_emision != null ? Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->fecha_emision) : $fecha_emision;
+                    $fecha_emision = $ultimo_anio_pagar->fecha_emision != null && $facturaYaPagada ? Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->fecha_emision) : $fecha_emision;
                 // }
 
                 $submit = DB::select(
