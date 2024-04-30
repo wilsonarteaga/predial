@@ -17,7 +17,7 @@ class CreatePagosAudTable extends Migration
             $table->id();
             $table->unsignedBigInteger('id_pago');
             $table->date('fecha_pago');
-            $table->string('codigo_barras', 128);
+            $table->string('codigo_barras', 128)->nullable();
             $table->string('numero_recibo', 128);
             $table->unsignedBigInteger('id_predio');
             $table->decimal('valor_facturado', $precision = 20, $scale = 2);
@@ -27,10 +27,12 @@ class CreatePagosAudTable extends Migration
             $table->unsignedBigInteger('id_banco_archivo')->nullable();
             $table->char('paquete_archivo', 2)->nullable();
             $table->char('origen', 1)->nullable();
-            $table->unsignedBigInteger('id_usuario_elimina');
+            $table->unsignedBigInteger('id_usuario_elimina')->nullable();
+            $table->unsignedBigInteger('id_usuario_edita')->nullable();
             $table->timestamps();
 
             $table->foreign('id_usuario_elimina')->references('id')->on('usuarios');
+            $table->foreign('id_usuario_edita')->references('id')->on('usuarios');
         });
     }
 

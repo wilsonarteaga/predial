@@ -62,6 +62,13 @@ $(document).ready(function() {
                         $("#pagos-filtro-form")[0].reset();
                         clear_form_elements("#pagos-filtro-form");
                     }
+                    $('.search_factura').fadeOut();
+                    $('.search_general').fadeIn();
+                    // $('#chk_search_factura').val('0');
+                    // $('#chk_search_factura').prop('checked', false);
+                    if ($('#chk_search_factura').is(':checked')) {
+                        $('#chk_search_factura').trigger('click');
+                    }
                 }
                 if ($('#fecha_pago_final').length > 0) {
                     $('#fecha_pago_final').datepicker('setStartDate', null);
@@ -544,6 +551,19 @@ $(document).ready(function() {
     if ($("#create-form").length > 0) {
         $('#create-form').validate().settings.ignore = '';
         $('#create-form').validate().settings.errorPlacement = function(error, element) {
+            if (element.hasClass('selectpicker')) {
+                element.next().after(error);
+            } else if (element.hasClass('withadon')) {
+                element.parent().after(error);
+            } else {
+                error.insertAfter(element);
+            }
+        };
+    }
+
+    if ($("#pagos-filtro-form").length > 0) {
+        $('#pagos-filtro-form').validate().settings.ignore = '';
+        $('#pagos-filtro-form').validate().settings.errorPlacement = function(error, element) {
             if (element.hasClass('selectpicker')) {
                 element.next().after(error);
             } else if (element.hasClass('withadon')) {

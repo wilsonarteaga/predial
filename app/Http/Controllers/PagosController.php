@@ -255,55 +255,68 @@ class PagosController extends Controller
     }
 
     public function list_pagos_fecha(Request $request) {
-        $fecha_inicial = Carbon::createFromFormat("Y-m-d", $request->fecha_pago_inicial);
-        $fecha_final = Carbon::createFromFormat("Y-m-d", $request->fecha_pago_final);
-        $fecha_tmp = Carbon::createFromFormat("Y-m-d", $request->fecha_pago_inicial);
+        if ($request->numero_recibo) {
+            $pagos = DB::table('pagos')->join('bancos', function ($join) {
+                    $join->on('pagos.id_banco_factura', '=', 'bancos.id');
+                })
+                ->where('pagos.numero_recibo', $request->numero_recibo)
+                ->select('pagos.*', 'bancos.nombre as banco')
+                ->orderBy('fecha_pago', 'asc')
+                ->get();
 
-        if ($fecha_inicial > $fecha_final) {
-            $fecha_inicial = $fecha_final;
-            $fecha_final = $fecha_tmp;
+            $logs = [];
+        } else {
+            $fecha_inicial = Carbon::createFromFormat("Y-m-d", $request->fecha_pago_inicial);
+            $fecha_final = Carbon::createFromFormat("Y-m-d", $request->fecha_pago_final);
+            $fecha_tmp = Carbon::createFromFormat("Y-m-d", $request->fecha_pago_inicial);
+
+            if ($fecha_inicial > $fecha_final) {
+                $fecha_inicial = $fecha_final;
+                $fecha_final = $fecha_tmp;
+            }
+
+            $id_banco_inicial = intval($request->id_banco_factura_inicial);
+            $id_banco_final = intval($request->id_banco_factura_final);
+            $id_banco_tmp = intval($request->id_banco_factura_inicial);
+
+            if ($id_banco_inicial > $id_banco_final) {
+                $id_banco_inicial = $id_banco_final;
+                $id_banco_final = $id_banco_tmp;
+            }
+
+            $pagos = DB::table('pagos')->join('bancos', function ($join) {
+                                $join->on('pagos.id_banco_factura', '=', 'bancos.id');
+                            })
+                            ->whereBetween('fecha_pago', array(
+                                $fecha_inicial->format('Y-m-d'),
+                                $fecha_final->format('Y-m-d')
+                            ))
+                            ->whereBetween('id_banco_factura', array(
+                                $id_banco_inicial,
+                                $id_banco_final
+                            ))
+                            ->select('pagos.*', 'bancos.nombre as banco')
+                            ->orderBy('fecha_pago', 'asc')
+                            ->get();
+
+            // $rawSql = vsprintf(str_replace(['?'], ['\'%s\''], $pagos->toSql()), $pagos->getBindings());
+            // dd($rawSql);
+
+            $logs = DB::table('archivos_asobancaria')
+                            ->leftJoin('bancos', 'bancos.id', '=', 'archivos_asobancaria.id_banco')
+                            ->leftJoin('usuarios', 'usuarios.id', '=', 'archivos_asobancaria.id_usuario')
+                            ->whereBetween('fecha_pago', array(
+                                $fecha_inicial->format('Y-m-d'),
+                                $fecha_final->format('Y-m-d')
+                            ))
+                            ->whereBetween('id_banco', array(
+                                $request->id_banco_inicial,
+                                $request->id_banco_final
+                            ))
+                            ->select(DB::raw("archivos_asobancaria.*, CONCAT(usuarios.nombres, ' ', usuarios.apellidos) as usuario, CONCAT(bancos.nombre, ' (', bancos.asobancaria, ')') as banco"))
+                            ->get();
         }
 
-        $id_banco_inicial = intval($request->id_banco_factura_inicial);
-        $id_banco_final = intval($request->id_banco_factura_final);
-        $id_banco_tmp = intval($request->id_banco_factura_inicial);
-
-        if ($id_banco_inicial > $id_banco_final) {
-            $id_banco_inicial = $id_banco_final;
-            $id_banco_final = $id_banco_tmp;
-        }
-
-        $pagos = DB::table('pagos')->join('bancos', function ($join) {
-                            $join->on('pagos.id_banco_factura', '=', 'bancos.id');
-                        })
-                        ->whereBetween('fecha_pago', array(
-                            $fecha_inicial->format('Y-m-d'),
-                            $fecha_final->format('Y-m-d')
-                        ))
-                        ->whereBetween('id_banco_factura', array(
-                            $id_banco_inicial,
-                            $id_banco_final
-                        ))
-                        ->select('pagos.*', 'bancos.nombre as banco')
-                        ->orderBy('fecha_pago', 'asc')
-                        ->get();
-
-        // $rawSql = vsprintf(str_replace(['?'], ['\'%s\''], $pagos->toSql()), $pagos->getBindings());
-        // dd($rawSql);
-
-        $logs = DB::table('archivos_asobancaria')
-                        ->leftJoin('bancos', 'bancos.id', '=', 'archivos_asobancaria.id_banco')
-                        ->leftJoin('usuarios', 'usuarios.id', '=', 'archivos_asobancaria.id_usuario')
-                        ->whereBetween('fecha_pago', array(
-                            $fecha_inicial->format('Y-m-d'),
-                            $fecha_final->format('Y-m-d')
-                        ))
-                        ->whereBetween('id_banco', array(
-                            $request->id_banco_inicial,
-                            $request->id_banco_final
-                        ))
-                        ->select(DB::raw("archivos_asobancaria.*, CONCAT(usuarios.nombres, ' ', usuarios.apellidos) as usuario, CONCAT(bancos.nombre, ' (', bancos.asobancaria, ')') as banco"))
-                        ->get();
         return response()->json([
             'pagos' => $pagos,
             'logs' => $logs
@@ -448,5 +461,79 @@ class PagosController extends Controller
         //                       ->where('parametros.nombre', 'alcaldia')
         //                       ->first();
         // return (new ExportPrediosPagos($parametro_logo->valor, $parametro_nit->valor, $parametro_alcaldia->valor))->download('predios_pagos.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    public function store_pagos_edit(Request $request) {
+        $data = json_decode($request->form);
+
+        DB::beginTransaction();
+        try {
+            $prev_pago = DB::table('pagos')
+                                    ->select('pagos.*')
+                                    ->where('pagos.id', $data->{'id'})
+                                    ->first();
+
+            $curr_pago = new Pago();
+            $curr_pago = Pago::find($data->{'id'});
+
+            // Editar el pago
+            $curr_pago->id_banco_factura = $data->{'id_banco_factura'};
+            $curr_pago->fecha_pago = $data->{'fecha_pago'};
+            $query = $curr_pago->save();
+            if($query) {
+                $pago = new PagosAud();
+                $pago->id_pago = $prev_pago->id;
+                $pago->fecha_pago = $prev_pago->fecha_pago;
+                $pago->codigo_barras = $prev_pago->codigo_barras;
+                $pago->numero_recibo = $prev_pago->numero_recibo;
+                $pago->id_predio = $prev_pago->id_predio;
+                $pago->valor_facturado = $prev_pago->valor_facturado;
+                $pago->anio_pago = $prev_pago->anio_pago;
+                $pago->fecha_factura = $prev_pago->fecha_factura;
+                $pago->id_banco_factura = $prev_pago->id_banco_factura;
+                $pago->id_banco_archivo = $prev_pago->id_banco_archivo;
+                $pago->paquete_archivo = $prev_pago->paquete_archivo;
+                $pago->origen = $prev_pago->origen;
+                $pago->id_usuario_edita = $request->session()->get('userid');
+                $pago->save();
+
+                $updated = PredioPago::where('factura_pago', $prev_pago->numero_recibo)
+                ->update([
+                    'fecha_pago' => $data->{'fecha_pago'},
+                    'id_banco' => $data->{'id_banco_factura'}
+                ]);
+
+                $pagos = DB::table('pagos')->join('bancos', function ($join) {
+                        $join->on('pagos.id_banco_factura', '=', 'bancos.id');
+                    })
+                    ->where('pagos.numero_recibo', $prev_pago->numero_recibo)
+                    ->select('pagos.*', 'bancos.nombre as banco')
+                    ->orderBy('fecha_pago', 'asc')
+                    ->get();
+
+                DB::commit();
+
+                return response()->json([
+                    'pagos' => $pagos,
+                    'message' => 'La información del pago se modificó satisfactoriamente.',
+                    'error' => false
+                ]);
+            }
+            else {
+                DB::rollback();
+                return response()->json([
+                    'message' => 'No se pudo modificar la información del pago. Contacte al administrador del sistema.',
+                    'error' => true
+                ]);
+            }
+        }
+        catch(\Exception $e) {
+            DB::rollback();
+            $err = $e->{'errorInfo'};
+            return response()->json([
+                'message' => $err[2],
+                'error' => true
+            ]);
+        }
     }
 }

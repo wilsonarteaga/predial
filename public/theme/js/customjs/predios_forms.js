@@ -913,7 +913,7 @@ $(document).ready(function() {
             //data: 'valor_abono',
             title: 'Valor abono',
             "render": function(data, type, row, meta) {
-                return accounting.formatMoney(Number(row.valor_abono), "$ ", 2, ".", ",");
+                return accounting.formatMoney(Number(row.valor_abono), "$ ", 0, ".", ",");
             }
         }, {
             title: 'Acción',

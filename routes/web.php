@@ -109,6 +109,7 @@ Route::post('create_pagos', [PagosController::class, 'store'])->name('pagos.crea
 Route::post('update_pagos', [PagosController::class, 'update'])->name('pagos.update_pagos')->middleware('checkdb');
 Route::post('delete_pagos', [PagosController::class, 'destroy'])->name('pagos.delete_pagos')->middleware('checkdb');
 Route::post('/store/pagos_delete', [PagosController::class, 'store_pagos_delete']);
+Route::post('/store/pagos_edit', [PagosController::class, 'store_pagos_edit']);
 
 //lista de pagos
 Route::post('/list/pagos_fecha', [PagosController::class, 'list_pagos_fecha']);

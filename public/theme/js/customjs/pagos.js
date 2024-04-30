@@ -7,8 +7,34 @@ var bar = $('.bar.one');
 var percent = $('.porciento.one');
 var ROOT_URL = window.location.protocol + "//" + window.location.host;
 var visualizando_factura = false;
+var visualizando_factura_edit = false;
 var selected_banco_factura = 'default';
+
+var validatorFiltro = $("#pagos-filtro-form").validate({
+    rules: {
+        fecha_pago_inicial: "required",
+        id_banco_inicial: {
+            required: true,
+            minlength: 1
+        },
+        fecha_pago_final: "required",
+        id_banco_final: {
+            required: true,
+            minlength: 1
+        },
+    },
+    messages: {
+        fecha_pago_inicial: "Fecha inicial requerida",
+        id_banco_inicial: "Banco inicial requerido",
+        fecha_pago_final: "Fecha final requerida",
+        id_banco_final: "Banco final requerido",
+    },
+});
+
 $(document).ready(function() {
+    $('.search_general').fadeIn();
+    $('.search_factura').fadeOut();
+
     $('#numero_recibo').bind('keyup', function() {
         if($.trim($(this).val()).length === 9) {
             getInfoPago();
@@ -31,6 +57,22 @@ $(document).ready(function() {
             $('.info_factura').fadeOut();
             $('#div_descargar_factura').fadeOut();
             visualizando_factura = false;
+        }
+    });
+
+    $('#numero_factura_search').bind('keyup', function() {
+        if($.trim($(this).val()).length === 9 && !visualizando_factura_edit) {
+            $('#btn_buscar_factura').attr('disabled', false);
+            $('#btn_buscar_factura').attr('class', 'btn btn-info');
+            // $('#btn_buscar_factura').trigger('click');
+            visualizando_factura_edit = true;
+        }
+        else if($.trim($(this).val()).length < 9) {
+            $('#btn_buscar_factura').attr('disabled', true);
+            $('#btn_buscar_factura').attr('class', 'btn btn-default');
+            // $('.info_factura').fadeOut();
+            // $('#div_descargar_factura').fadeOut();
+            visualizando_factura_edit = false;
         }
     });
 
@@ -121,9 +163,13 @@ $(document).ready(function() {
                 $("#" + global_filtroform_to_send)
                     .first()
                     .submit();
+                getJsonPagos();
             }
 
-            getJsonPagos();
+    });
+
+    $("#btn_buscar_factura").off("click").on("click", function() {
+        getJsonPagos();
     });
 
     DTPagos = $("#pagosTable").DataTable({
@@ -157,17 +203,18 @@ $(document).ready(function() {
                 },
             },
             {
-                data: "valor_facturado",
                 title: "Valor facturado",
-                defaultContent: "",
+                "render": function(data, type, row, meta) {
+                    return accounting.formatMoney(Number(row.valor_facturado), "$ ", 0, ".", ",");
+                }
             },
             {
                 data: "anio_pago",
                 title: "A&ntilde;o pago",
             },
             {
-                data: "fecha_factura",
-                title: "Fecha factura",
+                data: "fecha_pago",
+                title: "Fecha pago",
             },
             {
                 data: "banco",
@@ -183,7 +230,11 @@ $(document).ready(function() {
                 title: "Acción",
                 render: function (data, type, row, meta) {
                     if (row.origen === 'M') {
-                        return '<a href="#" data-toggle="tooltip" data-placement="top" title="Eliminar registro" class="deletePago"> <i class="fa fa-trash text-danger"></i> </a>';
+                        if ($('#chk_search_factura').is(':checked')) {
+                            return '<a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Editar pago" class="editarPago"> <i class="fa fa-edit text-info"></i> </a>';
+                        } else {
+                            return '<a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Eliminar registro" class="deletePago"> <i class="fa fa-trash text-danger"></i> </a>';
+                        }
                     } else {
                         return '<i class="fa fa-trash text-muted"></i>';
                     }
@@ -212,6 +263,20 @@ $(document).ready(function() {
                         }
                         $('[data-toggle="tooltip"]').tooltip();
                     });
+                });
+
+            $(".editarPago")
+                .off("click")
+                .on("click", function (e) {
+                    e.preventDefault();
+                    var tr = $(this).closest("tr");
+                    var data = DTPagos.row(tr).data();
+                    $('#id_pago_edit').val(data.id);
+                    $('#numero_recibo_edit').val(data.numero_recibo);
+                    $('#id_banco_factura_edit').val(data.id_banco_factura).selectpicker("refresh");
+                    $('#fecha_pago_edit').datepicker('setDate', moment(data.fecha_pago).toDate());
+                    $('#fecha_pago_edit').attr('default', data.fecha_pago);
+                    $('#modal-editar-pago').modal({ backdrop: 'static', keyboard: false }, 'show');
                 });
         },
         columnDefs: [
@@ -368,12 +433,23 @@ $(document).ready(function() {
     });
 
     $('#fecha_pago').bind('change', function() {
-        if(isNaN(Date.parse($('#fecha_pago').val()))) {
+        if(!moment($('#fecha_pago').val(), 'YYYY-MM-DD', true).isValid()) {
             $('#numero_recibo').attr('disabled', true);
             $('#numero_recibo').val('');
             $('#fecha_pago').datepicker('reset');
             $('#create-form')[0].reset();
             $('#id_banco_archivo').val('default').selectpicker("refresh");
+        }
+    });
+
+    $('#fecha_pago_edit').bind('change', function() {
+        $('#btn_guardar_editar_pago').attr('disabled', !(moment($('#fecha_pago_edit').val(), 'YYYY-MM-DD', true).isValid()));
+    });
+
+    $('#fecha_pago_edit').bind('blur', function() {
+        if(!moment($('#fecha_pago_edit').val(), 'YYYY-MM-DD', true).isValid()) {
+            $('#fecha_pago_edit').datepicker('setDate', $('#fecha_pago_edit').attr('default'));
+            $('#btn_guardar_editar_pago').attr('disabled', false);
         }
     });
 
@@ -420,7 +496,6 @@ $(document).ready(function() {
     });
 
     $('#id_banco_final').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
-        // console.log($('#id_banco_final').selectpicker('val'));
         if ($('#id_banco_inicial').selectpicker('val') !== '') {
             if (parseInt($('#id_banco_final').selectpicker('val')) < parseInt($('#id_banco_inicial').selectpicker('val'))) {
                 $('#id_banco_inicial').selectpicker('val', '');
@@ -432,7 +507,7 @@ $(document).ready(function() {
     if ($('#print_factura').length > 0) {
         $('#print_factura').off("click").on("click", function() {
             var btn = $(this);
-            startImpresion($(btn).attr('url') + $('#info_id_predio').val() + '/0/' + $('#info_anio').val() + '/-/1/-1', 'Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
+            startImpresion($(btn).attr('url') + $('#info_id_predio').val() + '/0/' + $('#info_anio').val() + '/-/1/-1/0', 'Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
         });
     }
 
@@ -481,9 +556,77 @@ $(document).ready(function() {
             console.log(err);
         });
     });
+
+    $('#btn_guardar_editar_pago').off('click').on('click', function() {
+        var id_pago = $('#id_pago_edit').val();
+        var fecha_pago = $('#fecha_pago_edit').val();
+        var id_banco_factura = $('#id_banco_factura_edit').selectpicker('val');
+        swal({
+            title: "Atención",
+            text: '¿Está seguro que desea editar la información del pago?',
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Si",
+            cancelButtonText: "No",
+            closeOnConfirm: true,
+            closeOnCancel: true
+        }, function(isConfirm) {
+            if (isConfirm) {
+                saveEditarPago(id_pago, fecha_pago, id_banco_factura);
+            }
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    });
+
+    $('.js-switch').each(function () {
+        new Switchery($(this)[0], $(this).data());
+    });
+
+    $('#chk_search_factura').off('change').on('change', function() {
+        DTPagos.clear().draw();
+        if ($(this).is(':checked')) {
+            $('.search_general').fadeOut(function() {
+                $('.search_factura').fadeIn();
+                setTimeout(function() {
+                    $('#pagos-filtro-form')[0].reset();
+                    validatorFiltro.resetForm();
+                    $('#id_banco_inicial').val('default').selectpicker("refresh");
+                    $('#id_banco_final').attr('disabled', true);
+                    $('#id_banco_final').val('default').selectpicker("refresh");
+                    $('#btn_descargar_pagos').fadeOut();
+                }, 1500);
+            });
+        } else {
+            $('.search_factura').fadeOut(function() {
+                $('.search_general').fadeIn(function() {
+                    setTimeout(function() {
+                        $("#numero_factura_search").val('');
+                        $('#btn_buscar_factura').attr('disabled', true);
+                        $('#btn_buscar_factura').attr('class', 'btn btn-default');
+                    }, 1500);
+                });
+            });
+        }
+    });
 });
 
 function getJsonPagos() {
+    var type_search = $('#chk_search_factura').is(':checked') ? 'factura' : 'general';
+    var jsonObj = {};
+    if (type_search === 'factura') {
+        jsonObj = {
+            numero_recibo: $("#numero_factura_search").val(),
+        }
+    } else {
+        jsonObj = {
+            fecha_pago_inicial: $("#fecha_pago_inicial").val(),
+            id_banco_factura_inicial: $("#id_banco_inicial").selectpicker("val"),
+            fecha_pago_final: $("#fecha_pago_final").val(),
+            id_banco_factura_final: $("#id_banco_final").selectpicker("val"),
+        }
+    }
+
     $.blockUI({ message: null });
     $.ajax({
         type: "POST",
@@ -492,19 +635,16 @@ function getJsonPagos() {
         },
         dataType: "json",
         url: "/list/pagos_fecha",
-        data: {
-            fecha_pago_inicial: $("#fecha_pago_inicial").val(),
-            id_banco_factura_inicial: $("#id_banco_inicial").selectpicker("val"),
-            fecha_pago_final: $("#fecha_pago_final").val(),
-            id_banco_factura_final: $("#id_banco_final").selectpicker("val"),
-        },
+        data: jsonObj,
         success: function(response) {
             if (response.pagos !== undefined && response.pagos !== null) {
                 if (response.pagos.length > 0) {
                     if (DTPagos !== null) {
                         DTPagos.clear().draw();
                         DTPagos.rows.add(response.pagos).draw();
-                        $('#btn_descargar_pagos').fadeIn();
+                        if (type_search === 'general') {
+                            $('#btn_descargar_pagos').fadeIn();
+                        }
                     }
                 } else {
                     DTPagos.clear().draw();
@@ -659,21 +799,6 @@ function stringToDate(str_date) {
     return return_date;
 }
 
-var validatorFiltro = $("#pagos-filtro-form").validate({
-    rules: {
-        fecha_pago_inicial: "required",
-        id_banco_inicial: "required",
-        fecha_pago_final: "required",
-        id_banco_final: "required",
-    },
-    messages: {
-        fecha_pago_inicial: "Fecha inicial requerida",
-        id_banco_inicial: "Banco inicial requerido",
-        fecha_pago_final: "Fecha final requerida",
-        id_banco_final: "Banco final requerido",
-    },
-});
-
 function reset_bar(before) {
     var percentVal = '0%';
     bar.width(percentVal);
@@ -809,5 +934,66 @@ function getJsonRecibo() {
             $('.modal').css('z-index', 1041);
             console.log(xhr.responseText);
         },
+    });
+}
+
+function saveEditarPago(id_pago, fecha_pago, id_banco_factura) {
+    $.blockUI({
+        message: "Ejecutando operaci&oacute;n. Espere un momento.",
+        css: {
+            border: 'none',
+            padding: '15px',
+            backgroundColor: '#000',
+            '-webkit-border-radius': '10px',
+            '-moz-border-radius': '10px',
+            opacity: .5,
+            color: '#fff',
+            zIndex: 9999
+        }
+    });
+    var jsonObj = {};
+    jsonObj.id = id_pago;
+    jsonObj.fecha_pago = fecha_pago;
+    jsonObj.id_banco_factura = id_banco_factura;
+    $.ajax({
+        type: 'POST',
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        dataType: 'json',
+        url: '/store/pagos_edit',
+        data: {
+            form: JSON.stringify(jsonObj)
+        },
+        success: function(response) {
+            if(!response.error) {
+                if (response.pagos !== undefined && response.pagos !== null) {
+                    if (response.pagos.length > 0) {
+                        if (DTPagos !== null) {
+                            DTPagos.clear().draw();
+                            DTPagos.rows.add(response.pagos).draw();
+                        }
+                    } else {
+                        DTPagos.clear().draw();
+                    }
+                } else {
+                    DTPagos.clear().draw();
+                }
+                $('#modal-editar-pago').modal('hide');
+            }
+
+            swal({
+                title: "Atención",
+                text: response.message,
+                type: "warning",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Aceptar",
+                closeOnConfirm: true
+            });
+
+            $.unblockUI();
+        },
+        error: function(xhr) {
+            console.log(xhr.responseText);
+            $.unblockUI();
+        }
     });
 }
