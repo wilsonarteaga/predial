@@ -184,7 +184,6 @@
                     </td>
                 </tr>
             </table>
-
         </div>
         <div id="body">
             <table class="info-predio" style="width: 100%; margin-top: 15px;">

@@ -1571,6 +1571,24 @@ class PrediosController extends Controller
                     $barras_texto[$x] = ('(415)' . $ean . '(8020)' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $fechas_pago_hasta[$x]));
                 }
 
+                if (str_contains(strtolower($alcaldia), 'paipa')) {
+                    // $filter = 0; // primeros dos codigos
+                    $filter = 1; // ultimos dos codigos
+                    for ($x = 0; $x < 2; $x++) {
+                        $barras_filtrado[$x] = $barras[$x + $filter];
+                        $barras_texto_filtrado[$x] = $barras_texto[$x + $filter];
+                        $fechas_pago_hasta_filtrado[$x] = $fechas_pago_hasta[$x + $filter];
+                        $porcentajes_descuento_filtrado[$x] = $porcentajes_descuento[$x + $filter];
+                        $valores_factura_filtrado[$x] = $valores_factura[$x + $filter];
+                    }
+                } else {
+                    $barras_filtrado = $barras;
+                    $barras_texto_filtrado = $barras_texto;
+                    $fechas_pago_hasta_filtrado = $fechas_pago_hasta;
+                    $porcentajes_descuento_filtrado = $porcentajes_descuento;
+                    $valores_factura_filtrado = $valores_factura;
+                }
+
                 $data = [
                     'title' => 'Predio',
                     'fecha' => $ultimo_anio_pagar->primer_fecha != null ? $fecha_emision->format('d/m/Y') : 'INDEFINIDA',
@@ -1579,11 +1597,11 @@ class PrediosController extends Controller
                     'predio' => $predio,
                     'ultimo_anio_pagado' => $ultimo_anio_pagado,
                     'lista_pagos' => $lista_pagos,
-                    'barras' => $barras,
-                    'barras_texto' => $barras_texto,
-                    'fechas_pago_hasta' => $fechas_pago_hasta,
-                    'porcentajes_descuento' => $porcentajes_descuento,
-                    'valores_factura' => $valores_factura,
+                    'barras' => $barras_filtrado,
+                    'barras_texto' => $barras_texto_filtrado,
+                    'fechas_pago_hasta' => $fechas_pago_hasta_filtrado,
+                    'porcentajes_descuento' => $porcentajes_descuento_filtrado,
+                    'valores_factura' => $valores_factura_filtrado,
                     'temporal' => $tmp,
                     'facturaYaPagada' => $facturaYaPagada,
                     'nit' => $nit,
@@ -2121,6 +2139,24 @@ class PrediosController extends Controller
                     $barras_texto[$x] = ('(415)' . $ean . '(8020)' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $fechas_pago_hasta[$x]));
                 }
 
+                if (str_contains(strtolower($alcaldia), 'paipa')) {
+                    // $filter = 0; // primeros dos codigos
+                    $filter = 1; // ultimos dos codigos
+                    for ($x = 0; $x < 2; $x++) {
+                        $barras_filtrado[$x] = $barras[$x + $filter];
+                        $barras_texto_filtrado[$x] = $barras_texto[$x + $filter];
+                        $fechas_pago_hasta_filtrado[$x] = $fechas_pago_hasta[$x + $filter];
+                        $porcentajes_descuento_filtrado[$x] = $porcentajes_descuento[$x + $filter];
+                        $valores_factura_filtrado[$x] = $valores_factura[$x + $filter];
+                    }
+                } else {
+                    $barras_filtrado = $barras;
+                    $barras_texto_filtrado = $barras_texto;
+                    $fechas_pago_hasta_filtrado = $fechas_pago_hasta;
+                    $porcentajes_descuento_filtrado = $porcentajes_descuento;
+                    $valores_factura_filtrado = $valores_factura;
+                }
+
                 $data = [
                     'title' => 'Predio',
                     'fecha' => $ultimo_anio_pagar->primer_fecha != null ? $fecha_emision->format('d/m/Y') : 'INDEFINIDA',
@@ -2129,11 +2165,11 @@ class PrediosController extends Controller
                     'predio' => $predio,
                     'ultimo_anio_pagado' => $ultimo_anio_pagado,
                     'lista_pagos' => $lista_pagos,
-                    'barras' => $barras,
-                    'barras_texto' => $barras_texto,
-                    'fechas_pago_hasta' => $fechas_pago_hasta,
-                    'porcentajes_descuento' => $porcentajes_descuento,
-                    'valores_factura' => $valores_factura,
+                    'barras' => $barras_filtrado,
+                    'barras_texto' => $barras_texto_filtrado,
+                    'fechas_pago_hasta' => $fechas_pago_hasta_filtrado,
+                    'porcentajes_descuento' => $porcentajes_descuento_filtrado,
+                    'valores_factura' => $valores_factura_filtrado,
                     'temporal' => $tmp,
                     'facturaYaPagada' => $facturaYaPagada,
                     'nit' => $nit,
