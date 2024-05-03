@@ -2139,7 +2139,7 @@ class PrediosController extends Controller
                     $barras_texto[$x] = ('(415)' . $ean . '(8020)' . str_pad($numero_factura , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valores_factura[$x], 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $fechas_pago_hasta[$x]));
                 }
 
-                if (str_contains(strtolower($alcaldia), 'paipa')) {
+                if (str_contains(strtolower($alcaldia), 'paipa') && count($valores_factura) > 1) {
                     // $filter = 0; // primeros dos codigos
                     $filter = 1; // ultimos dos codigos
                     for ($x = 0; $x < 2; $x++) {
