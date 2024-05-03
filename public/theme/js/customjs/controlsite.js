@@ -1254,7 +1254,7 @@ function getPredio(id_predio, showBlock) {
                 var disabledBtnPaz = '';
                 var disabledBtnElimina = '';
                 var tr = $('<tr style="cursor: pointer;" id="tr_predio_' + predio.id + '" json-data=\'' + JSON.stringify(predio) + '\' class="predio_row"></tr>');
-                var td_1 = $('<td class="cell_center">' + predio.codigo_predio + '&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-copy copy_predio" data-codigo="' + predio.codigo_predio + '" data-toggle="tooltip" data-placement="top" title="Copiar"></i></td>');
+                var td_1 = $('<td class="cell_center">' + predio.codigo_predio + '&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-copy copy_predio" data-codigo="' + predio.codigo_predio + '" data-toggle="tooltip" data-placement="top" title="Copiar al portapapeles"></i></td>');
                 // if(Number(predio.prescrito) > 0) {
                 //     td_1.append('&nbsp;&nbsp;<span data-toggle="tooltip" data-placement="bottom" title="Prescrito hasta ' + predio.prescribe_hasta + '" style="color: #f41a0f;"><i class="fa fa-info-circle"></i></span>');
                 //     classBtn = 'btn-default';
