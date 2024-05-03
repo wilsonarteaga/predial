@@ -2605,7 +2605,7 @@ class PrediosController extends Controller
 
         // Si no existe un calculo para el año actual o si el calculo existe pero aun no tiene un numero
         // de factura asignado, entonces, se agrega el año a la lista
-        if(!$exists_current_anio && count($array_anios) > 0) {
+        if($ultimo_anio_pagar->ultimo_anio != $currentYear && !$exists_current_anio && count($array_anios) > 0) {
             array_unshift($array_anios, ['ultimo_anio' => strval($currentYear), 'factura_pago' => null]);
         }
 
