@@ -351,7 +351,7 @@
             @if(count($lista_pagos) > 0)
                 <div class="div-codigos">
                 @php($labels = ['-ENTIDAD-', '-BANCO-'])
-                @php($numero_boletas = count($valores_factura))
+                @php($numero_boletas = count($valores_factura) == 1 ? 2 : count($valores_factura))
                 @for ($boletas = 0; $boletas < $numero_boletas; $boletas++)
                     @if($boletas == 0)
                     <div class="negrilla" style="padding-top: 0px; padding-bottom: 0px; width: 100%; text-align: center; font-size: 52%;">
