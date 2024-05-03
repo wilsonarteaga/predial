@@ -1254,7 +1254,7 @@ function getPredio(id_predio, showBlock) {
                 var disabledBtnPaz = '';
                 var disabledBtnElimina = '';
                 var tr = $('<tr style="cursor: pointer;" id="tr_predio_' + predio.id + '" json-data=\'' + JSON.stringify(predio) + '\' class="predio_row"></tr>');
-                var td_1 = $('<td class="edit_row cell_center">' + predio.codigo_predio + '</td>');
+                var td_1 = $('<td class="cell_center">' + predio.codigo_predio + '&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-copy copy_predio" data-codigo="' + predio.codigo_predio + '" data-toggle="tooltip" data-placement="top" title="Copiar"></i></td>');
                 // if(Number(predio.prescrito) > 0) {
                 //     td_1.append('&nbsp;&nbsp;<span data-toggle="tooltip" data-placement="bottom" title="Prescrito hasta ' + predio.prescribe_hasta + '" style="color: #f41a0f;"><i class="fa fa-info-circle"></i></span>');
                 //     classBtn = 'btn-default';
@@ -1355,6 +1355,7 @@ function getPredio(id_predio, showBlock) {
                     setDownloadFacturaRow();
                     setDownloadPazRow();
                     setPrescribeRow();
+                    setCopyPredio();
                     // setAvaluosRow();
                     if (!global_ya_pagado) {
                         setAcuerdoPagoRow();
@@ -1464,6 +1465,23 @@ function setPrescribeRow() {
                         email: "Your email address must be in the format of name@domain.com"
                     }*/
             }
+        });
+    }
+}
+
+function setCopyPredio() {
+    if ($('.copy_predio').length > 0) {
+        $('.copy_predio').off('click').on('click', function(evt) {
+            navigator.clipboard.writeText($(this).data('codigo'));
+            $.toast({
+                heading: 'Atención',
+                text: 'Código de predio copiado al portapapeles. Use Ctrl + V para pegar.',
+                position: 'top-center',
+                loaderBg: '#fff',
+                icon: 'info',
+                hideAfter: 4000,
+                stack: 6
+            });
         });
     }
 }

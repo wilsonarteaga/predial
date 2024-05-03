@@ -36,6 +36,7 @@ $(document).ready(function() {
     setDownloadFacturaRow();
     setDownloadPazRow();
     setPrescribeRow();
+    setCopyPredio();
     // setAvaluosRow();
     setAcuerdoPagoRow();
 
