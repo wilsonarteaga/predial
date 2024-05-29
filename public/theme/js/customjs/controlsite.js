@@ -8,7 +8,7 @@ var global_predio_con_deuda = false;
 var global_anio_actual = 0;
 var existe_predio = false;
 var codigo_predio_buscando = '';
-var global_anio_prescripcion = '';
+var global_anios_prescripcion = '';
 var global_propietario = null;
 var global_propietarios = null;
 var global_anios = null;
@@ -564,6 +564,19 @@ $(document).ready(function() {
     if ($("#pagos-filtro-form").length > 0) {
         $('#pagos-filtro-form').validate().settings.ignore = '';
         $('#pagos-filtro-form').validate().settings.errorPlacement = function(error, element) {
+            if (element.hasClass('selectpicker')) {
+                element.next().after(error);
+            } else if (element.hasClass('withadon')) {
+                element.parent().after(error);
+            } else {
+                error.insertAfter(element);
+            }
+        };
+    }
+
+    if ($("#form-predios-prescripcion").length > 0) {
+        $('#form-predios-prescripcion').validate().settings.ignore = '';
+        $('#form-predios-prescripcion').validate().settings.errorPlacement = function(error, element) {
             if (element.hasClass('selectpicker')) {
                 element.next().after(error);
             } else if (element.hasClass('withadon')) {
@@ -1215,11 +1228,12 @@ function getPredio(id_predio, showBlock) {
     global_ya_pagado = false;
     global_anio_actual = 0;
     global_predio_con_deuda = false;
-    global_anio_prescripcion = '';
+    global_anios_prescripcion = '';
     $('#div_fecha_pago_factura').css('display', 'none');
     $('#identificacion_acuerdo').attr('readonly', false);
     $('#nombre_acuerdo').attr('readonly', false);
     $('#direccion_acuerdo').attr('readonly', false);
+    $('.result').empty();
     var jsonObj = {};
     jsonObj.id_predio = id_predio;
     $.ajax({
@@ -1241,8 +1255,8 @@ function getPredio(id_predio, showBlock) {
                 global_propietarios = response.propietarios;
                 global_anios = response.anios;
                 global_ultima_factura = response.ultimo_anio;
-                if (response.anio_prescripcion > 0) {
-                    global_anio_prescripcion = response.anio_prescripcion.toString();
+                if (response.anios_prescripcion.length > 0) {
+                    global_anios_prescripcion = response.anios_prescripcion.map(el => el.ultimo_anio);
                 }
                 global_anio_actual = Number(response.anio_actual);
                 var classBtn = 'btn-info';
@@ -1256,7 +1270,7 @@ function getPredio(id_predio, showBlock) {
                 var tr = $('<tr style="cursor: pointer;" id="tr_predio_' + predio.id + '" json-data=\'' + JSON.stringify(predio) + '\' class="predio_row"></tr>');
                 var td_1 = $('<td class="cell_center">' + predio.codigo_predio + '&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-copy copy_predio" data-codigo="' + predio.codigo_predio + '" data-toggle="tooltip" data-placement="top" title="Copiar al portapapeles"></i></td>');
                 // if(Number(predio.prescrito) > 0) {
-                //     td_1.append('&nbsp;&nbsp;<span data-toggle="tooltip" data-placement="bottom" title="Prescrito hasta ' + predio.prescribe_hasta + '" style="color: #f41a0f;"><i class="fa fa-info-circle"></i></span>');
+                //     td_1.append('&nbsp;&nbsp;<span data-toggle="tooltip" data-placement="bottom" title="Prescrito hasta ' + predio.prescribe_desde + '" style="color: #f41a0f;"><i class="fa fa-info-circle"></i></span>');
                 //     classBtn = 'btn-default';
                 //     disabledBtnPrescribe = 'disabled="disabled"';
                 //     disabledBtnCalculo = 'disabled="disabled"';
@@ -1264,7 +1278,7 @@ function getPredio(id_predio, showBlock) {
                 //     disabledBtnEdita = 'disabled="disabled"';
                 //     disabledBtnElimina = 'disabled="disabled"';
                 // }
-                if (global_anio_prescripcion.length === 0) {
+                if (global_anios_prescripcion.length === 0) {
                     disabledBtnPrescribe = 'disabled="disabled"';
                 }
 
@@ -1412,6 +1426,25 @@ function getAvaluosPredio(id_predio, btn) {
 
 function setPrescribeRow() {
     if ($('.prescribe_row').length > 0) {
+        $('#span_prescribir').html('&nbsp;');
+        $('#prescribe_desde_modal').val('');
+        $('#prescribe_hasta_modal').empty();
+        $.each(global_anios_prescripcion, function(i, el) {
+            $('#prescribe_hasta_modal').append('<option value="' + el + '">' + el + '</option>');
+        });
+        $('#prescribe_hasta_modal').selectpicker('refresh');
+
+        $('#prescribe_hasta_modal').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+            $('#span_prescribir').html(`A&ntilde;os a prescribir: <b>${Number($('#prescribe_hasta_modal').selectpicker('val')) - Number($('#prescribe_desde_modal').val()) + 1}</b>`);
+            var validatorPrescripciones = $("#form-predios-prescripcion").validate();
+            validatorPrescripciones.resetForm();
+            $.each($('.has-success'), function(i, el) {
+                $(el).removeClass('has-success');
+            });
+            $.each($('.has-error'), function(i, el) {
+                $(el).removeClass('has-error');
+            });
+        });
 
         $('.prescribe_row').off('click').on('click', function(evt) {
             var btn = $(this);
@@ -1421,49 +1454,49 @@ function setPrescribeRow() {
             $('#modal-prescripciones').modal({ backdrop: 'static', keyboard: false }, 'show');
         });
 
-        // $('#modal-prescripciones').off('hidden.bs.modal').on('hidden.bs.modal', function() {
-        //     $('#form-predios-prescripcion')[0].reset();
-        //     clear_form_elements("#form-predios-prescripcion");
-        //     validatorPrescripciones.resetForm();
-        // });
+        $('#modal-prescripciones').off('hidden.bs.modal').on('hidden.bs.modal', function() {
+            $('#span_prescribir').html('&nbsp;');
+            $('#prescribe_desde_modal').val('');
+            $('#prescribe_hasta_modal').selectpicker('val', '')
+        });
         $('#modal-prescripciones').off('shown.bs.modal').on('shown.bs.modal', function() {
             $('#form-predios-prescripcion')[0].reset();
             clear_form_elements("#form-predios-prescripcion");
             validatorPrescripciones.resetForm();
-            $('#prescribe_hasta_modal').val(global_anio_prescripcion);
+            $('#prescribe_desde_modal').val(global_anios_prescripcion[0]);
             $('#prescribe_hasta_modal').focus();
         });
 
         $('#save_prescripcion').off('click').on('click', function() {
-            var form = $("#form-predios-prescripcion");
-            if (form.valid()) {
+            if ($('#prescribe_hasta_modal').selectpicker('val').length > 0) {
+                var input_prescribe_desde = $('<input id="prescribe_desde" name="prescribe_desde" type="hidden" value="' + $('#prescribe_desde_modal').val() + '"  />');
                 var input_prescribe_hasta = $('<input id="prescribe_hasta" name="prescribe_hasta" type="hidden" value="' + $('#prescribe_hasta_modal').val() + '"  />');
 
                 if ($('#prescribe_hasta').length > 0) {
-                    $('#prescribe_hasta').val(global_anio_prescripcion);
+                    $('#prescribe_desde').val($('#prescribe_desde_modal').val());
+                    input_prescribe_desde = $('#prescribe_desde');
+
+                    $('#prescribe_hasta').val($('#prescribe_hasta_modal').val());
                     input_prescribe_hasta = $('#prescribe_hasta');
                 }
 
+                $('#' + global_form_to_send).prepend(input_prescribe_desde);
                 $('#' + global_form_to_send).prepend(input_prescribe_hasta);
                 $('#modal-resolucion').modal('show');
                 $('#modal-prescripciones').modal('hide');
+            } else {
+                validatorPrescripciones.showErrors({
+                    prescribe_hasta_modal: "A&ntilde;o prescripci&oacute;n requerido."
+                });
             }
         });
 
         var validatorPrescripciones = $("#form-predios-prescripcion").validate({
             rules: {
                 prescribe_hasta_modal: "required"
-                    /*email: {
-                        required: true,
-                        email: true
-                    }*/
             },
             messages: {
                 prescribe_hasta_modal: "A&ntilde;o prescripci&oacute;n requerido."
-                    /*email: {
-                        required: "We need your email address to contact you",
-                        email: "Your email address must be in the format of name@domain.com"
-                    }*/
             }
         });
     }
@@ -1650,12 +1683,12 @@ function setData(jsonObj) {
 
         if ($('#codigo_predio').length > 0) {
             // if(jsonObj.prescrito > 0) {
-            //     $('#span_prescribe_hasta').html(jsonObj.prescribe_hasta);
-            //     $('#span_prescribe_hasta').parent().fadeIn();
+            //     $('#span_prescribe_desde').html(jsonObj.prescribe_desde);
+            //     $('#span_prescribe_desde').parent().fadeIn();
             // }
             // else {
-            //     $('#span_prescribe_hasta').empty();
-            //     $('#span_prescribe_hasta').parent().fadeOut();
+            //     $('#span_prescribe_desde').empty();
+            //     $('#span_prescribe_desde').parent().fadeOut();
             // }
             addButtonsPredios();
         }

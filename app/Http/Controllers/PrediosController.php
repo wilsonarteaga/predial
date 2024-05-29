@@ -539,11 +539,53 @@ class PrediosController extends Controller
         try {
             $predio = new Predio();
             $predio = Predio::find($request->input_prescribe);
-            $predio_prescripcion = new PredioPrescripcion();
 
+            $lista_predios_pagos = DB::table('predios_pagos')
+                ->select(DB::raw("
+                    SUM(predios_pagos.valor_concepto1) as valor_concepto1,
+                    SUM(predios_pagos.valor_concepto2) as valor_concepto2,
+                    SUM(predios_pagos.valor_concepto3) as valor_concepto3,
+                    SUM(predios_pagos.valor_concepto4) as valor_concepto4,
+                    SUM(predios_pagos.valor_concepto5) as valor_concepto5,
+                    SUM(predios_pagos.valor_concepto6) as valor_concepto6,
+                    SUM(predios_pagos.valor_concepto7) as valor_concepto7,
+                    SUM(predios_pagos.valor_concepto8) as valor_concepto8,
+                    SUM(predios_pagos.valor_concepto9) as valor_concepto9,
+                    SUM(predios_pagos.valor_concepto10) as valor_concepto10,
+                    SUM(predios_pagos.valor_concepto11) as valor_concepto11,
+                    SUM(predios_pagos.valor_concepto12) as valor_concepto12,
+                    SUM(predios_pagos.valor_concepto13) as valor_concepto13,
+                    SUM(predios_pagos.valor_concepto14) as valor_concepto14,
+                    SUM(predios_pagos.valor_concepto15) as valor_concepto15,
+                    SUM(predios_pagos.valor_concepto16) as valor_concepto16,
+                    SUM(predios_pagos.valor_concepto17) as valor_concepto17,
+                    SUM(predios_pagos.valor_concepto18) as valor_concepto18,
+                    SUM(predios_pagos.valor_concepto19) as valor_concepto19,
+                    SUM(predios_pagos.valor_concepto20) as valor_concepto20,
+                    SUM(predios_pagos.valor_concepto21) as valor_concepto21,
+                    SUM(predios_pagos.valor_concepto22) as valor_concepto22,
+                    SUM(predios_pagos.valor_concepto23) as valor_concepto23,
+                    SUM(predios_pagos.valor_concepto24) as valor_concepto24,
+                    SUM(predios_pagos.valor_concepto25) as valor_concepto25,
+                    SUM(predios_pagos.valor_concepto26) as valor_concepto26,
+                    SUM(predios_pagos.valor_concepto27) as valor_concepto27,
+                    SUM(predios_pagos.valor_concepto28) as valor_concepto28,
+                    SUM(predios_pagos.valor_concepto29) as valor_concepto29,
+                    SUM(predios_pagos.valor_concepto30) as valor_concepto30
+                "))
+                ->where('predios_pagos.id_predio', $predio->id)
+                ->where('predios_pagos.ultimo_anio', '>=', intval($request->prescribe_desde))
+                ->where('predios_pagos.ultimo_anio', '<=', intval($request->prescribe_hasta))
+                ->where('predios_pagos.pagado', 0)
+                ->where('predios_pagos.anulada', 0)
+                ->first();
+
+            $predio_prescripcion = new PredioPrescripcion();
             $predio_prescripcion->id_predio = $predio->id;
+            $predio_prescripcion->prescribe_desde = $request->prescribe_desde;
             $predio_prescripcion->prescribe_hasta = $request->prescribe_hasta;
             $query = $predio_prescripcion->save();
+
             // if($query) {
                 $resolucion = new Resolucion();
                 $resolucion->numero_resolucion = $request->numero_resolucion;
@@ -555,15 +597,53 @@ class PrediosController extends Controller
                     $resolucion_predio->id_predio = $predio->id;
                     $resolucion_predio->id_resolucion = $resolucion->id;
                     $resolucion_predio->id_usuario = $request->session()->get('userid');
-                    $resolucion_predio->descripcion = 'Prescripción predio ' . $predio->codigo_predio . ', prescribe hasta: ' . $request->prescribe_hasta;
+                    $resolucion_predio->descripcion = 'Prescripción predio ' . $predio->codigo_predio . ', prescribe desde: ' . $request->prescribe_desde . ', prescribe hasta: ' . $request->prescribe_hasta;
                     $query = $resolucion_predio->save();
                     // if($query) {
                         PredioPago::where('id_predio', $predio->id)
+                        ->where('ultimo_anio', '>=', intval($request->prescribe_desde))
                         ->where('ultimo_anio', '<=', intval($request->prescribe_hasta))
                         ->where('pagado', 0)
+                        ->where('anulada', 0)
                         ->update([
-                            'pagado' => -1
+                            'prescrito' => -1,
                         ]);
+
+                        PredioPrescripcion::where('id', $predio_prescripcion->id)
+                        ->update([
+                            'valor_concepto1' => $lista_predios_pagos->valor_concepto1,
+                            'valor_concepto2' => $lista_predios_pagos->valor_concepto2,
+                            // 'valor_concepto3' => $lista_predios_pagos->valor_concepto3,
+                            // 'valor_concepto4' => $lista_predios_pagos->valor_concepto4,
+                            'valor_concepto5' => $lista_predios_pagos->valor_concepto5,
+                            'valor_concepto6' => $lista_predios_pagos->valor_concepto6,
+                            'valor_concepto7' => $lista_predios_pagos->valor_concepto7,
+                            'valor_concepto8' => $lista_predios_pagos->valor_concepto8,
+                            'valor_concepto9' => $lista_predios_pagos->valor_concepto9,
+                            'valor_concepto10' => $lista_predios_pagos->valor_concepto10,
+                            'valor_concepto11' => $lista_predios_pagos->valor_concepto11,
+                            'valor_concepto12' => $lista_predios_pagos->valor_concepto12,
+                            'valor_concepto13' => $lista_predios_pagos->valor_concepto13,
+                            'valor_concepto14' => $lista_predios_pagos->valor_concepto14,
+                            'valor_concepto15' => $lista_predios_pagos->valor_concepto15,
+                            'valor_concepto16' => $lista_predios_pagos->valor_concepto16,
+                            'valor_concepto17' => $lista_predios_pagos->valor_concepto17,
+                            'valor_concepto18' => $lista_predios_pagos->valor_concepto18,
+                            'valor_concepto19' => $lista_predios_pagos->valor_concepto19,
+                            'valor_concepto20' => $lista_predios_pagos->valor_concepto20,
+                            'valor_concepto21' => $lista_predios_pagos->valor_concepto21,
+                            'valor_concepto22' => $lista_predios_pagos->valor_concepto22,
+                            'valor_concepto23' => $lista_predios_pagos->valor_concepto23,
+                            'valor_concepto24' => $lista_predios_pagos->valor_concepto24,
+                            'valor_concepto25' => $lista_predios_pagos->valor_concepto25,
+                            'valor_concepto26' => $lista_predios_pagos->valor_concepto26,
+                            'valor_concepto27' => $lista_predios_pagos->valor_concepto27,
+                            'valor_concepto28' => $lista_predios_pagos->valor_concepto28,
+                            'valor_concepto29' => $lista_predios_pagos->valor_concepto29,
+                            'valor_concepto30' => $lista_predios_pagos->valor_concepto30
+                        ]);
+
+                        DB::commit();
 
                         return back()->with(['success' => 'El predio se prescribio satisfactoriamente.', 'tab_current' => $tab_current]);
                     // }
@@ -2610,22 +2690,37 @@ class PrediosController extends Controller
         }
 
         // Verificar prescripcion
-        $anio_prescripcion = -1;
-        $count_no_pagos = PredioPago::where('id_predio', $data->{'id_predio'})->where('pagado', 0)->count();
-        if($count_no_pagos > 5) {
-            $anio_prescripcion = DB::select('select
-                                      pp.ultimo_anio
-                                  from
-                                        predios_pagos pp
-                                  where pp.id = (
-                                        select max(a.id) as ide
-                                        from (select TOP 5
-                                                    pp.id from predios_pagos pp
-                                            where pp.id_predio = '. $data->{'id_predio'} .' and
-                                                  pp.pagado = 0
-                                            order by pp.id) a)');
-
-            $anio_prescripcion = strval($anio_prescripcion[0]->ultimo_anio);
+        $anios_prescripcion = [];
+        $count_no_pagos = PredioPago::where('id_predio', $data->{'id_predio'})
+            ->where('pagado', 0)
+            ->where('anulada', 0)
+            ->where('prescrito', 0)
+            ->count();
+        if($count_no_pagos > 0) {
+            $anios_prescripcion = DB::select('
+                select
+                    pp.ultimo_anio
+                from
+                    predios_pagos pp
+                where pp.id not in (
+                    select a.id
+                    from (
+                        select
+                            TOP 5
+                            pp.id
+                        from predios_pagos pp
+                        where
+                            pp.id_predio = '. $data->{'id_predio'} .' and
+                            pp.pagado = 0 and
+                            pp.anulada = 0 and
+                            pp.prescrito = 0
+                        order by pp.ultimo_anio desc) a) and
+                    pp.id_predio = '. $data->{'id_predio'} .' and
+                    pp.pagado = 0 and
+                    pp.anulada = 0 and
+                    pp.prescrito = 0
+                order by pp.ultimo_anio'
+            );
         }
 
         return response()->json(
@@ -2637,7 +2732,7 @@ class PrediosController extends Controller
                 'anios' => $array_anios,
                 'anio_actual' => $currentYear,
                 'ultimo_anio' => $ultimo_anio_pagar,
-                'anio_prescripcion' => $anio_prescripcion
+                'anios_prescripcion' => $anios_prescripcion
             ]
         );
     }

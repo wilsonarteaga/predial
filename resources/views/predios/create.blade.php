@@ -848,12 +848,23 @@
                         <form id="form-predios-prescripcion">
                             <div class="form-body">
                                 <div class="row">
-                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                                         <div class="form-group" style="margin-bottom: 0px;">
-                                            <label class="control-label">Prescripci&oacute;n hasta...</label>
-                                            <input type="text" id="prescribe_hasta_modal" name="prescribe_hasta_modal" class="form-control onlyNumbers input-center" autocomplete="off" placeholder="A&ntilde;o" value="{{ old('prescribe_hasta_modal') }}" maxlength="4" style="font-size: 30px; font-weight: bold; height: auto;" readonly="readonly">
-                                            {{-- <span class="text-danger">@error('prescribe_hasta_modal') {{ $message }} @enderror</span> --}}
+                                            <label class="control-label">Desde...</label>
+                                            <input type="text" id="prescribe_desde_modal" name="prescribe_desde_modal" class="form-control onlyNumbers" autocomplete="off" placeholder="A&ntilde;o" value="{{ old('prescribe_desde_modal') }}" maxlength="4" readonly="readonly">
                                         </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <div class="form-group" style="margin-top: 0px;">
+                                            <label class="control-label">Hasta...</label>
+                                            <select id="prescribe_hasta_modal" name="prescribe_hasta_modal" class="form-control selectpicker" data-size="3" title="A&ntilde;o..." data-container="#modal-prescripciones" style="width: 100%;">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <span id="span_prescribir" class="text-info">&nbsp;</span>
                                     </div>
                                 </div>
                             </div>
