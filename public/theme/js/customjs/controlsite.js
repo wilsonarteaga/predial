@@ -8,7 +8,7 @@ var global_predio_con_deuda = false;
 var global_anio_actual = 0;
 var existe_predio = false;
 var codigo_predio_buscando = '';
-var global_anios_prescripcion = '';
+var global_anios_prescripcion = [];
 var global_propietario = null;
 var global_propietarios = null;
 var global_anios = null;
@@ -1228,7 +1228,7 @@ function getPredio(id_predio, showBlock) {
     global_ya_pagado = false;
     global_anio_actual = 0;
     global_predio_con_deuda = false;
-    global_anios_prescripcion = '';
+    global_anios_prescripcion = [];
     $('#div_fecha_pago_factura').css('display', 'none');
     $('#identificacion_acuerdo').attr('readonly', false);
     $('#nombre_acuerdo').attr('readonly', false);
@@ -1257,6 +1257,8 @@ function getPredio(id_predio, showBlock) {
                 global_ultima_factura = response.ultimo_anio;
                 if (response.anios_prescripcion.length > 0) {
                     global_anios_prescripcion = response.anios_prescripcion.map(el => el.ultimo_anio);
+                } else {
+                    global_anios_prescripcion = [];
                 }
                 global_anio_actual = Number(response.anio_actual);
                 var classBtn = 'btn-info';
