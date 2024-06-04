@@ -1649,11 +1649,17 @@ class PrediosController extends Controller
                 }
 
                 if (str_contains(strtolower($alcaldia), 'paipa') && count($valores_factura) > 1) {
+                    // $paso = 0;
+                    // foreach ($fechas_pago_hasta as $fecha) {
+                    //     if ($fecha)
+                    // }
                     // $filter = 0; // primeros dos codigos
-                    // $filter = 1; // ultimos dos codigos
-                    $filter = 2; // ultimo codigo
+                    $filter = 1; // ultimos dos codigos
+                    // dd($porcentajes_descuento);
+                    // dd($valores_factura);
+                    // $filter = 2; // ultimo codigo
                     for ($x = 0; $x < 2; $x++) {
-                        if ($x + $filter <= 2) {
+                        if ($x + $filter < 2) {
                             $barras_filtrado[$x] = $barras[$x + $filter];
                             $barras_texto_filtrado[$x] = $barras_texto[$x + $filter];
                             $fechas_pago_hasta_filtrado[$x] = $fechas_pago_hasta[$x + $filter];
