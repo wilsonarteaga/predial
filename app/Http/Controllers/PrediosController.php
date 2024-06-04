@@ -1650,13 +1650,16 @@ class PrediosController extends Controller
 
                 if (str_contains(strtolower($alcaldia), 'paipa') && count($valores_factura) > 1) {
                     // $filter = 0; // primeros dos codigos
-                    $filter = 1; // ultimos dos codigos
+                    // $filter = 1; // ultimos dos codigos
+                    $filter = 2; // ultimo codigo
                     for ($x = 0; $x < 2; $x++) {
-                        $barras_filtrado[$x] = $barras[$x + $filter];
-                        $barras_texto_filtrado[$x] = $barras_texto[$x + $filter];
-                        $fechas_pago_hasta_filtrado[$x] = $fechas_pago_hasta[$x + $filter];
-                        $porcentajes_descuento_filtrado[$x] = $porcentajes_descuento[$x + $filter];
-                        $valores_factura_filtrado[$x] = $valores_factura[$x + $filter];
+                        if ($x + $filter <= 2) {
+                            $barras_filtrado[$x] = $barras[$x + $filter];
+                            $barras_texto_filtrado[$x] = $barras_texto[$x + $filter];
+                            $fechas_pago_hasta_filtrado[$x] = $fechas_pago_hasta[$x + $filter];
+                            $porcentajes_descuento_filtrado[$x] = $porcentajes_descuento[$x + $filter];
+                            $valores_factura_filtrado[$x] = $valores_factura[$x + $filter];
+                        }
                     }
                 } else {
                     $barras_filtrado = $barras;
@@ -2218,13 +2221,16 @@ class PrediosController extends Controller
 
                 if (str_contains(strtolower($alcaldia), 'paipa') && count($valores_factura) > 1) {
                     // $filter = 0; // primeros dos codigos
-                    $filter = 1; // ultimos dos codigos
+                    // $filter = 1; // ultimos dos codigos
+                    $filter = 2; // ultimo codigo
                     for ($x = 0; $x < 2; $x++) {
-                        $barras_filtrado[$x] = $barras[$x + $filter];
-                        $barras_texto_filtrado[$x] = $barras_texto[$x + $filter];
-                        $fechas_pago_hasta_filtrado[$x] = $fechas_pago_hasta[$x + $filter];
-                        $porcentajes_descuento_filtrado[$x] = $porcentajes_descuento[$x + $filter];
-                        $valores_factura_filtrado[$x] = $valores_factura[$x + $filter];
+                        if ($x + $filter <= 2) {
+                            $barras_filtrado[$x] = $barras[$x + $filter];
+                            $barras_texto_filtrado[$x] = $barras_texto[$x + $filter];
+                            $fechas_pago_hasta_filtrado[$x] = $fechas_pago_hasta[$x + $filter];
+                            $porcentajes_descuento_filtrado[$x] = $porcentajes_descuento[$x + $filter];
+                            $valores_factura_filtrado[$x] = $valores_factura[$x + $filter];
+                        }
                     }
                 } else {
                     $barras_filtrado = $barras;

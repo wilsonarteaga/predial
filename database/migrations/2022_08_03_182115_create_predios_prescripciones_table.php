@@ -16,8 +16,7 @@ class CreatePrediosPrescripcionesTable extends Migration
         Schema::create('predios_prescripciones', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_predio');
-            $table->smallInteger('prescribe_desde');
-            $table->smallInteger('prescribe_hasta');
+            $table->smallInteger('prescribe_anio');
             $table->float('valor_concepto1');
             $table->float('valor_concepto2');
             $table->float('valor_concepto3');
