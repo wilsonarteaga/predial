@@ -1482,7 +1482,7 @@ class PrediosController extends Controller
                                         ->get();
                 }
 
-                if(count($pagos_pendientes) == 1) {
+                if(count($pagos_pendientes) == 1 || strlen($ultimo_anio_pagado->ultimo_anio) == 0) {
                     $predio->anios_a_pagar = $anio_ini;
                 }
                 else {
