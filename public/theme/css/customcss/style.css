@@ -134,3 +134,8 @@ span.span_predio {
 .icons-tasks:hover {
     color: #a3a3a3;
 }
+
+#porcentaje_ex-error {
+    position: absolute;
+    top: 38px;
+}

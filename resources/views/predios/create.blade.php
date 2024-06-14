@@ -59,7 +59,7 @@
                                                 <div id="div_verificar_predio" class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
                                                     <div class="form-group">
                                                         <label class="control-label">Verificar existencia de predio:</label><br />
-                                                        <select id="id_predio_edit" class="form-control select2 json" name="id_predio_edit" data-placeholder="C&oacute;digo predio" style="width: 100%">
+                                                        <select id="id_predio_edit" class="form-control select2 json pagos" name="id_predio_edit" data-placeholder="C&oacute;digo predio" style="width: 100%">
                                                         </select>
                                                     </div>
                                                 </div>
@@ -366,7 +366,7 @@
                                                     <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label">Buscar predio:</label><br />
-                                                            <select id="id_predio" class="form-control select2 json" name="id_predio" data-placeholder="C&oacute;digo, propietario o direcci&oacute;n..." style="width: 100%">
+                                                            <select id="id_predio" class="form-control select2 json pagos" name="id_predio" data-placeholder="C&oacute;digo, propietario o direcci&oacute;n..." style="width: 100%">
                                                             </select>
                                                         </div>
                                                     </div>

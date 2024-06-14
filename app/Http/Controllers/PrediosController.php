@@ -412,7 +412,7 @@ class PrediosController extends Controller
                                             'id_predio' => $predio_validar->id
                                         ]);
 
-                                        // predios_exoneraciones_vigencia -> NO, se mantiene la informacion asociada al predio anterior
+                                        // predios_exenciones -> NO, se mantiene la informacion asociada al predio anterior
                                         // predios_prescripciones -> NO, se mantiene la informacion asociada al predio anterior
 
                                         // Eliminar el predio anterior
@@ -579,6 +579,7 @@ class PrediosController extends Controller
                     ->where('predios_pagos.pagado', 0)
                     ->where('predios_pagos.anulada', 0)
                     ->where('predios_pagos.prescrito', 0)
+                    ->where('predios_pagos.exencion', 0)
                     ->first();
 
                 $predio_prescripcion = new PredioPrescripcion();
@@ -642,7 +643,7 @@ class PrediosController extends Controller
 
                         DB::commit();
 
-                        return back()->with(['success' => 'El predio se prescribio satisfactoriamente.', 'tab_current' => $tab_current]);
+                        return back()->with(['success' => 'La informaci&oacute;n se guard&oacute; satisfactoriamente.', 'tab_current' => $tab_current]);
                     // }
                     // else {
                     //     $resolucion->delete();
@@ -1308,9 +1309,13 @@ class PrediosController extends Controller
                 $predios = DB::table('predios')->join('zonas', function ($join) {
                     $join->on('predios.id_zona', '=', 'zonas.id');
                 })
-                ->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
-                ->select(DB::raw('predios.*, zonas.descripcion, CASE WHEN COALESCE(predios_prescripciones.prescribe_anio, 0) >= YEAR(GETDATE()) THEN 1 ELSE 0 END AS prescrito, predios_prescripciones.prescribe_anio'))
-                ->where('estado', 1)
+
+                // ->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
+                // ->select(DB::raw('predios.*, zonas.descripcion, CASE WHEN COALESCE(predios_prescripciones.prescribe_anio, 0) >= YEAR(GETDATE()) THEN 1 ELSE 0 END AS prescrito, predios_prescripciones.prescribe_anio'))
+
+                ->select(DB::raw('predios.*, zonas.descripcion'))
+
+                ->where('predios.estado', 1)
                 ->where('predios.id', $id)
                 ->get();
 
@@ -1896,9 +1901,13 @@ class PrediosController extends Controller
                 $predios = DB::table('predios')->join('zonas', function ($join) {
                     $join->on('predios.id_zona', '=', 'zonas.id');
                 })
-                ->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
-                ->select(DB::raw('predios.*, zonas.descripcion, CASE WHEN COALESCE(predios_prescripciones.prescribe_anio, 0) >= YEAR(GETDATE()) THEN 1 ELSE 0 END AS prescrito, predios_prescripciones.prescribe_anio'))
-                ->where('estado', 1)
+
+                // ->leftJoin('predios_prescripciones', 'predios.id', '=', 'predios_prescripciones.id_predio')
+                // ->select(DB::raw('predios.*, zonas.descripcion, CASE WHEN COALESCE(predios_prescripciones.prescribe_anio, 0) >= YEAR(GETDATE()) THEN 1 ELSE 0 END AS prescrito, predios_prescripciones.prescribe_anio'))
+
+                ->select(DB::raw('predios.*, zonas.descripcion'))
+
+                ->where('predios.estado', 1)
                 ->where('predios.id', $id)
                 ->get();
 
@@ -2559,32 +2568,37 @@ class PrediosController extends Controller
         // maximo año seria el actual
         // verificar si hay años intermedios que no tengan calculo
         // si hay años intermedios, ejecutar calculo, sino no ejecutar
+        if (array_key_exists('calcular', $data)) {
+            $minAnioCalculado = DB::table('predios_pagos')
+                                ->select(DB::raw('min(ultimo_anio) as min_anio_calculo'))
+                                ->where('predios_pagos.id_predio', $data->{'id_predio'})
+                                ->where('prescrito', 0)
+                                ->where('exencion', 0)
+                                ->first();
 
-        $minAnioCalculado = DB::table('predios_pagos')
-                            ->select(DB::raw('min(ultimo_anio) as min_anio_calculo'))
-                            ->where('predios_pagos.id_predio', $data->{'id_predio'})
-                            ->first();
+            $listaAnios = [];
+            for($i = intval($minAnioCalculado->min_anio_calculo); $i <= $currentYear; $i++) {
+                array_push($listaAnios, $i); // implode(",", $listaAnios)
+            }
 
-        $listaAnios = [];
-        for($i = intval($minAnioCalculado->min_anio_calculo); $i <= $currentYear; $i++) {
-            array_push($listaAnios, $i); // implode(",", $listaAnios)
-        }
+            $distinct_calcs = DB::table('predios_pagos')
+                ->select(DB::raw('distinct ultimo_anio as ultimo_anio'))
+                ->where('predios_pagos.id_predio', $data->{'id_predio'})
+                ->where('prescrito', 0)
+                ->where('exencion', 0)
+                ->get();
 
-        $distinct_calcs = DB::table('predios_pagos')
-            ->select(DB::raw('distinct ultimo_anio as ultimo_anio'))
-            ->where('predios_pagos.id_predio', $data->{'id_predio'})
-            ->get();
-
-        // Solo si hay años intermedios sin calculo, se ejecutaria el calculo para poder
-        // tener la lista de años con deuda
-        if (count($distinct_calcs) < count($listaAnios)) {
-            DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?,?", array(
-                intval($request->session()->get('userid')),
-                $currentYear,
-                0, // vista previa
-                $data->{'id_predio'},
-                Carbon::createFromFormat("Y-m-d H:i:s", $dt->format('Y-m-d') . ' 00:00:00')->format('Y-m-d H:i:s')
-            ));
+            // Solo si hay años intermedios sin calculo, se ejecutaria el calculo para poder
+            // tener la lista de años con deuda
+            if (count($distinct_calcs) < count($listaAnios)) {
+                DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?,?", array(
+                    intval($request->session()->get('userid')),
+                    $currentYear,
+                    0, // vista previa
+                    $data->{'id_predio'},
+                    Carbon::createFromFormat("Y-m-d H:i:s", $dt->format('Y-m-d') . ' 00:00:00')->format('Y-m-d H:i:s')
+                ));
+            }
         }
 
         $lista_propietarios = DB::table('predios')
@@ -2645,6 +2659,8 @@ class PrediosController extends Controller
                 ->where('id_predio', $data->{'id_predio'})
                 ->where('pagado', 0)
                 ->where('anulada', 0)
+                ->where('prescrito', 0)
+                ->where('exencion', 0)
                 ->whereNotNull('factura_pago')
                 ->select(DB::raw('MAX(predios_pagos.ultimo_anio) AS ultimo_anio, predios_pagos.factura_pago'))
                 ->groupBy('predios_pagos.factura_pago')
@@ -2657,6 +2673,8 @@ class PrediosController extends Controller
             ->where('id_predio', $data->{'id_predio'})
             ->where('pagado', 0)
             ->where('anulada', 0)
+            ->where('prescrito', 0)
+            ->where('exencion', 0)
             ->whereNull('factura_pago')
             ->select(DB::raw('predios_pagos.ultimo_anio, predios_pagos.factura_pago'))
             ->orderBy('ultimo_anio', 'desc')
@@ -2690,6 +2708,8 @@ class PrediosController extends Controller
                             ->where('id_predio', $data->{'id_predio'})
                             ->where('ultimo_anio', $currentYear)
                             ->where('anulada', 0)
+                            ->where('prescrito', 0)
+                            ->where('exencion', 0)
                             ->first();
 
         // Si no existe un calculo para el año actual o si el calculo existe pero aun no tiene un numero
@@ -2704,6 +2724,7 @@ class PrediosController extends Controller
             ->where('pagado', 0)
             ->where('anulada', 0)
             ->where('prescrito', 0)
+            ->where('exencion', 0)
             ->count();
         if($count_no_pagos > 0) {
             $anios_prescripcion = DB::select('
@@ -2722,12 +2743,14 @@ class PrediosController extends Controller
                             pp.id_predio = '. $data->{'id_predio'} .' and
                             pp.pagado = 0 and
                             pp.anulada = 0 and
-                            pp.prescrito = 0
+                            pp.prescrito = 0 and
+                            pp.exencion = 0
                         order by pp.ultimo_anio desc) a) and
                     pp.id_predio = '. $data->{'id_predio'} .' and
                     pp.pagado = 0 and
                     pp.anulada = 0 and
-                    pp.prescrito = 0
+                    pp.prescrito = 0 and
+                    pp.exencion = 0
                 order by pp.ultimo_anio'
             );
         }

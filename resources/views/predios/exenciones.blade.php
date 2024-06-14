@@ -5,8 +5,8 @@
 @push('scripts')
     <!-- Laravel Javascript Validation -->
     <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
-    {!! JsValidator::formRequest('App\Http\Requests\PrediosExoneracionesCreateFormRequest', '#create-form'); !!}
-    {!! JsValidator::formRequest('App\Http\Requests\PrediosExoneracionesUpdateFormRequest', '#update-form'); !!}
+    {!! JsValidator::formRequest('App\Http\Requests\PrediosExencionesCreateFormRequest', '#create-form'); !!}
+    {!! JsValidator::formRequest('App\Http\Requests\PrediosExencionesUpdateFormRequest', '#update-form'); !!}
     <script src="{!! asset('theme/js/accounting.min.js') !!}"></script>
     <script src="{!! asset('theme/js/autonumeric.min.js') !!}"></script>
     <script src="{!! asset('theme/plugins/bower_components/jquery.serializeJSON/jquery.serializejson.min.js') !!}"></script>
@@ -41,8 +41,8 @@
                     <div class="sttabs tabs-style-bar">
                         <nav>
                             <ul>
-                                <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-check-box"><span>Nueva exoneraci&oacute;n</span></a></li>
-                                <li id="li-section-bar-2" class=""><a href="#section-bar-2" class="sticon icon-list"><span>Listado de exoneraciones</span></a></li>
+                                <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-check-box"><span>Nueva exenci&oacute;n</span></a></li>
+                                <li id="li-section-bar-2" class=""><a href="#section-bar-2" class="sticon icon-list"><span>Listado de exenciones</span></a></li>
                                 <!-- <li class=""><a href="#section-bar-3" class="sticon ti-stats-up"><span>Analytics</span></a></li>
                                 <li class=""><a href="#section-bar-4" class="sticon ti-upload"><span>Upload</span></a></li>
                                 <li class=""><a href="#section-bar-5" class="sticon ti-settings"><span>Settings</span></a></li> -->
@@ -51,7 +51,7 @@
                         <div class="content-wrap">
                             <section id="section-bar-1" class="content-current">
                                 <div class="panel panel-inverse">
-                                    <div class="panel-heading"><i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Informaci&oacute;n de la exoneraci&oacute;n de vigencia</div>
+                                    <div class="panel-heading"><i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Informaci&oacute;n de la exenci&oacute;n de vigencia</div>
                                     <div class="panel-wrapper collapse in" aria-expanded="true">
                                         <div class="panel-body">
                                             @if($opcion->resolucion_crea == 1)
@@ -73,7 +73,7 @@
                                             {{-- Formulario --}}
                                             <input class="resolucion_validate_form_level-create-form" type="hidden" value="create-form" />
                                             @endif
-                                            <form action="{{ route('prediosexoneraciones.create_exoneraciones') }}" method="post" id="create-form" desc-to-resolucion-modal="exoneraci&oacute;n de vigencia">
+                                            <form action="{{ route('prediosexenciones.create_exenciones') }}" method="post" id="create-form" desc-to-resolucion-modal="exenci&oacute;n de vigencia">
                                                 @csrf
                                                 <div class="result">
                                                     @if(Session::get('success'))
@@ -88,7 +88,7 @@
                                                     @endif
                                                 </div>
                                                 <div class="form-body">
-                                                    <!-- <h3 class="box-title">Informaci&oacute;n de la exoneraci&oacute;n</h3> -->
+                                                    <!-- <h3 class="box-title">Informaci&oacute;n de la exenci&oacute;n</h3> -->
                                                     <!-- <hr> -->
                                                     <div class="row">
                                                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -120,15 +120,15 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Desde:</label>
-                                                                <input type="text" id="exoneracion_desde" name="exoneracion_desde" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="Ingrese exoneraci&oacute;n desde" value="{{ old('exoneracion_desde') }}" maxlength="4">
-                                                                <span class="text-danger">@error('exoneracion_desde') {{ $message }} @enderror</span>
+                                                                <input type="text" id="exencion_desde" name="exencion_desde" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="Ingrese exenci&oacute;n desde" value="{{ old('exencion_desde') }}" maxlength="4">
+                                                                <span class="text-danger">@error('exencion_desde') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Hasta:</label>
-                                                                <input type="text" id="exoneracion_hasta" name="exoneracion_hasta" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="Ingrese exoneraci&oacute;n hasta" value="{{ old('exoneracion_hasta') }}" maxlength="4">
-                                                                <span class="text-danger">@error('exoneracion_hasta') {{ $message }} @enderror</span>
+                                                                <input type="text" id="exencion_hasta" name="exencion_hasta" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="Ingrese exenci&oacute;n hasta" value="{{ old('exencion_hasta') }}" maxlength="4">
+                                                                <span class="text-danger">@error('exencion_hasta') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -169,7 +169,7 @@
                                 <div id="div_table" class="row">
                                     <div class="col-lg-12">
                                         <div class="well">
-                                            @if(isset($exoneraciones))
+                                            @if(isset($exenciones))
                                                 <div class="result">
                                                     @if(Session::get('success'))
                                                         <div class="alert alert-success">
@@ -182,7 +182,7 @@
                                                         </div>
                                                     @endif
                                                 </div>
-                                                <h2>Lista de exoneraciones</h2>
+                                                <h2>Lista de exenciones</h2>
                                                 <table id="myTable" class="table table-hover table-striped table-bordered">
                                                     <thead>
                                                         <tr>
@@ -193,16 +193,16 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @if(count($exoneraciones) > 0)
-                                                            @foreach($exoneraciones as $exoneracion)
-                                                            <tr style="cursor: pointer;" id="tr_exoneracion_{{ $exoneracion->id }}" json-data='@json($exoneracion)'>
-                                                                <td class="edit_row cell_center">{{ $exoneracion->codigo_predio }}</td>
-                                                                <td class="edit_row cell_center">{{ $exoneracion->exoneracion_desde }}</td>
-                                                                <td class="edit_row cell_center">{!! $exoneracion->exoneracion_hasta !!}</td>
+                                                        @if(count($exenciones) > 0)
+                                                            @foreach($exenciones as $exencion)
+                                                            <tr style="cursor: pointer;" id="tr_exencion_{{ $exencion->id }}" json-data='@json($exencion)'>
+                                                                <td class="edit_row cell_center">{{ $exencion->codigo_predio }}</td>
+                                                                <td class="edit_row cell_center">{{ $exencion->exencion_desde }}</td>
+                                                                <td class="edit_row cell_center">{!! $exencion->exencion_hasta !!}</td>
                                                                 <td class="cell_center">
-                                                                    <button type="button" ide="{{ $exoneracion->id }}" class="modify_row btn btn-info" req_res="{{ $opcion->resolucion_edita }}"><i class="fa fa-pencil-square"></i></button>
+                                                                    <button type="button" ide="{{ $exencion->id }}" class="modify_row btn btn-info" req_res="{{ $opcion->resolucion_edita }}"><i class="fa fa-pencil-square"></i></button>
                                                                     &nbsp;&nbsp;
-                                                                    <button type="button" ide="{{ $exoneracion->id }}" class="delete_row btn btn-inverse" req_res="{{ $opcion->resolucion_elimina }}" msg="¿Está seguro/a que desea anular la exoneraci&oacute;n del predio?"><i class="fa fa-trash-o"></i></button>
+                                                                    <button type="button" ide="{{ $exencion->id }}" class="delete_row btn btn-inverse" req_res="{{ $opcion->resolucion_elimina }}" msg="¿Está seguro/a que desea anular la exenci&oacute;n del predio?"><i class="fa fa-trash-o"></i></button>
                                                                 </td>
                                                             </tr>
                                                             @endforeach
@@ -216,7 +216,7 @@
                                                 {{-- <div class="pagination-blobk">
                                                     {{ $predios->links('layouts.paginationlinks') }}
                                                 </div> --}}
-                                                <form id="form_delete" action="{{ route('prediosexoneraciones.delete_exoneraciones') }}" method="post" style="display: none;">
+                                                <form id="form_delete" action="{{ route('prediosexenciones.delete_exenciones') }}" method="post" style="display: none;">
                                                     @csrf
                                                     <input type="hidden" id="input_delete" name="input_delete">
                                                 </form>
@@ -226,7 +226,7 @@
                                 </div>
                                 <div id="div_edit_form" class="panel panel-info" style="display: none; margin-bottom: 0px">
                                     <div class="panel-heading">
-                                        <i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Actualizar informaci&oacute;n de la exoneraci&oacute;n
+                                        <i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Actualizar informaci&oacute;n de la exenci&oacute;n
                                     </div>
                                     <div class="panel-wrapper collapse in" aria-expanded="true">
                                         <div class="panel-body">
@@ -249,7 +249,7 @@
                                             {{-- Formulario --}}
                                             <input class="resolucion_validate_form_level-update-form" type="hidden" value="update-form" />
                                             @endif
-                                            <form action="{{ route('prediosexoneraciones.update_exoneraciones') }}" method="post" id="update-form" desc-to-resolucion-modal="exoneraci&oacute;n de vigencia">
+                                            <form action="{{ route('prediosexenciones.update_exenciones') }}" method="post" id="update-form" desc-to-resolucion-modal="exenci&oacute;n de vigencia">
                                                 @csrf
 
                                                 <div class="form-body">
@@ -266,15 +266,15 @@
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Desde:</label>
-                                                                <input type="text" id="exoneracion_desde_edit" name="exoneracion_desde_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese exoneraci&oacute;n desde" value="{{ old('exoneracion_desde_edit') }}" maxlength="4">
-                                                                <span class="text-danger">@error('exoneracion_desde_edit') {{ $message }} @enderror</span>
+                                                                <input type="text" id="exencion_desde_edit" name="exencion_desde_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese exenci&oacute;n desde" value="{{ old('exencion_desde_edit') }}" maxlength="4">
+                                                                <span class="text-danger">@error('exencion_desde_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Hasta:</label>
-                                                                <input type="text" id="exoneracion_hasta_edit" name="exoneracion_hasta_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese exoneraci&oacute;n hasta" value="{{ old('exoneracion_hasta_edit') }}" maxlength="4">
-                                                                <span class="text-danger">@error('exoneracion_hasta_edit') {{ $message }} @enderror</span>
+                                                                <input type="text" id="exencion_hasta_edit" name="exencion_hasta_edit" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese exenci&oacute;n hasta" value="{{ old('exencion_hasta_edit') }}" maxlength="4">
+                                                                <span class="text-danger">@error('exencion_hasta_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
                                                     </div>

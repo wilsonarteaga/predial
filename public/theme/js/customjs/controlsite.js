@@ -15,7 +15,7 @@ var global_anios = null;
 var global_acuerdo_pago = null;
 var global_ultima_factura = null;
 var global_plusvalia = 0;
-var arr_autonumeric = ['porcentaje', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
+var arr_autonumeric = ['porcentaje', 'porcentaje_ex', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
     'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_abono',
     'valor_facturado', 'avaluoigac', 'area', 'valor_paz', 'tasa_diaria', 'tasa_mensual', 'tasa_acuerdo','abono_inicial_acuerdo'
 ];
@@ -121,8 +121,10 @@ $(document).ready(function() {
                 if($('#id_predio.select2.json').length > 0) {
                     $('#id_predio.select2.json').val(null).trigger('change');
                     $('#id_predio.select2.json').find('option').remove();
-                    if($('#myTable').length > 0) {
-                        $('#myTable').find('tbody').empty();
+                    if ($('#id_predio.select2.json.pagos').length) {
+                        if($('#myTable').length > 0) {
+                            $('#myTable').find('tbody').empty();
+                        }
                     }
                 }
             }
@@ -610,54 +612,54 @@ $(document).ready(function() {
         evt.preventDefault();
     });
 
-    if($('#exoneracion_desde').length > 0) {
-        $('#exoneracion_desde').off('keyup blur change').on('keyup blur change', function() {
-            if($(this).val().length === 4) {
-                if($('#exoneracion_hasta').val().length === 4) {
-                    var validatorCreate = $("#create-form").validate();
-                    validatorCreate.resetForm();
-                    $.each($('.has-success'), function(i, el) {
-                        $(el).removeClass('has-success');
-                    });
-                    $.each($('.has-error'), function(i, el) {
-                        $(el).removeClass('has-error');
-                    });
-                    $('#create-form').validate().element($('#exoneracion_hasta'));
-                }
-            }
-        });
-        $('#exoneracion_hasta').off('keyup blur change').on('keyup blur change', function() {
-            if($(this).val().length === 4) {
-                if($('#exoneracion_desde').val().length === 4) {
-                    $('#create-form').validate().element($('#exoneracion_desde'));
-                    $('#exoneracion_desde').trigger('blur');
-                }
-            }
-        });
-        $('#exoneracion_desde_edit').off('keyup blur change').on('keyup blur change', function() {
-            if($(this).val().length === 4) {
-                if($('#exoneracion_hasta_edit').val().length === 4) {
-                    var validatorUpdate = $("#update-form").validate();
-                    validatorUpdate.resetForm();
-                    $.each($('.has-success'), function(i, el) {
-                        $(el).removeClass('has-success');
-                    });
-                    $.each($('.has-error'), function(i, el) {
-                        $(el).removeClass('has-error');
-                    });
-                    $('#update-form').validate().element($('#exoneracion_hasta_edit'));
-                }
-            }
-        });
-        $('#exoneracion_hasta_edit').off('keyup blur change').on('keyup blur change', function() {
-            if($(this).val().length === 4) {
-                if($('#exoneracion_desde_edit').val().length === 4) {
-                    $('#update-form').validate().element($('#exoneracion_desde_edit'));
-                    $('#exoneracion_desde_edit').trigger('blur');
-                }
-            }
-        });
-    }
+    // if($('#exencion_desde').length > 0) {
+    //     $('#exencion_desde').off('keyup blur change').on('keyup blur change', function() {
+    //         if($(this).val().length === 4) {
+    //             if($('#exencion_hasta').val().length === 4) {
+    //                 var validatorCreate = $("#create-form").validate();
+    //                 validatorCreate.resetForm();
+    //                 $.each($('.has-success'), function(i, el) {
+    //                     $(el).removeClass('has-success');
+    //                 });
+    //                 $.each($('.has-error'), function(i, el) {
+    //                     $(el).removeClass('has-error');
+    //                 });
+    //                 $('#create-form').validate().element($('#exencion_hasta'));
+    //             }
+    //         }
+    //     });
+    //     $('#exencion_hasta').off('keyup blur change').on('keyup blur change', function() {
+    //         if($(this).val().length === 4) {
+    //             if($('#exencion_desde').val().length === 4) {
+    //                 $('#create-form').validate().element($('#exencion_desde'));
+    //                 $('#exencion_desde').trigger('blur');
+    //             }
+    //         }
+    //     });
+    //     $('#exencion_desde_edit').off('keyup blur change').on('keyup blur change', function() {
+    //         if($(this).val().length === 4) {
+    //             if($('#exencion_hasta_edit').val().length === 4) {
+    //                 var validatorUpdate = $("#update-form").validate();
+    //                 validatorUpdate.resetForm();
+    //                 $.each($('.has-success'), function(i, el) {
+    //                     $(el).removeClass('has-success');
+    //                 });
+    //                 $.each($('.has-error'), function(i, el) {
+    //                     $(el).removeClass('has-error');
+    //                 });
+    //                 $('#update-form').validate().element($('#exencion_hasta_edit'));
+    //             }
+    //         }
+    //     });
+    //     $('#exencion_hasta_edit').off('keyup blur change').on('keyup blur change', function() {
+    //         if($(this).val().length === 4) {
+    //             if($('#exencion_desde_edit').val().length === 4) {
+    //                 $('#update-form').validate().element($('#exencion_desde_edit'));
+    //                 $('#exencion_desde_edit').trigger('blur');
+    //             }
+    //         }
+    //     });
+    // }
 
     if($('#id_predio.select2').length > 0) {
         $('#id_predio.select2').select2({
@@ -696,14 +698,19 @@ $(document).ready(function() {
         });
 
         $('#id_predio.select2').on('select2:select', function (e) {
-            if ($('#id_predio.select2').closest('form').length > 0) {
+            if ($('#id_predio.select2').closest('form').length > 0 && !$('#id_predio.select2').hasClass('json')) {
                 if ($('#id_predio.select2').closest('form').attr('id') === 'create-form') {
                     $('#create-form').validate().element($('#id_predio.select2'));
                 }
             }
             else {
                 if($('#id_predio.select2').hasClass('json')) {
-                    getPredio($('#id_predio.select2').val(), true);
+                    if($('#id_predio.select2').hasClass('pagos')) {
+                        getPredio($('#id_predio.select2').val(), true);
+                    } else if($('#id_predio.select2').hasClass('prescripciones_exenciones')) {
+                        getPredioPrescripcionExencion($('#id_predio.select2').val(), true);
+                    }
+
                     if ($('#id_predio.select2').find('option').length > 1) {
                         $('#id_predio.select2').find('option:eq(0)').remove();
                     }
@@ -1236,6 +1243,7 @@ function getPredio(id_predio, showBlock) {
     $('.result').empty();
     var jsonObj = {};
     jsonObj.id_predio = id_predio;
+    jsonObj.calcular = 1;
     $.ajax({
         type: 'POST',
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -1310,8 +1318,8 @@ function getPredio(id_predio, showBlock) {
 
                 var htmlBotones = '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Editar predio" ide="' + predio.id + '" class="modify_row btn btn-instagram" req_res="' + opcion.resolucion_edita + '" ' + disabledBtnEdita + '><i class="fa fa-pencil-square"></i></button>' +
                                   '&nbsp;&nbsp;' +
-                                  '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Prescribir predio" ide="' + predio.id + '" class="prescribe_row btn ' + classBtn + '" ' + disabledBtnPrescribe + '><i class="fa fa-clock-o"></i></button>' +
-                                  '&nbsp;&nbsp;' +
+                                //   '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Prescribir predio" ide="' + predio.id + '" class="prescribe_row btn ' + classBtn + '" ' + disabledBtnPrescribe + '><i class="fa fa-clock-o"></i></button>' +
+                                //   '&nbsp;&nbsp;' +
                                   '<button id="btn_calculo_predio_' + predio.id + '" type="button" data-toggle="tooltip" data-placement="bottom" title="Generar factura" ide="' + predio.id + '" class="download_factura_row btn btn-'+ colorBtnCalculo +'" url="/generate_factura_pdf/' + predio.id + '" msg="¿Está seguro/a que desea ejecutar el cálculo?" ' + disabledBtnCalculo + '><i id="i_calculo_predio_' + predio.id + '" class="fa ' + classBtnCalculo + '"></i></button>' +
                                   '&nbsp;&nbsp;' +
                                   '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Generar paz y salvo" ide="' + predio.id + '" class="download_paz_row btn btn-warning" url="/generate_paz_pdf/' + predio.id + '" plusv="' + predio.ind_plusvalia + '" msg="¿Está seguro/a que desea generar el paz y salvo?" ' + disabledBtnPaz + '><i class="fa fa-trophy"></i></button>' +
@@ -1384,6 +1392,108 @@ function getPredio(id_predio, showBlock) {
                         $.unblockUI();
                     });
                 }, 500);
+            } else {
+                $.unblockUI();
+            }
+        },
+        error: function(xhr) {
+            console.log(xhr.responseText);
+            $.unblockUI();
+        }
+    });
+}
+
+function getPredioPrescripcionExencion(id_predio, showBlock) {
+    if (showBlock) {
+        $.blockUI({
+            message: "Ejecutando b&uacute;squeda de predio. Espere un momento.",
+            css: {
+                border: 'none',
+                padding: '15px',
+                backgroundColor: '#000',
+                '-webkit-border-radius': '10px',
+                '-moz-border-radius': '10px',
+                opacity: .5,
+                color: '#fff',
+                zIndex: 9999
+            },
+            overlayCSS:  {
+                zIndex: 1100
+            },
+        });
+    }
+    // global_ya_pagado = false;
+    // global_anio_actual = 0;
+    // global_predio_con_deuda = false;
+    global_anios_prescripcion = [];
+    $('.result').empty();
+    var jsonObj = {};
+    jsonObj.id_predio = id_predio;
+    $.ajax({
+        type: 'POST',
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        dataType: 'json',
+        url: '/get_predio',
+        data: {
+            form: JSON.stringify(jsonObj)
+        },
+        success: function(response) {
+            // $('#myTable').find('tbody').empty();
+            if (Object.keys(response.predio).length > 0) {
+                // var opcion = JSON.parse($('#opcion').val());
+                // var predio = response.predio;
+                // var anios = response.anios;
+                // global_acuerdo_pago = response.acuerdo_pago;
+                // global_propietario = response.propietario;
+                // global_propietarios = response.propietarios;
+                // global_anios = response.anios;
+                // global_ultima_factura = response.ultimo_anio;
+                if (response.anios_prescripcion.length > 0) {
+                    global_anios_prescripcion = response.anios_prescripcion.map(el => el.ultimo_anio);
+                } else {
+                    global_anios_prescripcion = [];
+                }
+                // global_anio_actual = Number(response.anio_actual);
+
+                if (global_anios_prescripcion.length > 0) {
+                    if ($('#prescribe_hasta').length || $('#exencion_hasta').length) {
+                        var control = $('#prescribe_hasta').length ? 'prescribe' : 'exencion';
+                        var control_label = $('#prescribe_hasta').length ? 'prescripci&oacute;n' : 'exenci&oacute;n';
+                        $.each(global_anios_prescripcion, function(i, el) {
+                            $('#' + control + '_hasta').append('<option value="' + el + '">' + el + '</option>');
+                        });
+                        $('#' + control + '_hasta').selectpicker('refresh');
+                        $('#' + control + '_desde').val(global_anios_prescripcion[0]);
+                        $('#' + control + '_hasta').focus();
+
+                        $('#' + control + '_hasta').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+                            $('#span_' + control).html(`A&ntilde;os a tener en cuenta en la ${control_label}: <b>${Number($('#' + control + '_hasta').selectpicker('val')) - Number($('#' + control + '_desde').val()) + 1}</b>`);
+                            if ($('#create-form').length) {
+                                var validatorCreate = $("#create-form").validate();
+                                validatorCreate.resetForm();
+                                $.each($('.has-success'), function(i, el) {
+                                    $(el).removeClass('has-success');
+                                });
+                                $.each($('.has-error'), function(i, el) {
+                                    $(el).removeClass('has-error');
+                                });
+                            }
+                        });
+                    }
+                }
+
+                if ($('#create-form').length) {
+                    var validatorCreate = $("#create-form").validate();
+                    validatorCreate.resetForm();
+                    $.each($('.has-success'), function(i, el) {
+                        $(el).removeClass('has-success');
+                    });
+                    $.each($('.has-error'), function(i, el) {
+                        $(el).removeClass('has-error');
+                    });
+                }
+
+                $.unblockUI();
             } else {
                 $.unblockUI();
             }
