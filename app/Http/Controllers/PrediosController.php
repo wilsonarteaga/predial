@@ -1073,8 +1073,12 @@ class PrediosController extends Controller
             $predio_acuerdo_pago->numero_resolucion_acuerdo = $data->{'numero_resolucion_acuerdo'};
             $predio_acuerdo_pago->dia_pago_acuerdo = $data->{'dia_pago_acuerdo'};
             $predio_acuerdo_pago->abono_inicial_acuerdo = str_replace(",", "", $data->{'abono_inicial_acuerdo'});
+            $predio_acuerdo_pago->id_usuario_crea = intval($request->session()->get('userid'));
+
         } else {
-            $predio_acuerdo_pago->anulado_acuerdo = $data->{'anulado_acuerdo'};
+            $predio_acuerdo_pago->estado_acuerdo = $data->{'anulado_acuerdo'};
+            $predio_acuerdo_pago->id_usuario_anula = intval($request->session()->get('userid'));
+            $predio_acuerdo_pago->fecha_anulacion = Carbon::createFromFormat("Y-m-d H:i:s", Carbon::now()->toDateTimeString())->format('Y-m-d H:i:s');
         }
         $query = $predio_acuerdo_pago->save();
 
@@ -2641,7 +2645,7 @@ class PrediosController extends Controller
 
         $acuerdo_pago = PredioAcuerdoPago::where('id_predio', $data->{'id_predio'})
                         ->where('estado_acuerdo', 1)
-                        ->where('anulado_acuerdo', 0)
+                        // ->where('anulado_acuerdo', 0)
                         ->first();
 
         $propietario = DB::table('predios')

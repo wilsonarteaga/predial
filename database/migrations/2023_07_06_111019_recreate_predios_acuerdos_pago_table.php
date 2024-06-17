@@ -30,10 +30,14 @@ class RecreatePrediosAcuerdosPagoTable extends Migration
             $table->tinyInteger('dia_pago_acuerdo')->default(1);
             $table->decimal('abono_inicial_acuerdo', $precision = 20, $scale = 8)->default(0);
             $table->boolean('estado_acuerdo')->default(1); // 1=activo, 0=inactivo
-            $table->boolean('anulado_acuerdo')->default(0); // 1=SI, 0=NO
+            $table->unsignedBigInteger('id_usuario_crea');
+            $table->unsignedBigInteger('id_usuario_anula')->nullable();
+            $table->date('fecha_anulacion')->nullable();
             $table->timestamps();
 
             $table->foreign('id_predio')->references('id')->on('predios');
+            $table->foreign('id_usuario_crea')->references('id')->on('usuarios');
+            $table->foreign('id_usuario_anula')->references('id')->on('usuarios');
         });
     }
 

@@ -1391,6 +1391,7 @@
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12">
                         <form id="form-predios-datos-acuerdos-pago">
+                            <input type="hidden" id="anulado_acuerdo" name="anulado_acuerdo" value="0" />
                             <div class="form-body">
                                 <div class="row">
                                     <div id="div_acuerdo_numero" class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
