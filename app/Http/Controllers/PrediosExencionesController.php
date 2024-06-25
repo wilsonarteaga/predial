@@ -115,7 +115,8 @@ class PrediosExencionesController extends Controller
                             predios_pagos.valor_concepto27,
                             predios_pagos.valor_concepto28,
                             predios_pagos.valor_concepto29,
-                            predios_pagos.valor_concepto30
+                            predios_pagos.valor_concepto30,
+                            predios_pagos.avaluo
                         "))
                         ->where('predios_pagos.id_predio', $predio->id)
                         ->where('predios_pagos.ultimo_anio', '=', $i)
@@ -131,8 +132,8 @@ class PrediosExencionesController extends Controller
                     $predio_exencion->porcentaje = str_replace("%", "", $request->porcentaje_ex);
                     $predio_exencion->valor_concepto1 = $valores_predio_pago->valor_concepto1;
                     $predio_exencion->valor_concepto2 = $valores_predio_pago->valor_concepto2;
-                    // $predio_exencion->valor_concepto3 = $valores_predio_pago->valor_concepto3;
-                    // $predio_exencion->valor_concepto4 = $valores_predio_pago->valor_concepto4;
+                    $predio_exencion->valor_concepto3 = $valores_predio_pago->valor_concepto3;
+                    $predio_exencion->valor_concepto4 = $valores_predio_pago->valor_concepto4;
                     $predio_exencion->valor_concepto5 = $valores_predio_pago->valor_concepto5;
                     $predio_exencion->valor_concepto6 = $valores_predio_pago->valor_concepto6;
                     $predio_exencion->valor_concepto7 = $valores_predio_pago->valor_concepto7;
@@ -159,6 +160,7 @@ class PrediosExencionesController extends Controller
                     $predio_exencion->valor_concepto28 = $valores_predio_pago->valor_concepto28;
                     $predio_exencion->valor_concepto29 = $valores_predio_pago->valor_concepto29;
                     $predio_exencion->valor_concepto30 = $valores_predio_pago->valor_concepto30;
+                    $predio_exencion->avaluo = $valores_predio_pago->avaluo;
                     $query = $predio_exencion->save();
                 }
 

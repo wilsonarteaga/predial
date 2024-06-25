@@ -47,6 +47,7 @@ class CreatePrediosPrescripcionesTable extends Migration
             $table->float('valor_concepto28');
             $table->float('valor_concepto29');
             $table->float('valor_concepto30');
+            $table->float('avaluo');
             $table->timestamps();
 
             $table->foreign('id_predio')->references('id')->on('predios');

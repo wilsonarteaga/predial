@@ -572,7 +572,8 @@ class PrediosController extends Controller
                         predios_pagos.valor_concepto27,
                         predios_pagos.valor_concepto28,
                         predios_pagos.valor_concepto29,
-                        predios_pagos.valor_concepto30
+                        predios_pagos.valor_concepto30,
+                        predios_pagos.avaluo
                     "))
                     ->where('predios_pagos.id_predio', $predio->id)
                     ->where('predios_pagos.ultimo_anio', '=', $i)
@@ -587,8 +588,8 @@ class PrediosController extends Controller
                 $predio_prescripcion->prescribe_anio = $i;
                 $predio_prescripcion->valor_concepto1 = $valores_predio_pago->valor_concepto1;
                 $predio_prescripcion->valor_concepto2 = $valores_predio_pago->valor_concepto2;
-                // $predio_prescripcion->valor_concepto3 = $valores_predio_pago->valor_concepto3;
-                // $predio_prescripcion->valor_concepto4 = $valores_predio_pago->valor_concepto4;
+                $predio_prescripcion->valor_concepto3 = $valores_predio_pago->valor_concepto3;
+                $predio_prescripcion->valor_concepto4 = $valores_predio_pago->valor_concepto4;
                 $predio_prescripcion->valor_concepto5 = $valores_predio_pago->valor_concepto5;
                 $predio_prescripcion->valor_concepto6 = $valores_predio_pago->valor_concepto6;
                 $predio_prescripcion->valor_concepto7 = $valores_predio_pago->valor_concepto7;
@@ -615,6 +616,7 @@ class PrediosController extends Controller
                 $predio_prescripcion->valor_concepto28 = $valores_predio_pago->valor_concepto28;
                 $predio_prescripcion->valor_concepto29 = $valores_predio_pago->valor_concepto29;
                 $predio_prescripcion->valor_concepto30 = $valores_predio_pago->valor_concepto30;
+                $predio_prescripcion->avaluo = $valores_predio_pago->avaluo;
                 $query = $predio_prescripcion->save();
             }
 
