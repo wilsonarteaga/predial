@@ -26,7 +26,6 @@ class PrediosExencionesCreateFormRequest extends FormRequest
         return [
             'id_predio' => 'required',
             'porcentaje_ex' => 'required|numeric|min:1',
-            'exencion_desde' => 'required',
             'exencion_hasta' => 'required'
         ];
     }
@@ -37,8 +36,7 @@ class PrediosExencionesCreateFormRequest extends FormRequest
             'id_predio.required' => 'El campo código predio es obligatorio.',
             'porcentaje_ex.required' => 'El campo porcentaje es obligatorio.',
             'porcentaje_ex.min' => 'Mínimo porcentaje permitido :min',
-            'exencion_desde.required' => 'El campo exención desde es obligatorio.',
-            'exencion_hasta.required' => 'El campo exención hasta es obligatorio.'
+            'exencion_hasta.required' => 'El campo año es obligatorio.'
         ];
     }
 }

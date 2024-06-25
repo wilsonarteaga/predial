@@ -2726,6 +2726,7 @@ class PrediosController extends Controller
 
         // Verificar prescripcion
         $anios_prescripcion = [];
+        $anios_exencion = [];
         $count_no_pagos = PredioPago::where('id_predio', $data->{'id_predio'})
             ->where('pagado', 0)
             ->where('anulada', 0)
@@ -2759,6 +2760,20 @@ class PrediosController extends Controller
                     pp.exencion = 0
                 order by pp.ultimo_anio'
             );
+
+            $anios_exencion = DB::select('
+                select
+                    pp.ultimo_anio
+                from
+                    predios_pagos pp
+                where
+                    pp.id_predio = '. $data->{'id_predio'} .' and
+                    pp.pagado = 0 and
+                    pp.anulada = 0 and
+                    pp.prescrito = 0 and
+                    pp.exencion = 0
+                order by pp.ultimo_anio'
+            );
         }
 
         return response()->json(
@@ -2770,7 +2785,8 @@ class PrediosController extends Controller
                 'anios' => $array_anios,
                 'anio_actual' => $currentYear,
                 'ultimo_anio' => $ultimo_anio_pagar,
-                'anios_prescripcion' => $anios_prescripcion
+                'anios_prescripcion' => $anios_prescripcion,
+                'anios_exencion' => $anios_exencion,
             ]
         );
     }

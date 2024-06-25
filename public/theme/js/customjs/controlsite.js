@@ -8,7 +8,7 @@ var global_predio_con_deuda = false;
 var global_anio_actual = 0;
 var existe_predio = false;
 var codigo_predio_buscando = '';
-var global_anios_prescripcion = [];
+var global_anios_prescripcion_exencion = [];
 var global_propietario = null;
 var global_propietarios = null;
 var global_anios = null;
@@ -708,7 +708,7 @@ $(document).ready(function() {
                     if($('#id_predio.select2').hasClass('pagos')) {
                         getPredio($('#id_predio.select2').val(), true);
                     } else if($('#id_predio.select2').hasClass('prescripciones_exenciones')) {
-                        getPredioPrescripcionExencion($('#id_predio.select2').val(), true);
+                        getPredioPrescripcionExencion($('#id_predio.select2').val(), true, $('#prescribe_hasta').length > 0);
                     }
 
                     if ($('#id_predio.select2').find('option').length > 1) {
@@ -1235,7 +1235,7 @@ function getPredio(id_predio, showBlock) {
     global_ya_pagado = false;
     global_anio_actual = 0;
     global_predio_con_deuda = false;
-    global_anios_prescripcion = [];
+    global_anios_prescripcion_exencion = [];
     $('#div_fecha_pago_factura').css('display', 'none');
     $('#identificacion_acuerdo').attr('readonly', false);
     $('#nombre_acuerdo').attr('readonly', false);
@@ -1264,9 +1264,9 @@ function getPredio(id_predio, showBlock) {
                 global_anios = response.anios;
                 global_ultima_factura = response.ultimo_anio;
                 if (response.anios_prescripcion.length > 0) {
-                    global_anios_prescripcion = response.anios_prescripcion.map(el => el.ultimo_anio);
+                    global_anios_prescripcion_exencion = response.anios_prescripcion.map(el => el.ultimo_anio);
                 } else {
-                    global_anios_prescripcion = [];
+                    global_anios_prescripcion_exencion = [];
                 }
                 global_anio_actual = Number(response.anio_actual);
                 var classBtn = 'btn-info';
@@ -1288,7 +1288,7 @@ function getPredio(id_predio, showBlock) {
                 //     disabledBtnEdita = 'disabled="disabled"';
                 //     disabledBtnElimina = 'disabled="disabled"';
                 // }
-                if (global_anios_prescripcion.length === 0) {
+                if (global_anios_prescripcion_exencion.length === 0) {
                     disabledBtnPrescribe = 'disabled="disabled"';
                 }
 
@@ -1403,7 +1403,7 @@ function getPredio(id_predio, showBlock) {
     });
 }
 
-function getPredioPrescripcionExencion(id_predio, showBlock) {
+function getPredioPrescripcionExencion(id_predio, showBlock, is_prescripciones_form) {
     if (showBlock) {
         $.blockUI({
             message: "Ejecutando b&uacute;squeda de predio. Espere un momento.",
@@ -1425,7 +1425,7 @@ function getPredioPrescripcionExencion(id_predio, showBlock) {
     // global_ya_pagado = false;
     // global_anio_actual = 0;
     // global_predio_con_deuda = false;
-    global_anios_prescripcion = [];
+    global_anios_prescripcion_exencion = [];
     $('.result').empty();
     var jsonObj = {};
     jsonObj.id_predio = id_predio;
@@ -1438,36 +1438,36 @@ function getPredioPrescripcionExencion(id_predio, showBlock) {
             form: JSON.stringify(jsonObj)
         },
         success: function(response) {
-            // $('#myTable').find('tbody').empty();
             if (Object.keys(response.predio).length > 0) {
-                // var opcion = JSON.parse($('#opcion').val());
-                // var predio = response.predio;
-                // var anios = response.anios;
-                // global_acuerdo_pago = response.acuerdo_pago;
-                // global_propietario = response.propietario;
-                // global_propietarios = response.propietarios;
-                // global_anios = response.anios;
-                // global_ultima_factura = response.ultimo_anio;
-                if (response.anios_prescripcion.length > 0) {
-                    global_anios_prescripcion = response.anios_prescripcion.map(el => el.ultimo_anio);
+                if (response.anios_prescripcion.length > 0 || response.anios_exencion.length > 0) {
+                    if (is_prescripciones_form) {
+                        global_anios_prescripcion_exencion = response.anios_prescripcion.map(el => el.ultimo_anio);
+                    } else {
+                        global_anios_prescripcion_exencion = response.anios_exencion.map(el => el.ultimo_anio);
+                    }
                 } else {
-                    global_anios_prescripcion = [];
+                    global_anios_prescripcion_exencion = [];
                 }
-                // global_anio_actual = Number(response.anio_actual);
 
-                if (global_anios_prescripcion.length > 0) {
+                if (global_anios_prescripcion_exencion.length > 0) {
                     if ($('#prescribe_hasta').length || $('#exencion_hasta').length) {
                         var control = $('#prescribe_hasta').length ? 'prescribe' : 'exencion';
                         var control_label = $('#prescribe_hasta').length ? 'prescripci&oacute;n' : 'exenci&oacute;n';
-                        $.each(global_anios_prescripcion, function(i, el) {
+                        $.each(global_anios_prescripcion_exencion, function(i, el) {
                             $('#' + control + '_hasta').append('<option value="' + el + '">' + el + '</option>');
                         });
                         $('#' + control + '_hasta').selectpicker('refresh');
-                        $('#' + control + '_desde').val(global_anios_prescripcion[0]);
+                        if (is_prescripciones_form) {
+                            $('#' + control + '_desde').val(global_anios_prescripcion_exencion[0]);
+                        }
                         $('#' + control + '_hasta').focus();
 
                         $('#' + control + '_hasta').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
-                            $('#span_' + control).html(`A&ntilde;os a tener en cuenta en la ${control_label}: <b>${Number($('#' + control + '_hasta').selectpicker('val')) - Number($('#' + control + '_desde').val()) + 1}</b>`);
+                            if (is_prescripciones_form) {
+                                $('#span_' + control).html(`A&ntilde;os a tener en cuenta en la ${control_label}: <b>${Number($('#' + control + '_hasta').selectpicker('val')) - Number($('#' + control + '_desde').val()) + 1}</b>`);
+                            } else {
+                                $('#span_' + control).html(`A&ntilde;o a tener en cuenta en la ${control_label}: <b>${$('#' + control + '_hasta').selectpicker('val')}</b>`);
+                            }
                             if ($('#create-form').length) {
                                 var validatorCreate = $("#create-form").validate();
                                 validatorCreate.resetForm();
@@ -1541,7 +1541,7 @@ function setPrescribeRow() {
         $('#span_prescribir').html('&nbsp;');
         $('#prescribe_desde_modal').val('');
         $('#prescribe_hasta_modal').empty();
-        $.each(global_anios_prescripcion, function(i, el) {
+        $.each(global_anios_prescripcion_exencion, function(i, el) {
             $('#prescribe_hasta_modal').append('<option value="' + el + '">' + el + '</option>');
         });
         $('#prescribe_hasta_modal').selectpicker('refresh');
@@ -1575,7 +1575,7 @@ function setPrescribeRow() {
             $('#form-predios-prescripcion')[0].reset();
             clear_form_elements("#form-predios-prescripcion");
             validatorPrescripciones.resetForm();
-            $('#prescribe_desde_modal').val(global_anios_prescripcion[0]);
+            $('#prescribe_desde_modal').val(global_anios_prescripcion_exencion[0]);
             $('#prescribe_hasta_modal').focus();
         });
 

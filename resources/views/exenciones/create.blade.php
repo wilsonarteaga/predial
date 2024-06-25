@@ -96,7 +96,7 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Buscar predio:</label>
-                                                                <select id="id_predio" class="form-control select2 json prescripciones_exenciones" name="id_predio" data-placeholder="C&oacute;digo, propietario o direcci&oacute;n..." style="width: 100%">
+                                                                <select id="id_predio" class="form-control select2 json prescripciones_exenciones res-validate" name="id_predio" data-placeholder="C&oacute;digo, propietario o direcci&oacute;n..." style="width: 100%">
                                                                 </select>
                                                                 <span class="text-danger">@error('id_predio') {{ $message }} @enderror</span>
                                                             </div>
@@ -105,7 +105,7 @@
                                                             <div class="form-group">
                                                                 <label for="porcentaje" class="control-label">Porcentaje:</label>
                                                                 <div class="input-group">
-                                                                    <input type="text" id="porcentaje_ex" name="porcentaje_ex" class="form-control onlyNumbers" autocomplete="off" placeholder="Ingrese porcentaje" value="{{ old('porcentaje_ex') }}">
+                                                                    <input type="text" id="porcentaje_ex" name="porcentaje_ex" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="Ingrese porcentaje" value="{{ old('porcentaje_ex') }}">
                                                                     <div class="input-group-addon">%</div>
                                                                 </div>
                                                             </div>
@@ -113,16 +113,9 @@
                                                         </div>
                                                         <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
                                                             <div class="form-group">
-                                                                <label class="control-label">Desde:</label>
-                                                                <input type="text" id="exencion_desde" name="exencion_desde" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="A&ntilde;o..." value="{{ old('exencion_desde') }}" maxlength="4" readonly="readonly">
-                                                                {{-- <span class="text-danger">@error('exencion_desde') {{ $message }} @enderror</span> --}}
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Hasta:</label>
+                                                                <label class="control-label">A&ntilde;o:</label>
                                                                 {{-- <input type="text" id="exencion_hasta" name="exencion_hasta" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="A&ntilde;o..." value="{{ old('exencion_hasta') }}" maxlength="4"> --}}
-                                                                <select id="exencion_hasta" name="exencion_hasta" class="form-control selectpicker" data-size="3" title="A&ntilde;o..." style="width: 100%;">
+                                                                <select id="exencion_hasta" name="exencion_hasta" class="form-control selectpicker res-validate" data-size="3" title="A&ntilde;o..." style="width: 100%;">
                                                                 </select>
                                                                 <span class="text-danger">@error('exencion_hasta') {{ $message }} @enderror</span>
                                                             </div>
@@ -166,18 +159,17 @@
                                                         <tr>
                                                             <th class="cell_center" style="width: auto;">C&oacute;digo predio</th>
                                                             <th class="cell_center" style="width: 7%;">Porcentaje</th>
-                                                            <th class="cell_center" style="width: auto;">Desde</th>
-                                                            <th class="cell_center" style="width: auto;">Hasta</th>
+                                                            {{-- <th class="cell_center" style="width: auto;">Desde</th> --}}
+                                                            <th class="cell_center" style="width: auto;">A&ntilde;o</th>
                                                             <th class="cell_center" style="width: auto;">Fecha creaci&oacute;n</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         @if(count($exenciones) > 0)
                                                             @foreach($exenciones as $exencion)
-                                                            <tr style="cursor: pointer;" id="tr_exencion_{{ $exencion->id }}" json-data='@json($exencion)'>
+                                                            <tr style="cursor: pointer;" id="tr_exencion_{{ $exencion->id }}" json-data='@json($exencion)' class='disabled'>
                                                                 <td class="edit_row cell_center">{{ $exencion->codigo_predio }}</td>
                                                                 <td class="edit_row cell_center">{{ $exencion->porcentaje }}</td>
-                                                                <td class="edit_row cell_center">{{ $exencion->exencion_desde }}</td>
                                                                 <td class="edit_row cell_center">{{ $exencion->exencion_hasta }}</td>
                                                                 <td class="edit_row cell_center">{{ $exencion->created_at }}</td>
                                                             </tr>

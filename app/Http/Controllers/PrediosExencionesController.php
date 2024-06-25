@@ -39,19 +39,10 @@ class PrediosExencionesController extends Controller
 
         $exenciones = DB::table('predios_exenciones')
                     ->join('predios', 'predios_exenciones.id_predio', '=', 'predios.id')
-                    ->select(DB::raw('TRY_CONVERT(VARCHAR, predios_exenciones.created_at, 23) AS created_at, MIN(predios_exenciones.exencion_anio) AS exencion_desde, MAX(predios_exenciones.exencion_anio) AS exencion_hasta, MAX(predios_exenciones.id) AS id, predios_exenciones.porcentaje, predios.codigo_predio'))
+                    ->select(DB::raw('TRY_CONVERT(VARCHAR, predios_exenciones.created_at, 23) AS created_at, MAX(predios_exenciones.exencion_anio) AS exencion_hasta, MAX(predios_exenciones.id) AS id, predios_exenciones.porcentaje, predios.codigo_predio'))
                     ->groupByRaw('predios.codigo_predio, predios_exenciones.porcentaje, TRY_CONVERT(VARCHAR, predios_exenciones.created_at, 23)')
-                    ->orderByRaw('exencion_desde')
+                    ->orderByRaw('exencion_hasta')
                     ->get();
-
-        // $predios = DB::table('predios')
-        //             ->leftJoin('predios_exenciones', function ($join) {
-        //                 $join->on('predios.id', '=', 'predios_exenciones.id_predio');
-        //             })
-        //             ->select('predios.id', 'predios.codigo_predio')
-        //             ->whereNull('predios_exenciones.id')
-        //             ->where('predios.estado', 1)
-        //             ->get();
 
         $tab_current = 'li-section-bar-1';
         if ($request->has('page')) {
@@ -83,7 +74,7 @@ class PrediosExencionesController extends Controller
                 $predio = new Predio();
                 $predio = Predio::find($request->id_predio);
 
-                for($i = intval($request->exencion_desde); $i <= intval($request->exencion_hasta); $i++) {
+                for($i = intval($request->exencion_hasta); $i <= intval($request->exencion_hasta); $i++) {
                     $valores_predio_pago = DB::table('predios_pagos')
                         ->select(DB::raw("
                             predios_pagos.valor_concepto1,
@@ -175,12 +166,11 @@ class PrediosExencionesController extends Controller
                         $resolucion_predio->id_predio = $predio->id;
                         $resolucion_predio->id_resolucion = $resolucion->id;
                         $resolucion_predio->id_usuario = $request->session()->get('userid');
-                        $resolucion_predio->descripcion = 'Exención predio ' . $predio->codigo_predio . ', exención desde: ' . $request->exencion_desde . ', exención hasta: ' . $request->exencion_hasta;
+                        $resolucion_predio->descripcion = 'Exención predio ' . $predio->codigo_predio . ', año exención: ' . $request->exencion_hasta;
                         $query = $resolucion_predio->save();
                         // if($query) {
                             PredioPago::where('id_predio', $predio->id)
-                            ->where('ultimo_anio', '>=', intval($request->exencion_desde))
-                            ->where('ultimo_anio', '<=', intval($request->exencion_hasta))
+                            ->where('ultimo_anio', '=', intval($request->exencion_hasta))
                             ->where('pagado', 0)
                             ->where('anulada', 0)
                             ->update([
