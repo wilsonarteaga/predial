@@ -125,6 +125,9 @@ $(document).ready(function() {
                         if($('#myTable').length > 0) {
                             $('#myTable').find('tbody').empty();
                         }
+                    } else if($('#id_predio.select2').hasClass('prescripciones_exenciones')) {
+                        $('#span_prescribe').empty();
+                        $('#span_exencion').empty();
                     }
                 }
             }
@@ -170,6 +173,14 @@ $(document).ready(function() {
                     $.each($('.has-error'), function(i, el) {
                         $(el).removeClass('has-error');
                     });
+                }
+
+                // Limpiar la ultima busqueda realizada en predios
+                if($('#id_predio.select2.json').length > 0) {
+                    if($('#id_predio.select2').hasClass('prescripciones_exenciones')) {
+                        $('#span_prescribe').empty();
+                        $('#span_exencion').empty();
+                    }
                 }
             }
         });
