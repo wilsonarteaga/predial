@@ -2578,8 +2578,8 @@ class PrediosController extends Controller
             $minAnioCalculado = DB::table('predios_pagos')
                                 ->select(DB::raw('min(ultimo_anio) as min_anio_calculo'))
                                 ->where('predios_pagos.id_predio', $data->{'id_predio'})
-                                ->where('prescrito', 0)
-                                ->where('exencion', 0)
+                                // ->where('prescrito', 0)
+                                // ->where('exencion', 0)
                                 ->first();
 
             $listaAnios = [];
@@ -2590,8 +2590,8 @@ class PrediosController extends Controller
             $distinct_calcs = DB::table('predios_pagos')
                 ->select(DB::raw('distinct ultimo_anio as ultimo_anio'))
                 ->where('predios_pagos.id_predio', $data->{'id_predio'})
-                ->where('prescrito', 0)
-                ->where('exencion', 0)
+                // ->where('prescrito', 0)
+                // ->where('exencion', 0)
                 ->get();
 
             // Solo si hay años intermedios sin calculo, se ejecutaria el calculo para poder
@@ -2665,8 +2665,8 @@ class PrediosController extends Controller
                 ->where('id_predio', $data->{'id_predio'})
                 ->where('pagado', 0)
                 ->where('anulada', 0)
-                ->where('prescrito', 0)
-                ->where('exencion', 0)
+                // ->where('prescrito', 0)
+                // ->where('exencion', 0)
                 ->whereNotNull('factura_pago')
                 ->select(DB::raw('MAX(predios_pagos.ultimo_anio) AS ultimo_anio, predios_pagos.factura_pago'))
                 ->groupBy('predios_pagos.factura_pago')
@@ -2679,8 +2679,8 @@ class PrediosController extends Controller
             ->where('id_predio', $data->{'id_predio'})
             ->where('pagado', 0)
             ->where('anulada', 0)
-            ->where('prescrito', 0)
-            ->where('exencion', 0)
+            // ->where('prescrito', 0)
+            // ->where('exencion', 0)
             ->whereNull('factura_pago')
             ->select(DB::raw('predios_pagos.ultimo_anio, predios_pagos.factura_pago'))
             ->orderBy('ultimo_anio', 'desc')
@@ -2714,8 +2714,8 @@ class PrediosController extends Controller
                             ->where('id_predio', $data->{'id_predio'})
                             ->where('ultimo_anio', $currentYear)
                             ->where('anulada', 0)
-                            ->where('prescrito', 0)
-                            ->where('exencion', 0)
+                            // ->where('prescrito', 0)
+                            // ->where('exencion', 0)
                             ->first();
 
         // Si no existe un calculo para el año actual o si el calculo existe pero aun no tiene un numero
