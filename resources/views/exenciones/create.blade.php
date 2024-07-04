@@ -105,7 +105,7 @@
                                                             <div class="form-group">
                                                                 <label for="porcentaje" class="control-label">Porcentaje:</label>
                                                                 <div class="input-group">
-                                                                    <input type="text" id="porcentaje_ex" name="porcentaje_ex" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="Ingrese porcentaje" value="{{ old('porcentaje_ex') }}">
+                                                                    <input type="text" id="porcentaje_ex" name="porcentaje_ex" class="form-control res-validate" autocomplete="off" placeholder="Ingrese porcentaje" value="{{ old('porcentaje_ex') }}">
                                                                     <div class="input-group-addon">%</div>
                                                                 </div>
                                                             </div>
