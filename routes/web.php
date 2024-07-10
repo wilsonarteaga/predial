@@ -210,3 +210,4 @@ Route::post('delete_resolucion_igac', [ResolucionesIgacController::class, 'destr
 
 //UploadController
 Route::post('uploadFileAsobancaria', [UploadController::class, 'uploadFileAsobancaria'])->name('upload-file-asobancaria');
+Route::post('uploadFileResolucion', [UploadController::class, 'uploadFileResolucion'])->name('upload-file-resolucion');

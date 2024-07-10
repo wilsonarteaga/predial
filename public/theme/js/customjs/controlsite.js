@@ -189,7 +189,7 @@ $(document).ready(function() {
     if ($('#btn_save_edit').length > 0) {
         $('#btn_save_edit').off('click').on('click', function() {
             if($('#update-form').valid()) {
-                checkSaveResolucion($(this).closest('form'), $(this).closest('form').attr('desc-to-resolucion-modal'));
+                checkSaveResolucion($('#update-form'), $('#update-form').attr('desc-to-resolucion-modal'));
             }
         });
     }
@@ -197,7 +197,7 @@ $(document).ready(function() {
     if ($('#btn_save_create').length > 0) {
         $('#btn_save_create').off('click').on('click', function() {
             if($('#create-form').valid()) {
-                checkSaveResolucion($(this).closest('form'), $(this).closest('form').attr('desc-to-resolucion-modal'));
+                checkSaveResolucion($('#create-form'), $('#create-form').attr('desc-to-resolucion-modal'));
             }
         });
     }
@@ -1464,6 +1464,7 @@ function getPredioPrescripcionExencion(id_predio, showBlock, is_prescripciones_f
                     if ($('#prescribe_hasta').length || $('#exencion_hasta').length) {
                         var control = $('#prescribe_hasta').length ? 'prescribe' : 'exencion';
                         var control_label = $('#prescribe_hasta').length ? 'prescripci&oacute;n' : 'exenci&oacute;n';
+                        $('#' + control + '_hasta').empty();
                         $.each(global_anios_prescripcion_exencion, function(i, el) {
                             $('#' + control + '_hasta').append('<option value="' + el + '">' + el + '</option>');
                         });
@@ -1480,8 +1481,8 @@ function getPredioPrescripcionExencion(id_predio, showBlock, is_prescripciones_f
                                 $('#span_' + control).html(`A&ntilde;o a tener en cuenta en la ${control_label}: <b>${$('#' + control + '_hasta').selectpicker('val')}</b>`);
                             }
                             if ($('#create-form').length) {
-                                var validatorCreate = $("#create-form").validate();
-                                validatorCreate.resetForm();
+                                // var validatorCreate = $("#create-form").validate();
+                                // validatorCreate.resetForm();
                                 $.each($('.has-success'), function(i, el) {
                                     $(el).removeClass('has-success');
                                 });
@@ -1494,8 +1495,8 @@ function getPredioPrescripcionExencion(id_predio, showBlock, is_prescripciones_f
                 }
 
                 if ($('#create-form').length) {
-                    var validatorCreate = $("#create-form").validate();
-                    validatorCreate.resetForm();
+                    // var validatorCreate = $("#create-form").validate();
+                    // validatorCreate.resetForm();
                     $.each($('.has-success'), function(i, el) {
                         $(el).removeClass('has-success');
                     });

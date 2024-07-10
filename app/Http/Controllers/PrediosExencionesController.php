@@ -39,8 +39,8 @@ class PrediosExencionesController extends Controller
 
         $exenciones = DB::table('predios_exenciones')
                     ->join('predios', 'predios_exenciones.id_predio', '=', 'predios.id')
-                    ->select(DB::raw('TRY_CONVERT(VARCHAR, predios_exenciones.created_at, 23) AS created_at, MAX(predios_exenciones.exencion_anio) AS exencion_hasta, MAX(predios_exenciones.id) AS id, predios_exenciones.porcentaje, predios.codigo_predio'))
-                    ->groupByRaw('predios.codigo_predio, predios_exenciones.porcentaje, TRY_CONVERT(VARCHAR, predios_exenciones.created_at, 23)')
+                    ->select(DB::raw('TRY_CONVERT(VARCHAR, predios_exenciones.created_at, 23) AS created_at, MAX(predios_exenciones.exencion_anio) AS exencion_hasta, MAX(predios_exenciones.id) AS id, predios_exenciones.porcentaje, predios.codigo_predio, predios_exenciones.file_name'))
+                    ->groupByRaw('predios.codigo_predio, predios_exenciones.file_name, predios_exenciones.porcentaje, TRY_CONVERT(VARCHAR, predios_exenciones.created_at, 23)')
                     ->orderByRaw('exencion_hasta')
                     ->get();
 
@@ -152,6 +152,7 @@ class PrediosExencionesController extends Controller
                     $predio_exencion->valor_concepto29 = $valores_predio_pago->valor_concepto29;
                     $predio_exencion->valor_concepto30 = $valores_predio_pago->valor_concepto30;
                     $predio_exencion->avaluo = $valores_predio_pago->avaluo;
+                    $predio_exencion->file_name = $request->file_name;
                     $query = $predio_exencion->save();
                 }
 

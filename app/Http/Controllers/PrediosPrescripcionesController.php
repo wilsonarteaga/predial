@@ -39,8 +39,8 @@ class PrediosPrescripcionesController extends Controller
 
         $prescripciones = DB::table('predios_prescripciones')
                     ->join('predios', 'predios_prescripciones.id_predio', '=', 'predios.id')
-                    ->select(DB::raw('TRY_CONVERT(VARCHAR, predios_prescripciones.created_at, 23) AS created_at, MIN(predios_prescripciones.prescribe_anio) AS prescribe_desde, MAX(predios_prescripciones.prescribe_anio) AS prescribe_hasta, MAX(predios_prescripciones.id) AS id, predios.codigo_predio'))
-                    ->groupByRaw('predios.codigo_predio, TRY_CONVERT(VARCHAR, predios_prescripciones.created_at, 23)')
+                    ->select(DB::raw('TRY_CONVERT(VARCHAR, predios_prescripciones.created_at, 23) AS created_at, MIN(predios_prescripciones.prescribe_anio) AS prescribe_desde, MAX(predios_prescripciones.prescribe_anio) AS prescribe_hasta, MAX(predios_prescripciones.id) AS id, predios.codigo_predio, predios_prescripciones.file_name'))
+                    ->groupByRaw('predios.codigo_predio, predios_prescripciones.file_name, TRY_CONVERT(VARCHAR, predios_prescripciones.created_at, 23)')
                     ->orderByRaw('prescribe_desde')
                     ->get();
 
@@ -158,6 +158,7 @@ class PrediosPrescripcionesController extends Controller
                 $predio_prescripcion->valor_concepto28 = $valores_predio_pago->valor_concepto28;
                 $predio_prescripcion->valor_concepto29 = $valores_predio_pago->valor_concepto29;
                 $predio_prescripcion->valor_concepto30 = $valores_predio_pago->valor_concepto30;
+                $predio_prescripcion->file_name = $request->file_name;
                 $query = $predio_prescripcion->save();
             }
 

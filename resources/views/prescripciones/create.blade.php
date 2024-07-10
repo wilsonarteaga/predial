@@ -9,10 +9,12 @@
     {!! JsValidator::formRequest('App\Http\Requests\PrediosPrescripcionesUpdateFormRequest', '#update-form'); !!}
     <script src="{!! asset('theme/js/accounting.min.js') !!}"></script>
     <script src="{!! asset('theme/js/autonumeric.min.js') !!}"></script>
+    <script src="{!! asset('theme/js/jquery.form.js') !!}"></script>
     <script src="{!! asset('theme/plugins/bower_components/jquery.serializeJSON/jquery.serializejson.min.js') !!}"></script>
     <script src="{!! asset('theme/plugins/bower_components/blockUI/jquery.blockUI.js') !!}"></script>
-    {{-- <script src="{!! asset('theme/js/jquery.inputmask.bundle.min.js') !!}"></script> --}}
+    <script src="{!! asset('theme/plugins/bower_components/bootstrap-filestyle/bootstrap-filestyle.min.js') !!}"></script>
     <script src="{!! asset('theme/js/customjs/controlsite.js') !!}"></script>
+    <script src="{!! asset('theme/js/customjs/load_file.js') !!}"></script>
 @endpush
 @if(Session::get('tab_current'))
 <input type="hidden" id="tab" value="{{ Session::get('tab_current') }}">
@@ -75,60 +77,88 @@
                                             {{-- Formulario --}}
                                             <input class="resolucion_validate_form_level-create-form" type="hidden" value="create-form" />
                                             @endif
-                                            <form action="{{ route('prediosprescripciones.create_prescripciones') }}" method="post" id="create-form" desc-to-resolucion-modal="prescripci&oacute;n de vigencias">
-                                                @csrf
-                                                <div class="result">
-                                                    @if(Session::get('success'))
-                                                        <div class="alert alert-success">
-                                                            {!! Session::get('success') !!}
-                                                        </div>
-                                                    @endif
-                                                    @if(Session::get('fail'))
-                                                        <div class="alert alert-danger">
-                                                            {!! Session::get('fail') !!}
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                                <div class="form-body">
-                                                    <!-- <h3 class="box-title">Informaci&oacute;n de la prescripci&oacute;n</h3> -->
-                                                    <!-- <hr> -->
-                                                    <div class="row">
-                                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Buscar predio:</label>
-                                                                <select id="id_predio" class="form-control select2 json prescripciones_exenciones" name="id_predio" data-placeholder="C&oacute;digo, propietario o direcci&oacute;n..." style="width: 100%">
-                                                                </select>
-                                                                <span class="text-danger">@error('id_predio') {{ $message }} @enderror</span>
+                                            <div class="form-body">
+                                                <!-- <h3 class="box-title">Informaci&oacute;n de la prescripci&oacute;n</h3> -->
+                                                <!-- <hr> -->
+                                                <div class="row">
+                                                    <div class="col-lg-7 col-md-7 col-sm-6 col-xs-12">
+                                                        <form action="{{ route('prediosprescripciones.create_prescripciones') }}" method="post" id="create-form" desc-to-resolucion-modal="prescripci&oacute;n de vigencias">
+                                                            @csrf
+                                                            <div class="result">
+                                                                @if(Session::get('success'))
+                                                                    <div class="alert alert-success">
+                                                                        {!! Session::get('success') !!}
+                                                                    </div>
+                                                                @endif
+                                                                @if(Session::get('fail'))
+                                                                    <div class="alert alert-danger">
+                                                                        {!! Session::get('fail') !!}
+                                                                    </div>
+                                                                @endif
                                                             </div>
-                                                        </div>
-                                                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Desde:</label>
-                                                                <input type="text" id="prescribe_desde" name="prescribe_desde" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="A&ntilde;o..." value="{{ old('prescribe_desde') }}" maxlength="4" readonly="readonly">
-                                                                {{-- <span class="text-danger">@error('prescribe_desde') {{ $message }} @enderror</span> --}}
+                                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Buscar predio:</label>
+                                                                    <select id="id_predio" class="form-control select2 json prescripciones_exenciones" name="id_predio" data-placeholder="C&oacute;digo, propietario o direcci&oacute;n..." style="width: 100%">
+                                                                    </select>
+                                                                    <span class="text-danger">@error('id_predio') {{ $message }} @enderror</span>
+                                                                </div>
+                                                                <input type="hidden" id="file_name" name="file_name" value="">
                                                             </div>
-                                                        </div>
-                                                        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                                                            <div class="form-group">
-                                                                <label class="control-label">Hasta:</label>
-                                                                {{-- <input type="text" id="prescribe_hasta" name="prescribe_hasta" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="A&ntilde;o..." value="{{ old('prescribe_hasta') }}" maxlength="4"> --}}
-                                                                <select id="prescribe_hasta" name="prescribe_hasta" class="form-control selectpicker" data-size="3" title="A&ntilde;o..." style="width: 100%;">
-                                                                </select>
-                                                                <span class="text-danger">@error('prescribe_hasta') {{ $message }} @enderror</span>
+                                                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Desde:</label>
+                                                                    <input type="text" id="prescribe_desde" name="prescribe_desde" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="A&ntilde;o..." value="{{ old('prescribe_desde') }}" maxlength="4" readonly="readonly">
+                                                                    {{-- <span class="text-danger">@error('prescribe_desde') {{ $message }} @enderror</span> --}}
+                                                                </div>
                                                             </div>
-                                                        </div>
+                                                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Hasta:</label>
+                                                                    {{-- <input type="text" id="prescribe_hasta" name="prescribe_hasta" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="A&ntilde;o..." value="{{ old('prescribe_hasta') }}" maxlength="4"> --}}
+                                                                    <select id="prescribe_hasta" name="prescribe_hasta" class="form-control selectpicker" data-size="3" title="A&ntilde;o..." style="width: 100%;">
+                                                                    </select>
+                                                                    <span class="text-danger">@error('prescribe_hasta') {{ $message }} @enderror</span>
+                                                                </div>
+                                                            </div>
+                                                        </form>
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                            <span id="span_prescribe" class="text-info">&nbsp;</span>
-                                                        </div>
+                                                    <div class="col-lg-5 col-md-5 col-sm-6 col-xs-12">
+                                                        {{-- <input type="hidden" id="filename" value=""> --}}
+                                                        {{-- <input type="hidden" id="fileid" value=""> --}}
+                                                        <form id="load-form" action="{{route('upload-file-resolucion')}}" method="post" enctype="multipart/form-data">
+                                                            @csrf
+                                                            <div class="form-body">
+                                                                <div class="row">
+                                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label">Archivo resoluci&oacute;n</label><span class="text-muted" style="margin-left: 15px;">(*.pdf)</span>
+                                                                            <input type="file" accept=".pdf" id="file" name="file" class="form-control filestyle" data-placeholder="" value="{{ old('file') }}" data-buttonName="btn-inverse" data-buttonBefore="true" data-buttonText="Buscar archivo">
+                                                                            <span class="text-danger">@error('file') {{ $message }} @enderror</span>
+                                                                        </div>
+                                                                        <div class="progress">
+                                                                            <div class="bar one"></div >
+                                                                            <div class="porciento one">0%</div >
+                                                                        </div>
+                                                                        <span id="error_fileupload" class="text-danger" style="display: none;">Max file size 10 Mb</span>
+                                                                        <span id="current_filename" class="text-inverse" style="display: block; padding-top: 15px;"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                        <button id="btn_cargar_archivo_resolucion" type="button" style="display: none;">Cargar archivo</button>
                                                     </div>
                                                 </div>
-                                                <div class="form-actions m-t-20">
-                                                    <button id="btn_save_create" type="button" class="btn btn-info"> <i class="fa fa-save"></i> Guardar informaci&oacute;n</button>
-                                                    <!-- <button type="button" class="btn btn-default">Cancelar</button> -->
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <span id="span_prescribe" class="text-info">&nbsp;</span>
+                                                    </div>
                                                 </div>
-                                            </form>
+                                            </div>
+                                            <div class="form-actions m-t-20">
+                                                <button id="btn_save_create" type="button" class="btn btn-info"> <i class="fa fa-save"></i> Guardar informaci&oacute;n</button>
+                                                <!-- <button type="button" class="btn btn-default">Cancelar</button> -->
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -157,6 +187,7 @@
                                                             <th class="cell_center" style="width: auto;">C&oacute;digo predio</th>
                                                             <th class="cell_center" style="width: auto;">Desde</th>
                                                             <th class="cell_center" style="width: auto;">Hasta</th>
+                                                            <th class="cell_center" style="width: auto;">Resoluci&oacute;n</th>
                                                             <th class="cell_center" style="width: auto;">Fecha creaci&oacute;n</th>
                                                         </tr>
                                                     </thead>
@@ -167,6 +198,7 @@
                                                                 <td class="edit_row cell_center">{{ $prescripcion->codigo_predio }}</td>
                                                                 <td class="edit_row cell_center">{!! $prescripcion->prescribe_desde !!}</td>
                                                                 <td class="edit_row cell_center">{!! $prescripcion->prescribe_hasta !!}</td>
+                                                                <td class="edit_row cell_center">{!! $prescripcion->file_name !!}</td>
                                                                 <td class="edit_row cell_center">{!! $prescripcion->created_at !!}</td>
                                                             </tr>
                                                             @endforeach

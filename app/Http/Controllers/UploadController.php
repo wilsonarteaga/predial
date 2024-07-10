@@ -10,7 +10,6 @@ use App\Models\Predio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
 
 use Carbon\Carbon;
 
@@ -280,6 +279,28 @@ class UploadController extends Controller
                         'error'    => true
                     ]);
                 }
+            }
+            else {
+                return response()->json([
+                    'message' => 'Error cargando el archivo.',
+                    'error'    => true
+                ]);
+            }
+        }
+    }
+
+    public function uploadFileResolucion(Request $request) {
+        if($request->file()) {
+            $name = time().'_'.$request->file->getClientOriginalName();
+            $filePath = $request->file('file')->storeAs('uploads', $name, 'public');
+            $realPath = join(DIRECTORY_SEPARATOR, array(Storage::path('public'), $filePath));
+
+            if(file_exists($realPath)) {
+                return response()->json([
+                    'message'  => 'El archivo de resoluci&oacute;n se carg&oacute; satisfactoriamente.',
+                    'file'     => $name,
+                    'error'    => false
+                ]);
             }
             else {
                 return response()->json([
