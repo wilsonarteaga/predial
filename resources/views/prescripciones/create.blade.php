@@ -195,11 +195,11 @@
                                                         @if(count($prescripciones) > 0)
                                                             @foreach($prescripciones as $prescripcion)
                                                             <tr style="cursor: pointer;" id="tr_prescripcion_{{ $prescripcion->id }}" json-data='@json($prescripcion)'>
-                                                                <td class="edit_row cell_center">{{ $prescripcion->codigo_predio }}</td>
-                                                                <td class="edit_row cell_center">{!! $prescripcion->prescribe_desde !!}</td>
-                                                                <td class="edit_row cell_center">{!! $prescripcion->prescribe_hasta !!}</td>
-                                                                <td class="edit_row cell_center">{!! $prescripcion->file_name !!}</td>
-                                                                <td class="edit_row cell_center">{!! $prescripcion->created_at !!}</td>
+                                                                <td class="cell_center">{{ $prescripcion->codigo_predio }}</td>
+                                                                <td class="cell_center">{!! $prescripcion->prescribe_desde !!}</td>
+                                                                <td class="cell_center">{!! $prescripcion->prescribe_hasta !!}</td>
+                                                                <td class="cell_center"><a href="{!! $prescripcion->file_name !!}">{!! $prescripcion->file_name !!}</a></td>
+                                                                <td class="cell_center">{!! $prescripcion->created_at !!}</td>
                                                             </tr>
                                                             @endforeach
                                                         @endif

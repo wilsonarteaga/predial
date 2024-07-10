@@ -189,7 +189,6 @@
                                                         <tr>
                                                             <th class="cell_center" style="width: auto;">C&oacute;digo predio</th>
                                                             <th class="cell_center" style="width: 7%;">Porcentaje</th>
-                                                            {{-- <th class="cell_center" style="width: auto;">Desde</th> --}}
                                                             <th class="cell_center" style="width: auto;">A&ntilde;o</th>
                                                             <th class="cell_center" style="width: auto;">Resoluci&oacute;n</th>
                                                             <th class="cell_center" style="width: auto;">Fecha creaci&oacute;n</th>
@@ -199,11 +198,11 @@
                                                         @if(count($exenciones) > 0)
                                                             @foreach($exenciones as $exencion)
                                                             <tr style="cursor: pointer;" id="tr_exencion_{{ $exencion->id }}" json-data='@json($exencion)' class='disabled'>
-                                                                <td class="edit_row cell_center">{{ $exencion->codigo_predio }}</td>
-                                                                <td class="edit_row cell_center">{{ $exencion->porcentaje }}</td>
-                                                                <td class="edit_row cell_center">{{ $exencion->exencion_hasta }}</td>
-                                                                <td class="edit_row cell_center">{{ $exencion->file_name }}</td>
-                                                                <td class="edit_row cell_center">{{ $exencion->created_at }}</td>
+                                                                <td class="cell_center">{{ $exencion->codigo_predio }}</td>
+                                                                <td class="cell_center">{{ $exencion->porcentaje }}</td>
+                                                                <td class="cell_center">{{ $exencion->exencion_hasta }}</td>
+                                                                <td class="cell_center">{{ $exencion->file_name }}</td>
+                                                                <td class="cell_center">{{ $exencion->created_at }}</td>
                                                             </tr>
                                                             @endforeach
                                                         @endif
