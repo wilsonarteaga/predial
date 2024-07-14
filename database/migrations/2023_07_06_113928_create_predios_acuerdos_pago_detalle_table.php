@@ -17,13 +17,17 @@ class CreatePrediosAcuerdosPagoDetalleTable extends Migration
             $table->id();
             $table->unsignedBigInteger('id_acuerdo');
             $table->unsignedBigInteger('id_predio_pago');
+            $table->unsignedBigInteger('id_banco');
             $table->tinyInteger('cuota_numero');
-            $table->decimal('valor_cuota', $precision = 20, $scale = 12);
+            $table->float('valor_cuota');
             $table->date('fecha_pago');
+            $table->tinyInteger('pagado');
+            $table->boolean('estado')->default(1); // 1=activo, 0=inactivo
             $table->timestamps();
 
             $table->foreign('id_acuerdo')->references('id')->on('predios_acuerdos_pago');
-            $table->foreign('id_predio_pago')->references('id')->on('predios_pagos');
+            // $table->foreign('id_predio_pago')->references('id')->on('predios_pagos');
+            $table->foreign('id_banco')->references('id')->on('bancos');
         });
     }
 

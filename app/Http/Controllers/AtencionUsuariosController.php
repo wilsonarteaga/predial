@@ -13,6 +13,7 @@ use App\Http\Requests\CitasUpdateFormRequest;
 use App\Http\Requests\AcudientesPacientesCreateFormRequest;
 use App\Http\Requests\AcudientesPacientesUpdateFormRequest;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 
 use App\Models\Opcion;
@@ -20,8 +21,6 @@ use App\Models\Paciente;
 use App\Models\Acudiente;
 use App\Models\AcudientePaciente;
 use App\Models\Cita;
-
-use PDF;
 
 class AtencionUsuariosController extends Controller
 {
@@ -725,7 +724,7 @@ class AtencionUsuariosController extends Controller
             'pacientes' => $pacientes
         ];
 
-        $pdf = PDF::loadView('aten.pacientesPDF', $data);
+        $pdf = Pdf::loadView('aten.pacientesPDF', $data);
         return $pdf->download('reporte_pacientes' . $dt->toDateString() . '_' . str_replace(':', '-', $dt->toTimeString()) . '.pdf');
     }
 
@@ -760,7 +759,7 @@ class AtencionUsuariosController extends Controller
             'pacientes' => $pacientes
         ];
 
-        $pdf = PDF::loadView('aten.pacientesPDF', $data);
+        $pdf = Pdf::loadView('aten.pacientesPDF', $data);
         return $pdf->download('reporte_pacientes' . $dt->toDateString() . '_' . str_replace(':', '-', $dt->toTimeString()) . '.pdf');
     }
 

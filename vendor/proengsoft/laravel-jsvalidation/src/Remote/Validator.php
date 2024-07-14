@@ -36,8 +36,8 @@ class Validator
     /**
      * RemoteValidator constructor.
      *
-     * @param \Illuminate\Validation\Validator $validator
-     * @param bool $escape
+     * @param  \Illuminate\Validation\Validator  $validator
+     * @param  bool  $escape
      */
     public function __construct(BaseValidator $validator, $escape = false)
     {
@@ -48,8 +48,8 @@ class Validator
     /**
      * Validate request.
      *
-     * @param $field
-     * @param $parameters
+     * @param  $field
+     * @param  $parameters
      * @return void
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -66,8 +66,8 @@ class Validator
     /**
      * Throw the failed validation exception.
      *
-     * @param mixed $result
-     * @param \Illuminate\Validation\Validator  $validator
+     * @param  mixed  $result
+     * @param  \Illuminate\Validation\Validator  $validator
      * @return void
      *
      * @throws \Illuminate\Validation\ValidationException|\Illuminate\Http\Exceptions\HttpResponseException
@@ -86,7 +86,7 @@ class Validator
     /**
      *  Parse Validation input request data.
      *
-     * @param $data
+     * @param  $data
      * @return array
      */
     protected function parseAttributeName($data)
@@ -101,7 +101,7 @@ class Validator
     /**
      *  Parse Validation parameters.
      *
-     * @param $parameters
+     * @param  $parameters
      * @return array
      */
     protected function parseParameters($parameters)
@@ -117,8 +117,8 @@ class Validator
     /**
      * Validate remote Javascript Validations.
      *
-     * @param $attribute
-     * @param array $parameters
+     * @param  $attribute
+     * @param  array  $parameters
      * @return array|bool
      */
     protected function validateJsRemoteRequest($attribute, $parameters)
@@ -144,8 +144,8 @@ class Validator
     /**
      * Sets data for validate remote rules.
      *
-     * @param $attribute
-     * @param bool $validateAll
+     * @param  $attribute
+     * @param  bool  $validateAll
      * @return void
      */
     protected function setRemoteValidation($attribute, $validateAll = false)
@@ -167,8 +167,8 @@ class Validator
     /**
      * Remove rules that should not be validated remotely.
      *
-     * @param $rules
-     * @param BaseValidator $validator
+     * @param  $rules
+     * @param  BaseValidator  $validator
      * @return mixed
      */
     protected function purgeNonRemoteRules($rules, $validator)

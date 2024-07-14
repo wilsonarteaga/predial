@@ -1,0 +1,13 @@
+{
+    "latam sans": {
+        "normal": "D:\\Proyectos\\Predial\\predial\\storage\\fonts\/latam_sans_normal_ea8e01788d5d5ca1179f969fe88e01d0",
+        "italic": "D:\\Proyectos\\Predial\\predial\\storage\\fonts\/latam_sans_italic_7acf2a1e2a34ecf5b80c1ceacf43bf71",
+        "300": "D:\\Proyectos\\Predial\\predial\\storage\\fonts\/latam_sans_300_fadc6cd7d16f14b3c1c77b1c725b64de",
+        "300_italic": "D:\\Proyectos\\Predial\\predial\\storage\\fonts\/latam_sans_300_italic_0d27c1fd948688b5596fd8db55485dfd",
+        "bold": "D:\\Proyectos\\Predial\\predial\\storage\\fonts\/latam_sans_bold_3214db50d3e206098a7c16032f1796fa",
+        "bold_italic": "latam_sans_bold_italic_8ea24861c0c664241a30062ca2827745"
+    },
+    "latam sans extended": {
+        "normal": "latam_sans_extended_normal_4f2f3ef321eaec50ec8d4cc820fd0f9f"
+    }
+}

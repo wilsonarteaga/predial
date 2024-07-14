@@ -50,8 +50,8 @@ class RuleParser
     /**
      * Create a new JsValidation instance.
      *
-     * @param \Proengsoft\JsValidation\Support\DelegatedValidator $validator
-     * @param null|string $remoteToken
+     * @param  \Proengsoft\JsValidation\Support\DelegatedValidator  $validator
+     * @param  null|string  $remoteToken
      */
     public function __construct(DelegatedValidator $validator, $remoteToken = null)
     {
@@ -62,10 +62,10 @@ class RuleParser
     /**
      * Return parsed Javascript Rule.
      *
-     * @param string $attribute
-     * @param string $rule
-     * @param $parameters
-     * @param $rawRule
+     * @param  string  $attribute
+     * @param  string  $rule
+     * @param  $parameters
+     * @param  $rawRule
      * @return array
      */
     public function getRule($attribute, $rule, $parameters, $rawRule)
@@ -99,8 +99,8 @@ class RuleParser
     /**
      * Add conditional rules.
      *
-     * @param mixed $attribute
-     * @param array $rules
+     * @param  mixed  $attribute
+     * @param  array  $rules
      * @return void
      */
     public function addConditionalRules($attribute, $rules = [])
@@ -115,8 +115,8 @@ class RuleParser
     /**
      * Determine if rule is passed with sometimes.
      *
-     * @param mixed $attribute
-     * @param string $rule
+     * @param  mixed  $attribute
+     * @param  string  $rule
      * @return bool
      */
     protected function isConditionalRule($attribute, $rule)
@@ -128,9 +128,9 @@ class RuleParser
     /**
      * Returns Javascript parameters for remote validated rules.
      *
-     * @param string $attribute
-     * @param string $rule
-     * @param $parameters
+     * @param  string  $attribute
+     * @param  string  $rule
+     * @param  $parameters
      * @return array
      */
     protected function clientRule($attribute, $rule, $parameters)
@@ -148,8 +148,8 @@ class RuleParser
     /**
      * Returns Javascript parameters for remote validated rules.
      *
-     * @param string $attribute
-     * @param bool $forceRemote
+     * @param  string  $attribute
+     * @param  bool  $forceRemote
      * @return array
      */
     protected function remoteRule($attribute, $forceRemote)
@@ -167,7 +167,7 @@ class RuleParser
     /**
      * Handles multidimensional attribute names.
      *
-     * @param mixed $attribute
+     * @param  mixed  $attribute
      * @return string
      */
     protected function getAttributeName($attribute)
@@ -185,7 +185,7 @@ class RuleParser
     /**
      * Parse named parameters to $key => $value items.
      *
-     * @param array $parameters
+     * @param  array  $parameters
      * @return array
      */
     public function parseNamedParameters($parameters)

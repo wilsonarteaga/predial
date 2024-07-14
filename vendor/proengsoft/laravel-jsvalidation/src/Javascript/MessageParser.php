@@ -21,8 +21,8 @@ class MessageParser
     /**
      * Create a new JsValidation instance.
      *
-     * @param \Proengsoft\JsValidation\Support\DelegatedValidator $validator
-     * @param bool $escape
+     * @param  \Proengsoft\JsValidation\Support\DelegatedValidator  $validator
+     * @param  bool  $escape
      */
     public function __construct(DelegatedValidator $validator, $escape = false)
     {
@@ -33,9 +33,9 @@ class MessageParser
     /**
      *  Replace javascript error message place-holders with actual values.
      *
-     * @param string $attribute
-     * @param string $rule
-     * @param array  $parameters
+     * @param  string  $attribute
+     * @param  string  $rule
+     * @param  array  $parameters
      * @return mixed
      */
     public function getMessage($attribute, $rule, $parameters)
@@ -56,9 +56,9 @@ class MessageParser
      * Creates fake data needed to parse messages
      * Returns original data.
      *
-     * @param string $attribute
-     * @param string $rule
-     * @param $parameters
+     * @param  string  $attribute
+     * @param  string  $rule
+     * @param  $parameters
      * @return array
      */
     protected function fakeValidationData($attribute, $rule, $parameters)
@@ -74,9 +74,9 @@ class MessageParser
     /**
      * Generate fake data to get RequiredIf message.
      *
-     * @param $data
-     * @param $rule
-     * @param $parameters
+     * @param  $data
+     * @param  $rule
+     * @param  $parameters
      * @return void
      */
     private function fakeRequiredIfData($data, $rule, $parameters)
@@ -93,8 +93,8 @@ class MessageParser
     /**
      * Generate fake data to get file type messages.
      *
-     * @param $data
-     * @param $attribute
+     * @param  $data
+     * @param  $attribute
      * @return void
      */
     private function fakeFileData($data, $attribute)

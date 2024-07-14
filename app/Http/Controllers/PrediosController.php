@@ -23,11 +23,10 @@ use App\Models\Resolucion;
 use App\Models\ResolucionPredio;
 use App\Models\PredioPrescripcion;
 use App\Models\Pago;
-
+use App\Models\PredioAcuerdoPagoDetalle;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
-use PDF;
 use \stdClass;
 
 class PrediosController extends Controller
@@ -674,18 +673,18 @@ class PrediosController extends Controller
 
         $predio_dato = new PredioDato();
 
-        if(array_key_exists('id', $data)) {
+        if(isset($data->{'id'})) {
             $predio_dato = PredioDato::find($data->{'id'});
         }
         $predio_dato->id_predio = $data->{'id_predio'};
         $predio_dato->id_tipo_predio = $data->{'id_tipo_predio'};
         $predio_dato->matricula_inmobiliaria = $data->{'matricula_inmobiliaria'};
         $predio_dato->avaluo_presente_anio = str_replace(",", "", $data->{'avaluo_presente_anio'});
-        $predio_dato->excento_impuesto = array_key_exists('excento_impuesto', $data) ? $data->{'excento_impuesto'} : '0';
+        $predio_dato->excento_impuesto = isset($data->{'excento_impuesto'}) ? $data->{'excento_impuesto'} : '0';
         $predio_dato->id_clase_predio = $data->{'id_clase_predio'};
         //$predio_dato->id_clase_mutacion = $data->{'id_clase_mutacion'};
-        //$predio_dato->predio_incautado = array_key_exists('predio_incautado', $data) ? $data->{'predio_incautado'} : '0';
-        //$predio_dato->aplica_ley44 = array_key_exists('aplica_ley44', $data) ? $data->{'aplica_ley44'} : '0';
+        //$predio_dato->predio_incautado = isset($data->{'predio_incautado'}) ? $data->{'predio_incautado'} : '0';
+        //$predio_dato->aplica_ley44 = isset($data->{'aplica_ley44'}) ? $data->{'aplica_ley44'} : '0';
 
         $query = $predio_dato->save();
 
@@ -712,14 +711,14 @@ class PrediosController extends Controller
 
         $propietario = new Propietario();
 
-        if(array_key_exists('id', $data)) {
+        if(isset($data->{'id'})) {
             $propietario = Propietario::find($data->{'id'});
         }
-        else if(array_key_exists('id_propietario', $data)) {
+        else if(isset($data->{'id_propietario'})) {
             $propietario->id = $data->{'id_propietario'};
         }
 
-        if(!array_key_exists('id_propietario', $data)) {
+        if(!isset($data->{'id_propietario'})) {
             $propietario->identificacion = $data->{'identificacion'};
             $propietario->nombre = $data->{'nombre'};
             $propietario->direccion = $data->{'direccion'};
@@ -734,8 +733,7 @@ class PrediosController extends Controller
 
         if($query) {
 
-            if(array_key_exists('id', $data)) {
-
+            if (isset($data->{'id'})) {
                 $predio_propietario = PredioPropietario::find($data->{'id_predio_propietario'});
                 $predio_propietario->id_propietario = $data->{'id'};
                 $query = $predio_propietario->save();
@@ -763,7 +761,7 @@ class PrediosController extends Controller
             else {
                 $predio_propietario = new PredioPropietario();
 
-                if(array_key_exists('id_predio_propietario', $data)) {
+                if(isset($data->{'id_predio_propietario'})) {
                     $predio_propietario = PredioPropietario::find($data->{'id_predio_propietario'});
                 } else {
                     $predio_propietario->id_predio = $data->{'id_predio'};
@@ -940,7 +938,7 @@ class PrediosController extends Controller
 
         $predio_calculo = new PredioCalculo();
 
-        if(array_key_exists('id', $data)) {
+        if(isset($data->{'id'})) {
             $predio_calculo = PredioCalculo::find($data->{'id'});
         }
         $predio_calculo->id_predio = $data->{'id_predio'};
@@ -949,7 +947,7 @@ class PrediosController extends Controller
         $predio_calculo->destino_economico = $data->{'destino_economico'};
         $predio_calculo->numero_resolucion = $data->{'numero_resolucion'};
         $predio_calculo->numero_ultima_factura = $data->{'numero_ultima_factura'};
-        $predio_calculo->uso_suelo = array_key_exists('uso_suelo', $data) ? $data->{'uso_suelo'} : '0';
+        $predio_calculo->uso_suelo = isset($data->{'uso_suelo'}) ? $data->{'uso_suelo'} : '0';
 
         $query = $predio_calculo->save();
 
@@ -976,7 +974,7 @@ class PrediosController extends Controller
 
         $predio_pago = new PredioPago();
 
-        if(array_key_exists('id', $data)) {
+        if(isset($data->{'id'})) {
             $predio_pago = PredioPago::find($data->{'id'});
         }
         $predio_pago->id_predio = $data->{'id_predio'};
@@ -985,7 +983,7 @@ class PrediosController extends Controller
         $predio_pago->fecha_pago = Carbon::createFromFormat("Y-m-d", $data->{'fecha_pago'})->format('Y-m-d');
         $predio_pago->factura_pago = $data->{'factura_pago'};
         $predio_pago->id_banco = $data->{'id_banco'};
-        $predio_pago->acuerdo_pago = array_key_exists('acuerdo_pago', $data) ? $data->{'acuerdo_pago'} : '0';
+        $predio_pago->acuerdo_pago = isset($data->{'acuerdo_pago'}) ? $data->{'acuerdo_pago'} : '0';
 
         $query = $predio_pago->save();
 
@@ -1012,7 +1010,7 @@ class PrediosController extends Controller
 
         $predio_abono = new PredioAbono();
 
-        if(array_key_exists('id', $data)) {
+        if(isset($data->{'id'})) {
             $predio_abono = PredioAbono::find($data->{'id'});
         }
         $predio_abono->id_predio = $data->{'id_predio'};
@@ -1050,9 +1048,9 @@ class PrediosController extends Controller
 
         $predio_acuerdo_pago = new PredioAcuerdoPago();
 
-        if(array_key_exists('id', $data)) {
+        if(isset($data->{'id'})) {
             $predio_acuerdo_pago = PredioAcuerdoPago::find($data->{'id'});
-            if(!array_key_exists('anulado_acuerdo', $data)) {
+            if(!isset($data->{'anulado_acuerdo'})) {
                 $numero = $predio_acuerdo_pago->numero_acuerdo;
             }
         } else {
@@ -1061,12 +1059,12 @@ class PrediosController extends Controller
                     ->first();
             $numero = $numero->numero;
         }
-        if(!array_key_exists('anulado_acuerdo', $data)) {
+        if(!isset($data->{'anulado_acuerdo'})) {
             $predio_acuerdo_pago->id_predio = $data->{'id_predio'};
             $predio_acuerdo_pago->numero_acuerdo = $numero;
             $predio_acuerdo_pago->anio_inicial_acuerdo = $data->{'anio_inicial_acuerdo'};
             $predio_acuerdo_pago->anio_final_acuerdo = $data->{'anio_final_acuerdo'};
-            $predio_acuerdo_pago->responsable_propietario_acuerdo = array_key_exists('responsable_propietario_acuerdo', $data) ? $data->{'responsable_propietario_acuerdo'} : '0';
+            $predio_acuerdo_pago->responsable_propietario_acuerdo = isset($data->{'responsable_propietario_acuerdo'}) ? $data->{'responsable_propietario_acuerdo'} : '0';
             $predio_acuerdo_pago->identificacion_acuerdo = $data->{'identificacion_acuerdo'};
             $predio_acuerdo_pago->nombre_acuerdo = trim($data->{'nombre_acuerdo'});
             $predio_acuerdo_pago->direccion_acuerdo = trim($data->{'direccion_acuerdo'});
@@ -1084,18 +1082,51 @@ class PrediosController extends Controller
         }
         $query = $predio_acuerdo_pago->save();
 
+        if(!isset($data->{'anulado_acuerdo'})) {
+            if ($query) {
+                $abono = floatval($data->{'abono_inicial_acuerdo'});
+
+                $total_acuerdo = DB::table('predios_pagos')
+                        ->where('id', $data->{'id_predio'})
+                        ->where('pagado', 0)
+                        ->where('anulada', 0)
+                        ->whereNull('factura_pago')
+                        ->whereBetween('ultimo_anio', array(
+                            intval($data->{'anio_inicial_acuerdo'}),
+                            intval($data->{'anio_final_acuerdo'})
+                        ))
+                        ->sum('total_calculo');
+
+                $valor_a_diferir = floatval($total_acuerdo) - $abono;
+                $valor_cuota = floor($valor_a_diferir / intval($data->{'cuotas_acuerdo'}));
+                $valor_cuota_50 = $valor_cuota + (50 -  $valor_cuota % 50); // redondeo a 50 pesos
+
+                for($i = 1; $i <= intval($data->{'cuotas_acuerdo'}); $i++) {
+                    $predio_acuerdo_pago_detalle = new PredioAcuerdoPagoDetalle();
+                    $predio_acuerdo_pago_detalle->id_acuerdo = $predio_acuerdo_pago->id;
+                    $predio_acuerdo_pago_detalle->cuota_numero = $i;
+                    if ($valor_a_diferir > $valor_cuota_50) {
+                        $predio_acuerdo_pago_detalle->valor_cuota = $valor_cuota_50;
+                        $valor_a_diferir = $valor_a_diferir - $valor_cuota_50;
+                    } else {
+                        $predio_acuerdo_pago_detalle->valor_cuota = $valor_a_diferir;
+                    }
+                }
+            }
+        }
+
         $result = array("success"=>$query);
 
         if($query) {
             $predio_acuerdo_pago = PredioAcuerdoPago::find($predio_acuerdo_pago->id);
-            $result['message'] = !array_key_exists('anulado_acuerdo', $data) ? 'Información del acuerdo de pago actualizada satisfactoriamente.' : 'Acuerdo de pago anulado satisfactoriamente.';
+            $result['message'] = !isset($data->{'anulado_acuerdo'}) ? 'Información del acuerdo de pago actualizada satisfactoriamente.' : 'Acuerdo de pago anulado satisfactoriamente.';
             return response()->json([
                 'data' => $result,
                 'obj' => $predio_acuerdo_pago
             ]);
         }
         else {
-            $result['message'] = !array_key_exists('anulado_acuerdo', $data) ? 'No se pudo actualizar la información del acuerdo de pago.' : 'No se pudo anular el acuerdo de pago.';
+            $result['message'] = !isset($data->{'anulado_acuerdo'}) ? 'No se pudo actualizar la información del acuerdo de pago.' : 'No se pudo anular el acuerdo de pago.';
             return response()->json([
                 'data' => $result
             ]);
@@ -1709,7 +1740,7 @@ class PrediosController extends Controller
                     'usuario' => $request->session()->get('username') . ' ' . $request->session()->get('userlastname'),
                 ];
 
-                $pdf = PDF::loadView($formato_factura, $data);
+                $pdf = Pdf::loadView($formato_factura, $data);
 
                 // Actualizar datos pago: valor_pago, numero_factura, fecha emision
                 // Guardar informacion solo si se realizo un nuevo calculo
@@ -2284,7 +2315,7 @@ class PrediosController extends Controller
                     'usuario' => $request->session()->get('username') . ' ' . $request->session()->get('userlastname'),
                 ];
 
-                $pdf = PDF::loadView($formato_factura, $data);
+                $pdf = Pdf::loadView($formato_factura, $data);
 
                 // Actualizar datos pago: valor_pago, numero_factura, fecha emision
                 // Guardar informacion solo si se realizo un nuevo calculo
@@ -2419,7 +2450,7 @@ class PrediosController extends Controller
             "nit" => $nit
         ];
 
-        $pdf = PDF::loadView($formato_paz, $data);
+        $pdf = Pdf::loadView($formato_paz, $data);
 
         $update_anio = new Anio;
         $update_anio = Anio::find($anio->id);
@@ -2574,7 +2605,7 @@ class PrediosController extends Controller
         // maximo año seria el actual
         // verificar si hay años intermedios que no tengan calculo
         // si hay años intermedios, ejecutar calculo, sino no ejecutar
-        if (array_key_exists('calcular', $data)) {
+        if (isset($data->{'calcular'})) {
             $minAnioCalculado = DB::table('predios_pagos')
                                 ->select(DB::raw('min(ultimo_anio) as min_anio_calculo'))
                                 ->where('predios_pagos.id_predio', $data->{'id_predio'})
@@ -2906,7 +2937,7 @@ class PrediosController extends Controller
             'alcaldia' => $alcaldia
         ];
 
-        $pdf = PDF::loadView('predios.avaluosPDF', $data);
+        $pdf = Pdf::loadView('predios.avaluosPDF', $data);
 
         return $pdf->download($dt->toDateString() . '_' . str_replace(':', '-', $dt->toTimeString()) . '.pdf');
     }
@@ -2924,7 +2955,7 @@ class PrediosController extends Controller
 
     public function get_predios_no_calculados(Request $request) {
         $data = json_decode($request->form);
-        if (!array_key_exists('id_predio_inicial', $data)) {
+        if (!isset($data->{'id_predio_inicial'})) {
             $predios = DB::table('predios')
                             ->leftJoin('predios_propietarios', function ($join) {
                                 $join->on('predios.id', '=', 'predios_propietarios.id_predio')

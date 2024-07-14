@@ -17,39 +17,26 @@ class LoginController extends Controller
     }
 
     public function checkLogin(LoginFormRequest $request) {
-
-        // $rules = [
-        //     'email'     => 'required|email',
-        //     'password'  => 'required'
-        // ];
-
-        // $customMessages = [
-        //     'email.required' => 'El campo Email es obligatorio.',
-        //     'password.required' => 'El campo Contraseña es obligatorio.',
-        //     'email.email' => 'EL campo Email no es válido.',
-        // ];
-
-        // $this->validate($request, $rules, $customMessages);
-
         $usuario = DB::table('usuarios')->join('tipos_usuarios', function ($join) use($request) {
             $join->on('usuarios.id_tipo_usuario', '=', 'tipos_usuarios.id')
-                ->where('usuarios.correo_electronico', '=', $request->email);
+                ->where('usuarios.correo_electronico', '=', $request->email)
+                ->where('usuarios.estado', '=', 'A');
         })
         ->select('usuarios.*', 'tipos_usuarios.view', 'tipos_usuarios.descripcion')
         ->get()->first();
 
-        $admin_text = DB::table('parametros')
-                      ->select('parametros.valor')
-                      ->where('parametros.nombre', 'admin-text')
-                      ->first();
-
-        $admin_text_dark = DB::table('parametros')
-                           ->select('parametros.valor')
-                           ->where('parametros.nombre', 'admin-text-dark')
-                           ->first();
-
         if($usuario) {
             if(md5($request->password) == $usuario->password) {
+                $admin_text = DB::table('parametros')
+                    ->select('parametros.valor')
+                    ->where('parametros.nombre', 'admin-text')
+                    ->first();
+
+                $admin_text_dark = DB::table('parametros')
+                    ->select('parametros.valor')
+                    ->where('parametros.nombre', 'admin-text-dark')
+                    ->first();
+
                 $request->session()->put('userid', $usuario->id);
                 $request->session()->put('role', $usuario->view);
                 $request->session()->put('desc_role', $usuario->descripcion);
