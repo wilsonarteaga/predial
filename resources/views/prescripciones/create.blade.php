@@ -198,7 +198,13 @@
                                                                 <td class="cell_center">{{ $prescripcion->codigo_predio }}</td>
                                                                 <td class="cell_center">{!! $prescripcion->prescribe_desde !!}</td>
                                                                 <td class="cell_center">{!! $prescripcion->prescribe_hasta !!}</td>
-                                                                <td class="cell_center"><a href="{!! $prescripcion->file_name !!}">{!! $prescripcion->file_name !!}</a></td>
+                                                                @if(isset($prescripcion->file_name))
+                                                                <td class="cell_center">
+                                                                    <a data-toggle="tooltip" title="Descargar {{ $prescripcion->file_name }}" href="{{ route('download-file-resolucion', ['filename' => $prescripcion->file_name]) }}" style="color: red;"><i style="color: red;" class="fa fa-file-pdf-o"></i></a>
+                                                                </td>
+                                                                @else
+                                                                <td class="cell_center">{!! $prescripcion->file_name !!}</td>
+                                                                @endif
                                                                 <td class="cell_center">{!! $prescripcion->created_at !!}</td>
                                                             </tr>
                                                             @endforeach

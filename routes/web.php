@@ -21,6 +21,7 @@ use App\Http\Controllers\ResolucionesIgacController;
 use App\Http\Controllers\PrediosExencionesController;
 use App\Http\Controllers\PrediosPrescripcionesController;
 use App\Http\Controllers\UploadController;
+use App\Http\Controllers\DownloadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -211,3 +212,6 @@ Route::post('delete_resolucion_igac', [ResolucionesIgacController::class, 'destr
 //UploadController
 Route::post('uploadFileAsobancaria', [UploadController::class, 'uploadFileAsobancaria'])->name('upload-file-asobancaria');
 Route::post('uploadFileResolucion', [UploadController::class, 'uploadFileResolucion'])->name('upload-file-resolucion');
+
+//DownloadController
+Route::get('/downloadFileResolucion/{filename}', [DownloadController::class, 'downloadFileResolucion'])->name('download-file-resolucion');
