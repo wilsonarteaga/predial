@@ -201,7 +201,13 @@
                                                                 <td class="cell_center">{{ $exencion->codigo_predio }}</td>
                                                                 <td class="cell_center">{{ $exencion->porcentaje }}</td>
                                                                 <td class="cell_center">{{ $exencion->exencion_hasta }}</td>
-                                                                <td class="cell_center">{{ $exencion->file_name }}</td>
+                                                                @if(isset($exencion->file_name))
+                                                                <td class="cell_center">
+                                                                    <a data-toggle="tooltip" title="Descargar {{ $exencion->file_name }}" href="{{ route('download-file-resolucion', ['filename' => $exencion->file_name]) }}" style="color: red;"><i style="color: red;" class="fa fa-file-pdf-o"></i></a>
+                                                                </td>
+                                                                @else
+                                                                <td class="cell_center">{!! $exencion->file_name !!}</td>
+                                                                @endif
                                                                 <td class="cell_center">{{ $exencion->created_at }}</td>
                                                             </tr>
                                                             @endforeach
