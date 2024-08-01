@@ -1600,12 +1600,12 @@ class PrediosController extends Controller
                         $obj_total = 0;
 
                         for ($x = 0; $x < count($lista_pagos) - 5; $x++) {
-                            $obj_m_tar = $lista_pagos[$x]->m_tar;
-                            $obj_avaluo = $lista_pagos[$x]->avaluo;
-                            $obj_impuesto = $lista_pagos[$x]->impuesto;
-                            $obj_impuesto_interes = $lista_pagos[$x]->impuesto_interes;
-                            $obj_car = $lista_pagos[$x]->car;
-                            $obj_car_interes = $lista_pagos[$x]->car_interes;
+                            $obj_m_tar += $lista_pagos[$x]->m_tar;
+                            $obj_avaluo += $lista_pagos[$x]->avaluo;
+                            $obj_impuesto += $lista_pagos[$x]->impuesto;
+                            $obj_impuesto_interes += $lista_pagos[$x]->impuesto_interes;
+                            $obj_car += $lista_pagos[$x]->car;
+                            $obj_car_interes += $lista_pagos[$x]->car_interes;
                             $obj_trece += $lista_pagos[$x]->trece;
                             $obj_catorce += $lista_pagos[$x]->catorce;
                             $obj_quince += $lista_pagos[$x]->quince;
@@ -2181,12 +2181,12 @@ class PrediosController extends Controller
                         $obj_total = 0;
 
                         for ($x = 0; $x < count($lista_pagos) - 5; $x++) {
-                            $obj_m_tar = $lista_pagos[$x]->m_tar;
-                            $obj_avaluo = $lista_pagos[$x]->avaluo;
-                            $obj_impuesto = $lista_pagos[$x]->impuesto;
-                            $obj_impuesto_interes = $lista_pagos[$x]->impuesto_interes;
-                            $obj_car = $lista_pagos[$x]->car;
-                            $obj_car_interes = $lista_pagos[$x]->car_interes;
+                            $obj_m_tar += $lista_pagos[$x]->m_tar;
+                            $obj_avaluo += $lista_pagos[$x]->avaluo;
+                            $obj_impuesto += $lista_pagos[$x]->impuesto;
+                            $obj_impuesto_interes += $lista_pagos[$x]->impuesto_interes;
+                            $obj_car += $lista_pagos[$x]->car;
+                            $obj_car_interes += $lista_pagos[$x]->car_interes;
                             $obj_trece += $lista_pagos[$x]->trece;
                             $obj_catorce += $lista_pagos[$x]->catorce;
                             $obj_quince += $lista_pagos[$x]->quince;
