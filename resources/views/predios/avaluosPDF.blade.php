@@ -159,6 +159,8 @@
                     <th style="width: auto;">A&Ntilde;O</th>
                     <th style="width: auto;">AVALUO</th>
                     <th style="width: auto;">TIPO RECIBO</th>
+                    <th style="width: auto;">PRESCRITO</th>
+                    <th style="width: auto;">EXENTO</th>
                 </tr>
                 @php($suma_impuesto = 0)
                 @foreach($avaluos as $avaluo)
@@ -170,6 +172,8 @@
                     <td class="text-center">{{ $avaluo->anio }}</td>
                     <td class="text-right">@money($avaluo->avaluo)</td>
                     <td class="text-center">Vigencia</td>
+                    <td class="text-center">{{ $avaluo->prescrito }}</td>
+                    <td class="text-center">{{ $avaluo->exencion }}</td>
                 </tr>
                 @php($suma_impuesto += $avaluo->valor_pago)
                 @endforeach

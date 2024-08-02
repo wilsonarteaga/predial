@@ -2854,7 +2854,9 @@ class PrediosController extends Controller
                                             ISNULL(pp.total_tres, 0)
                                         ELSE
                                             0
-                                    END AS valor_vigencia
+                                    END AS valor_vigencia,
+                                    CASE WHEN pp.prescrito != 0 THEN \'SI\' ELSE \'NO\' END as prescrito,
+                                    CASE WHEN pp.exencion != 0 THEN \'SI\' ELSE \'NO\' END as exencion
                             from predios p inner join
                                 predios_pagos pp
                                 on (p.id = pp.id_predio) left join

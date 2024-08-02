@@ -1146,8 +1146,8 @@ $(document).ready(function() {
             // });
         },
         columnDefs: [
-            { className: 'text-center', "targets": [1, 3, 4, 5, 6, 7, 9] },
-            { className: 'text-right money', targets: [2, 8, 10] }
+            { className: 'text-center', "targets": [1, 2, 3, 5, 6, 7, 8, 9, 11] },
+            { className: 'text-right money', targets: [4, 10, 12] }
             //, { "visible": false, "targets": [0] }
         ]
     });
