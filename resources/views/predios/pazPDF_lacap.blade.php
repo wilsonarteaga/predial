@@ -271,7 +271,7 @@
             </table>
         </div>
         <div id="footer">
-            TESORERO(A) MUNICIPAL
+            TESORER&Iacute;A MUNICIPAL
         </div>
     </div>
 </body>
