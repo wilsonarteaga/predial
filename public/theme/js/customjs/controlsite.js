@@ -1004,7 +1004,7 @@ function setEditRow(initDataTable) {
 function setModifyRow() {
     if ($('.modify_row').length > 0) {
         $('.modify_row').off('click').on('click', function(evt) {
-            $(this).closest('tr').find('td:eq(0)').trigger('click');
+            $(this).closest('tr').find('td:eq(1)').trigger('click');
         });
     }
 }
