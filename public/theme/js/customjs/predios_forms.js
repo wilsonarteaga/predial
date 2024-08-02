@@ -1078,6 +1078,14 @@ $(document).ready(function() {
             title: 'A&ntilde;o',
             defaultContent: ''
         }, {
+            data: 'prescrito',
+            title: 'Prescrito',
+            defaultContent: ''
+        }, {
+            data: 'exencion',
+            title: 'Excento',
+            defaultContent: ''
+        }, {
             title: 'Avaluo',
             "render": function(data, type, row, meta) {
                 return accounting.formatMoney(Number(row.avaluo), "$ ", 2, ".", ",");
