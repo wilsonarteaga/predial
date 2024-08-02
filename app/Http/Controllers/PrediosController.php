@@ -2919,15 +2919,15 @@ class PrediosController extends Controller
         $data = json_decode($request->form);
         $predio = DB::select('select pp.id_predio as id,
                                     pp.ultimo_anio as vigencia,
-                                    pp.avaluo as avaluo,
-                                    pp.valor_concepto1 as impuesto,
-                                    pp.valor_concepto2 as interes_impuesto,
-                                    pp.valor_concepto3 as car,
-                                    pp.valor_concepto4 as interes_car,
-                                    pp.valor_concepto13 as descuento,
-                                    0 as otros,
-                                    pp.total_calculo as total,
-                                    CASE WHEN pp.acuerdo != 0 THEN \'SI\' ELSE \'NO\' END as acuerdo
+                                    ISNULL(pp.avaluo, 0) as avaluo,
+                                    ISNULL(pp.valor_concepto1, 0) as impuesto,
+                                    ISNULL(pp.valor_concepto2, 0) as interes_impuesto,
+                                    ISNULL(pp.valor_concepto3, 0) as car,
+                                    ISNULL(pp.valor_concepto4, 0) as interes_car,
+                                    ISNULL(pp.valor_concepto13, 0) + ISNULL(pp.valor_concepto15, 0) as descuento,
+                                    ISNULL(pp.valor_concepto16, 0) as otros,
+                                    ISNULL(pp.total_calculo, 0) as total,
+                                    CASE WHEN ISNULL(pp.acuerdo, 0) != 0 THEN \'SI\' ELSE \'NO\' END as acuerdo
                             from predios_pagos pp
                             where
                                 pp.id_predio = '. $data->{'id_predio'} .' and
@@ -2960,15 +2960,15 @@ class PrediosController extends Controller
 
         $pendientes = DB::select('select pp.id_predio as id,
                                     pp.ultimo_anio as vigencia,
-                                    pp.avaluo as avaluo,
-                                    pp.valor_concepto1 as impuesto,
-                                    pp.valor_concepto2 as interes_impuesto,
-                                    pp.valor_concepto3 as car,
-                                    pp.valor_concepto4 as interes_car,
-                                    pp.valor_concepto13 as descuento,
-                                    0 as otros,
-                                    pp.total_calculo as total,
-                                    CASE WHEN pp.acuerdo != 0 THEN \'SI\' ELSE \'NO\' END as acuerdo
+                                    ISNULL(pp.avaluo, 0) as avaluo,
+                                    ISNULL(pp.valor_concepto1, 0) as impuesto,
+                                    ISNULL(pp.valor_concepto2, 0) as interes_impuesto,
+                                    ISNULL(pp.valor_concepto3, 0) as car,
+                                    ISNULL(pp.valor_concepto4, 0) as interes_car,
+                                    ISNULL(pp.valor_concepto13, 0) + ISNULL(pp.valor_concepto15, 0) as descuento,
+                                    ISNULL(pp.valor_concepto16, 0) as otros,
+                                    ISNULL(pp.total_calculo, 0) as total,
+                                    CASE WHEN ISNULL(pp.acuerdo, 0) != 0 THEN \'SI\' ELSE \'NO\' END as acuerdo
                             from predios_pagos pp
                             where
                                 pp.id_predio = '. $id .' and
@@ -3020,7 +3020,7 @@ class PrediosController extends Controller
 
         $pdf = PDF::loadView('predios.estadoCuentaPDF', $data);
 
-        return $pdf->download($dt->toDateString() . '_' . str_replace(':', '-', $dt->toTimeString()) . '.pdf');
+        return $pdf->download('estado_cuenta_' . $dt->toDateString() . '_' . str_replace(':', '-', $dt->toTimeString()) . '.pdf');
     }
 
     public function get_propietario_by_identificacion(Request $request) {
