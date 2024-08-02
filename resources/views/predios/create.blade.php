@@ -832,6 +832,11 @@
         <span class="hidden-xs">P&H</span> <i class="icon-layers"></i>
     </a>
 </li>
+<li class="mega-dropdown buttonTareas">
+    <a class="waves-effect waves-light" data-tooltip="tooltip" data-placement="bottom" data-toggle="modal" data-target="#modal-datos-estado-cuenta" data-backdrop="static" data-keyboard="false" href="#" title="Estado de cuenta">
+        <span class="hidden-xs">EC</span> <i class="icon-calculator"></i>
+    </a>
+</li>
 @endsection
 
 @section('modales')
@@ -1583,6 +1588,23 @@
             </div>
             <div class="modal-footer">
                 <button id="print_avaluos" url="/generate_avaluos_predio_pdf/" type="button" class="btn btn-youtube pull-left btn_pdf"> <i class="fa fa-file-pdf-o"></i> Descargar PDF</button>
+                <button type="button" class="btn btn-default waves-effect text-left" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-datos-estado-cuenta" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-datos-estado-cuenta-label" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg" style="width: 95%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                {{-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> --}}
+                <h4 class="modal-title" id="modal-datos-estado-cuenta-label">Informaci&oacute;n adicional - <span>Estado de Cuenta</h4>
+            </div>
+            <div class="modal-body">
+                <table id="estadoCuentaTable" class="table table-hover table-condensed table-striped table-bordered" style="margin-bottom: 10px;"></table>
+            </div>
+            <div class="modal-footer">
+                <button id="print_estado_cuenta" url="/generate_estado_cuenta_predio_pdf/" type="button" class="btn btn-youtube pull-left btn_pdf" style="display: none;"> <i class="fa fa-file-pdf-o"></i> Descargar PDF</button>
                 <button type="button" class="btn btn-default waves-effect text-left" data-dismiss="modal">Cerrar</button>
             </div>
         </div>

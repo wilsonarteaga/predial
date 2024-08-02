@@ -2915,6 +2915,114 @@ class PrediosController extends Controller
         return $pdf->download($dt->toDateString() . '_' . str_replace(':', '-', $dt->toTimeString()) . '.pdf');
     }
 
+    public function estado_cuenta_predio(Request $request) {
+        $data = json_decode($request->form);
+        $predio = DB::select('select pp.id_predio as id,
+                                    pp.ultimo_anio as vigencia,
+                                    pp.avaluo as avaluo,
+                                    pp.valor_concepto1 as impuesto,
+                                    pp.valor_concepto2 as interes_impuesto,
+                                    pp.valor_concepto3 as car,
+                                    pp.valor_concepto4 as interes_car,
+                                    pp.valor_concepto13 as descuento,
+                                    0 as otros,
+                                    pp.total_calculo as total,
+                                    CASE WHEN pp.acuerdo != 0 THEN \'SI\' ELSE \'NO\' END as acuerdo
+                            from predios_pagos pp
+                            where
+                                pp.id_predio = '. $data->{'id_predio'} .' and
+                                pp.pagado = 0 and
+                                pp.anulada = 0
+                            order by pp.ultimo_anio');
+
+        $result = array("predio" => $predio);
+        return response()->json($result);
+    }
+
+    public function generate_estado_cuenta_predio_pdf(Request $request, $id) {
+        if (!$request->session()->exists('userid')) {
+            return redirect('/');
+        }
+
+        $dt = Carbon::now();
+
+        $predio =  DB::table('predios')
+                    ->where('predios.estado', 1)
+                    ->where('predios.id', $id)
+                    ->first();
+
+        $predio_pago =  DB::table('predios_pagos')
+                    ->where('pagado', '<>', 0)
+                    ->where('anulada', 0)
+                    ->where('id_predio', $id)
+                    ->orderBy('ultimo_anio', 'desc')
+                    ->first();
+
+        $pendientes = DB::select('select pp.id_predio as id,
+                                    pp.ultimo_anio as vigencia,
+                                    pp.avaluo as avaluo,
+                                    pp.valor_concepto1 as impuesto,
+                                    pp.valor_concepto2 as interes_impuesto,
+                                    pp.valor_concepto3 as car,
+                                    pp.valor_concepto4 as interes_car,
+                                    pp.valor_concepto13 as descuento,
+                                    0 as otros,
+                                    pp.total_calculo as total,
+                                    CASE WHEN pp.acuerdo != 0 THEN \'SI\' ELSE \'NO\' END as acuerdo
+                            from predios_pagos pp
+                            where
+                                pp.id_predio = '. $id .' and
+                                pp.pagado = 0 and
+                                pp.anulada = 0
+                            order by pp.ultimo_anio');
+
+        $propietario_ppal = DB::table('predios')
+                            ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                            ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                            ->select(DB::raw('propietarios.*, predios_propietarios.jerarquia'))
+                            ->where('predios_propietarios.jerarquia', '001')
+                            ->where('predios.estado', 1)
+                            ->where('predios.id', $id)
+                            ->first();
+
+        $parametro_logo = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'logo')
+                              ->first();
+
+        $parametro_nit = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'nit')
+                              ->first();
+
+        $parametro_alcaldia = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'alcaldia')
+                              ->first();
+
+
+        $logo = $parametro_logo->valor;
+        $nit = $parametro_nit->valor;
+        $alcaldia = $parametro_alcaldia->valor;
+
+        $data = [
+            'title' => 'Estado cuenta',
+            'usuario' => $request->session()->get('useremail'),
+            'predio' => $predio,
+            'predio_pago' => $predio_pago,
+            'pendientes' => $pendientes,
+            'propietario_ppal' => $propietario_ppal,
+            'logo' => $logo,
+            'nit' => $nit,
+            'alcaldia' => $alcaldia,
+            'fecha' => Carbon::now()->format('d/m/Y')
+        ];
+
+        $pdf = PDF::loadView('predios.estadoCuentaPDF', $data);
+
+        return $pdf->download($dt->toDateString() . '_' . str_replace(':', '-', $dt->toTimeString()) . '.pdf');
+    }
+
     public function get_propietario_by_identificacion(Request $request) {
         $data = json_decode($request->form);
 
