@@ -239,7 +239,7 @@
             </div>
             <div class="info" style="padding-top: 15px; width: 100%;">
                 <p>
-                    Actualmente el municipio de Paipa no tiene adoptada la contribuci&oacute;n de valorizaci&oacute;n para predios ubicados dentro de su jurisdicci&oacute;n.
+                    Actualmente el municipio de La Capilla no tiene adoptada la contribuci&oacute;n de valorizaci&oacute;n para predios ubicados dentro de su jurisdicci&oacute;n.
                 </p>
                 <p>
                     La presente certificaci&oacute;n se expide en relaci&oacute;n con el predio identificado con c&eacute;dula catastral No. <b>{{ $predio->codigo_predio }}</b>
