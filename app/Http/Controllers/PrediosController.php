@@ -1631,12 +1631,12 @@ class PrediosController extends Controller
                         $obj_total = 0;
 
                         for ($x = 0; $x < count($lista_pagos) - 5; $x++) {
-                            $obj_m_tar = $lista_pagos[$x]->m_tar;
-                            $obj_avaluo = $lista_pagos[$x]->avaluo;
-                            $obj_impuesto = $lista_pagos[$x]->impuesto;
-                            $obj_impuesto_interes = $lista_pagos[$x]->impuesto_interes;
-                            $obj_car = $lista_pagos[$x]->car;
-                            $obj_car_interes = $lista_pagos[$x]->car_interes;
+                            $obj_m_tar += $lista_pagos[$x]->m_tar == null ? 0 : $lista_pagos[$x]->m_tar;
+                            $obj_avaluo += $lista_pagos[$x]->avaluo == null ? 0 : $lista_pagos[$x]->avaluo;
+                            $obj_impuesto += $lista_pagos[$x]->impuesto == null ? 0 : $lista_pagos[$x]->impuesto;
+                            $obj_impuesto_interes += $lista_pagos[$x]->impuesto_interes == null ? 0 : $lista_pagos[$x]->impuesto_interes;
+                            $obj_car += $lista_pagos[$x]->car == null ? 0 : $lista_pagos[$x]->car;
+                            $obj_car_interes += $lista_pagos[$x]->car_interes == null ? 0 : $lista_pagos[$x]->car_interes;
                             $obj_trece += $lista_pagos[$x]->trece;
                             $obj_catorce += $lista_pagos[$x]->catorce;
                             $obj_quince += $lista_pagos[$x]->quince;
@@ -2212,12 +2212,12 @@ class PrediosController extends Controller
                         $obj_total = 0;
 
                         for ($x = 0; $x < count($lista_pagos) - 5; $x++) {
-                            $obj_m_tar = $lista_pagos[$x]->m_tar;
-                            $obj_avaluo = $lista_pagos[$x]->avaluo;
-                            $obj_impuesto = $lista_pagos[$x]->impuesto;
-                            $obj_impuesto_interes = $lista_pagos[$x]->impuesto_interes;
-                            $obj_car = $lista_pagos[$x]->car;
-                            $obj_car_interes = $lista_pagos[$x]->car_interes;
+                            $obj_m_tar += $lista_pagos[$x]->m_tar == null ? 0 : $lista_pagos[$x]->m_tar;
+                            $obj_avaluo += $lista_pagos[$x]->avaluo == null ? 0 : $lista_pagos[$x]->avaluo;
+                            $obj_impuesto += $lista_pagos[$x]->impuesto == null ? 0 : $lista_pagos[$x]->impuesto;
+                            $obj_impuesto_interes += $lista_pagos[$x]->impuesto_interes == null ? 0 : $lista_pagos[$x]->impuesto_interes;
+                            $obj_car += $lista_pagos[$x]->car == null ? 0 : $lista_pagos[$x]->car;
+                            $obj_car_interes += $lista_pagos[$x]->car_interes == null ? 0 : $lista_pagos[$x]->car_interes;
                             $obj_trece += $lista_pagos[$x]->trece;
                             $obj_catorce += $lista_pagos[$x]->catorce;
                             $obj_quince += $lista_pagos[$x]->quince;
@@ -2834,7 +2834,9 @@ class PrediosController extends Controller
                                     ISNULL(CONVERT(VARCHAR, pp.fecha_pago, 101), \'N/D\') as fecha_pago,
                                     pp.valor_pago,
                                     ISNULL(pp.factura_pago, \'N/D\') as factura_pago,
-                                    pp.valor_pago AS valor_vigencia
+                                    pp.valor_pago AS valor_vigencia,
+                                    CASE WHEN pp.prescrito != 0 THEN \'SI\' ELSE \'NO\' END as prescrito,
+                                    CASE WHEN pp.exencion != 0 THEN \'SI\' ELSE \'NO\' END as exencion
                             from predios p inner join
                                 predios_pagos pp
                                 on (p.id = pp.id_predio) left join
@@ -2883,7 +2885,9 @@ class PrediosController extends Controller
                                             ISNULL(pp.total_tres, 0)
                                         ELSE
                                             0
-                                    END AS valor_vigencia
+                                    END AS valor_vigencia,
+                                    CASE WHEN pp.prescrito != 0 THEN \'SI\' ELSE \'NO\' END as prescrito,
+                                    CASE WHEN pp.exencion != 0 THEN \'SI\' ELSE \'NO\' END as exencion
                             from predios p inner join
                                 predios_pagos pp
                                 on (p.id = pp.id_predio) left join
@@ -2940,6 +2944,114 @@ class PrediosController extends Controller
         $pdf = Pdf::loadView('predios.avaluosPDF', $data);
 
         return $pdf->download($dt->toDateString() . '_' . str_replace(':', '-', $dt->toTimeString()) . '.pdf');
+    }
+
+    public function estado_cuenta_predio(Request $request) {
+        $data = json_decode($request->form);
+        $predio = DB::select('select pp.id_predio as id,
+                                    pp.ultimo_anio as vigencia,
+                                    ISNULL(pp.avaluo, 0) as avaluo,
+                                    ISNULL(pp.valor_concepto1, 0) as impuesto,
+                                    ISNULL(pp.valor_concepto2, 0) as interes_impuesto,
+                                    ISNULL(pp.valor_concepto3, 0) as car,
+                                    ISNULL(pp.valor_concepto4, 0) as interes_car,
+                                    ISNULL(pp.valor_concepto13, 0) + ISNULL(pp.valor_concepto15, 0) as descuento,
+                                    ISNULL(pp.valor_concepto16, 0) as otros,
+                                    ISNULL(pp.total_calculo, 0) as total,
+                                    CASE WHEN ISNULL(pp.acuerdo, 0) != 0 THEN \'SI\' ELSE \'NO\' END as acuerdo
+                            from predios_pagos pp
+                            where
+                                pp.id_predio = '. $data->{'id_predio'} .' and
+                                pp.pagado = 0 and
+                                pp.anulada = 0
+                            order by pp.ultimo_anio');
+
+        $result = array("predio" => $predio);
+        return response()->json($result);
+    }
+
+    public function generate_estado_cuenta_predio_pdf(Request $request, $id) {
+        if (!$request->session()->exists('userid')) {
+            return redirect('/');
+        }
+
+        $dt = Carbon::now();
+
+        $predio =  DB::table('predios')
+                    ->where('predios.estado', 1)
+                    ->where('predios.id', $id)
+                    ->first();
+
+        $predio_pago =  DB::table('predios_pagos')
+                    ->where('pagado', '<>', 0)
+                    ->where('anulada', 0)
+                    ->where('id_predio', $id)
+                    ->orderBy('ultimo_anio', 'desc')
+                    ->first();
+
+        $pendientes = DB::select('select pp.id_predio as id,
+                                    pp.ultimo_anio as vigencia,
+                                    ISNULL(pp.avaluo, 0) as avaluo,
+                                    ISNULL(pp.valor_concepto1, 0) as impuesto,
+                                    ISNULL(pp.valor_concepto2, 0) as interes_impuesto,
+                                    ISNULL(pp.valor_concepto3, 0) as car,
+                                    ISNULL(pp.valor_concepto4, 0) as interes_car,
+                                    ISNULL(pp.valor_concepto13, 0) + ISNULL(pp.valor_concepto15, 0) as descuento,
+                                    ISNULL(pp.valor_concepto16, 0) as otros,
+                                    ISNULL(pp.total_calculo, 0) as total,
+                                    CASE WHEN ISNULL(pp.acuerdo, 0) != 0 THEN \'SI\' ELSE \'NO\' END as acuerdo
+                            from predios_pagos pp
+                            where
+                                pp.id_predio = '. $id .' and
+                                pp.pagado = 0 and
+                                pp.anulada = 0
+                            order by pp.ultimo_anio');
+
+        $propietario_ppal = DB::table('predios')
+                            ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                            ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                            ->select(DB::raw('propietarios.*, predios_propietarios.jerarquia'))
+                            ->where('predios_propietarios.jerarquia', '001')
+                            ->where('predios.estado', 1)
+                            ->where('predios.id', $id)
+                            ->first();
+
+        $parametro_logo = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'logo')
+                              ->first();
+
+        $parametro_nit = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'nit')
+                              ->first();
+
+        $parametro_alcaldia = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'alcaldia')
+                              ->first();
+
+
+        $logo = $parametro_logo->valor;
+        $nit = $parametro_nit->valor;
+        $alcaldia = $parametro_alcaldia->valor;
+
+        $data = [
+            'title' => 'Estado cuenta',
+            'usuario' => $request->session()->get('useremail'),
+            'predio' => $predio,
+            'predio_pago' => $predio_pago,
+            'pendientes' => $pendientes,
+            'propietario_ppal' => $propietario_ppal,
+            'logo' => $logo,
+            'nit' => $nit,
+            'alcaldia' => $alcaldia,
+            'fecha' => Carbon::now()->format('d/m/Y')
+        ];
+
+        $pdf = PDF::loadView('predios.estadoCuentaPDF', $data);
+
+        return $pdf->download('estado_cuenta_' . $dt->toDateString() . '_' . str_replace(':', '-', $dt->toTimeString()) . '.pdf');
     }
 
     public function get_propietario_by_identificacion(Request $request) {

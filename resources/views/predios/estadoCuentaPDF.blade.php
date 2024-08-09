@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Avaluo predial</title>
+    <title>Estado de cuenta predial</title>
     <style>
         @page {
             margin: 0;
@@ -124,13 +124,10 @@
                         <img style="width: 70%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/'. $logo))) }}" alt="Logo" />
                     </td>
                     <td>
-                        <p class="header">
-                            REP&Uacute;BLICA DE COLOMBIA</p>
                         <p class="header">{{ strtoupper($alcaldia) }}</p>
-                        <p class="header">
-                            NIT {{ $nit }}</p>
-                        <p class="header">
-                            HISTORICO DE PAGOS</p>
+                        <p class="header">NIT {{ $nit }}</p>
+                        <p class="header">IMPUESTO PREDIAL UNIFICADO</p>
+                        <p class="header">ESTADO DE CUENTA A {{ $fecha }}</p>
                     </td>
                 </tr>
             </table>
@@ -138,54 +135,94 @@
         <div id="body">
             <table class="info-encabezado" style="width: 100%; margin-top: 15px;">
                 <tr>
-                    <th style="width: 20%;">C&eacute;dula catastral:</th>
-                    <td style="width: 80%;">{{ $predio->codigo_predio }}</td>
-                </tr>
-                <tr>
+                    <th style="width: 20%;">Identificaci&oacute;n:</th>
+                    <td style="width: 30%;">{{ $propietario_ppal->identificacion}}</td>
                     <th style="width: 20%;">Propietario:</th>
-                    <td style="width: 80%;">{{ $propietario_ppal->nombre}}</td>
+                    <td style="width: 30%;">{{ $propietario_ppal->nombre}}</td>
                 </tr>
                 <tr>
+                    <th style="width: 20%;">C&eacute;dula catastral:</th>
+                    <td style="width: 30%;">{{ $predio->codigo_predio }}</td>
                     <th style="width: 20%;">Direcci&oacute;n:</th>
-                    <td style="width: 80%;">{{ $predio->direccion }}</td>
+                    <td style="width: 30%;">{{ $predio->direccion }}</td>
+                </tr>
+            </table>
+            <table class="info-encabezado" style="width: 100%; margin-top: 0px;">
+                <tr>
+                    <th style="width: auto;">Aval&uacute;o actual:</th>
+                    <td style="width: auto;">@money($predio_pago->avaluo)</td>
+                    <th style="width: auto;">&Aacute;rea (M2):</th>
+                    <td style="width: auto;">{{ number_format($predio->area_metros, 2) }}</td>
+                    <th style="width: auto;">&Aacute;rea Const. (M2):</th>
+                    <td style="width: auto;">{{ number_format($predio->area_construida, 2) }}</td>
+                    <th style="width: auto;">Tarifa:</th>
+                    <td style="width: auto;">{{ number_format($predio_pago->tarifa * 1000, 2) }}</td>
+                </tr>
+                <tr>
+                    <th style="width: auto;">&Uacute;ltimo pago:</th>
+                    <td style="width: auto;">{{ $predio_pago->ultimo_anio }}</td>
+                    <td colspan="6"></td>
+                </tr>
+                <tr>
+
                 </tr>
             </table>
             <table class="info-predio" style="width: 100%; margin-top: 10px;">
                 <tr>
-                    <th style="width: auto;">RECIBO</th>
-                    <th style="width: auto;">FECHA</th>
-                    <th style="width: auto;">BANCO</th>
-                    <th style="width: auto;">VALOR</th>
-                    <th style="width: auto;">A&Ntilde;O</th>
+                    <th style="width: auto;">VIG.</th>
                     <th style="width: auto;">AVALUO</th>
-                    <th style="width: auto;">TIPO RECIBO</th>
-                    <th style="width: auto;">PRESCRITO</th>
-                    <th style="width: auto;">EXENTO</th>
+                    <th style="width: auto;">IMPUESTO</th>
+                    <th style="width: auto;">INTERESES</th>
+                    <th style="width: auto;">CAR</th>
+                    <th style="width: auto;">INTERES CAR</th>
+                    <th style="width: auto;">DESCUENTO</th>
+                    <th style="width: auto;">OTROS</th>
+                    <th style="width: auto;">TOTAL</th>
+                    <th style="width: auto;">AP</th>
                 </tr>
                 @php($suma_impuesto = 0)
-                @foreach($avaluos as $avaluo)
+                @php($suma_interes_impuesto = 0)
+                @php($suma_car = 0)
+                @php($suma_interes_car = 0)
+                @php($suma_descuento = 0)
+                @php($suma_otros = 0)
+                @php($suma_total = 0)
+                @foreach($pendientes as $pendiente)
                 <tr>
-                    <td class="text-center">{{ $avaluo->factura_pago }}</td>
-                    <td class="text-center">{{ $avaluo->fecha_pago }}</td>
-                    <td class="text-center">{{ $avaluo->banco }}</td>
-                    <td class="text-right">@money($avaluo->valor_pago)</td>
-                    <td class="text-center">{{ $avaluo->anio }}</td>
-                    <td class="text-right">@money($avaluo->avaluo)</td>
-                    <td class="text-center">Vigencia</td>
-                    <td class="text-center">{{ $avaluo->prescrito }}</td>
-                    <td class="text-center">{{ $avaluo->exencion }}</td>
+                    <td class="text-center">{{ $pendiente->vigencia }}</td>
+                    <td class="text-right">@money($pendiente->avaluo)</td>
+                    <td class="text-right">@money($pendiente->impuesto)</td>
+                    <td class="text-right">@money($pendiente->interes_impuesto)</td>
+                    <td class="text-right">@money($pendiente->car)</td>
+                    <td class="text-right">@money($pendiente->interes_car)</td>
+                    <td class="text-right">@money($pendiente->descuento)</td>
+                    <td class="text-right">@money($pendiente->otros)</td>
+                    <td class="text-right">@money($pendiente->total)</td>
+                    <td class="text-center">{{ $pendiente->acuerdo }}</td>
                 </tr>
-                @php($suma_impuesto += $avaluo->valor_pago)
+                @php($suma_impuesto += $pendiente->impuesto)
+                @php($suma_interes_impuesto += $pendiente->interes_impuesto)
+                @php($suma_car += $pendiente->car)
+                @php($suma_interes_car += $pendiente->interes_car)
+                @php($suma_descuento += $pendiente->descuento)
+                @php($suma_otros += $pendiente->otros)
+                @php($suma_total += $pendiente->total)
                 @endforeach
                 <tr class="totales">
-                    <th class="text-right" colspan="3">TOTAL PAGO</th>
+                    <th class="text-right" colspan="2">TOTALES</th>
                     <th class="text-right">@money($suma_impuesto)</th>
-                    <th colspan="3" style="background-color: #FFFFFF; border-right: 0px; border-bottom: 0px;"></th>
+                    <th class="text-right">@money($suma_interes_impuesto)</th>
+                    <th class="text-right">@money($suma_car)</th>
+                    <th class="text-right">@money($suma_interes_car)</th>
+                    <th class="text-right">@money($suma_descuento)</th>
+                    <th class="text-right">@money($suma_otros)</th>
+                    <th class="text-right">@money($suma_total)</th>
+                    <th class="text-right"></th>
                 </tr>
             </table>
         </div>
         <div id="footer">
-            SECRETAR&Iacute;A DE HACIENDA
+            TESORER&Iacute;A MUNICIPAL
         </div>
     </div>
 </body>

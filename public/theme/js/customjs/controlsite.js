@@ -1004,7 +1004,7 @@ function setEditRow(initDataTable) {
 function setModifyRow() {
     if ($('.modify_row').length > 0) {
         $('.modify_row').off('click').on('click', function(evt) {
-            $(this).closest('tr').find('td:eq(0)').trigger('click');
+            $(this).closest('tr').find('td:eq(1)').trigger('click');
         });
     }
 }
@@ -1536,6 +1536,39 @@ function getAvaluosPredio(id_predio, btn) {
                 if (DTAvaluos !== null) {
                     DTAvaluos.clear().draw();
                     DTAvaluos.rows.add(response.predio).draw();
+                }
+            }
+        },
+        error: function(xhr) {
+            if(btn !== undefined) {
+                $(btn).attr('disabled', false);
+            }
+            console.log(xhr.responseText);
+        }
+    });
+}
+
+function getEstadoCuentaPredio(id_predio, btn) {
+    var jsonObj = {};
+    jsonObj.id_predio = id_predio;
+    $('#print_estado_cuenta').css('display', 'none');
+    $.ajax({
+        type: 'POST',
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        dataType: 'json',
+        url: '/estado_cuenta_predio',
+        data: {
+            form: JSON.stringify(jsonObj)
+        },
+        success: function(response) {
+            if(btn !== undefined) {
+                $(btn).attr('disabled', false);
+            }
+            if (response.predio.length > 0) {
+                $('#print_estado_cuenta').css('display', '');
+                if (DTEstadoCuenta !== null) {
+                    DTEstadoCuenta.clear().draw();
+                    DTEstadoCuenta.rows.add(response.predio).draw();
                 }
             }
         },

@@ -135,10 +135,12 @@ Route::get('generate_factura_pdf/{id}/{tmp}/{anios}/{fecha_pago}/{informativa}/{
 // Route::get('generate_factura_pdf/{id}/{vistaPrevia}/{anio}/{cuotas}/{fecha_pago}', [PrediosController::class, 'generate_factura_pdf'])->middleware('checkdb');
 Route::get('generate_paz_pdf/{id}/{destino}/{fecha}/{valor}', [PrediosController::class, 'generate_paz_pdf'])->middleware('checkdb');
 Route::get('generate_avaluos_predio_pdf/{id}', [PrediosController::class, 'generate_avaluos_predio_pdf'])->middleware('checkdb');
+Route::get('generate_estado_cuenta_predio_pdf/{id}', [PrediosController::class, 'generate_estado_cuenta_predio_pdf'])->middleware('checkdb');
 Route::get('/autocomplete', [PrediosController::class, 'autocomplete']);
 Route::get('/autocomplete_check', [PrediosController::class, 'autocomplete_check']);
 Route::post('/get_predio', [PrediosController::class, 'get_predio']);
 Route::post('/avaluos_predio', [PrediosController::class, 'avaluos_predio']);
+Route::post('/estado_cuenta_predio', [PrediosController::class, 'estado_cuenta_predio']);
 Route::post('/get_propietario_by_identificacion', [PrediosController::class, 'get_propietario_by_identificacion']);
 Route::post('/get_predios_no_calculados', [PrediosController::class, 'get_predios_no_calculados']);
 Route::post('/ejecutar_calculo_batch', [PrediosController::class, 'ejecutar_calculo_batch']);

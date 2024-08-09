@@ -1,6 +1,7 @@
 var DTAbonos = null;
 var DTPropietarios = null;
 var DTAvaluos = null;
+var DTEstadoCuenta = null;
 var last_propietario = 0;
 var idx_update = 0;
 var current_page = 0;
@@ -684,11 +685,26 @@ $(document).ready(function() {
         getAvaluosPredio($('#id_edit').val(), undefined);
     });
 
-    // $('#modal-datos-procesos-historicos').on('hidden.bs.modal', function() {
-    //     $('.datohidden').remove();
-    //     $('#form-predios-datos-procesos-historicos')[0].reset();
-    //     clear_form_elements("#form-predios-datos-procesos-historicos");
-    // });
+    $('#modal-datos-procesos-historicos').on('hidden.bs.modal', function() {
+        if (DTAvaluos !== null) {
+            DTAvaluos.clear().draw();
+        }
+    });
+
+    /// datos-estado-cuenta
+    $('#modal-datos-estado-cuenta').on('show.bs.modal', function() {
+        // if ($('#tr_predio_' + $('#id_edit').val()).attr('data-ph') !== undefined) {
+        //     var objJson = JSON.parse($('#tr_predio_' + $('#id_edit').val()).attr('data-ph'));
+        //     setFormData('form-predios-datos-estado-cuenta', objJson);
+        // }
+        getEstadoCuentaPredio($('#id_edit').val(), undefined);
+    });
+
+    $('#modal-datos-estado-cuenta').on('hidden.bs.modal', function() {
+        if (DTEstadoCuenta !== null) {
+            DTEstadoCuenta.clear().draw();
+        }
+    });
 
     /// calculo batch
     $('#btn_ejecutar_calculo_batch').off('click').on('click', function() {
@@ -1054,7 +1070,7 @@ $(document).ready(function() {
 
     DTAvaluos = $('#avaluosTable').DataTable({
         initComplete: function(settings, json) {
-            $('#divAvaluosTable').css('display', '');
+            // $('#divAvaluosTable').css('display', '');
         },
         "destroy": true,
         "ordering": false,
@@ -1076,6 +1092,14 @@ $(document).ready(function() {
         }, {
             data: 'anio',
             title: 'A&ntilde;o',
+            defaultContent: ''
+        }, {
+            data: 'prescrito',
+            title: 'Prescrito',
+            defaultContent: ''
+        }, {
+            data: 'exencion',
+            title: 'Excento',
             defaultContent: ''
         }, {
             title: 'Avaluo',
@@ -1138,8 +1162,105 @@ $(document).ready(function() {
             // });
         },
         columnDefs: [
-            { className: 'text-center', "targets": [1, 3, 4, 5, 6, 7, 9] },
-            { className: 'text-right money', targets: [2, 8, 10] }
+            { className: 'text-center', "targets": [1, 2, 3, 5, 6, 7, 8, 9, 11] },
+            { className: 'text-right money', targets: [4, 10, 12] }
+            //, { "visible": false, "targets": [0] }
+        ]
+    });
+
+    DTEstadoCuenta = $('#estadoCuentaTable').DataTable({
+        initComplete: function(settings, json) {
+            // $('#divEstadoCuentaTable').css('display', '');
+        },
+        "destroy": true,
+        "ordering": false,
+        //"filter": false,
+        "order": [],
+        "lengthChange": false,
+        "info": false,
+        "pageLength": 5,
+        "select": false,
+        "autoWidth": false,
+        "language": {
+            "url": ROOT_URL + "/theme/plugins/bower_components/datatables/spanish.json"
+        },
+        'data': [],
+        'columns': [
+            {
+                data: 'id',
+                title: 'id',
+                visible: false
+            }, {
+                data: 'vigencia',
+                title: 'Vigencia',
+                defaultContent: ''
+            }, {
+                title: 'Avaluo',
+                "render": function(data, type, row, meta) {
+                    return accounting.formatMoney(Number(row.avaluo), "$ ", 2, ".", ",");
+                }
+            }, {
+                title: 'Impuesto',
+                "render": function(data, type, row, meta) {
+                    return accounting.formatMoney(Number(row.impuesto), "$ ", 2, ".", ",");
+                }
+            }, {
+                title: 'Intereses',
+                "render": function(data, type, row, meta) {
+                    return accounting.formatMoney(Number(row.interes_impuesto), "$ ", 2, ".", ",");
+                }
+            }, {
+                title: 'CAR',
+                "render": function(data, type, row, meta) {
+                    return accounting.formatMoney(Number(row.car), "$ ", 2, ".", ",");
+                }
+            }, {
+                title: 'Interes CAR',
+                "render": function(data, type, row, meta) {
+                    return accounting.formatMoney(Number(row.interes_car), "$ ", 2, ".", ",");
+                }
+            }, {
+                title: 'Descuento',
+                "render": function(data, type, row, meta) {
+                    return accounting.formatMoney(Number(row.descuento), "$ ", 2, ".", ",");
+                }
+            }, {
+                title: 'Otros',
+                "render": function(data, type, row, meta) {
+                    return accounting.formatMoney(Number(row.otros), "$ ", 2, ".", ",");
+                }
+            }, {
+                title: 'Total',
+                "render": function(data, type, row, meta) {
+                    return accounting.formatMoney(Number(row.total), "$ ", 2, ".", ",");
+                }
+            }, {
+                data: 'acuerdo',
+                title: 'AP',
+                defaultContent: ''
+            }
+        ],
+        drawCallback: function(settings) {
+            // $('.editAbono').off('click').on('click', function() {
+            //     var tr = $(this).closest('tr');
+            //     var data = DTAbonos.row(tr).data();
+            //     $('.datohidden').remove();
+            //     setFormData('form-predios-datos-abonos', data);
+            //     $('#new_da').css('display', '');
+            //     $('#cancel_da').css('display', 'none');
+            //     DTAbonos.$('.row-selected').toggleClass('row-selected');
+            //     $(tr).addClass('row-selected');
+            //     idx_update = DTAbonos.row(tr).index();
+            //     var info = DTAbonos.page.info();
+            //     current_page = info.page;
+            //     $('#text_page_abonos').html('Edici&oacute;n<br />P&aacute;gina: ' + (current_page + 1));
+            //     var row = ((idx_update + 1) % PAGE_LENGTH) === 0 ? PAGE_LENGTH : (idx_update + 1) % PAGE_LENGTH;
+            //     $('#text_row_abonos').html('Fila: ' + row);
+            // });
+        },
+        columnDefs: [
+            { className: 'text-center', "targets": [1, 2, 10] },
+            { className: 'text-right money', targets: [3, 4, 5, 6, 7, 8, 9] }
             //, { "visible": false, "targets": [0] }
         ]
     });
@@ -1241,6 +1362,14 @@ $(document).ready(function() {
             var btn = $(this);
             $('.btn_pdf').attr('disabled', true);
             startImpresion($(btn).attr('url') + $('#id_edit').val(), 'Iniciando generación de archivo Historial de Pagos de impuesto predial. Espere un momento por favor.', 'warning', false);
+        });
+    }
+
+    if($('#print_estado_cuenta').length) {
+        $('#print_estado_cuenta').off('click').on('click', function() {
+            var btn = $(this);
+            $('.btn_pdf').attr('disabled', true);
+            startImpresion($(btn).attr('url') + $('#id_edit').val(), 'Iniciando generación de archivo Estado de Cuenta de impuesto predial. Espere un momento por favor.', 'warning', false);
         });
     }
 

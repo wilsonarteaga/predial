@@ -146,7 +146,7 @@
             <table class="titles" style="width: 100%; margin-top: 0px;">
                 <tr>
                     <td style="width: 100%;">
-                        <h3 class="title">LA TESORER&Iacute;A MUNICIPAL DE PAIPA</h3>
+                        <h3 class="title">EL SUSCRITO TESORERO(A)</h3>
                     </td>
                 </tr>
                 <tr>
@@ -239,7 +239,7 @@
             </div>
             <div class="info" style="padding-top: 15px; width: 100%;">
                 <p>
-                    Actualmente el municipio de Paipa no tiene adoptada la contribuci&oacute;n de valorizaci&oacute;n para predios ubicados dentro de su jurisdicci&oacute;n.
+                    Actualmente el municipio de La Capilla no tiene adoptada la contribuci&oacute;n de valorizaci&oacute;n para predios ubicados dentro de su jurisdicci&oacute;n.
                 </p>
                 <p>
                     La presente certificaci&oacute;n se expide en relaci&oacute;n con el predio identificado con c&eacute;dula catastral No. <b>{{ $predio->codigo_predio }}</b>
@@ -251,7 +251,7 @@
                         V&aacute;lido hasta <b>{{ $fecha_validez }}</b>
                     </td>
                     <td style="text-align: center;">
-                        <img style="position: absolute; top: -30px; width: 20%; height: auto; margin-left: 100px;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/firma-paz-y-salvo-paipa.png'))) }}" alt="Firma" />
+                        {{-- <img style="position: absolute; top: -30px; width: 20%; height: auto; margin-left: 100px;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/firma-paz-y-salvo-paipa.png'))) }}" alt="Firma" /> --}}
                         <hr style="margin: 0 auto; border: 1px solid #302f2f; width: 80%;">
                     </td>
                 </tr>
@@ -271,9 +271,7 @@
             </table>
         </div>
         <div id="footer">
-            TESORER&Iacute;A MUNICIPAL<br>
-            tesoreria@paipa-boyaca.gov.co<br>
-            Carrera 22 # 25 - 14
+            TESORER&Iacute;A MUNICIPAL
         </div>
     </div>
 </body>
