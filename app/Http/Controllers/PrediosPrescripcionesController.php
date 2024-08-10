@@ -39,8 +39,8 @@ class PrediosPrescripcionesController extends Controller
 
         $prescripciones = DB::table('predios_prescripciones')
                     ->join('predios', 'predios_prescripciones.id_predio', '=', 'predios.id')
-                    ->select(DB::raw('TRY_CONVERT(VARCHAR, predios_prescripciones.created_at, 23) AS created_at, MIN(predios_prescripciones.prescribe_anio) AS prescribe_desde, MAX(predios_prescripciones.prescribe_anio) AS prescribe_hasta, MAX(predios_prescripciones.id) AS id, predios.codigo_predio, predios_prescripciones.file_name'))
-                    ->groupByRaw('predios.codigo_predio, predios_prescripciones.file_name, TRY_CONVERT(VARCHAR, predios_prescripciones.created_at, 23)')
+                    ->select(DB::raw('TRY_CONVERT(VARCHAR, predios_prescripciones.created_at, 20) AS created_at, MIN(predios_prescripciones.prescribe_anio) AS prescribe_desde, MAX(predios_prescripciones.prescribe_anio) AS prescribe_hasta, MAX(predios_prescripciones.id) AS id, predios.codigo_predio, predios_prescripciones.file_name'))
+                    ->groupByRaw('predios.codigo_predio, predios_prescripciones.file_name, TRY_CONVERT(VARCHAR, predios_prescripciones.created_at, 20)')
                     ->orderByRaw('prescribe_desde')
                     ->get();
 
@@ -84,82 +84,89 @@ class PrediosPrescripcionesController extends Controller
             $predio = Predio::find($request->id_predio);
 
             for($i = intval($request->prescribe_desde); $i <= intval($request->prescribe_hasta); $i++) {
-                $valores_predio_pago = DB::table('predios_pagos')
-                    ->select(DB::raw("
-                        predios_pagos.valor_concepto1,
-                        predios_pagos.valor_concepto2,
-                        predios_pagos.valor_concepto3,
-                        predios_pagos.valor_concepto4,
-                        predios_pagos.valor_concepto5,
-                        predios_pagos.valor_concepto6,
-                        predios_pagos.valor_concepto7,
-                        predios_pagos.valor_concepto8,
-                        predios_pagos.valor_concepto9,
-                        predios_pagos.valor_concepto10,
-                        predios_pagos.valor_concepto11,
-                        predios_pagos.valor_concepto12,
-                        predios_pagos.valor_concepto13,
-                        predios_pagos.valor_concepto14,
-                        predios_pagos.valor_concepto15,
-                        predios_pagos.valor_concepto16,
-                        predios_pagos.valor_concepto17,
-                        predios_pagos.valor_concepto18,
-                        predios_pagos.valor_concepto19,
-                        predios_pagos.valor_concepto20,
-                        predios_pagos.valor_concepto21,
-                        predios_pagos.valor_concepto22,
-                        predios_pagos.valor_concepto23,
-                        predios_pagos.valor_concepto24,
-                        predios_pagos.valor_concepto25,
-                        predios_pagos.valor_concepto26,
-                        predios_pagos.valor_concepto27,
-                        predios_pagos.valor_concepto28,
-                        predios_pagos.valor_concepto29,
-                        predios_pagos.valor_concepto30
-                    "))
-                    ->where('predios_pagos.id_predio', $predio->id)
-                    ->where('predios_pagos.ultimo_anio', '=', $i)
-                    ->where('predios_pagos.pagado', 0)
-                    ->where('predios_pagos.anulada', 0)
-                    ->where('predios_pagos.prescrito', 0)
-                    ->where('predios_pagos.exencion', 0)
+                $prescripcion = DB::table('predios_prescripciones')
+                    ->where('id_predio', $predio->id)
+                    ->where('prescribe_anio', $i)
                     ->first();
 
-                $predio_prescripcion = new PredioPrescripcion();
-                $predio_prescripcion->id_predio = $predio->id;
-                $predio_prescripcion->prescribe_anio = $i;
-                $predio_prescripcion->valor_concepto1 = $valores_predio_pago->valor_concepto1;
-                $predio_prescripcion->valor_concepto2 = $valores_predio_pago->valor_concepto2;
-                // $predio_prescripcion->valor_concepto3 = $valores_predio_pago->valor_concepto3;
-                // $predio_prescripcion->valor_concepto4 = $valores_predio_pago->valor_concepto4;
-                $predio_prescripcion->valor_concepto5 = $valores_predio_pago->valor_concepto5;
-                $predio_prescripcion->valor_concepto6 = $valores_predio_pago->valor_concepto6;
-                $predio_prescripcion->valor_concepto7 = $valores_predio_pago->valor_concepto7;
-                $predio_prescripcion->valor_concepto8 = $valores_predio_pago->valor_concepto8;
-                $predio_prescripcion->valor_concepto9 = $valores_predio_pago->valor_concepto9;
-                $predio_prescripcion->valor_concepto10 = $valores_predio_pago->valor_concepto10;
-                $predio_prescripcion->valor_concepto11 = $valores_predio_pago->valor_concepto11;
-                $predio_prescripcion->valor_concepto12 = $valores_predio_pago->valor_concepto12;
-                $predio_prescripcion->valor_concepto13 = $valores_predio_pago->valor_concepto13;
-                $predio_prescripcion->valor_concepto14 = $valores_predio_pago->valor_concepto14;
-                $predio_prescripcion->valor_concepto15 = $valores_predio_pago->valor_concepto15;
-                $predio_prescripcion->valor_concepto16 = $valores_predio_pago->valor_concepto16;
-                $predio_prescripcion->valor_concepto17 = $valores_predio_pago->valor_concepto17;
-                $predio_prescripcion->valor_concepto18 = $valores_predio_pago->valor_concepto18;
-                $predio_prescripcion->valor_concepto19 = $valores_predio_pago->valor_concepto19;
-                $predio_prescripcion->valor_concepto20 = $valores_predio_pago->valor_concepto20;
-                $predio_prescripcion->valor_concepto21 = $valores_predio_pago->valor_concepto21;
-                $predio_prescripcion->valor_concepto22 = $valores_predio_pago->valor_concepto22;
-                $predio_prescripcion->valor_concepto23 = $valores_predio_pago->valor_concepto23;
-                $predio_prescripcion->valor_concepto24 = $valores_predio_pago->valor_concepto24;
-                $predio_prescripcion->valor_concepto25 = $valores_predio_pago->valor_concepto25;
-                $predio_prescripcion->valor_concepto26 = $valores_predio_pago->valor_concepto26;
-                $predio_prescripcion->valor_concepto27 = $valores_predio_pago->valor_concepto27;
-                $predio_prescripcion->valor_concepto28 = $valores_predio_pago->valor_concepto28;
-                $predio_prescripcion->valor_concepto29 = $valores_predio_pago->valor_concepto29;
-                $predio_prescripcion->valor_concepto30 = $valores_predio_pago->valor_concepto30;
-                $predio_prescripcion->file_name = $request->file_name;
-                $query = $predio_prescripcion->save();
+                if ($prescripcion == null) {
+                    $valores_predio_pago = DB::table('predios_pagos')
+                        ->select(DB::raw("
+                            predios_pagos.valor_concepto1,
+                            predios_pagos.valor_concepto2,
+                            predios_pagos.valor_concepto3,
+                            predios_pagos.valor_concepto4,
+                            predios_pagos.valor_concepto5,
+                            predios_pagos.valor_concepto6,
+                            predios_pagos.valor_concepto7,
+                            predios_pagos.valor_concepto8,
+                            predios_pagos.valor_concepto9,
+                            predios_pagos.valor_concepto10,
+                            predios_pagos.valor_concepto11,
+                            predios_pagos.valor_concepto12,
+                            predios_pagos.valor_concepto13,
+                            predios_pagos.valor_concepto14,
+                            predios_pagos.valor_concepto15,
+                            predios_pagos.valor_concepto16,
+                            predios_pagos.valor_concepto17,
+                            predios_pagos.valor_concepto18,
+                            predios_pagos.valor_concepto19,
+                            predios_pagos.valor_concepto20,
+                            predios_pagos.valor_concepto21,
+                            predios_pagos.valor_concepto22,
+                            predios_pagos.valor_concepto23,
+                            predios_pagos.valor_concepto24,
+                            predios_pagos.valor_concepto25,
+                            predios_pagos.valor_concepto26,
+                            predios_pagos.valor_concepto27,
+                            predios_pagos.valor_concepto28,
+                            predios_pagos.valor_concepto29,
+                            predios_pagos.valor_concepto30
+                        "))
+                        ->where('predios_pagos.id_predio', $predio->id)
+                        ->where('predios_pagos.ultimo_anio', '=', $i)
+                        ->where('predios_pagos.pagado', 0)
+                        ->where('predios_pagos.anulada', 0)
+                        ->where('predios_pagos.prescrito', 0)
+                        ->where('predios_pagos.exencion', 0)
+                        ->first();
+
+                    $predio_prescripcion = new PredioPrescripcion();
+                    $predio_prescripcion->id_predio = $predio->id;
+                    $predio_prescripcion->prescribe_anio = $i;
+                    $predio_prescripcion->valor_concepto1 = $valores_predio_pago->valor_concepto1;
+                    $predio_prescripcion->valor_concepto2 = $valores_predio_pago->valor_concepto2;
+                    // $predio_prescripcion->valor_concepto3 = $valores_predio_pago->valor_concepto3;
+                    // $predio_prescripcion->valor_concepto4 = $valores_predio_pago->valor_concepto4;
+                    $predio_prescripcion->valor_concepto5 = $valores_predio_pago->valor_concepto5;
+                    $predio_prescripcion->valor_concepto6 = $valores_predio_pago->valor_concepto6;
+                    $predio_prescripcion->valor_concepto7 = $valores_predio_pago->valor_concepto7;
+                    $predio_prescripcion->valor_concepto8 = $valores_predio_pago->valor_concepto8;
+                    $predio_prescripcion->valor_concepto9 = $valores_predio_pago->valor_concepto9;
+                    $predio_prescripcion->valor_concepto10 = $valores_predio_pago->valor_concepto10;
+                    $predio_prescripcion->valor_concepto11 = $valores_predio_pago->valor_concepto11;
+                    $predio_prescripcion->valor_concepto12 = $valores_predio_pago->valor_concepto12;
+                    $predio_prescripcion->valor_concepto13 = $valores_predio_pago->valor_concepto13;
+                    $predio_prescripcion->valor_concepto14 = $valores_predio_pago->valor_concepto14;
+                    $predio_prescripcion->valor_concepto15 = $valores_predio_pago->valor_concepto15;
+                    $predio_prescripcion->valor_concepto16 = $valores_predio_pago->valor_concepto16;
+                    $predio_prescripcion->valor_concepto17 = $valores_predio_pago->valor_concepto17;
+                    $predio_prescripcion->valor_concepto18 = $valores_predio_pago->valor_concepto18;
+                    $predio_prescripcion->valor_concepto19 = $valores_predio_pago->valor_concepto19;
+                    $predio_prescripcion->valor_concepto20 = $valores_predio_pago->valor_concepto20;
+                    $predio_prescripcion->valor_concepto21 = $valores_predio_pago->valor_concepto21;
+                    $predio_prescripcion->valor_concepto22 = $valores_predio_pago->valor_concepto22;
+                    $predio_prescripcion->valor_concepto23 = $valores_predio_pago->valor_concepto23;
+                    $predio_prescripcion->valor_concepto24 = $valores_predio_pago->valor_concepto24;
+                    $predio_prescripcion->valor_concepto25 = $valores_predio_pago->valor_concepto25;
+                    $predio_prescripcion->valor_concepto26 = $valores_predio_pago->valor_concepto26;
+                    $predio_prescripcion->valor_concepto27 = $valores_predio_pago->valor_concepto27;
+                    $predio_prescripcion->valor_concepto28 = $valores_predio_pago->valor_concepto28;
+                    $predio_prescripcion->valor_concepto29 = $valores_predio_pago->valor_concepto29;
+                    $predio_prescripcion->valor_concepto30 = $valores_predio_pago->valor_concepto30;
+                    $predio_prescripcion->file_name = $request->file_name;
+                    $query = $predio_prescripcion->save();
+                }
             }
 
             // if($query) {

@@ -99,24 +99,26 @@
                                                             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Buscar predio:</label>
-                                                                    <select id="id_predio" class="form-control select2 json prescripciones_exenciones" name="id_predio" data-placeholder="C&oacute;digo, propietario o direcci&oacute;n..." style="width: 100%">
+                                                                    <select id="id_predio" class="form-control select2 json prescripciones_exenciones res-validate" name="id_predio" data-placeholder="C&oacute;digo, propietario o direcci&oacute;n..." style="width: 100%">
                                                                     </select>
                                                                     <span class="text-danger">@error('id_predio') {{ $message }} @enderror</span>
                                                                 </div>
-                                                                <input type="hidden" id="file_name" name="file_name" value="">
+                                                                <input type="hidden" id="file_name" name="file_name" value="" class="res-validate" />
                                                             </div>
                                                             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Desde:</label>
-                                                                    <input type="text" id="prescribe_desde" name="prescribe_desde" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="A&ntilde;o..." value="{{ old('prescribe_desde') }}" maxlength="4" readonly="readonly">
-                                                                    {{-- <span class="text-danger">@error('prescribe_desde') {{ $message }} @enderror</span> --}}
+                                                                    {{-- <input type="text" id="prescribe_desde" name="prescribe_desde" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="A&ntilde;o..." value="{{ old('prescribe_desde') }}" maxlength="4" readonly="readonly"> --}}
+                                                                    <select id="prescribe_desde" name="prescribe_desde" class="form-control selectpicker res-validate" data-size="3" title="A&ntilde;o..." style="width: 100%;">
+                                                                    </select>
+                                                                    <span class="text-danger">@error('prescribe_desde') {{ $message }} @enderror</span>
                                                                 </div>
                                                             </div>
                                                             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Hasta:</label>
                                                                     {{-- <input type="text" id="prescribe_hasta" name="prescribe_hasta" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="A&ntilde;o..." value="{{ old('prescribe_hasta') }}" maxlength="4"> --}}
-                                                                    <select id="prescribe_hasta" name="prescribe_hasta" class="form-control selectpicker" data-size="3" title="A&ntilde;o..." style="width: 100%;">
+                                                                    <select id="prescribe_hasta" name="prescribe_hasta" class="form-control selectpicker res-validate" data-size="3" title="A&ntilde;o..." style="width: 100%;">
                                                                     </select>
                                                                     <span class="text-danger">@error('prescribe_hasta') {{ $message }} @enderror</span>
                                                                 </div>
