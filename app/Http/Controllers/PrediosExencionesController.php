@@ -157,7 +157,8 @@ class PrediosExencionesController extends Controller
                 $predio_exencion->file_name = $request->file_name;
                 $query = $predio_exencion->save();
 
-                dd(Carbon::createFromFormat('Y-m-d H:i:s.u', $predio_exencion->created_at)->format('Y-m-d'));
+                dd($predio_exencion);
+                // dd(Carbon::createFromFormat('Y-m-d H:i:s.u', $predio_exencion->created_at)->format('Y-m-d'));
 
                 // if($query) {
                     $resolucion = new Resolucion();
