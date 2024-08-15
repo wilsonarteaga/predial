@@ -157,8 +157,7 @@ class PrediosExencionesController extends Controller
                 $predio_exencion->file_name = $request->file_name;
                 $query = $predio_exencion->save();
 
-                dd($predio_exencion);
-                // dd(Carbon::createFromFormat('Y-m-d H:i:s.u', $predio_exencion->created_at)->format('Y-m-d'));
+                dd(Carbon::createFromFormat('Y-m-d', substr($predio_exencion->created_at, 0, 10))->format('Y-m-d'));
 
                 // if($query) {
                     $resolucion = new Resolucion();
@@ -182,7 +181,7 @@ class PrediosExencionesController extends Controller
                                     ->update([
                                         'exencion' => -1,
                                         'valor_pago' => 0,
-                                        'fecha_pago' => Carbon::createFromFormat('Y-m-d H:i:s.u', $predio_exencion->created_at)->format('Y-m-d'),
+                                        'fecha_pago' => Carbon::createFromFormat('Y-m-d', substr($predio_exencion->created_at, 0, 10))->format('Y-m-d'),
                                         'id_banco' => 5,
                                         'pagado' => -1
                                     ]);
