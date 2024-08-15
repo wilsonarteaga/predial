@@ -112,7 +112,7 @@ class PrediosExencionesController extends Controller
                         predios_pagos.avaluo
                     "))
                     ->where('predios_pagos.id_predio', $predio->id)
-                    ->where('predios_pagos.ultimo_anio', '=',intval($request->exencion_hasta))
+                    ->where('predios_pagos.ultimo_anio', '=', intval($request->exencion_hasta))
                     ->where('predios_pagos.pagado', 0)
                     ->where('predios_pagos.anulada', 0)
                     ->where('predios_pagos.prescrito', 0)
@@ -156,6 +156,8 @@ class PrediosExencionesController extends Controller
                 $predio_exencion->avaluo = $valores_predio_pago->avaluo;
                 $predio_exencion->file_name = $request->file_name;
                 $query = $predio_exencion->save();
+
+                dd(Carbon::createFromFormat('Y-m-d H:i:s.u', $predio_exencion->created_at)->format('Y-m-d'));
 
                 // if($query) {
                     $resolucion = new Resolucion();
