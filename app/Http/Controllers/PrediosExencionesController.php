@@ -68,6 +68,8 @@ class PrediosExencionesController extends Controller
                 return redirect('/');
             }
 
+            dd($request);
+
             $tab_current = 'li-section-bar-1';
             DB::beginTransaction();
             try {
@@ -118,6 +120,8 @@ class PrediosExencionesController extends Controller
                     ->where('predios_pagos.prescrito', 0)
                     ->where('predios_pagos.exencion', 0)
                     ->first();
+
+                dd($valores_predio_pago);
 
                 $predio_exencion = new PredioExencion();
                 $predio_exencion->id_predio = $predio->id;
