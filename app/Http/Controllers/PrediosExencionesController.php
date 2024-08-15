@@ -119,8 +119,6 @@ class PrediosExencionesController extends Controller
                     ->where('predios_pagos.exencion', 0)
                     ->first();
 
-                dd($valores_predio_pago);
-
                 $predio_exencion = new PredioExencion();
                 $predio_exencion->id_predio = $predio->id;
                 $predio_exencion->exencion_anio = intval($request->exencion_hasta);
