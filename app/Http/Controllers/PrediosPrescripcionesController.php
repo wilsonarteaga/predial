@@ -164,7 +164,7 @@ class PrediosPrescripcionesController extends Controller
                     $predio_prescripcion->valor_concepto28 = $valores_predio_pago->valor_concepto28;
                     $predio_prescripcion->valor_concepto29 = $valores_predio_pago->valor_concepto29;
                     $predio_prescripcion->valor_concepto30 = $valores_predio_pago->valor_concepto30;
-                    $predio_prescripcion->file_name = $request->file_name;
+                    $predio_prescripcion->file_name = $request->filled('file_name') ? $request->file_name : NULL;
                     $query = $predio_prescripcion->save();
                 }
             }

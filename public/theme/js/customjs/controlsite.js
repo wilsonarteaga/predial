@@ -1465,6 +1465,16 @@ function getPredioPrescripcionExencion(id_predio, showBlock, is_prescripciones_f
             form: JSON.stringify(jsonObj)
         },
         success: function(response) {
+            if ($('#create-form').length) {
+                var validatorCreate = $("#create-form").validate();
+                validatorCreate.resetForm();
+                $.each($('.has-success'), function(i, el) {
+                    $(el).removeClass('has-success');
+                });
+                $.each($('.has-error'), function(i, el) {
+                    $(el).removeClass('has-error');
+                });
+            }
             if (Object.keys(response.predio).length > 0) {
                 if (response.anios_prescripcion.length > 0 || response.anios_exencion.length > 0) {
                     if (is_prescripciones_form) {
@@ -1492,6 +1502,8 @@ function getPredioPrescripcionExencion(id_predio, showBlock, is_prescripciones_f
                         //     $('#' + control + '_desde').val(global_anios_prescripcion_exencion[0]);
                         // }
                         $('#' + control + '_hasta').focus();
+                        $('#btn_save_create').fadeIn('fast');
+                        $('#span_' + control).html('');
 
                         $('#' + control + '_desde').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
                             $('#' + control + '_hasta').find('option').css('display', '');
@@ -1508,7 +1520,13 @@ function getPredioPrescripcionExencion(id_predio, showBlock, is_prescripciones_f
                             if (!is_prescripciones_form) {
                             //     $('#span_' + control).html(`A&ntilde;os a tener en cuenta en la ${control_label}: <b>${Number($('#' + control + '_hasta').selectpicker('val')) - Number($('#' + control + '_desde').val()) + 1}</b>`);
                             // } else {
-                                $('#span_' + control).html(`A&ntilde;o a tener en cuenta en la ${control_label}: <b>${$('#' + control + '_hasta').selectpicker('val')}</b>`);
+                                if ($('#' + control + '_hasta').find('option').length - 1 === 1) {
+                                    $('#span_' + control).html(`A&ntilde;o a tener en cuenta en la ${control_label}: <b>${$('#' + control + '_hasta').selectpicker('val')}</b>`);
+                                    $('#btn_save_create').fadeIn('fast');
+                                } else {
+                                    $('#btn_save_create').fadeOut('fast');
+                                    $('#span_' + control).html(`<b style="color: tomato;">El predio seleccionado tiene deuda vigente. Operación de exenci&oacute;n no permitida.</b>`);
+                                }
                             }
                             if ($('#create-form').length) {
                                 // var validatorCreate = $("#create-form").validate();
@@ -1522,17 +1540,14 @@ function getPredioPrescripcionExencion(id_predio, showBlock, is_prescripciones_f
                             }
                         });
                     }
-                }
-
-                if ($('#create-form').length) {
-                    // var validatorCreate = $("#create-form").validate();
-                    // validatorCreate.resetForm();
-                    $.each($('.has-success'), function(i, el) {
-                        $(el).removeClass('has-success');
-                    });
-                    $.each($('.has-error'), function(i, el) {
-                        $(el).removeClass('has-error');
-                    });
+                } else {
+                    $('#btn_save_create').fadeIn('fast');
+                    var control = is_prescripciones_form ? 'prescribe' : 'exencion';
+                    $('#span_' + control).html('');
+                    $('#' + control + '_desde').empty();
+                    $('#' + control + '_hasta').empty();
+                    $('#' + control + '_desde').selectpicker('refresh');
+                    $('#' + control + '_hasta').selectpicker('refresh');
                 }
 
                 $.unblockUI();

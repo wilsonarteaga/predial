@@ -154,7 +154,7 @@ class PrediosExencionesController extends Controller
                 $predio_exencion->valor_concepto29 = $valores_predio_pago->valor_concepto29;
                 $predio_exencion->valor_concepto30 = $valores_predio_pago->valor_concepto30;
                 $predio_exencion->avaluo = $valores_predio_pago->avaluo;
-                $predio_exencion->file_name = $request->file_name;
+                $predio_exencion->file_name = $request->filled('file_name') ? $request->file_name : NULL;
                 $query = $predio_exencion->save();
 
                 // if($query) {

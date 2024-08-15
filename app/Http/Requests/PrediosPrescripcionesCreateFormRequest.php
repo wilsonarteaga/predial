@@ -27,7 +27,7 @@ class PrediosPrescripcionesCreateFormRequest extends FormRequest
             'id_predio' => 'required',
             'prescribe_desde' => 'required',
             'prescribe_hasta' => 'required',
-            'file_name' => 'required'
+            // 'file_name' => 'required'
         ];
     }
 
@@ -37,7 +37,7 @@ class PrediosPrescripcionesCreateFormRequest extends FormRequest
             'id_predio.required' => 'El campo código predio es obligatorio.',
             'prescribe_desde.required' => 'El campo prescribe desde es obligatorio.',
             'prescribe_hasta.required' => 'El campo prescribe hasta es obligatorio.',
-            'file_name.required' => 'Archivo de resolución es obligatorio'
+            // 'file_name.required' => 'Archivo de resolución es obligatorio'
         ];
     }
 }

@@ -25,9 +25,9 @@ class PrediosExencionesCreateFormRequest extends FormRequest
     {
         return [
             'id_predio' => 'required',
-            'porcentaje_ex' => 'required|numeric|min:1',
+            'porcentaje_ex' => 'required|numeric|min:1|max:100',
             'exencion_hasta' => 'required',
-            'file_name' => 'required'
+            // 'file_name' => 'required'
         ];
     }
 
@@ -36,9 +36,10 @@ class PrediosExencionesCreateFormRequest extends FormRequest
         return [
             'id_predio.required' => 'El campo código predio es obligatorio.',
             'porcentaje_ex.required' => 'El campo porcentaje es obligatorio.',
+            'porcentaje_ex.max' => 'Máximo porcentaje permitido :max',
             'porcentaje_ex.min' => 'Mínimo porcentaje permitido :min',
             'exencion_hasta.required' => 'El campo año es obligatorio.',
-            'file_name.required' => 'Archivo de resolución es obligatorio'
+            // 'file_name.required' => 'Archivo de resolución es obligatorio'
         ];
     }
 }
