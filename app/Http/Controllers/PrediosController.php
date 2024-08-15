@@ -3125,4 +3125,102 @@ class PrediosController extends Controller
         //                       ->first();
         // return (new ExportCartera($parametro_logo->valor, $parametro_nit->valor, $parametro_alcaldia->valor))->download('predios_pagos.xlsx', \Maatwebsite\Excel\Excel::XLSX);
     }
+
+    public function generate_exenciones_pdf(Request $request) {
+        if (!$request->session()->exists('userid')) {
+            return redirect('/');
+        }
+
+        $dt = Carbon::now();
+
+        $exenciones = DB::table('predios_exenciones')
+                        ->leftJoin('predios', 'predios.id', '=', 'predios_exenciones.id_predio')
+                        ->select(DB::raw('predios_exenciones.*, predios.codigo_predio'))
+                        ->where('predios.estado', 1)
+                        ->orderBy('predios.codigo_predio')
+                        ->orderBy('predios_exenciones.exencion_anio')
+                        ->get();
+
+        $parametro_logo = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'logo')
+                              ->first();
+
+        $parametro_nit = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'nit')
+                              ->first();
+
+        $parametro_alcaldia = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'alcaldia')
+                              ->first();
+
+
+        $logo = $parametro_logo->valor;
+        $nit = $parametro_nit->valor;
+        $alcaldia = $parametro_alcaldia->valor;
+
+        $data = [
+            'title' => 'Exenciones',
+            'usuario' => $request->session()->get('useremail'),
+            'exenciones' => $exenciones,
+            'logo' => $logo,
+            'nit' => $nit,
+            'alcaldia' => $alcaldia
+        ];
+
+        $pdf = PDF::loadView('predios.exencionesPDF', $data);
+
+        return $pdf->download($dt->toDateString() . '_' . str_replace(':', '-', $dt->toTimeString()) . '.pdf');
+    }
+
+    public function generate_prescripciones_pdf(Request $request) {
+        if (!$request->session()->exists('userid')) {
+            return redirect('/');
+        }
+
+        $dt = Carbon::now();
+
+        $prescripciones = DB::table('predios_prescripciones')
+                        ->leftJoin('predios', 'predios.id', '=', 'predios_prescripciones.id_predio')
+                        ->select(DB::raw('predios_prescripciones.*, predios.codigo_predio'))
+                        ->where('predios.estado', 1)
+                        ->orderBy('predios.codigo_predio')
+                        ->orderBy('predios_prescripciones.prescribe_anio')
+                        ->get();
+
+        $parametro_logo = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'logo')
+                              ->first();
+
+        $parametro_nit = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'nit')
+                              ->first();
+
+        $parametro_alcaldia = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'alcaldia')
+                              ->first();
+
+
+        $logo = $parametro_logo->valor;
+        $nit = $parametro_nit->valor;
+        $alcaldia = $parametro_alcaldia->valor;
+
+        $data = [
+            'title' => 'Prescripciones',
+            'usuario' => $request->session()->get('useremail'),
+            'prescripciones' => $prescripciones,
+            'logo' => $logo,
+            'nit' => $nit,
+            'alcaldia' => $alcaldia
+        ];
+
+        $pdf = PDF::loadView('predios.prescripcionesPDF', $data);
+
+        return $pdf->download($dt->toDateString() . '_' . str_replace(':', '-', $dt->toTimeString()) . '.pdf');
+    }
 }

@@ -183,7 +183,7 @@
                                                         </div>
                                                     @endif
                                                 </div>
-                                                <h2>Lista de exenciones</h2>
+                                                <h2 style="width: 100%;">Lista de exenciones <i style="color: red; float: right; cursor: pointer;" class="fa fa-file-pdf-o"  id="print_exenciones" url="/generate_exenciones_pdf/"></i></h2>
                                                 <table id="myTable" class="table table-hover table-striped table-bordered">
                                                     <thead>
                                                         <tr>

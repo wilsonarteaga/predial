@@ -182,7 +182,7 @@
                                                         </div>
                                                     @endif
                                                 </div>
-                                                <h2>Lista de prescripciones</h2>
+                                                <h2 style="width: 100%;">Lista de prescripciones <i style="color: red; float: right; cursor: pointer;" class="fa fa-file-pdf-o" id="print_prescripciones" url="/generate_prescripciones_pdf/"></i></h2>
                                                 <table id="myTable" class="table table-hover table-striped table-bordered">
                                                     <thead>
                                                         <tr>

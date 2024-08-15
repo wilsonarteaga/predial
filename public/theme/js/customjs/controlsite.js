@@ -918,6 +918,22 @@ $(document).ready(function() {
         });
     }
 
+    if($('#print_prescripciones').length) {
+        $('#print_prescripciones').off('click').on('click', function() {
+            var btn = $(this);
+            $('.btn_pdf').attr('disabled', true);
+            startImpresion($(btn).attr('url'), 'Iniciando generación de listado de prescripciones. Espere un momento por favor.', 'warning', false);
+        });
+    }
+
+    if($('#print_exenciones').length) {
+        $('#print_exenciones').off('click').on('click', function() {
+            var btn = $(this);
+            $('.btn_pdf').attr('disabled', true);
+            startImpresion($(btn).attr('url'), 'Iniciando generación de listado de exenciones. Espere un momento por favor.', 'warning', false);
+        });
+    }
+
 });
 
 function clearFormCreatePredio() {
