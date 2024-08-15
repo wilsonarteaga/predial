@@ -71,90 +71,91 @@ class PrediosExencionesController extends Controller
             $tab_current = 'li-section-bar-1';
             DB::beginTransaction();
             try {
+                $dt = Carbon::now();
+                $currentYear = $dt->year;
+
                 $predio = new Predio();
                 $predio = Predio::find($request->id_predio);
 
-                for($i = intval($request->exencion_hasta); $i <= intval($request->exencion_hasta); $i++) {
-                    $valores_predio_pago = DB::table('predios_pagos')
-                        ->select(DB::raw("
-                            predios_pagos.valor_concepto1,
-                            predios_pagos.valor_concepto2,
-                            predios_pagos.valor_concepto3,
-                            predios_pagos.valor_concepto4,
-                            predios_pagos.valor_concepto5,
-                            predios_pagos.valor_concepto6,
-                            predios_pagos.valor_concepto7,
-                            predios_pagos.valor_concepto8,
-                            predios_pagos.valor_concepto9,
-                            predios_pagos.valor_concepto10,
-                            predios_pagos.valor_concepto11,
-                            predios_pagos.valor_concepto12,
-                            predios_pagos.valor_concepto13,
-                            predios_pagos.valor_concepto14,
-                            predios_pagos.valor_concepto15,
-                            predios_pagos.valor_concepto16,
-                            predios_pagos.valor_concepto17,
-                            predios_pagos.valor_concepto18,
-                            predios_pagos.valor_concepto19,
-                            predios_pagos.valor_concepto20,
-                            predios_pagos.valor_concepto21,
-                            predios_pagos.valor_concepto22,
-                            predios_pagos.valor_concepto23,
-                            predios_pagos.valor_concepto24,
-                            predios_pagos.valor_concepto25,
-                            predios_pagos.valor_concepto26,
-                            predios_pagos.valor_concepto27,
-                            predios_pagos.valor_concepto28,
-                            predios_pagos.valor_concepto29,
-                            predios_pagos.valor_concepto30,
-                            predios_pagos.avaluo
-                        "))
-                        ->where('predios_pagos.id_predio', $predio->id)
-                        ->where('predios_pagos.ultimo_anio', '=', $i)
-                        ->where('predios_pagos.pagado', 0)
-                        ->where('predios_pagos.anulada', 0)
-                        ->where('predios_pagos.prescrito', 0)
-                        ->where('predios_pagos.exencion', 0)
-                        ->first();
+                $valores_predio_pago = DB::table('predios_pagos')
+                    ->select(DB::raw("
+                        predios_pagos.valor_concepto1,
+                        predios_pagos.valor_concepto2,
+                        predios_pagos.valor_concepto3,
+                        predios_pagos.valor_concepto4,
+                        predios_pagos.valor_concepto5,
+                        predios_pagos.valor_concepto6,
+                        predios_pagos.valor_concepto7,
+                        predios_pagos.valor_concepto8,
+                        predios_pagos.valor_concepto9,
+                        predios_pagos.valor_concepto10,
+                        predios_pagos.valor_concepto11,
+                        predios_pagos.valor_concepto12,
+                        predios_pagos.valor_concepto13,
+                        predios_pagos.valor_concepto14,
+                        predios_pagos.valor_concepto15,
+                        predios_pagos.valor_concepto16,
+                        predios_pagos.valor_concepto17,
+                        predios_pagos.valor_concepto18,
+                        predios_pagos.valor_concepto19,
+                        predios_pagos.valor_concepto20,
+                        predios_pagos.valor_concepto21,
+                        predios_pagos.valor_concepto22,
+                        predios_pagos.valor_concepto23,
+                        predios_pagos.valor_concepto24,
+                        predios_pagos.valor_concepto25,
+                        predios_pagos.valor_concepto26,
+                        predios_pagos.valor_concepto27,
+                        predios_pagos.valor_concepto28,
+                        predios_pagos.valor_concepto29,
+                        predios_pagos.valor_concepto30,
+                        predios_pagos.avaluo
+                    "))
+                    ->where('predios_pagos.id_predio', $predio->id)
+                    ->where('predios_pagos.ultimo_anio', '=',intval($request->exencion_hasta))
+                    ->where('predios_pagos.pagado', 0)
+                    ->where('predios_pagos.anulada', 0)
+                    ->where('predios_pagos.prescrito', 0)
+                    ->where('predios_pagos.exencion', 0)
+                    ->first();
 
-                    $predio_exencion = new PredioExencion();
-                    $predio_exencion->id_predio = $predio->id;
-                    $predio_exencion->exencion_anio = $i;
-                    $predio_exencion->porcentaje = str_replace("%", "", $request->porcentaje_ex);
-                    $predio_exencion->valor_concepto1 = $valores_predio_pago->valor_concepto1;
-                    $predio_exencion->valor_concepto2 = $valores_predio_pago->valor_concepto2;
-                    $predio_exencion->valor_concepto3 = $valores_predio_pago->valor_concepto3;
-                    $predio_exencion->valor_concepto4 = $valores_predio_pago->valor_concepto4;
-                    $predio_exencion->valor_concepto5 = $valores_predio_pago->valor_concepto5;
-                    $predio_exencion->valor_concepto6 = $valores_predio_pago->valor_concepto6;
-                    $predio_exencion->valor_concepto7 = $valores_predio_pago->valor_concepto7;
-                    $predio_exencion->valor_concepto8 = $valores_predio_pago->valor_concepto8;
-                    $predio_exencion->valor_concepto9 = $valores_predio_pago->valor_concepto9;
-                    $predio_exencion->valor_concepto10 = $valores_predio_pago->valor_concepto10;
-                    $predio_exencion->valor_concepto11 = $valores_predio_pago->valor_concepto11;
-                    $predio_exencion->valor_concepto12 = $valores_predio_pago->valor_concepto12;
-                    $predio_exencion->valor_concepto13 = $valores_predio_pago->valor_concepto13;
-                    $predio_exencion->valor_concepto14 = $valores_predio_pago->valor_concepto14;
-                    $predio_exencion->valor_concepto15 = $valores_predio_pago->valor_concepto15;
-                    $predio_exencion->valor_concepto16 = $valores_predio_pago->valor_concepto16;
-                    $predio_exencion->valor_concepto17 = $valores_predio_pago->valor_concepto17;
-                    $predio_exencion->valor_concepto18 = $valores_predio_pago->valor_concepto18;
-                    $predio_exencion->valor_concepto19 = $valores_predio_pago->valor_concepto19;
-                    $predio_exencion->valor_concepto20 = $valores_predio_pago->valor_concepto20;
-                    $predio_exencion->valor_concepto21 = $valores_predio_pago->valor_concepto21;
-                    $predio_exencion->valor_concepto22 = $valores_predio_pago->valor_concepto22;
-                    $predio_exencion->valor_concepto23 = $valores_predio_pago->valor_concepto23;
-                    $predio_exencion->valor_concepto24 = $valores_predio_pago->valor_concepto24;
-                    $predio_exencion->valor_concepto25 = $valores_predio_pago->valor_concepto25;
-                    $predio_exencion->valor_concepto26 = $valores_predio_pago->valor_concepto26;
-                    $predio_exencion->valor_concepto27 = $valores_predio_pago->valor_concepto27;
-                    $predio_exencion->valor_concepto28 = $valores_predio_pago->valor_concepto28;
-                    $predio_exencion->valor_concepto29 = $valores_predio_pago->valor_concepto29;
-                    $predio_exencion->valor_concepto30 = $valores_predio_pago->valor_concepto30;
-                    $predio_exencion->avaluo = $valores_predio_pago->avaluo;
-                    $predio_exencion->file_name = $request->file_name;
-                    $query = $predio_exencion->save();
-                }
+                $predio_exencion = new PredioExencion();
+                $predio_exencion->id_predio = $predio->id;
+                $predio_exencion->exencion_anio = intval($request->exencion_hasta);
+                $predio_exencion->porcentaje = str_replace("%", "", $request->porcentaje_ex);
+                $predio_exencion->valor_concepto1 = $valores_predio_pago->valor_concepto1;
+                $predio_exencion->valor_concepto2 = $valores_predio_pago->valor_concepto2;
+                $predio_exencion->valor_concepto3 = $valores_predio_pago->valor_concepto3;
+                $predio_exencion->valor_concepto4 = $valores_predio_pago->valor_concepto4;
+                $predio_exencion->valor_concepto5 = $valores_predio_pago->valor_concepto5;
+                $predio_exencion->valor_concepto6 = $valores_predio_pago->valor_concepto6;
+                $predio_exencion->valor_concepto7 = $valores_predio_pago->valor_concepto7;
+                $predio_exencion->valor_concepto8 = $valores_predio_pago->valor_concepto8;
+                $predio_exencion->valor_concepto9 = $valores_predio_pago->valor_concepto9;
+                $predio_exencion->valor_concepto10 = $valores_predio_pago->valor_concepto10;
+                $predio_exencion->valor_concepto11 = $valores_predio_pago->valor_concepto11;
+                $predio_exencion->valor_concepto12 = $valores_predio_pago->valor_concepto12;
+                $predio_exencion->valor_concepto13 = $valores_predio_pago->valor_concepto13;
+                $predio_exencion->valor_concepto14 = $valores_predio_pago->valor_concepto14;
+                $predio_exencion->valor_concepto15 = $valores_predio_pago->valor_concepto15;
+                $predio_exencion->valor_concepto16 = $valores_predio_pago->valor_concepto16;
+                $predio_exencion->valor_concepto17 = $valores_predio_pago->valor_concepto17;
+                $predio_exencion->valor_concepto18 = $valores_predio_pago->valor_concepto18;
+                $predio_exencion->valor_concepto19 = $valores_predio_pago->valor_concepto19;
+                $predio_exencion->valor_concepto20 = $valores_predio_pago->valor_concepto20;
+                $predio_exencion->valor_concepto21 = $valores_predio_pago->valor_concepto21;
+                $predio_exencion->valor_concepto22 = $valores_predio_pago->valor_concepto22;
+                $predio_exencion->valor_concepto23 = $valores_predio_pago->valor_concepto23;
+                $predio_exencion->valor_concepto24 = $valores_predio_pago->valor_concepto24;
+                $predio_exencion->valor_concepto25 = $valores_predio_pago->valor_concepto25;
+                $predio_exencion->valor_concepto26 = $valores_predio_pago->valor_concepto26;
+                $predio_exencion->valor_concepto27 = $valores_predio_pago->valor_concepto27;
+                $predio_exencion->valor_concepto28 = $valores_predio_pago->valor_concepto28;
+                $predio_exencion->valor_concepto29 = $valores_predio_pago->valor_concepto29;
+                $predio_exencion->valor_concepto30 = $valores_predio_pago->valor_concepto30;
+                $predio_exencion->avaluo = $valores_predio_pago->avaluo;
+                $predio_exencion->file_name = $request->file_name;
+                $query = $predio_exencion->save();
 
                 // if($query) {
                     $resolucion = new Resolucion();
@@ -170,13 +171,27 @@ class PrediosExencionesController extends Controller
                         $resolucion_predio->descripcion = 'Exención predio ' . $predio->codigo_predio . ', año exención: ' . $request->exencion_hasta;
                         $query = $resolucion_predio->save();
                         // if($query) {
-                            PredioPago::where('id_predio', $predio->id)
-                            ->where('ultimo_anio', '=', intval($request->exencion_hasta))
-                            ->where('pagado', 0)
-                            ->where('anulada', 0)
-                            ->update([
-                                'exencion' => -1,
-                            ]);
+                            if (intval($request->exencion_hasta) == $currentYear && intval(str_replace("%", "", $request->porcentaje_ex)) == 100) {
+                                PredioPago::where('id_predio', $predio->id)
+                                    ->where('ultimo_anio', '=', intval($request->exencion_hasta))
+                                    ->where('pagado', 0)
+                                    ->where('anulada', 0)
+                                    ->update([
+                                        'exencion' => -1,
+                                        'valor_pago' => 0,
+                                        'fecha_pago' => Carbon::createFromFormat('Y-m-d H:i:s.u', $predio_exencion->created_at)->format('Y-m-d'),
+                                        'id_banco' => 5,
+                                        'pagado' => -1
+                                    ]);
+                            } else {
+                                PredioPago::where('id_predio', $predio->id)
+                                    ->where('ultimo_anio', '=', intval($request->exencion_hasta))
+                                    ->where('pagado', 0)
+                                    ->where('anulada', 0)
+                                    ->update([
+                                        'exencion' => -1,
+                                    ]);
+                            }
 
                             DB::commit();
 
