@@ -68,8 +68,6 @@ class PrediosExencionesController extends Controller
                 return redirect('/');
             }
 
-            dd($request);
-
             $tab_current = 'li-section-bar-1';
             DB::beginTransaction();
             try {
