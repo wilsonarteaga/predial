@@ -2718,6 +2718,17 @@ class PrediosController extends Controller
                             // ->where('exencion', 0)
                             ->first();
 
+        if ($ultimo_anio_pagar->exencion != 0) {
+            $exencion = DB::table('predios_exenciones')
+                ->where('id_predio', $data->{'id_predio'})
+                ->where('exencion_anio', $currentYear)
+                ->first();
+
+            if ($exencion != null) {
+                $ultimo_anio_pagar->exencion_porcentaje = $exencion->porcentaje;
+            }
+        }
+
         // Si no existe un calculo para el año actual o si el calculo existe pero aun no tiene un numero
         // de factura asignado, entonces, se agrega el año a la lista
         if($ultimo_anio_pagar->ultimo_anio != $currentYear && !$exists_current_anio && count($array_anios) > 0) {

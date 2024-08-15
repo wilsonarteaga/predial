@@ -1290,10 +1290,16 @@ function getPredio(id_predio, showBlock) {
                 global_propietarios = response.propietarios;
                 global_anios = response.anios;
                 global_ultima_factura = response.ultimo_anio;
+                exento_pago = false;
                 if (response.anios_prescripcion.length > 0) {
                     global_anios_prescripcion_exencion = response.anios_prescripcion.map(el => el.ultimo_anio);
                 } else {
                     global_anios_prescripcion_exencion = [];
+                }
+                if (Number(response.ultimo_anio.exencion) != 0) {
+                    if (Number(response.ultimo_anio.exencion_porcentaje) === 100) {
+                        exento_pago = true;
+                    }
                 }
                 global_anio_actual = Number(response.anio_actual);
                 var classBtn = 'btn-info';
@@ -1347,8 +1353,9 @@ function getPredio(id_predio, showBlock) {
                                   '&nbsp;&nbsp;' +
                                 //   '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Prescribir predio" ide="' + predio.id + '" class="prescribe_row btn ' + classBtn + '" ' + disabledBtnPrescribe + '><i class="fa fa-clock-o"></i></button>' +
                                 //   '&nbsp;&nbsp;' +
-                                  '<button id="btn_calculo_predio_' + predio.id + '" type="button" data-toggle="tooltip" data-placement="bottom" title="Generar factura" ide="' + predio.id + '" class="download_factura_row btn btn-'+ colorBtnCalculo +'" url="/generate_factura_pdf/' + predio.id + '" msg="¿Está seguro/a que desea ejecutar el cálculo?" ' + disabledBtnCalculo + '><i id="i_calculo_predio_' + predio.id + '" class="fa ' + classBtnCalculo + '"></i></button>' +
-                                  '&nbsp;&nbsp;' +
+                                  (!exento_pago ?
+                                    '<button id="btn_calculo_predio_' + predio.id + '" type="button" data-toggle="tooltip" data-placement="bottom" title="Generar factura" ide="' + predio.id + '" class="download_factura_row btn btn-'+ colorBtnCalculo +'" url="/generate_factura_pdf/' + predio.id + '" msg="¿Está seguro/a que desea ejecutar el cálculo?" ' + disabledBtnCalculo + '><i id="i_calculo_predio_' + predio.id + '" class="fa ' + classBtnCalculo + '"></i></button>' + '&nbsp;&nbsp;'
+                                    : '') +
                                   '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Generar paz y salvo" ide="' + predio.id + '" class="download_paz_row btn btn-warning" url="/generate_paz_pdf/' + predio.id + '" plusv="' + predio.ind_plusvalia + '" msg="¿Está seguro/a que desea generar el paz y salvo?" ' + disabledBtnPaz + '><i class="fa fa-trophy"></i></button>' +
                                   '&nbsp;&nbsp;' +
                                 //   '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Ver aval&uacute;os" ide="' + predio.id + '" class="avaluos_row btn btn-default"><i class="fa fa-home"></i></button>' +
