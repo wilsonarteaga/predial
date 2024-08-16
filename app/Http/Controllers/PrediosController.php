@@ -3151,7 +3151,7 @@ class PrediosController extends Controller
                         ->whereRaw(DB::raw("predios_exenciones.created_at >= CONVERT(datetime, '" . $fecha_minima . " 00:00:00.000')"))
                         ->whereRaw(DB::raw("predios_exenciones.created_at <= CONVERT(datetime, '" . $fecha_maxima . " 23:59:59.999')"))
                         ->orderBy('predios_exenciones.created_at')
-                        // ->orderBy('predios.codigo_predio')
+                        ->orderBy('predios.codigo_predio')
                         ->get();
 
         $parametro_logo = DB::table('parametros')
@@ -3202,7 +3202,7 @@ class PrediosController extends Controller
                         ->whereRaw(DB::raw("predios_prescripciones.created_at >= CONVERT(datetime, '" . $fecha_minima . " 00:00:00.000')"))
                         ->whereRaw(DB::raw("predios_prescripciones.created_at <= CONVERT(datetime, '" . $fecha_maxima . " 23:59:59.999')"))
                         ->orderBy('predios_prescripciones.created_at')
-                        // ->orderBy('predios.codigo_predio')
+                        ->orderBy('predios.codigo_predio')
                         ->get();
 
         $parametro_logo = DB::table('parametros')
