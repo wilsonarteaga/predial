@@ -920,17 +920,101 @@ $(document).ready(function() {
 
     if($('#print_prescripciones').length) {
         $('#print_prescripciones').off('click').on('click', function() {
+            var validatorInforme = $("#form-impresion-informe").validate({
+                rules: {
+                    fecha_min_prescripcion: "required",
+                    fecha_max_prescripcion: "required",
+                },
+                messages: {
+                    fecha_min_prescripcion: "Fecha m&iacute;nima requerida",
+                    fecha_max_prescripcion: "Fecha m&aacute;xima requerida",
+                }
+            });
+            $('#modal-impresion').modal({ backdrop: 'static', keyboard: false }, 'show');
+            // $('#modal-impresion').off('shown.bs.modal').on('shown.bs.modal', function() {
+            // });
+
+            $('#modal-impresion').off('hidden.bs.modal').on('hidden.bs.modal', function() {
+                $('#form-impresion-informe')[0].reset();
+                clear_form_elements("#form-impresion-informe");
+                validatorInforme.resetForm();
+                $('#fecha_min_prescripcion').removeClass('error');
+                $('#fecha_max_prescripcion').removeClass('error');
+            });
+        });
+
+        $('#fecha_min_prescripcion').on('pick.datepicker', function (e) {
+            $('#fecha_min_prescripcion').removeClass('error');
+        });
+        $('#fecha_max_prescripcion').on('pick.datepicker', function (e) {
+            $('#fecha_max_prescripcion').removeClass('error');
+            if (e.date !== null) {
+                if ($('#fecha_max_prescripcion').datepicker('getDate') < $('#fecha_min_prescripcion').datepicker('getDate')) {
+                    $('#fecha_min_prescripcion').datepicker('setDate', '');
+                    $('#fecha_min_prescripcion').val('');
+                }
+            }
+        });
+    }
+
+    if($('#generar_informe_prescripciones').length) {
+        $('#generar_informe_prescripciones').off('click').on('click', function() {
             var btn = $(this);
-            $('.btn_pdf').attr('disabled', true);
-            startImpresion($(btn).attr('url'), 'Iniciando generación de listado de prescripciones. Espere un momento por favor.', 'warning', false);
+            var form = $("#form-impresion-informe");
+            if (form.valid()) {
+                $('.btn_pdf').attr('disabled', true);
+                startImpresion($(btn).attr('url') + $('#fecha_min_prescripcion').val() + '/' + $('#fecha_max_prescripcion').val(), 'Iniciando generación de listado de prescripciones. Espere un momento por favor.', 'warning', 'modal-impresion');
+            }
         });
     }
 
     if($('#print_exenciones').length) {
         $('#print_exenciones').off('click').on('click', function() {
+            var validatorInforme = $("#form-impresion-informe").validate({
+                rules: {
+                    fecha_min_exencion: "required",
+                    fecha_max_exencion: "required",
+                },
+                messages: {
+                    fecha_min_exencion: "Fecha m&iacute;nima requerida",
+                    fecha_max_exencion: "Fecha m&aacute;xima requerida",
+                }
+            });
+            $('#modal-impresion').modal({ backdrop: 'static', keyboard: false }, 'show');
+            // $('#modal-impresion').off('shown.bs.modal').on('shown.bs.modal', function() {
+            // });
+
+            $('#modal-impresion').off('hidden.bs.modal').on('hidden.bs.modal', function() {
+                $('#form-impresion-informe')[0].reset();
+                clear_form_elements("#form-impresion-informe");
+                validatorInforme.resetForm();
+                $('#fecha_min_exencion').removeClass('error');
+                $('#fecha_max_exencion').removeClass('error');
+            });
+        });
+
+        $('#fecha_min_exencion').on('pick.datepicker', function (e) {
+            $('#fecha_min_exencion').removeClass('error');
+        });
+        $('#fecha_max_exencion').on('pick.datepicker', function (e) {
+            $('#fecha_max_exencion').removeClass('error');
+            if (e.date !== null) {
+                if ($('#fecha_max_exencion').datepicker('getDate') < $('#fecha_min_exencion').datepicker('getDate')) {
+                    $('#fecha_min_exencion').datepicker('setDate', '');
+                    $('#fecha_min_exencion').val('');
+                }
+            }
+        });
+    }
+
+    if($('#generar_informe_exenciones').length) {
+        $('#generar_informe_exenciones').off('click').on('click', function() {
             var btn = $(this);
-            $('.btn_pdf').attr('disabled', true);
-            startImpresion($(btn).attr('url'), 'Iniciando generación de listado de exenciones. Espere un momento por favor.', 'warning', false);
+            var form = $("#form-impresion-informe");
+            if (form.valid()) {
+                $('.btn_pdf').attr('disabled', true);
+                startImpresion($(btn).attr('url') + $('#fecha_min_exencion').val() + '/' + $('#fecha_max_exencion').val(), 'Iniciando generación de listado de exenciones. Espere un momento por favor.', 'warning', 'modal-impresion');
+            }
         });
     }
 

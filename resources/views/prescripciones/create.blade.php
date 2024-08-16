@@ -231,6 +231,46 @@
 @endsection
 
 @section('modales')
+<div id="modal-impresion" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-impresion-label" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-sm" style="width: 24%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                {{-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> --}}
+                <h4 class="modal-title" id="modal-impresion-label">Generaci&oacute;n de informe prescripciones.</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12">
+                        <form id="form-impresion-informe">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group" style="margin-bottom: 0px; text-align: center;">
+                                            <label class="control-label">Fecha m&iacute;nima prescripci&oacute;n</label>
+                                            <input type="text" id="fecha_min_prescripcion" name="fecha_min_prescripcion" class="form-control datepicker" autocomplete="off" placeholder="Fecha m&iacute;nima" value="{{ old('fecha_min_prescripcion') }}" style="width: 100%;">
+                                            <span class="text-danger">@error('fecha_min_prescripcion') {{ $message }} @enderror</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-top: 10px;">
+                                        <div class="form-group" style="margin-bottom: 0px; text-align: center;">
+                                            <label class="control-label">Fecha m&aacute;xima prescripci&oacute;n</label>
+                                            <input type="text" id="fecha_max_prescripcion" name="fecha_max_prescripcion" class="form-control datepicker" autocomplete="off" placeholder="Fecha m&aacute;xima" value="{{ old('fecha_max_prescripcion') }}" style="width: 100%;">
+                                            <span class="text-danger">@error('fecha_max_prescripcion') {{ $message }} @enderror</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="text-align: center;">
+                <button id="generar_informe_prescripciones" url="/generate_prescripciones_pdf/" type="button" class="btn btn-youtube pull-left btn_pdf"> <i class="fa fa-file-pdf-o btn_pdf"></i> Generar PDF</button>
+                <button type="button" class="btn btn-inverse pull-right btn_pdf" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('resolucion')

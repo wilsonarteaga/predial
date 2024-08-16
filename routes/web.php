@@ -168,7 +168,7 @@ Route::get('registro_exencion/{id}', [PrediosExencionesController::class, 'creat
 Route::get('registro_exencion', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
 
 Route::post('create_exenciones', [PrediosExencionesController::class, 'store'])->name('prediosexenciones.create_exenciones')->middleware('checkdb');
-Route::get('generate_exenciones_pdf', [PrediosController::class, 'generate_exenciones_pdf'])->middleware('checkdb');
+Route::get('generate_exenciones_pdf/{fecha_minima}/{fecha_maxima}', [PrediosController::class, 'generate_exenciones_pdf'])->middleware('checkdb');
 
 // Route::post('update_exenciones', [PrediosExencionesController::class, 'update'])->name('prediosexenciones.update_exenciones')->middleware('checkdb');
 // Route::post('delete_exenciones', [PrediosExencionesController::class, 'destroy'])->name('prediosexenciones.delete_exenciones')->middleware('checkdb');
@@ -178,7 +178,7 @@ Route::get('registro_prescripciones/{id}', [PrediosPrescripcionesController::cla
 Route::get('registro_prescripciones', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
 
 Route::post('create_prescripciones', [PrediosPrescripcionesController::class, 'store'])->name('prediosprescripciones.create_prescripciones')->middleware('checkdb');
-Route::get('generate_prescripciones_pdf', [PrediosController::class, 'generate_prescripciones_pdf'])->middleware('checkdb');
+Route::get('generate_prescripciones_pdf/{fecha_minima}/{fecha_maxima}', [PrediosController::class, 'generate_prescripciones_pdf'])->middleware('checkdb');
 
 // Route::post('update_prescripciones', [PrediosPrescripcionesController::class, 'update'])->name('prediosprescripciones.update_prescripciones')->middleware('checkdb');
 // Route::post('delete_prescripciones', [PrediosPrescripcionesController::class, 'destroy'])->name('prediosprescripciones.delete_prescripciones')->middleware('checkdb');

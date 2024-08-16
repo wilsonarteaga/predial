@@ -3137,7 +3137,7 @@ class PrediosController extends Controller
         // return (new ExportCartera($parametro_logo->valor, $parametro_nit->valor, $parametro_alcaldia->valor))->download('predios_pagos.xlsx', \Maatwebsite\Excel\Excel::XLSX);
     }
 
-    public function generate_exenciones_pdf(Request $request) {
+    public function generate_exenciones_pdf(Request $request, $fecha_minima, $fecha_maxima) {
         if (!$request->session()->exists('userid')) {
             return redirect('/');
         }
@@ -3148,8 +3148,10 @@ class PrediosController extends Controller
                         ->leftJoin('predios', 'predios.id', '=', 'predios_exenciones.id_predio')
                         ->select(DB::raw('predios_exenciones.*, predios.codigo_predio'))
                         ->where('predios.estado', 1)
-                        ->orderBy('predios.codigo_predio')
-                        ->orderBy('predios_exenciones.exencion_anio')
+                        ->whereRaw(DB::raw("predios_exenciones.created_at >= CONVERT(datetime, '" . $fecha_minima . " 00:00:00.000')"))
+                        ->whereRaw(DB::raw("predios_exenciones.created_at <= CONVERT(datetime, '" . $fecha_maxima . " 23:59:59.999')"))
+                        ->orderBy('predios_exenciones.created_at')
+                        // ->orderBy('predios.codigo_predio')
                         ->get();
 
         $parametro_logo = DB::table('parametros')
@@ -3186,7 +3188,7 @@ class PrediosController extends Controller
         return $pdf->download($dt->toDateString() . '_' . str_replace(':', '-', $dt->toTimeString()) . '.pdf');
     }
 
-    public function generate_prescripciones_pdf(Request $request) {
+    public function generate_prescripciones_pdf(Request $request, $fecha_minima, $fecha_maxima) {
         if (!$request->session()->exists('userid')) {
             return redirect('/');
         }
@@ -3197,8 +3199,10 @@ class PrediosController extends Controller
                         ->leftJoin('predios', 'predios.id', '=', 'predios_prescripciones.id_predio')
                         ->select(DB::raw('predios_prescripciones.*, predios.codigo_predio'))
                         ->where('predios.estado', 1)
-                        ->orderBy('predios.codigo_predio')
-                        ->orderBy('predios_prescripciones.prescribe_anio')
+                        ->whereRaw(DB::raw("predios_prescripciones.created_at >= CONVERT(datetime, '" . $fecha_minima . " 00:00:00.000')"))
+                        ->whereRaw(DB::raw("predios_prescripciones.created_at <= CONVERT(datetime, '" . $fecha_maxima . " 23:59:59.999')"))
+                        ->orderBy('predios_prescripciones.created_at')
+                        // ->orderBy('predios.codigo_predio')
                         ->get();
 
         $parametro_logo = DB::table('parametros')

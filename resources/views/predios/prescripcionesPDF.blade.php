@@ -135,7 +135,8 @@
         <div id="body">
             <table class="info-predio" style="width: 100%; margin-top: 10px;">
                 <tr>
-                    <th style="width: auto;">CODIGO PREDIO</th>
+                    <th style="width: auto;">FECHA<br />PRESCRIPCION</th>
+                    <th style="width: auto;">CODIGO<br />PREDIO</th>
                     <th style="width: auto;">VIGENCIA</th>
                     <th style="width: auto;">PREDIAL</th>
                     <th style="width: auto;">INTERES<br />PREDIAL</th>
@@ -146,6 +147,7 @@
                     <th style="width: auto;">TASA<br />BOMBERIL</th>
                     <th style="width: auto;">ALUMBRADO</th>
                 </tr>
+                @if (count($prescripciones) > 0)
                 @php($suma_valor_concepto1 = 0)
                 @php($suma_valor_concepto2 = 0)
                 @php($suma_valor_concepto3 = 0)
@@ -156,6 +158,7 @@
                 @php($suma_valor_concepto18 = 0)
                 @foreach($prescripciones as $prescribe)
                 <tr>
+                    <td class="text-center">{{ substr($prescribe->created_at, 0, 10) }}</td>
                     <td class="text-center">{{ $prescribe->codigo_predio }}</td>
                     <td class="text-center">{{ $prescribe->prescribe_anio }}</td>
                     <td class="text-right">@money($prescribe->valor_concepto1)</td>
@@ -177,7 +180,7 @@
                 @php($suma_valor_concepto18 += $prescribe->valor_concepto18)
                 @endforeach
                 <tr class="totales">
-                    <th class="text-right" colspan="2">TOTAL PAGO</th>
+                    <th class="text-right" colspan="3">TOTAL PAGO</th>
                     <th class="text-right">@money($suma_valor_concepto1)</th>
                     <th class="text-right">@money($suma_valor_concepto2)</th>
                     <th class="text-right">@money($suma_valor_concepto3)</th>
@@ -187,6 +190,11 @@
                     <th class="text-right">@money($suma_valor_concepto16)</th>
                     <th class="text-right">@money($suma_valor_concepto18)</th>
                 </tr>
+                @else
+                <tr>
+                    <td colspan="11" class="text-center" style="font-size: 110%;">NO HAY INFORMACI&Oacute;N DISPONIBLE</td>
+                </tr>
+                @endif
             </table>
         </div>
         <div id="footer">
