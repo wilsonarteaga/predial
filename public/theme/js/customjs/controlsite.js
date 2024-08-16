@@ -1611,13 +1611,13 @@ function getPredioPrescripcionExencion(id_predio, showBlock, is_prescripciones_f
                             if (!is_prescripciones_form) {
                             //     $('#span_' + control).html(`A&ntilde;os a tener en cuenta en la ${control_label}: <b>${Number($('#' + control + '_hasta').selectpicker('val')) - Number($('#' + control + '_desde').val()) + 1}</b>`);
                             // } else {
-                                if ($('#' + control + '_hasta').find('option').length - 1 === 1) {
-                                    $('#span_' + control).html(`A&ntilde;o a tener en cuenta en la ${control_label}: <b>${$('#' + control + '_hasta').selectpicker('val')}</b>`);
-                                    $('#btn_save_create').fadeIn('fast');
-                                } else {
-                                    $('#btn_save_create').fadeOut('fast');
-                                    $('#span_' + control).html(`<b style="color: tomato;">El predio seleccionado tiene deuda vigente. Operación de exenci&oacute;n no permitida.</b>`);
-                                }
+                                // if ($('#' + control + '_hasta').find('option').length - 1 === 1) {
+                                $('#span_' + control).html(`A&ntilde;o a tener en cuenta en la ${control_label}: <b>${$('#' + control + '_hasta').selectpicker('val')}</b>`);
+                                $('#btn_save_create').fadeIn('fast');
+                                // } else {
+                                //     $('#btn_save_create').fadeOut('fast');
+                                //     $('#span_' + control).html(`<b style="color: tomato;">El predio seleccionado tiene deuda vigente. Operación de exenci&oacute;n no permitida.</b>`);
+                                // }
                             }
                             if ($('#create-form').length) {
                                 // var validatorCreate = $("#create-form").validate();
