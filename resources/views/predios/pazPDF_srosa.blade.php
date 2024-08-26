@@ -232,7 +232,10 @@
                 </tr>
                 <tr>
                     <td>Valor <b>{{ $valor }}</b> Pesos m/cte.</td>
-                    <td style="text-align: center;">SECRETARIO DE HACIENDA</td>
+                    <td style="text-align: center;">
+                        <span><b>HELEN XIOMARA ORREGO TENZA</b></span><br />
+                        SECRETARIO(A) DE HACIENDA
+                    </td>
                 </tr>
                 <tr>
                     <td style="padding-top: 20px;" colspan="2">NO SE COBRA IMPUESTO POR VALORIZACI&Oacute;N.</td>
