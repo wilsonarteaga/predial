@@ -335,7 +335,7 @@
                 </tr>
                 @endif
             </table>
-            <div style="padding-top: 0px; padding-bottom: 60px; width: 100%; text-align: left; font-size: 50%;">
+            <div style="padding-top: 0px; padding-bottom: 60px; width: 100%; text-align: left; font-size: 70%;">
                 Los intereses deber&aacute;n ser cancelados de acuerdo al valor causado por cada d&iacute;a calendario de retardo hasta la fecha efectiva de pago.
                 {{-- <div style="font-size: 130%;">
                     @if($temporal > 0)
