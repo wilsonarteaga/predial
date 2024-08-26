@@ -89,7 +89,7 @@
         table { border-collapse: collapse; font-size: 80%; width: 100%; }
         td { padding: 1px; }
         th { padding: 1px; background-color: #f3efef; }
-		p.header { width: 100%; text-align:center; font-weight: bold; padding: 0px; margin: 0px; }
+		p.header { width: 100%; text-align:center; font-weight: bold; padding: 0px; margin: 0px; font-size: 140%; }
         p.previa { color: tomato; width: 100%; text-align:left; font-weight: bold; padding: 0px; margin: 0px; }
 		h3.title { width: 100%; text-align:left; }
 
@@ -99,11 +99,11 @@
 
 		table.info-predio tr th { border: 0px; background-color: #f3efef; }
 		table.info-predio tr td { border: 0px; background-color: #f3efef; }
-        table.info-predio tr th { white-space: nowrap; font-size: 70%; text-align: left; }
-		table.info-predio tr td { text-align:left; font-size: 70%; }
+        table.info-predio tr th { white-space: nowrap; font-size: 73%; text-align: left; }
+		table.info-predio tr td { text-align:left; font-size: 73%; }
 
-        table.info-pagos tr th { white-space: nowrap; font-size: 70%; }
-		table.info-pagos tr td { text-align:right; font-size: 70%; }
+        table.info-pagos tr th { white-space: nowrap; font-size: 73%; }
+		table.info-pagos tr td { text-align:right; font-size: 73%; }
 		table.info-pagos tr.totales th { text-align:right; }
 
         table.info-resumen tr th { white-space: nowrap; font-size: 80%; padding: 0px; }
@@ -113,8 +113,8 @@
 
 		table.info-codigo-barras tr td { border: 0px; text-align: center; font-size: 80%; }
 
-        table.info-persona-barras tr th { width: 30%; border: 0px; text-align: left; white-space: nowrap; font-size: 100%; padding: 0px; background-color: #ffffff; }
-        table.info-persona-barras tr td { border: 0px; text-align: left; white-space: nowrap; font-size: 100%; padding: 0px; background-color: #ffffff; }
+        table.info-persona-barras tr th { width: 30%; border: 0px; text-align: left; white-space: nowrap; font-size: 110%; padding: 0px; background-color: #ffffff; }
+        table.info-persona-barras tr td { border: 0px; text-align: left; white-space: nowrap; font-size: 110%; padding: 0px; background-color: #ffffff; }
 
         .info { font-size: 70%; }
 		.negrilla {font-weight: bold;}
@@ -138,8 +138,8 @@
         <div id="header">
             <table class="table-header">
                 <tr>
-                    <td style="width: 50%; text-align: left; vertical-align: bottom; border: 0px solid black;">
-                        <img class="logo" style="width: 15%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/santa-rosa-de-viterbo-factura-color.png'))) }}" alt="Logo" />
+                    <td style="width: 10%; text-align: left; vertical-align: bottom; border: 0px solid black;">
+                        <img class="logo" style="width: 90%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/'. $logo))) }}" alt="Logo" />
                         {{-- <div style="padding-left: 80px; padding-right: 20px;">
                             @if($temporal > 0)
                             <p class="previa">
@@ -360,7 +360,7 @@
                 @php($numero_boletas = count($valores_factura) == 1 ? 2 : count($valores_factura))
                 @for ($boletas = 0; $boletas < $numero_boletas; $boletas++)
                     @if($boletas == 0)
-                    <div class="negrilla" style="padding-top: 0px; padding-bottom: 0px; width: 100%; text-align: center; font-size: 52%;">
+                    <div class="negrilla" style="padding-top: 0px; padding-bottom: 0px; width: 100%; text-align: center; font-size: 54%;">
                         <span style="width: 50%;">-USUARIO-</span>
                         <span style="width: 50%; text-align: center; position: relative; float: right;">
                             @if($fecha == 'INDEFINIDA')
@@ -377,7 +377,7 @@
                             border-style: none none dashed;
                             color: #fff;
                             background-color: #fff;" />
-                        <table class="no-border" style="width: 100%; font-size: 60%;">
+                        <table class="no-border" style="width: 100%; font-size: 70%;">
                             <tr>
                                 <td style="width: 50%;"></td>
                                 <td class="negrilla">Formulario No</td>
@@ -394,7 +394,7 @@
                                         <table class="info-persona-barras" style="width: 100%; margin-top: 0px;">
                                             <tr>
                                                 <td colspan="2" style="padding-bottom: 10px;">
-                                                    <img style="width: 15%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/santa-rosa-de-viterbo-factura-horizontal-color.png'))) }}" alt="Logo1" />
+                                                    <img style="width: 20%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/santa-rosa-de-viterbo-factura-horizontal-color.png'))) }}" alt="Logo1" />
                                                 </td>
                                             </tr>
                                             <tr>
@@ -442,7 +442,7 @@
                                     </td>
                                     @endif
                                     <td style="width: 53%; padding-top: 0px; border: 0px solid #000; text-align: center;">
-                                        <table style="width: 100%; font-size: 100%;">
+                                        <table style="width: 100%; font-size: 110%;">
                                             <tr>
                                                 <td class="negrilla">Pague hasta {{ $fechas_pago_hasta[$x] }}</td>
                                                 <td>Descuento {{ intval($porcentajes_descuento[$x]) }}%</td>
@@ -455,7 +455,7 @@
                                         <span style="width: 100%; font-size: 80%;">{{ $barras_texto[$x] }}</span>
                                         @endif
                                         @if($x + 1 == $numero_codigos)
-                                        <table style="width: 100%; font-size: 100%; padding-top: 10px;">
+                                        <table style="width: 100%; font-size: 110%; padding-top: 10px;">
                                             <tr>
                                                 <td class="negrilla">{{ $labels[$boletas] }}</td>
                                                 <td class="negrilla">
