@@ -446,7 +446,7 @@
                                             <tr>
                                                 <td class="negrilla">Pague hasta {{ $fechas_pago_hasta[$x] }}</td>
                                                 <td>Descuento {{ intval($porcentajes_descuento[$x]) }}%</td>
-                                                <td class="negrilla">@money($valores_factura[$x])</td>
+                                                <td class="negrilla" style="font-size: 120%;">@money($valores_factura[$x])</td>
                                             </tr>
                                         </table>
                                         {{-- {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!} --}}
