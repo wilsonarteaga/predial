@@ -102,8 +102,8 @@
         table.info-predio tr th { white-space: nowrap; font-size: 73%; text-align: left; }
 		table.info-predio tr td { text-align:left; font-size: 73%; }
 
-        table.info-pagos tr th { white-space: nowrap; font-size: 73%; }
-		table.info-pagos tr td { text-align:right; font-size: 73%; }
+        table.info-pagos tr th { white-space: nowrap; font-size: 72%; }
+		table.info-pagos tr td { text-align:right; font-size: 72%; }
 		table.info-pagos tr.totales th { text-align:right; }
 
         table.info-resumen tr th { white-space: nowrap; font-size: 80%; padding: 0px; }
@@ -243,7 +243,7 @@
                 </tr>
                 <tr>
                     <th>A&Ntilde;O</th>
-                    <th>%Mil TAR</th>
+                    <th>%Mil<br />TAR</th>
                     <th>AVAL&Uacute;O</th>
                     @if(intval($unir_impuesto_car) == 1)
                     <th>IMPUESTO</th>
@@ -254,8 +254,8 @@
                     <th>CAR</th>
                     <th>INT.<br />CAR</th>
                     @endif
-                    <th>DESCUENTO</th>
-                    <th>DESCUENTO<br />CAR</th>
+                    <th>DESC.</th>
+                    <th>DESC.<br />CAR</th>
                     <th>BOMBEROS</th>
                     <th>Otros</th>
                     <th>TOTAL</th>
