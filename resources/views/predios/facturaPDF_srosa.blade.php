@@ -102,8 +102,8 @@
         table.info-predio tr th { white-space: nowrap; font-size: 73%; text-align: left; }
 		table.info-predio tr td { text-align:left; font-size: 73%; }
 
-        table.info-pagos tr th { white-space: nowrap; font-size: 71%; }
-		table.info-pagos tr td { text-align:right; font-size: 71%; }
+        table.info-pagos tr th { white-space: nowrap; font-size: 70%; }
+		table.info-pagos tr td { text-align:right; font-size: 70%; }
 		table.info-pagos tr.totales th { text-align:right; }
 
         table.info-resumen tr th { white-space: nowrap; font-size: 80%; padding: 0px; }
@@ -122,7 +122,7 @@
 
         .div-codigos {
             position: absolute;
-            top: 36%;
+            top: 37%;
         }
 
         .logo {
