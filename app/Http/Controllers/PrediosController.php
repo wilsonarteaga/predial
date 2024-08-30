@@ -2804,7 +2804,7 @@ class PrediosController extends Controller
 
     public function avaluos_predio(Request $request) {
         $data = json_decode($request->form);
-        $predio = DB::select('select p.id,
+        $predio = DB::select('select distinct p.id,
                                     pp.ultimo_anio as anio,
                                     pp.avaluo,
                                     CASE WHEN pa.origen = \'M\' THEN \'Manual\' ELSE \'Archivo\' END as tipo_registro,
@@ -2846,7 +2846,7 @@ class PrediosController extends Controller
                     ->where('predios.id', $id)
                     ->first();
 
-        $avaluos = DB::select('select p.id,
+        $avaluos = DB::select('select distinct p.id,
                                     pp.ultimo_anio as anio,
                                     pp.avaluo,
                                     CASE WHEN pa.origen = \'M\' THEN \'Manual\' ELSE \'Archivo\' END as tipo_registro,
