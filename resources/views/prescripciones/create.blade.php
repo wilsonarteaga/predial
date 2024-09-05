@@ -182,7 +182,7 @@
                                                         </div>
                                                     @endif
                                                 </div>
-                                                <h2 style="width: 100%;">Lista de prescripciones <i style="color: red; float: right; cursor: pointer;" class="fa fa-file-pdf-o" id="print_prescripciones" url="/generate_prescripciones_pdf/"></i></h2>
+                                                <h2 style="width: 100%;">Lista de prescripciones <i style="color: #14813a; float: right; cursor: pointer;" onMouseOver="this.style.color='#14813a'" onMouseOut="this.style.color='#c0c0c0'" class="fa fa-print" id="print_prescripciones" url="/generate_prescripciones_pdf/"></i></h2>
                                                 <table id="myTable" class="table table-hover table-striped table-bordered">
                                                     <thead>
                                                         <tr>
@@ -266,6 +266,7 @@
             </div>
             <div class="modal-footer" style="text-align: center;">
                 <button id="generar_informe_prescripciones" url="/generate_prescripciones_pdf/" type="button" class="btn btn-youtube pull-left btn_pdf"> <i class="fa fa-file-pdf-o btn_pdf"></i> Generar PDF</button>
+                <button id="btn_descargar_excel_prescripciones_exenciones" tipo="prescripciones" type="button" class="btn btn-success pull-left btn_excel"> <i class="fa fa-file-excel-o"></i> Generar EXCEL</button>
                 <button type="button" class="btn btn-inverse pull-right btn_pdf" data-dismiss="modal">Cancelar</button>
             </div>
         </div>

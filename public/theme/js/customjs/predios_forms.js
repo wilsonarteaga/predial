@@ -1377,6 +1377,15 @@ $(document).ready(function() {
         $('#anio_inicial_acuerdo').off('change').on('change', function() {
             if(Number($('#anio_inicial_acuerdo').val()) > Number($('#anio_final_acuerdo').val())) {
                 $('#anio_final_acuerdo').val('');
+            } else {
+                if($('#anio_inicial_acuerdo').val().length > 0 && $('#anio_final_acuerdo').val().length > 0) {
+                    var anios = global_anios.filter(el => parseInt(el.ultimo_anio) >= parseInt($('#anio_inicial_acuerdo').val()) && parseInt(el.ultimo_anio) <= parseInt($('#anio_final_acuerdo').val()));
+                    var total_acuerdo = 0;
+                    for (var anio in anios) {
+                        total_acuerdo += Number(anio.total_calculo);
+                    }
+                    $('#total_acuerdo').html(accounting.formatMoney(total_acuerdo, "$ ", 2, ".", ", "));
+                }
             }
         });
     }
@@ -1385,6 +1394,15 @@ $(document).ready(function() {
         $('#anio_final_acuerdo').off('change').on('change', function() {
             if(Number($('#anio_final_acuerdo').val()) < Number($('#anio_inicial_acuerdo').val())) {
                 $('#anio_inicial_acuerdo').val('');
+            } else {
+                if($('#anio_inicial_acuerdo').val().length > 0 && $('#anio_final_acuerdo').val().length > 0) {
+                    var anios = global_anios.filter(el => parseInt(el.ultimo_anio) >= parseInt($('#anio_inicial_acuerdo').val()) && parseInt(el.ultimo_anio) <= parseInt($('#anio_final_acuerdo').val()));
+                    var total_acuerdo = 0;
+                    for (var anio in anios) {
+                        total_acuerdo += Number(anio.total_calculo);
+                    }
+                    $('#total_acuerdo').html(accounting.formatMoney(total_acuerdo, "$ ", 2, ".", ", "));
+                }
             }
         });
     }
@@ -1488,6 +1506,16 @@ function saveDatosPredio(form, modal, path, suffix) {
                                 disable_form_elements('#form-predios-datos-acuerdos-pago', false);
                                 $('#modal-datos-acuerdo-pago').modal('hide');
                                 $('.download_factura_row').attr('disabled', false);
+                                $('#abono_inicial_acuerdo').off();
+
+                                var element = AutoNumeric.getAutoNumericElement('#abono_inicial_acuerdo');
+                                element.formUnformat();
+                                new AutoNumeric('#abono_inicial_acuerdo', {
+                                    emptyInputBehavior: "zero",
+                                    minimumValue: "0",
+                                    modifyValueOnWheel: false,
+                                    unformatOnSubmit: true
+                                });
                             }
 
                         } else {

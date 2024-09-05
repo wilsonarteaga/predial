@@ -271,7 +271,7 @@
                                                             <div class="form-group">
                                                                 <label class="control-label" style="display: block;"><br /></label>
                                                                 <button type="button"  id="btn_buscar_pagos" class="btn btn-info"><i class="fa fa-save"></i> Filtrar pagos</button>
-                                                                <button type="button"  id="btn_descargar_pagos" class="btn btn-success pull-right" style="display: none;"><i class="fa fa-download"></i> Descargar EXCEL</button>
+                                                                <button type="button"  id="btn_descargar_pagos" class="btn btn-success pull-right" style="display: none;"><i class="fa fa-file-excel-o"></i> Descargar EXCEL</button>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 search_factura" style="display: none;">

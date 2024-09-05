@@ -15,6 +15,7 @@ var global_anios = null;
 var global_acuerdo_pago = null;
 var global_ultima_factura = null;
 var global_plusvalia = 0;
+var globalShowBtnAcuerdos = false;
 var arr_autonumeric = ['porcentaje', 'porcentaje_ex', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
     'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_abono',
     'valor_facturado', 'avaluoigac', 'area', 'valor_paz', 'tasa_diaria', 'tasa_mensual', 'tasa_acuerdo','abono_inicial_acuerdo'
@@ -1018,6 +1019,56 @@ $(document).ready(function() {
         });
     }
 
+    if ($('#btn_descargar_excel_prescripciones_exenciones')) {
+        $('#btn_descargar_excel_prescripciones_exenciones').off('click').on('click', function() {
+            var btn = $(this);
+            var form = $("#form-impresion-informe");
+            if (form.valid()) {
+                $('.btn_excel').attr('disabled', true);
+                var tipo = $(btn).attr('tipo');
+                var fecha_inicial = tipo === 'prescripciones' ? $('#fecha_min_prescripcion').val() : $('#fecha_min_exencion').val();
+                var fecha_final = tipo === 'prescripciones' ? $('#fecha_max_prescripcion').val() : $('#fecha_max_exencion').val();
+
+                $.blockUI({
+                    message: `Generando archivo EXCEL con reporte de ${tipo} desde ${fecha_inicial} hasta ${fecha_final}.<br />Espere un momento.`,
+                    css: {
+                        border: 'none',
+                        padding: '15px',
+                        backgroundColor: '#000',
+                        '-webkit-border-radius': '10px',
+                        '-moz-border-radius': '10px',
+                        opacity: .5,
+                        color: '#fff',
+                        zIndex: 9999
+                    },
+                    overlayCSS:  {
+                        zIndex: 1100
+                    },
+                });
+                fetch(`/export-excel-${tipo}/${fecha_inicial}/${fecha_final}`)
+                .then(resp => resp.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    // the filename you want
+                    a.download = `reporte-${tipo}.xlsx`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    $.unblockUI();
+                    $('.btn_excel').attr('disabled', false);
+                })
+                .catch((err) => {
+                    $.unblockUI();
+                    $('.btn_excel').attr('disabled', false);
+                    console.log(err);
+                });
+            }
+        });
+    }
+
 });
 
 function clearFormCreatePredio() {
@@ -1444,7 +1495,7 @@ function getPredio(id_predio, showBlock) {
                                   '&nbsp;&nbsp;' +
                                 //   '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Ver aval&uacute;os" ide="' + predio.id + '" class="avaluos_row btn btn-default"><i class="fa fa-home"></i></button>' +
                                 //   '&nbsp;&nbsp;' +
-                                  (!global_ya_pagado && (anios.length > 0 || global_acuerdo_pago) ? ('<button style="display: none;" type="button" data-toggle="tooltip" data-placement="bottom" title="Acuerdo de pago" ide="' + predio.id + '" class="acuerdos_row btn btn-default"><i class="fa fa-child"></i></button>' +
+                                  (globalShowBtnAcuerdos && !global_ya_pagado && (anios.length > 0 || global_acuerdo_pago) ? ('<button type="button" data-toggle="tooltip" data-placement="bottom" title="Acuerdo de pago" ide="' + predio.id + '" class="acuerdos_row btn btn-default"><i class="fa fa-child"></i></button>' +
                                   '&nbsp;&nbsp;') : '' ) +
                                   '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Eliminar predio" ide="' + predio.id + '" class="delete_row btn btn-danger" req_res="' + opcion.resolucion_elimina + '" msg="¿Está seguro/a que desea anular el predio?" ' + disabledBtnElimina + '><i class="fa fa-trash-o"></i></button>';
 
@@ -1848,6 +1899,8 @@ function setAcuerdoPagoRow() {
             validatorAcuerdosPago.resetForm();
             $('#anio_inicial_acuerdo').removeClass('error');
             $('#anio_final_acuerdo').removeClass('error');
+            $('#total_acuerdo').html(accounting.formatMoney(0, "$ ", 2, ".", ", "));
+            $('#div_ver_detalle_ap').fadeOut();
         });
 
         var validatorAcuerdosPago = $("#form-predios-datos-acuerdos-pago").validate({
@@ -1861,7 +1914,8 @@ function setAcuerdoPagoRow() {
                 identificacion_acuerdo: "required",
                 nombre_acuerdo: "required",
                 telefono_acuerdo: "required",
-                direccion_acuerdo: "required"
+                direccion_acuerdo: "required",
+                fecha_acuerdo: "required"
 
             },
             messages: {
@@ -1874,7 +1928,8 @@ function setAcuerdoPagoRow() {
                 identificacion_acuerdo: "Identificaci&oacute;n requerido",
                 nombre_acuerdo: "Nombre requerido",
                 telefono_acuerdo: "Tel&eacute;fono requerido",
-                direccion_acuerdo: "Direcci&oacute;n requerido"
+                direccion_acuerdo: "Direcci&oacute;n requerido",
+                fecha_acuerdo: "Fecha acuerdo requerido"
             }
         });
     }
@@ -2301,6 +2356,7 @@ function checkFormPaz() {
 
 function setDataAcuerdoPagoModalForm() {
     if (global_acuerdo_pago) {
+        console.log('📌 - file: controlsite.js:2308 - setDataAcuerdoPagoModalForm - global_acuerdo_pago:', global_acuerdo_pago);
         setFormData('form-predios-datos-acuerdos-pago', global_acuerdo_pago);
         if (Number(global_acuerdo_pago.responsable_propietario_acuerdo) > 0) {
             $('#identificacion_acuerdo').attr('readonly', true);
@@ -2312,12 +2368,16 @@ function setDataAcuerdoPagoModalForm() {
         $('#save_dap').css('display', 'none');
         $('#anular_dap').attr('disabled', false);
         $('#anular_dap').css('display', '');
+        $('#total_acuerdo').html(accounting.formatMoney(global_acuerdo_pago.total_acuerdo, "$ ", 2, ".", ", "));
+        $('#div_ver_detalle_ap').fadeIn();
     } else {
         disable_form_elements('#form-predios-datos-acuerdos-pago', false);
         $('#save_dap').attr('disabled', false);
         $('#save_dap').css('display', '');
         $('#anular_dap').attr('disabled', true);
         $('#anular_dap').css('display', 'none');
+        $('#total_acuerdo').html(accounting.formatMoney(0, "$ ", 2, ".", ", "));
+        $('#div_ver_detalle_ap').fadeOut();
         AutoNumeric.set('#abono_inicial_acuerdo', 0);
         if (global_propietario) {
             $('#identificacion_acuerdo').val(global_propietario.identificacion);

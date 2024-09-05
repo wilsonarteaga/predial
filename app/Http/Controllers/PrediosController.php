@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Events\CalculoBatch;
 use App\Exports\ExportCartera;
+use App\Exports\ExportExenciones;
+use App\Exports\ExportPrescripciones;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
@@ -1052,7 +1054,7 @@ class PrediosController extends Controller
 
         if(array_key_exists('id', $data)) {
             $predio_acuerdo_pago = PredioAcuerdoPago::find($data->{'id'});
-            if(!array_key_exists('anulado_acuerdo', $data)) {
+            if(intval($data->{'anulado_acuerdo'}) == 0) {
                 $numero = $predio_acuerdo_pago->numero_acuerdo;
             }
         } else {
@@ -1061,7 +1063,7 @@ class PrediosController extends Controller
                     ->first();
             $numero = $numero->numero;
         }
-        if(!array_key_exists('anulado_acuerdo', $data)) {
+        if(intval($data->{'anulado_acuerdo'}) == 0) {
             $predio_acuerdo_pago->id_predio = $data->{'id_predio'};
             $predio_acuerdo_pago->numero_acuerdo = $numero;
             $predio_acuerdo_pago->anio_inicial_acuerdo = $data->{'anio_inicial_acuerdo'};
@@ -1076,9 +1078,29 @@ class PrediosController extends Controller
             $predio_acuerdo_pago->dia_pago_acuerdo = $data->{'dia_pago_acuerdo'};
             $predio_acuerdo_pago->abono_inicial_acuerdo = str_replace(",", "", $data->{'abono_inicial_acuerdo'});
             $predio_acuerdo_pago->id_usuario_crea = intval($request->session()->get('userid'));
+            $predio_acuerdo_pago->fecha_acuerdo = Carbon::createFromFormat("Y-m-d", $data->{'fecha_acuerdo'})->format('Y-m-d');
+
+            $dt = Carbon::now();
+            $dt_now = Carbon::now();
+            $mes_final = $dt->month + intval($data->{'cuotas_acuerdo'});
+            $dt_final = $dt_now->year($dt->year)->month($mes_final)->day(intval($data->{'dia_pago_acuerdo'}));
+            $predio_acuerdo_pago->fecha_final_acuerdo = $dt_final->format('Y-m-d');
+
+            $total = DB::table('predios_pagos')
+                    ->select(DB::raw('ISNULL(SUM(total_calculo), 0) as total'))
+                    ->where('id_predio', $data->{'id_predio'})
+                    ->where('pagado', 0)
+                    ->where('anulada', 0)
+                    ->whereBetween('ultimo_anio', array(
+                        $data->{'anio_inicial_acuerdo'},
+                        $data->{'anio_final_acuerdo'}
+                    ))
+                    ->first();
+            $predio_acuerdo_pago->total_acuerdo = floatval($total->total) - floatval(str_replace(",", "", $data->{'abono_inicial_acuerdo'}));
+            // TODO: ejecutar procedimiento calculo cuotas
 
         } else {
-            $predio_acuerdo_pago->estado_acuerdo = $data->{'anulado_acuerdo'};
+            $predio_acuerdo_pago->estado_acuerdo = 0; // inactivo
             $predio_acuerdo_pago->id_usuario_anula = intval($request->session()->get('userid'));
             $predio_acuerdo_pago->fecha_anulacion = Carbon::createFromFormat("Y-m-d H:i:s", Carbon::now()->toDateTimeString())->format('Y-m-d H:i:s');
         }
@@ -1088,14 +1110,14 @@ class PrediosController extends Controller
 
         if($query) {
             $predio_acuerdo_pago = PredioAcuerdoPago::find($predio_acuerdo_pago->id);
-            $result['message'] = !array_key_exists('anulado_acuerdo', $data) ? 'Información del acuerdo de pago actualizada satisfactoriamente.' : 'Acuerdo de pago anulado satisfactoriamente.';
+            $result['message'] = intval($data->{'anulado_acuerdo'}) == 0 ? 'Información del acuerdo de pago actualizada satisfactoriamente.' : 'Acuerdo de pago anulado satisfactoriamente.';
             return response()->json([
                 'data' => $result,
                 'obj' => $predio_acuerdo_pago
             ]);
         }
         else {
-            $result['message'] = !array_key_exists('anulado_acuerdo', $data) ? 'No se pudo actualizar la información del acuerdo de pago.' : 'No se pudo anular el acuerdo de pago.';
+            $result['message'] = intval($data->{'anulado_acuerdo'}) == 0 ? 'No se pudo actualizar la información del acuerdo de pago.' : 'No se pudo anular el acuerdo de pago.';
             return response()->json([
                 'data' => $result
             ]);
@@ -1120,7 +1142,9 @@ class PrediosController extends Controller
                         ->orderBy('ultimo_anio', 'desc')
                         ->first();
 
-        $predio_acuerdo_pago = PredioAcuerdoPago::where('id_predio', $request->id_predio)->first();
+        $predio_acuerdo_pago = PredioAcuerdoPago::where('id_predio', $request->id_predio)
+            ->where('estado_acuerdo', 1) // activo
+            ->first();
 
         $predio_abonos = PredioAbono::where('id_predio', $request->id_predio)
                         ->orderBy('id', 'asc')
@@ -2646,7 +2670,7 @@ class PrediosController extends Controller
         }
 
         $acuerdo_pago = PredioAcuerdoPago::where('id_predio', $data->{'id_predio'})
-                        ->where('estado_acuerdo', 1)
+                        ->where('estado_acuerdo', 1) // 1 activo, 0 anulado
                         // ->where('anulado_acuerdo', 0)
                         ->first();
 
@@ -2682,7 +2706,7 @@ class PrediosController extends Controller
             // ->where('prescrito', 0)
             // ->where('exencion', 0)
             ->whereNull('factura_pago')
-            ->select(DB::raw('predios_pagos.ultimo_anio, predios_pagos.factura_pago'))
+            ->select(DB::raw('predios_pagos.ultimo_anio, predios_pagos.factura_pago, ISNULL(predios_pagos.total_calculo, 0) AS total_calculo'))
             ->orderBy('ultimo_anio', 'desc')
             ->get();
         // }
@@ -2732,7 +2756,7 @@ class PrediosController extends Controller
         // Si no existe un calculo para el año actual o si el calculo existe pero aun no tiene un numero
         // de factura asignado, entonces, se agrega el año a la lista
         if($ultimo_anio_pagar->ultimo_anio != $currentYear && !$exists_current_anio && count($array_anios) > 0) {
-            array_unshift($array_anios, ['ultimo_anio' => strval($currentYear), 'factura_pago' => null]);
+            array_unshift($array_anios, ['ultimo_anio' => strval($currentYear), 'factura_pago' => null, 'total_calculo' => 0]);
         }
 
         // Verificar prescripcion
@@ -3237,5 +3261,13 @@ class PrediosController extends Controller
         $pdf = PDF::loadView('predios.prescripcionesPDF', $data);
 
         return $pdf->download($dt->toDateString() . '_' . str_replace(':', '-', $dt->toTimeString()) . '.pdf');
+    }
+
+    public function exportExcelExenciones(Request $request, $fechainicial, $fechafinal) {
+        return Excel::download(new ExportExenciones($fechainicial, $fechafinal), 'exenciones.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    public function exportExcelPrescripciones(Request $request, $fechainicial, $fechafinal) {
+        return Excel::download(new ExportPrescripciones($fechainicial, $fechafinal), 'prescripciones.xlsx', \Maatwebsite\Excel\Excel::XLSX);
     }
 }

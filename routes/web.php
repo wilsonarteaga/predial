@@ -145,6 +145,8 @@ Route::post('/get_propietario_by_identificacion', [PrediosController::class, 'ge
 Route::post('/get_predios_no_calculados', [PrediosController::class, 'get_predios_no_calculados']);
 Route::post('/ejecutar_calculo_batch', [PrediosController::class, 'ejecutar_calculo_batch']);
 Route::get('/export-cartera',[PrediosController::class,'exportCartera']);
+Route::get('/export-excel-exenciones/{fechainicial}/{fechafinal}',[PrediosController::class, 'exportExcelExenciones']);
+Route::get('/export-excel-prescripciones/{fechainicial}/{fechafinal}',[PrediosController::class, 'exportExcelPrescripciones']);
 
 //datos_basicos
 Route::post('/store/predios_datos_basicos', [PrediosController::class, 'store_predios_datos_basicos']);
