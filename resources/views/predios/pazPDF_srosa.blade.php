@@ -103,8 +103,8 @@
         table tr th.text-center, td.text-center { text-align: center; }
         table tr th.text-right, td.text-right { text-align: right; }
 
-        table.info-resumen tr th { font-size: 60%; border: 1px solid #000; padding: 1px; background-color: #f3efef; }
-		table.info-resumen tr td { font-size: 60%; border: 1px solid #000; padding: 1px; }
+        table.info-resumen tr th { font-size: 50%; border: 1px solid #000; padding: 1px; background-color: #f3efef; }
+		table.info-resumen tr td { font-size: 50%; border: 1px solid #000; padding: 1px; }
 
         table.info-validez tr th { font-size: 60%; border: 0px; padding: 1px; }
 		table.info-validez tr td { font-size: 60%; border: 0px; padding: 1px; }
@@ -121,7 +121,7 @@
             <table class="table-header">
                 <tr>
                     <td style="width: 20%; font-size: 60%; text-align: center;">
-                        <img style="margin-top: 20px; width: 50%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/'. $logo))) }}" alt="Logo" />
+                        <img style="margin-top: 20px; width: 40%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/'. $logo))) }}" alt="Logo" />
                     </td>
                     <td>
                         <p class="header">
@@ -144,16 +144,18 @@
             <table class="titles" style="width: 100%; margin-top: 0px;">
                 <tr>
                     <td style="width: 100%;">
-                        <h3 class="title">EL SUSCRITO SECRETARIO DE HACIENDA MUNICIPAL</h3>
+                        <h3 class="title">
+                            EL(LA) SUSCRITO(A) SECRETARIO(A) DE HACIENDA MUNICIPAL.
+                        </h3>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <h3 class="title" style="padding-top: 20px; padding-bottom: 20px;">CERTIFICA</h3>
+                        <h3 class="title" style="padding-top: 10px; padding-bottom: 10px;">CERTIFICA</h3>
                     </td>
                 </tr>
             </table>
-            <table class="info-encabezado" style="width: 100%; margin-top: 15px;">
+            <table class="info-encabezado" style="width: 100%; margin-top: 0px;">
                 <tr>
                     <th style="width: 10%;">Certificado No:</th>
                     <th style="width: 20%;">{{ $numero_certificado }}</th>
@@ -195,10 +197,10 @@
                     <td class="text-center">{{ $ultimo_anio_pagado->ultimo_anio }}</td>
                 </tr>
             </table>
-            <div class="info" style="padding-top: 25px; padding-bottom: 15px; width: 100%;">
+            <div class="info" style="padding-top: 15px; padding-bottom: 15px; width: 100%;">
                 El cual est&aacute; registrado con los siguientes propietarios:
             </div>
-            <table class="info-resumen" style="width: 100%; margin-top: 5px;">
+            <table class="info-resumen" style="width: 100%; margin-top: 0px;">
                 <tr>
                     <th class="text-left" style="width: 5%;">No.</th>
                     <th class="text-left" style="width: 10%;">C&eacute;dula / NIT</th>
@@ -212,16 +214,16 @@
                 </tr>
                 @endforeach
             </table>
-            <div class="info" style="padding-top: 25px; width: 100%;">
+            <div class="info" style="padding-top: 20px; width: 100%;">
                 El cual se encuentra a PAZ Y SALVO por concepto de impuesto predial.
             </div>
-            <div class="info" style="padding-top: 10px; width: 100%;">
+            <div class="info" style="padding-top: 5px; width: 100%;">
                 Expedido el {{ $fecha_expedicion }}
             </div>
-            <div class="info" style="padding-top: 10px; width: 100%;">
+            <div class="info" style="padding-top: 5px; width: 100%;">
                 Se expide con destino a: <b>{{ $destino }}</b>
             </div>
-            <table class="info-validez" style="width: 100%; margin-top: 50px;">
+            <table class="info-validez" style="width: 100%; margin-top: 20px;">
                 <tr>
                     <td style="width: 50%;">
                         V&aacute;lido hasta <b>{{ $fecha_validez }}</b>
@@ -238,7 +240,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding-top: 20px;" colspan="2">NO SE COBRA IMPUESTO POR VALORIZACI&Oacute;N.</td>
+                    <td style="padding-top: 00px;" colspan="2">NO SE COBRA IMPUESTO POR VALORIZACI&Oacute;N.</td>
                 </tr>
                 <tr>
                     <td class="text-small" colspan="2">P&aacute;gina 1 de 1</td>

@@ -2359,7 +2359,6 @@ class PrediosController extends Controller
         $dt = Carbon::now();
         $currentYear = $dt->year;
         $numero_certificado = 0;
-        $codigo_postal = '';
 
         $predio = DB::table('predios')->join('zonas', function ($join) {
             $join->on('predios.id_zona', '=', 'zonas.id');
@@ -2419,10 +2418,16 @@ class PrediosController extends Controller
                               ->where('parametros.nombre', 'nit')
                               ->first();
 
+        $parametro_codigo_postal = DB::table('parametros')
+                              ->select('parametros.valor')
+                              ->where('parametros.nombre', 'codigo_postal')
+                              ->first();
+
         $logo = $parametro_logo->valor;
         $alcaldia = $parametro_alcaldia->valor;
         $formato_paz = $parametro_formato_paz->valor;
         $nit = $parametro_nit->valor;
+        $codigo_postal = $parametro_codigo_postal != null ? $parametro_codigo_postal->valor : '';
 
         $data = [
             'title' => 'Paz y salvo',
