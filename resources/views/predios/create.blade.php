@@ -909,6 +909,17 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div id="div_anios_factura" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="display: none; padding-top: 10px;">
+                                        <span style="color: #0ca65c; font-weight: 400;">A&ntilde;os cubiertos en la misma factura</span>
+                                        <hr style="margin-top: 2px; margin-bottom: 0px;">
+                                        <div class="row" id="lista_anios_factura">
+                                        </div>
+                                        <hr style="margin-top: 0px; margin-bottom: 2px;">
+                                        <span class="blink_me" style="color: #0ca65c; font-weight: 400; font-size: 85%; margin-bottom: 2px;">
+                                            Por favor deseleccione los que a&ntilde;os NO desea que aparezcan en la factura actual.
+                                            {{-- <br /><u>Recuerde que no se permiten selecciones de a&ntilde;os no consecutivos.</u> --}}
+                                        </span>
+                                    </div>
                                     <div id="div_vigencias_impresion" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group" style="margin-bottom: 0px; margin-top: 10px;">
                                             <label for="tipo_factura_check" class="control-label" style="display: block;">¿Facturar vigencias especificas?</label>
@@ -929,9 +940,10 @@
                 </div>
             </div>
             <div class="modal-footer" style="text-align: center;">
-                <button id="generate_factura_definitiva" type="button" class="btn btn-info btn_pdf"> <i class="fa fa-file-text"></i> Ver definitiva</button>
-                <button id="generate_factura_temporal" type="button" class="btn btn-inverse btn_pdf"> <i class="fa fa-file-text-o"></i> Vista previa  </button>
-                <button type="button" class="btn btn-danger btn_pdf" style="margin-top: 5px;" data-dismiss="modal">Cancelar</button>
+                <button id="generate_factura_definitiva" type="button" class="btn btn-info btn_pdf btn_ver_factura"> <i class="fa fa-file-text"></i> Ver definitiva</button>
+                <button id="generate_factura_temporal" type="button" class="btn btn-inverse btn_pdf btn_ver_factura"> <i class="fa fa-file-text-o"></i> Vista previa  </button>
+                <button id="btn_modificar_anios" type="button" class="btn btn-success" style="display: none;"> <i class="fa fa-save"></i> Actualizar factura</button>
+                <button type="button" class="btn btn-danger btn_pdf" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>
@@ -988,7 +1000,7 @@
             <div class="modal-footer" style="text-align: center;">
                 <button id="generate_factura_definitiva" type="button" class="btn btn-info btn_pdf"> <i class="fa fa-file-text"></i> Ver definitiva</button>
                 <button id="generate_factura_temporal" type="button" class="btn btn-inverse btn_pdf"> <i class="fa fa-file-text-o"></i> Vista previa  </button>
-                <button type="button" class="btn btn-danger btn_pdf" style="margin-top: 5px;" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger btn_pdf" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>

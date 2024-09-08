@@ -2720,6 +2720,23 @@ class PrediosController extends Controller
         $array_anios = [];
 
         foreach ($anios_con_factura as $anio) {
+            $lista_anios = [];
+            $anios_factura = DB::table('predios_pagos')
+                ->where('id_predio', $data->{'id_predio'})
+                ->where('pagado', 0)
+                ->where('anulada', 0)
+                ->where('factura_pago', $anio->factura_pago)
+                ->select('predios_pagos.ultimo_anio')
+                ->orderBy('ultimo_anio', 'desc')
+                ->get();
+            if (count($anios_factura) > 1) {
+                foreach ($anios_factura as $anio_factura) {
+                    array_push($lista_anios, $anio_factura->ultimo_anio);
+                }
+                $anio->lista_anios = $lista_anios;
+            } else {
+                $anio->lista_anios = $lista_anios;
+            }
             array_push($anios, $anio);
         }
         foreach ($anios_sin_factura as $anio) {
@@ -3274,5 +3291,38 @@ class PrediosController extends Controller
 
     public function exportExcelPrescripciones(Request $request, $fechainicial, $fechafinal) {
         return Excel::download(new ExportPrescripciones($fechainicial, $fechafinal), 'prescripciones.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    public function update_anios_factura(Request $request) {
+        $data = json_decode($request->form);
+        DB::beginTransaction();
+        try {
+            $updated = PredioPago::where('id_predio', $data->{'id_predio'})
+                        ->where('factura_pago', $data->{'factura'})
+                        ->whereIn('ultimo_anio', explode(',', $data->{'lista_anios'}))
+                        ->where('pagado', 0)
+                        ->where('anulada', 0)
+                        ->update([
+                            'factura_pago' => null
+                        ]);
+            DB::commit();
+            $success = true;
+        }
+        catch(\Exception $e) {
+          DB::rollback();
+          $success = false;
+        }
+
+        $result = array("success"=>$success);
+        if($success) {
+            $result['message'] = 'Información de factura ' . $data->{'factura'} . ' actualizada satisfactoriamente.';
+        }
+        else {
+            $result['message'] = 'No se pudo actualizar la información de la factura.';
+        }
+
+        return response()->json([
+            'data' => $result,
+        ]);
     }
 }

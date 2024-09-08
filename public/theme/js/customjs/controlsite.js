@@ -16,6 +16,7 @@ var global_acuerdo_pago = null;
 var global_ultima_factura = null;
 var global_plusvalia = 0;
 var globalShowBtnAcuerdos = false;
+var global_facturado = null;
 var arr_autonumeric = ['porcentaje', 'porcentaje_ex', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
     'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_abono',
     'valor_facturado', 'avaluoigac', 'area', 'valor_paz', 'tasa_diaria', 'tasa_mensual', 'tasa_acuerdo','abono_inicial_acuerdo'
@@ -538,6 +539,8 @@ $(document).ready(function() {
                         } else {
                             $('#generate_factura_temporal').css('display', '');
                         }
+                    } else {
+                        $('#generate_factura_temporal').css('display', '');
                     }
                 });
             } else {
@@ -876,6 +879,16 @@ $(document).ready(function() {
         $('.btn_pdf').attr('disabled', true);
         if(checkFormPaz()) {
             startImpresion(global_url_print + '/' + $('#destino_paz').val() + '/' + $('#fecha_paz').val() + '/' + $('#valor_paz').val(), 'Iniciando generación de documento de paz y salvo. Espere un momento por favor.', 'warning', 'modal-impresion-paz');
+        }
+    });
+
+    $('#btn_modificar_anios').off('click').on('click', function() {
+        var uncheckedValues = [];
+        $('.anio_factura:not(:checked)').each(function(i, el) {
+            uncheckedValues.push($(el).val()); // Push the value of each unchecked checkbox into the array
+        });
+        if (uncheckedValues.length > 0){
+            saveAniosFactura(uncheckedValues);
         }
     });
 
@@ -1241,6 +1254,10 @@ function downloadFacturaRowProcesar(btn) {
             $('#ultimo_anio_facturar').off('change');
             $('#ultimo_anio_facturar').val('');
             $('#generate_factura_temporal').css('display', '');
+            $('#div_anios_factura').css('display', 'none');
+            $('#lista_anios_factura').empty();
+            $('#btn_modificar_anios').css('display', 'none');
+            $('#div_fecha_max_pago').css('display', '');
             setTimeout(function() {
                 getPredio(id_predio, false);
             }, 2000);
@@ -1252,16 +1269,57 @@ function downloadFacturaRowProcesar(btn) {
                 $('#fecha_max_pago').datepicker('clearDates');
             }
         });
+
         $('#modal-impresion-factura').off('shown.bs.modal').on('shown.bs.modal', function() {
             $('[data-toggle="tooltip"]').tooltip();
             $('#ultimo_anio_facturar').off('change').on('change', function() {
+                $('#div_anios_factura').css('display', 'none');
+                $('#lista_anios_factura').empty();
+                $('#btn_modificar_anios').css('display', 'none');
+                $('#div_fecha_max_pago').css('display', '');
                 var anio = $(this).val();
-                var global_anio = global_anios.find(el => parseInt(el.ultimo_anio) === parseInt(anio));
-                if (global_anio && global_anio.factura_pago !== null) {
-                    $('#generate_factura_temporal').css('display', 'none');
-                    alert_anio_facturado(global_anio.factura_pago, false);
+                if (anio.length > 0) {
+                    var global_anio = global_anios.find(el => parseInt(el.ultimo_anio) === parseInt(anio));
+                    if (global_anio && global_anio.factura_pago !== null) {
+                        global_facturado = global_anio;
+                        $('#generate_factura_temporal').css('display', 'none');
+                        alert_anio_facturado(global_anio.factura_pago, false);
+                        var lista = $('#ultimo_anio_facturar').find('option[value="'+ anio +'"]').attr('lista').split(',');
+                        if (lista.length > 0 && lista[0] !== '') {
+                            $('#div_anios_factura').fadeIn();
+                            $.each($('#ultimo_anio_facturar').find('option[value="'+ anio +'"]').attr('lista').split(','), function(i, el) {
+                                var html_anio = $('<div id="div_anio_factura_' + el + '" class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' +
+                                    '<div class="form-group" style="margin: 0px;">' +
+                                    ' <label for="anio_factura" class="control-label" style="display: block; margin: 0px;">' +
+                                    '  <input class="anio_factura" type="checkbox" id="anio_factura_'+ el +'" name="anio_factura_'+ el +'" value="' + el + '" checked="checked">&nbsp;' + el +
+                                    ' </label>' +
+                                    '</div>' +
+                                '</div>');
+                                $('#lista_anios_factura').append(html_anio);
+                            });
+
+                            var html_anio = $('<div id="div_anio_factura_todos" class="col-lg-8 col-md-8 col-sm-12 col-xs-12">' +
+                                '<div class="form-group" style="margin: 0px;">' +
+                                ' <label for="anio_factura_todos" class="control-label" style="display: block; margin: 0px;">' +
+                                '  <input class="anio_factura_todos" type="checkbox" id="anio_factura_todos" name="anio_factura_todos" value="ALL" checked="checked">&nbsp;<span id="span_marcar_desmarcar">Deseleccionar</span> todos' +
+                                ' </label>' +
+                                '</div>' +
+                            '</div>');
+                            $('#lista_anios_factura').append(html_anio);
+
+                            $('#anio_factura_todos').off('change').on('change', function(e) {
+                                checkUncheckAnios(e, global_anio);
+                            });
+
+                            $('.anio_factura').off('change').on('change', function(e) {
+                                checkAnio(e, global_anio);
+                            });
+                        }
+                    } else {
+                        $('#generate_factura_temporal').css('display', '');
+                    }
                 } else {
-                    $('#generate_factura_temporal').css('display', '');
+                    $('.btn_ver_factura').fadeIn('fast');
                 }
             });
         });
@@ -1273,6 +1331,99 @@ function downloadFacturaRowProcesar(btn) {
         $(btn).attr('disabled', false);
         $('[data-toggle="tooltip"]').tooltip();
     }
+}
+
+function checkAnio(e, global_anio) {
+    var control = $(e.target);
+    var checkedValues = [];
+    var uncheckedValues = [];
+    $('.anio_factura:checked').each(function() {
+        checkedValues.push(Number($(control).val())); // Push the value of each checked checkbox into the array
+    });
+
+    var hasMissing = false; // hasMissingValue(checkedValues) || !checkedValues.includes(global_anio_actual);
+
+    $('.anio_factura:not(:checked)').each(function() {
+        uncheckedValues.push($(control).val()); // Push the value of each unchecked checkbox into the array
+    });
+
+    if (checkedValues.length === 0) {
+        $('#span_marcar_desmarcar').html('Seleccionar');
+
+    } else {
+        $('#span_marcar_desmarcar').html('Deseleccionar');
+    }
+
+    if (uncheckedValues.length === 0) {
+        $('#span_marcar_desmarcar').html('Deseleccionar');
+        $('#anio_factura_todos').prop('checked', true);
+        if (global_anio && global_anio.factura_pago !== null) {
+            $('#generate_factura_definitiva').css('display', '');
+        } else {
+            $('.btn_ver_factura').css('display', '');
+        }
+        $('#div_fecha_max_pago').css('display', '');
+    } else {
+        $('#span_marcar_desmarcar').html('Seleccionar');
+        $('#anio_factura_todos').prop('checked', false);
+
+        if (global_anio && global_anio.factura_pago !== null) {
+            $('#generate_factura_definitiva').css('display', 'none');
+        } else {
+            $('.btn_ver_factura').css('display', 'none');
+        }
+        $('#div_fecha_max_pago').css('display', 'none');
+    }
+
+    if (!hasMissing && uncheckedValues.length > 0 && checkedValues.length > 0) {
+        $('#btn_modificar_anios').css('display', '');
+    } else {
+        $('#btn_modificar_anios').css('display', 'none');
+    }
+}
+
+function checkUncheckAnios(e, global_anio) {
+    var control = $(e.target);
+    var checked = $(control).is(':checked');
+    $('.anio_factura').off();
+    $('.anio_factura').prop('checked', checked);
+    if (checked) {
+        $('#span_marcar_desmarcar').html('Deseleccionar');
+        if (global_anio && global_anio.factura_pago !== null) {
+            $('#generate_factura_definitiva').css('display', '');
+        } else {
+            $('.btn_ver_factura').css('display', '');
+        }
+        $('#div_fecha_max_pago').css('display', '');
+        $('#btn_modificar_anios').css('display', 'none');
+
+    } else {
+        $('#span_marcar_desmarcar').html('Seleccionar');
+        if (global_anio && global_anio.factura_pago !== null) {
+            $('#generate_factura_definitiva').css('display', 'none');
+        } else {
+            $('.btn_ver_factura').css('display', 'none');
+        }
+        $('#div_fecha_max_pago').css('display', 'none');
+    }
+
+    $('.anio_factura').off('change').on('change', function(e) {
+        checkAnio(e, global_anio);
+    });
+}
+
+function hasMissingValue(numbers) {
+    // Sort the array in ascending order
+    const sorted = numbers.sort((a, b) => a - b);
+
+    // Check for missing values
+    for (let i = 1; i < sorted.length; i++) {
+      if (sorted[i] - sorted[i-1] > 1) {
+        return true; // Missing value found
+      }
+    }
+
+    return false; // No missing values
 }
 
 function setDownloadPazRow() {
@@ -1521,7 +1672,7 @@ function getPredio(id_predio, showBlock) {
                 $.each(anios, function(i, el) {
                     var anio = global_anios.find(a => a.ultimo_anio === el.ultimo_anio);
                     var factura = anio.factura_pago || '';
-                    $('#ultimo_anio_facturar').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + (factura.length > 0 ? `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Factura No. ${factura}` : '') + '</option>');
+                    $('#ultimo_anio_facturar').append('<option value="' + el.ultimo_anio + '" lista="' + (anio?.lista_anios ? anio.lista_anios.toString() : '') + '">' + el.ultimo_anio + (factura.length > 0 ? `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Factura No. ${factura}` : '') + '</option>');
                     $('#anio_inicial_acuerdo').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
                     $('#anio_final_acuerdo').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
                 });
@@ -2455,5 +2606,63 @@ function alert_anio_facturado(factura_numero, multiple) {
         // cancelButtonText: "No",
         closeOnConfirm: true,
         // closeOnCancel: true
+    });
+}
+
+function saveAniosFactura(uncheckedAnios) {
+    var msg = `¿Está seguro/a que desea modificar los años asociados a la factura ${global_facturado.factura_pago}?`;
+    swal({
+        title: "Atención",
+        text: msg,
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Si",
+        cancelButtonText: "No",
+        closeOnConfirm: true,
+        closeOnCancel: true
+    }, function(confirm) {
+        if (confirm) {
+            var jsonObj = {};
+            jsonObj.id_predio = Number(global_json_predio.id_predio);
+            jsonObj.lista_anios = uncheckedAnios.toString();
+            jsonObj.factura = global_facturado.factura_pago;
+            $.ajax({
+                type: 'POST',
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                dataType: 'json',
+                url: '/update_anios_factura',
+                data: {
+                    form: JSON.stringify(jsonObj)
+                },
+                success: function(response) {
+                    if (response.data !== undefined) {
+                        swal({
+                            title: "Atención",
+                            text: response.data.message,
+                            type: "warning",
+                            // confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "Aceptar",
+                            closeOnConfirm: true
+                        }, function(isConfirm) {
+                            if (isConfirm) {
+                                if (response.data.success) {
+                                    $('#generate_factura_definitiva').css('display', '');
+                                    $('#generate_factura_temporal').css('display', '');
+                                    $('#div_anios_factura').css('display', 'none');
+                                    $('#lista_anios_factura').empty();
+                                    $('#btn_modificar_anios').css('display', 'none');
+                                    getPredio($('#id_predio.select2').val(), false);
+                                    $('#modal-impresion-factura').modal('hide');
+                                }
+                            }
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+        }
     });
 }
