@@ -2800,7 +2800,7 @@ class PrediosController extends Controller
                     select a.id
                     from (
                         select
-                            TOP 5
+                            -- TOP 5
                             pp.id
                         from predios_pagos pp
                         where
