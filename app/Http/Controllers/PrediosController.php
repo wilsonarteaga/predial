@@ -2807,8 +2807,7 @@ class PrediosController extends Controller
                             pp.pagado = 0 and
                             pp.anulada = 0 and
                             pp.prescrito = 0 and
-                            pp.exencion = 0
-                        order by pp.ultimo_anio desc) a) and
+                            pp.exencion = 0) a) and
                     pp.id_predio = '. $data->{'id_predio'} .' and
                     pp.pagado = 0 and
                     pp.anulada = 0 and
