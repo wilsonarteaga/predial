@@ -2796,18 +2796,7 @@ class PrediosController extends Controller
                     pp.ultimo_anio
                 from
                     predios_pagos pp
-                where pp.id not in (
-                    select a.id
-                    from (
-                        select
-                            pp.id
-                        from predios_pagos pp
-                        where
-                            pp.id_predio = '. $data->{'id_predio'} .' and
-                            pp.pagado = 0 and
-                            pp.anulada = 0 and
-                            pp.prescrito = 0 and
-                            pp.exencion = 0) a) and
+                where
                     pp.id_predio = '. $data->{'id_predio'} .' and
                     pp.pagado = 0 and
                     pp.anulada = 0 and
