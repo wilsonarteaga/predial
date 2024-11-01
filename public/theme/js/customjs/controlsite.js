@@ -1264,7 +1264,15 @@ function downloadFacturaRowProcesar(btn) {
         });
         $('#modal-impresion-factura').off('show.bs.modal').on('show.bs.modal', function() {
             if (moment($('#fecha_actual').val()) > moment($('#max_fecha_descuentos').val())) {
-                $('#fecha_max_pago').datepicker('setDate', $('#fecha_actual').val());
+                var today = new Date();
+                var year = today.toLocaleString("default", { year: "numeric" });
+                var month = today.toLocaleString("default", { month: "2-digit" });
+                var day = today.toLocaleString("default", { day: "2-digit" });
+                // Generate yyyy-mm-dd date string
+                var formattedDate = year + "-" + month + "-" + day;
+
+                $('#fecha_max_pago').datepicker('setDate', formattedDate);
+                // $('#fecha_max_pago').datepicker('setDate', $('#fecha_actual').val());
             } else {
                 $('#fecha_max_pago').datepicker('clearDates');
             }
