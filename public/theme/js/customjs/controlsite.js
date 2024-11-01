@@ -1272,7 +1272,7 @@ function downloadFacturaRowProcesar(btn) {
                 console.log('📌 - file: controlsite.js:1272 - $ - month:', month);
                 var day = today.toLocaleString("default", { day: "2-digit" });
                 console.log('📌 - file: controlsite.js:1274 - $ - day:', day);
-                if (month === 11) {
+                if (month === '11') {
                     if (day === '01') day = '1';
                 }
                 // Generate yyyy-mm-dd date string
