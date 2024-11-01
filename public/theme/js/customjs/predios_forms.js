@@ -20,8 +20,26 @@ $(document).ready(function() {
     if (moment($('#fecha_actual').val()) > moment($('#max_fecha_descuentos').val())) {
         $('#div_fecha_max_pago').fadeIn(function() {
             $('#fecha_max_pago').datepicker('setDaysOfWeekDisabled', '0,6');
-            $('#fecha_max_pago').datepicker('setStartDate', $('#fecha_actual').val());
-            $('#fecha_max_pago').datepicker('setDate', $('#fecha_actual').val());
+
+            var today = new Date();
+            console.log('📌 - file: predios_forms.js:1268 - $ - today:', today);
+            var year = today.toLocaleString("default", { year: "numeric" });
+            console.log('📌 - file: predios_forms.js:1270 - $ - year:', year);
+            var month = today.toLocaleString("default", { month: "2-digit" });
+            console.log('📌 - file: predios_forms.js:1272 - $ - month:', month);
+            var day = today.toLocaleString("default", { day: "2-digit" });
+            console.log('📌 - file: predios_forms.js:1274 - $ - day:', day);
+            if (month === 11) {
+                if (day === '01') day = '1';
+            }
+            // Generate yyyy-mm-dd date string
+            var formattedDate = year + "-" + month + "-" + day;
+
+            $('#fecha_max_pago').datepicker('setStartDate', formattedDate);
+            $('#fecha_max_pago').datepicker('setDate', formattedDate);
+
+            // $('#fecha_max_pago').datepicker('setStartDate', $('#fecha_actual').val());
+            // $('#fecha_max_pago').datepicker('setDate', $('#fecha_actual').val());
         });
     } else {
         $('#div_fecha_max_pago').fadeOut();
