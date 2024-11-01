@@ -1265,9 +1265,16 @@ function downloadFacturaRowProcesar(btn) {
         $('#modal-impresion-factura').off('show.bs.modal').on('show.bs.modal', function() {
             if (moment($('#fecha_actual').val()) > moment($('#max_fecha_descuentos').val())) {
                 var today = new Date();
+                console.log('📌 - file: controlsite.js:1268 - $ - today:', today);
                 var year = today.toLocaleString("default", { year: "numeric" });
+                console.log('📌 - file: controlsite.js:1270 - $ - year:', year);
                 var month = today.toLocaleString("default", { month: "2-digit" });
+                console.log('📌 - file: controlsite.js:1272 - $ - month:', month);
                 var day = today.toLocaleString("default", { day: "2-digit" });
+                console.log('📌 - file: controlsite.js:1274 - $ - day:', day);
+                if (month === 11) {
+                    if (day === '01') day = '1';
+                }
                 // Generate yyyy-mm-dd date string
                 var formattedDate = year + "-" + month + "-" + day;
 
