@@ -19,7 +19,7 @@ var globalShowBtnAcuerdos = false;
 var global_facturado = null;
 var arr_autonumeric = ['porcentaje', 'porcentaje_ex', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
     'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_abono',
-    'valor_facturado', 'avaluoigac', 'area', 'valor_paz', 'tasa_diaria', 'tasa_mensual', 'tasa_acuerdo','abono_inicial_acuerdo'
+    'valor_facturado', 'avaluoigac', 'area', 'valor_paz', 'tasa_diaria', 'tasa_mensual', 'tasa_acuerdo','abono_inicial_acuerdo', 'tarifa_anterior', 'tarifa_nueva'
 ];
 var ROOT_URL = window.location.protocol + "//" + window.location.host;
 $(document).ready(function() {
@@ -127,9 +127,10 @@ $(document).ready(function() {
                         if($('#myTable').length > 0) {
                             $('#myTable').find('tbody').empty();
                         }
-                    } else if($('#id_predio.select2').hasClass('prescripciones_exenciones')) {
+                    } else if($('#id_predio.select2').hasClass('basico')) {
                         $('#span_prescribe').empty();
                         $('#span_exencion').empty();
+                        $('#span_cambio_tarifa').empty();
                     }
                 }
             }
@@ -179,9 +180,10 @@ $(document).ready(function() {
 
                 // Limpiar la ultima busqueda realizada en predios
                 if($('#id_predio.select2.json').length > 0) {
-                    if($('#id_predio.select2').hasClass('prescripciones_exenciones')) {
+                    if($('#id_predio.select2').hasClass('basico')) {
                         $('#span_prescribe').empty();
                         $('#span_exencion').empty();
+                        $('#span_cambio_tarifa').empty();
                     }
                 }
             }
@@ -199,6 +201,11 @@ $(document).ready(function() {
     if ($('#btn_save_create').length > 0) {
         $('#btn_save_create').off('click').on('click', function() {
             if($('#create-form').valid()) {
+                if($('#tarifa_nueva').length > 0) {
+                    if (AutoNumeric.getNumber('#tarifa_nueva') === 0) {
+                        return;
+                    }
+                }
                 checkSaveResolucion($('#create-form'), $('#create-form').attr('desc-to-resolucion-modal'));
             }
         });
@@ -325,6 +332,15 @@ $(document).ready(function() {
                     minimumValue: "0",
                     modifyValueOnWheel: false,
                     suffixText: "%",
+                    unformatOnSubmit: true
+                });
+            } else if ($('#' + el).hasClass('cien')) {
+                new AutoNumeric('#' + el, {
+                    emptyInputBehavior: "zero",
+                    maximumValue: "100",
+                    minimumValue: "0",
+                    modifyValueOnWheel: false,
+                    // suffixText: "%",
                     unformatOnSubmit: true
                 });
             } else if ($('#' + el).hasClass('tasa')) {
@@ -722,8 +738,8 @@ $(document).ready(function() {
                 if($('#id_predio.select2').hasClass('json')) {
                     if($('#id_predio.select2').hasClass('pagos')) {
                         getPredio($('#id_predio.select2').val(), true);
-                    } else if($('#id_predio.select2').hasClass('prescripciones_exenciones')) {
-                        getPredioPrescripcionExencion($('#id_predio.select2').val(), true, $('#prescribe_hasta').length > 0);
+                    } else if($('#id_predio.select2').hasClass('basico')) {
+                        getPredioPrescripcionExencion($('#id_predio.select2').val(), true, $('#interfaz').val());
                     }
 
                     if ($('#id_predio.select2').find('option').length > 1) {
@@ -736,7 +752,7 @@ $(document).ready(function() {
         $('#id_predio.select2').on('select2:clear', function (e) {
             global_json_predio = null;
             $('#div_edit_predio').fadeOut();
-            if ($('#id_predio.select2').closest('form').length > 0) {
+            if ($('#id_predio.select2').closest('form').length > 0 && !$('#id_predio.select2').hasClass('json')) {
                 if ($('#id_predio.select2').closest('form').attr('id') === 'create-form') {
                     $('#create-form').validate().element($('#id_predio.select2'));
                 }
@@ -1738,7 +1754,7 @@ function getPredio(id_predio, showBlock) {
     });
 }
 
-function getPredioPrescripcionExencion(id_predio, showBlock, is_prescripciones_form) {
+function getPredioPrescripcionExencion(id_predio, showBlock, interfaz) {
     if (showBlock) {
         $.blockUI({
             message: "Ejecutando b&uacute;squeda de predio. Espere un momento.",
@@ -1773,89 +1789,95 @@ function getPredioPrescripcionExencion(id_predio, showBlock, is_prescripciones_f
             form: JSON.stringify(jsonObj)
         },
         success: function(response) {
-            if ($('#create-form').length) {
-                var validatorCreate = $("#create-form").validate();
-                validatorCreate.resetForm();
-                $.each($('.has-success'), function(i, el) {
-                    $(el).removeClass('has-success');
-                });
-                $.each($('.has-error'), function(i, el) {
-                    $(el).removeClass('has-error');
-                });
+            if (interfaz !== 'cambio_tarifa') {
+                if ($('#create-form').length) {
+                    var validatorCreate = $("#create-form").validate();
+                    validatorCreate.resetForm();
+                    $.each($('.has-success'), function(i, el) {
+                        $(el).removeClass('has-success');
+                    });
+                    $.each($('.has-error'), function(i, el) {
+                        $(el).removeClass('has-error');
+                    });
+                }
             }
             if (Object.keys(response.predio).length > 0) {
-                if (response.anios_prescripcion.length > 0 || response.anios_exencion.length > 0) {
-                    if (is_prescripciones_form) {
-                        global_anios_prescripcion_exencion = response.anios_prescripcion.map(el => el.ultimo_anio);
+                if (interfaz !== 'cambio_tarifa') {
+                    if (response.anios_prescripcion.length > 0 || response.anios_exencion.length > 0) {
+                        if (interfaz === 'prescribe') {
+                            global_anios_prescripcion_exencion = response.anios_prescripcion.map(el => el.ultimo_anio);
+                        } else {
+                            global_anios_prescripcion_exencion = response.anios_exencion.map(el => el.ultimo_anio);
+                        }
                     } else {
-                        global_anios_prescripcion_exencion = response.anios_exencion.map(el => el.ultimo_anio);
+                        global_anios_prescripcion_exencion = [];
                     }
-                } else {
-                    global_anios_prescripcion_exencion = [];
-                }
 
-                if (global_anios_prescripcion_exencion.length > 0) {
-                    if ($('#prescribe_hasta').length || $('#exencion_hasta').length) {
-                        var control = $('#prescribe_hasta').length ? 'prescribe' : 'exencion';
-                        var control_label = $('#prescribe_hasta').length ? 'prescripci&oacute;n' : 'exenci&oacute;n';
-                        $('#' + control + '_desde').empty();
-                        $('#' + control + '_hasta').empty();
-                        $.each(global_anios_prescripcion_exencion, function(i, el) {
-                            $('#' + control + '_desde').append('<option value="' + el + '">' + el + '</option>');
-                            $('#' + control + '_hasta').append('<option value="' + el + '">' + el + '</option>');
-                        });
-                        $('#' + control + '_desde').selectpicker('refresh');
-                        $('#' + control + '_hasta').selectpicker('refresh');
-                        // if (is_prescripciones_form) {
-                        //     $('#' + control + '_desde').val(global_anios_prescripcion_exencion[0]);
-                        // }
-                        $('#' + control + '_hasta').focus();
-                        $('#btn_save_create').fadeIn('fast');
-                        $('#span_' + control).html('');
+                    if (global_anios_prescripcion_exencion.length > 0) {
+                        if ($('#prescribe_hasta').length || $('#exencion_hasta').length) {
+                            var control = interfaz;
+                            var control_label = interfaz === 'prescribe' ? 'prescripci&oacute;n' : 'exenci&oacute;n';
+                            $('#' + control + '_desde').empty();
+                            $('#' + control + '_hasta').empty();
+                            $.each(global_anios_prescripcion_exencion, function(i, el) {
+                                $('#' + control + '_desde').append('<option value="' + el + '">' + el + '</option>');
+                                $('#' + control + '_hasta').append('<option value="' + el + '">' + el + '</option>');
+                            });
+                            $('#' + control + '_desde').selectpicker('refresh');
+                            $('#' + control + '_hasta').selectpicker('refresh');
+                            // if (interfaz === 'prescribe') {
+                            //     $('#' + control + '_desde').val(global_anios_prescripcion_exencion[0]);
+                            // }
+                            $('#' + control + '_hasta').focus();
+                            $('#btn_save_create').fadeIn('fast');
+                            $('#span_' + control).html('');
 
-                        $('#' + control + '_desde').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
-                            $('#' + control + '_hasta').find('option').css('display', '');
-                            $.each($('#' + control + '_hasta').find('option'), function(i, el) {
-                                if ($(el).val().length > 0 && Number($(el).val()) < Number($('#' + control + '_desde').val())) {
-                                    $(el).css('display', 'none');
+                            $('#' + control + '_desde').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+                                $('#' + control + '_hasta').find('option').css('display', '');
+                                $.each($('#' + control + '_hasta').find('option'), function(i, el) {
+                                    if ($(el).val().length > 0 && Number($(el).val()) < Number($('#' + control + '_desde').val())) {
+                                        $(el).css('display', 'none');
+                                    }
+                                });
+                                $('#' + control + '_hasta').val('');
+                                $('#' + control + '_hasta').selectpicker('refresh');
+                            });
+
+                            $('#' + control + '_hasta').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+                                if (interfaz !== 'prescribe') {
+                                //     $('#span_' + control).html(`A&ntilde;os a tener en cuenta en la ${control_label}: <b>${Number($('#' + control + '_hasta').selectpicker('val')) - Number($('#' + control + '_desde').val()) + 1}</b>`);
+                                // } else {
+                                    // if ($('#' + control + '_hasta').find('option').length - 1 === 1) {
+                                    $('#span_' + control).html(`A&ntilde;o a tener en cuenta en la ${control_label}: <b>${$('#' + control + '_hasta').selectpicker('val')}</b>`);
+                                    $('#btn_save_create').fadeIn('fast');
+                                    // } else {
+                                    //     $('#btn_save_create').fadeOut('fast');
+                                    //     $('#span_' + control).html(`<b style="color: tomato;">El predio seleccionado tiene deuda vigente. Operación de exenci&oacute;n no permitida.</b>`);
+                                    // }
+                                }
+                                if ($('#create-form').length) {
+                                    // var validatorCreate = $("#create-form").validate();
+                                    // validatorCreate.resetForm();
+                                    $.each($('.has-success'), function(i, el) {
+                                        $(el).removeClass('has-success');
+                                    });
+                                    $.each($('.has-error'), function(i, el) {
+                                        $(el).removeClass('has-error');
+                                    });
                                 }
                             });
-                            $('#' + control + '_hasta').val('');
-                            $('#' + control + '_hasta').selectpicker('refresh');
-                        });
-
-                        $('#' + control + '_hasta').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
-                            if (!is_prescripciones_form) {
-                            //     $('#span_' + control).html(`A&ntilde;os a tener en cuenta en la ${control_label}: <b>${Number($('#' + control + '_hasta').selectpicker('val')) - Number($('#' + control + '_desde').val()) + 1}</b>`);
-                            // } else {
-                                // if ($('#' + control + '_hasta').find('option').length - 1 === 1) {
-                                $('#span_' + control).html(`A&ntilde;o a tener en cuenta en la ${control_label}: <b>${$('#' + control + '_hasta').selectpicker('val')}</b>`);
-                                $('#btn_save_create').fadeIn('fast');
-                                // } else {
-                                //     $('#btn_save_create').fadeOut('fast');
-                                //     $('#span_' + control).html(`<b style="color: tomato;">El predio seleccionado tiene deuda vigente. Operación de exenci&oacute;n no permitida.</b>`);
-                                // }
-                            }
-                            if ($('#create-form').length) {
-                                // var validatorCreate = $("#create-form").validate();
-                                // validatorCreate.resetForm();
-                                $.each($('.has-success'), function(i, el) {
-                                    $(el).removeClass('has-success');
-                                });
-                                $.each($('.has-error'), function(i, el) {
-                                    $(el).removeClass('has-error');
-                                });
-                            }
-                        });
+                        }
+                    } else {
+                        $('#btn_save_create').fadeIn('fast');
+                        var control = interfaz;
+                        $('#span_' + control).html('');
+                        $('#' + control + '_desde').empty();
+                        $('#' + control + '_hasta').empty();
+                        $('#' + control + '_desde').selectpicker('refresh');
+                        $('#' + control + '_hasta').selectpicker('refresh');
                     }
-                } else {
-                    $('#btn_save_create').fadeIn('fast');
-                    var control = is_prescripciones_form ? 'prescribe' : 'exencion';
-                    $('#span_' + control).html('');
-                    $('#' + control + '_desde').empty();
-                    $('#' + control + '_hasta').empty();
-                    $('#' + control + '_desde').selectpicker('refresh');
-                    $('#' + control + '_hasta').selectpicker('refresh');
+                } else if (interfaz === 'cambio_tarifa') {
+                    AutoNumeric.set('#tarifa_anterior', Number(response.predio.tarifa_actual));
                 }
 
                 $.unblockUI();

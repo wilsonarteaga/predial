@@ -20,6 +20,7 @@ use App\Http\Controllers\TiposPredioController;
 use App\Http\Controllers\ResolucionesIgacController;
 use App\Http\Controllers\PrediosExencionesController;
 use App\Http\Controllers\PrediosPrescripcionesController;
+use App\Http\Controllers\PrediosTarifaController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\DownloadController;
 
@@ -185,6 +186,11 @@ Route::get('generate_prescripciones_pdf/{fecha_minima}/{fecha_maxima}', [Predios
 
 // Route::post('update_prescripciones', [PrediosPrescripcionesController::class, 'update'])->name('prediosprescripciones.update_prescripciones')->middleware('checkdb');
 // Route::post('delete_prescripciones', [PrediosPrescripcionesController::class, 'destroy'])->name('prediosprescripciones.delete_prescripciones')->middleware('checkdb');
+
+//PrediosTarifaController
+Route::get('registro_cambio_tarifa/{id}', [PrediosTarifaController::class, 'create'])->middleware('checkdb');
+Route::get('registro_cambio_tarifa', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
+Route::post('create_cambio_tarifa', [PrediosTarifaController::class, 'store'])->name('predioscambiotarifa.create_cambio_tarifa')->middleware('checkdb');
 
 //TarifasPredialController
 Route::get('registro_tarifaspredial/{id}', [TarifasPredialController::class, 'create'])->middleware('checkdb');

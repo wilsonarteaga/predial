@@ -22,6 +22,7 @@
 <input type="hidden" id="tab" value="{{ $tab_current }}">
 @endif
 <input type="hidden" id="opcion" value='@json($opcion)'>
+<input type="hidden" id="interfaz" value='prescribe'>
 <div class="container-fluid">
     <div class="row bg-title">
         <div class="col-lg-5 col-md-8 col-sm-12 col-xs-12">
@@ -99,7 +100,7 @@
                                                             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Buscar predio:</label>
-                                                                    <select id="id_predio" class="form-control select2 json prescripciones_exenciones res-validate" name="id_predio" data-placeholder="C&oacute;digo, propietario o direcci&oacute;n..." style="width: 100%">
+                                                                    <select id="id_predio" class="form-control select2 json basico res-validate" name="id_predio" data-placeholder="C&oacute;digo, propietario o direcci&oacute;n..." style="width: 100%">
                                                                     </select>
                                                                     <span class="text-danger">@error('id_predio') {{ $message }} @enderror</span>
                                                                 </div>

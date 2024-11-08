@@ -135,7 +135,7 @@ span.span_predio {
     color: #a3a3a3;
 }
 
-#porcentaje_ex-error {
+#porcentaje_ex-error, #tarifa_nueva-error {
     position: absolute;
     top: 38px;
 }

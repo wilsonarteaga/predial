@@ -5,8 +5,8 @@
 @push('scripts')
     <!-- Laravel Javascript Validation -->
     <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
-    {!! JsValidator::formRequest('App\Http\Requests\PrediosExencionesCreateFormRequest', '#create-form'); !!}
-    {!! JsValidator::formRequest('App\Http\Requests\PrediosExencionesUpdateFormRequest', '#update-form'); !!}
+    {!! JsValidator::formRequest('App\Http\Requests\PrediosTarifaCreateFormRequest', '#create-form'); !!}
+    {!! JsValidator::formRequest('App\Http\Requests\PrediosTarifaUpdateFormRequest', '#update-form'); !!}
     <script src="{!! asset('theme/js/accounting.min.js') !!}"></script>
     <script src="{!! asset('theme/js/autonumeric.min.js') !!}"></script>
     <script src="{!! asset('theme/js/jquery.form.js') !!}"></script>
@@ -22,7 +22,7 @@
 <input type="hidden" id="tab" value="{{ $tab_current }}">
 @endif
 <input type="hidden" id="opcion" value='@json($opcion)'>
-<input type="hidden" id="interfaz" value='exencion'>
+<input type="hidden" id="interfaz" value='cambio_tarifa'>
 <div class="container-fluid">
     <div class="row bg-title">
         <div class="col-lg-5 col-md-8 col-sm-12 col-xs-12">
@@ -46,8 +46,8 @@
                     <div class="sttabs tabs-style-bar">
                         <nav>
                             <ul>
-                                <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-check-box"><span>Nueva exenci&oacute;n</span></a></li>
-                                <li id="li-section-bar-2" class=""><a href="#section-bar-2" class="sticon icon-list"><span>Listado de exenciones</span></a></li>
+                                <li id="li-section-bar-1" class="tab-current"><a href="#section-bar-1" class="sticon ti-check-box"><span>Nuevo cambio de tarifa</span></a></li>
+                                <li id="li-section-bar-2" class=""><a href="#section-bar-2" class="sticon icon-list"><span>Listado de cambios de tarifa</span></a></li>
                                 <!-- <li class=""><a href="#section-bar-3" class="sticon ti-stats-up"><span>Analytics</span></a></li>
                                 <li class=""><a href="#section-bar-4" class="sticon ti-upload"><span>Upload</span></a></li>
                                 <li class=""><a href="#section-bar-5" class="sticon ti-settings"><span>Settings</span></a></li> -->
@@ -56,7 +56,7 @@
                         <div class="content-wrap">
                             <section id="section-bar-1" class="content-current">
                                 <div class="panel panel-inverse">
-                                    <div class="panel-heading"><i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Informaci&oacute;n de la exenci&oacute;n de vigencia</div>
+                                    <div class="panel-heading"><i  class="{{ $opcion->icono }}"></i>&nbsp;&nbsp;Informaci&oacute;n del cambio de tarifa</div>
                                     <div class="panel-wrapper collapse in" aria-expanded="true">
                                         <div class="panel-body">
                                             @if($opcion->resolucion_crea == 1)
@@ -79,11 +79,11 @@
                                             <input class="resolucion_validate_form_level-create-form" type="hidden" value="create-form" />
                                             @endif
                                             <div class="form-body">
-                                                <!-- <h3 class="box-title">Informaci&oacute;n de la exenci&oacute;n</h3> -->
+                                                <!-- <h3 class="box-title">Informaci&oacute;n del cambio de tarifa</h3> -->
                                                 <!-- <hr> -->
                                                 <div class="row">
                                                     <div class="col-lg-7 col-md-7 col-sm-6 col-xs-12">
-                                                        <form action="{{ route('prediosexenciones.create_exenciones') }}" method="post" id="create-form" desc-to-resolucion-modal="exenci&oacute;n de vigencias" class="create-form">
+                                                        <form action="{{ route('predioscambiotarifa.create_cambio_tarifa') }}" method="post" id="create-form" desc-to-resolucion-modal="cambio de tarifa" class="create-form">
                                                             @csrf
                                                             <div class="result">
                                                                 @if(Session::get('success'))
@@ -108,22 +108,23 @@
                                                             </div>
                                                             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                                 <div class="form-group">
-                                                                    <label for="porcentaje" class="control-label">Porcentaje:</label>
+                                                                    <label for="tarifa_anterior" class="control-label">Tarifa anterior:</label>
                                                                     <div class="input-group">
-                                                                        <input type="text" id="porcentaje_ex" name="porcentaje_ex" class="form-control res-validate" autocomplete="off" placeholder="Ingrese porcentaje" value="{{ old('porcentaje_ex') }}">
+                                                                        <input type="text" id="tarifa_anterior" name="tarifa_anterior" class="form-control res-validate cien" autocomplete="off" placeholder="Ingrese tarifa anterior" value="{{ old('tarifa_anterior') }}" readonly>
                                                                         <div class="input-group-addon">%</div>
                                                                     </div>
                                                                 </div>
-                                                                {{-- <span class="text-danger">@error('porcentaje_ex') {{ $message }} @enderror</span> --}}
+                                                                {{-- <span class="text-danger">@error('tarifa_anterior') {{ $message }} @enderror</span> --}}
                                                             </div>
                                                             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">A&ntilde;o:</label>
-                                                                    {{-- <input type="text" id="exencion_hasta" name="exencion_hasta" class="form-control onlyNumbers res-validate" autocomplete="off" placeholder="A&ntilde;o..." value="{{ old('exencion_hasta') }}" maxlength="4"> --}}
-                                                                    <select id="exencion_hasta" name="exencion_hasta" class="form-control selectpicker res-validate" data-size="3" title="A&ntilde;o..." style="width: 100%;">
-                                                                    </select>
-                                                                    <span class="text-danger">@error('exencion_hasta') {{ $message }} @enderror</span>
+                                                                    <label for="tarifa_nueva" class="control-label">Tarifa nueva:</label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="tarifa_nueva" name="tarifa_nueva" class="form-control res-validate" autocomplete="off" placeholder="Ingrese tarifa nueva" value="{{ old('tarifa_nueva') }}">
+                                                                        <div class="input-group-addon">%</div>
+                                                                    </div>
                                                                 </div>
+                                                                {{-- <span class="text-danger">@error('tarifa_nueva') {{ $message }} @enderror</span> --}}
                                                             </div>
                                                         </form>
                                                     </div>
@@ -155,7 +156,7 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                        <span id="span_exencion" class="text-info">&nbsp;</span>
+                                                        <span id="span_cambio_tarifa" class="text-info">&nbsp;</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -171,7 +172,7 @@
                                 <div id="div_table" class="row">
                                     <div class="col-lg-12">
                                         <div class="well">
-                                            @if(isset($exenciones))
+                                            @if(isset($cambios_tarifas))
                                                 <div class="result">
                                                     @if(Session::get('success'))
                                                         <div class="alert alert-success">
@@ -184,32 +185,35 @@
                                                         </div>
                                                     @endif
                                                 </div>
-                                                <h2 style="width: 100%;">Lista de exenciones <i style="color: #c0c0c0; float: right; cursor: pointer;" onMouseOver="this.style.color='#14813a'" onMouseOut="this.style.color='#c0c0c0'" class="fa fa-print"  id="print_exenciones"></i></h2>
+                                                <h2 style="width: 100%;">
+                                                    Lista de cambios de tarifa
+                                                    {{-- <i style="color: #c0c0c0; float: right; cursor: pointer;" onMouseOver="this.style.color='#14813a'" onMouseOut="this.style.color='#c0c0c0'" class="fa fa-print"  id="print_cambios_tarifa"></i> --}}
+                                                </h2>
                                                 <table id="myTable" class="table table-hover table-striped table-bordered">
                                                     <thead>
                                                         <tr>
                                                             <th class="cell_center" style="width: auto;">C&oacute;digo predio</th>
-                                                            <th class="cell_center" style="width: 7%;">Porcentaje</th>
-                                                            <th class="cell_center" style="width: auto;">A&ntilde;o</th>
+                                                            <th class="cell_center" style="width: auto;">Tarifa anterior</th>
+                                                            <th class="cell_center" style="width: auto;">Tarifa nueva</th>
                                                             <th class="cell_center" style="width: auto;">Resoluci&oacute;n</th>
                                                             <th class="cell_center" style="width: auto;">Fecha creaci&oacute;n</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @if(count($exenciones) > 0)
-                                                            @foreach($exenciones as $exencion)
-                                                            <tr style="cursor: pointer;" id="tr_exencion_{{ $exencion->id }}" json-data='@json($exencion)' class='disabled'>
-                                                                <td class="cell_center">{{ $exencion->codigo_predio }}</td>
-                                                                <td class="cell_center">{{ $exencion->porcentaje }}</td>
-                                                                <td class="cell_center">{{ $exencion->exencion_hasta }}</td>
-                                                                @if(isset($exencion->file_name))
+                                                        @if(count($cambios_tarifas) > 0)
+                                                            @foreach($cambios_tarifas as $cambio)
+                                                            <tr style="cursor: pointer;" id="tr_exencion_{{ $cambio->id }}" json-data='@json($cambio)' class='disabled'>
+                                                                <td class="cell_center">{{ $cambio->codigo_predio }}</td>
+                                                                <td class="cell_center">{{ $cambio->tarifa_anterior }}%</td>
+                                                                <td class="cell_center">{{ $cambio->tarifa_nueva }}%</td>
+                                                                @if(isset($cambio->file_name))
                                                                 <td class="cell_center">
-                                                                    <a data-toggle="tooltip" title="Descargar {{ $exencion->file_name }}" href="{{ route('download-file-resolucion', ['filename' => $exencion->file_name]) }}" style="color: red;"><i style="color: red;" class="fa fa-file-pdf-o"></i></a>
+                                                                    <a data-toggle="tooltip" title="Descargar {{ $cambio->file_name }}" href="{{ route('download-file-resolucion', ['filename' => $cambio->file_name]) }}" style="color: red;"><i style="color: red;" class="fa fa-file-pdf-o"></i></a>
                                                                 </td>
                                                                 @else
-                                                                <td class="cell_center">{!! $exencion->file_name !!}</td>
+                                                                <td class="cell_center">{!! $cambio->file_name !!}</td>
                                                                 @endif
-                                                                <td class="cell_center">{{ $exencion->created_at }}</td>
+                                                                <td class="cell_center">{{ $cambio->created_at }}</td>
                                                             </tr>
                                                             @endforeach
                                                         @endif
@@ -233,47 +237,6 @@
 @endsection
 
 @section('modales')
-<div id="modal-impresion" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-impresion-label" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-sm" style="width: 24%;">
-        <div class="modal-content">
-            <div class="modal-header">
-                {{-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> --}}
-                <h4 class="modal-title" id="modal-impresion-label">Generaci&oacute;n de informe exenciones.</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12">
-                        <form id="form-impresion-informe">
-                            <div class="form-body">
-                                <div class="row">
-                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                        <div class="form-group" style="margin-bottom: 0px; text-align: center;">
-                                            <label class="control-label">Fecha m&iacute;nima exenci&oacute;n</label>
-                                            <input type="text" id="fecha_min_exencion" name="fecha_min_exencion" class="form-control datepicker" autocomplete="off" placeholder="Fecha m&iacute;nima" value="{{ old('fecha_min_exencion') }}" style="width: 100%;">
-                                            <span class="text-danger">@error('fecha_min_exencion') {{ $message }} @enderror</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-top: 10px;">
-                                        <div class="form-group" style="margin-bottom: 0px; text-align: center;">
-                                            <label class="control-label">Fecha m&aacute;xima exenci&oacute;n</label>
-                                            <input type="text" id="fecha_max_exencion" name="fecha_max_exencion" class="form-control datepicker" autocomplete="off" placeholder="Fecha m&aacute;xima" value="{{ old('fecha_max_exencion') }}" style="width: 100%;">
-                                            <span class="text-danger">@error('fecha_max_exencion') {{ $message }} @enderror</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer" style="text-align: center;">
-                <button id="generar_informe_exenciones" url="/generate_exenciones_pdf/" type="button" class="btn btn-youtube pull-left btn_pdf"> <i class="fa fa-file-pdf-o btn_pdf"></i> Generar PDF</button>
-                <button id="btn_descargar_excel_prescripciones_exenciones" tipo="exenciones" type="button" class="btn btn-success pull-left btn_excel"> <i class="fa fa-file-excel-o"></i> Generar EXCEL</button>
-                <button type="button" class="btn btn-inverse pull-right btn_pdf" data-dismiss="modal">Cancelar</button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @section('resolucion')

@@ -663,7 +663,7 @@
                                                         <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Tarifa actual:</label>
-                                                                <input type="text" id="tarifa_actual_edit" name="tarifa_actual_edit" class="form-control res-validate" autocomplete="off" placeholder="Ingrese tarifa actual" value="{{ old('tarifa_actual_edit') }}">
+                                                                <input type="text" id="tarifa_actual_edit" name="tarifa_actual_edit" class="form-control res-validate" autocomplete="off" placeholder="Ingrese tarifa actual" value="{{ old('tarifa_actual_edit') }}" readonly style="background-color: white;">
                                                                 <span class="text-danger">@error('tarifa_actual_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
