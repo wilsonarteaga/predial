@@ -26,7 +26,7 @@ class PrediosTarifaCreateFormRequest extends FormRequest
         return [
             'id_predio' => 'required',
             // 'tarifa_actual'  => 'required',
-            'tarifa_nueva'  => 'required|different:tarifa_anterior|gt:0|max:100',
+            'tarifa_nueva'  => 'required|different:tarifa_anterior|gt:0',
         ];
     }
 

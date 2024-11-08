@@ -120,7 +120,7 @@
                                                                 <div class="form-group">
                                                                     <label for="tarifa_nueva" class="control-label">Tarifa nueva:</label>
                                                                     <div class="input-group">
-                                                                        <input type="text" id="tarifa_nueva" name="tarifa_nueva" class="form-control res-validate" autocomplete="off" placeholder="Ingrese tarifa nueva" value="{{ old('tarifa_nueva') }}">
+                                                                        <input type="text" id="tarifa_nueva" name="tarifa_nueva" class="form-control res-validate cien" autocomplete="off" placeholder="Ingrese tarifa nueva" value="{{ old('tarifa_nueva') }}">
                                                                         <div class="input-group-addon">%</div>
                                                                     </div>
                                                                 </div>
