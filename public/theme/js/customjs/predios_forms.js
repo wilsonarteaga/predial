@@ -22,13 +22,9 @@ $(document).ready(function() {
             $('#fecha_max_pago').datepicker('setDaysOfWeekDisabled', '0,6');
 
             var today = new Date();
-            console.log('📌 - file: predios_forms.js:1268 - $ - today:', today);
             var year = today.toLocaleString("default", { year: "numeric" });
-            console.log('📌 - file: predios_forms.js:1270 - $ - year:', year);
             var month = today.toLocaleString("default", { month: "2-digit" });
-            console.log('📌 - file: predios_forms.js:1272 - $ - month:', month);
             var day = today.toLocaleString("default", { day: "2-digit" });
-            console.log('📌 - file: predios_forms.js:1274 - $ - day:', day);
             if (month === '11') {
                 if (day === '01') day = '1';
             }
@@ -1486,7 +1482,7 @@ function saveDatosPredio(form, modal, path, suffix) {
                             }
                             nuevo_propietario = false;
                             is_editando_propietario = true;
-                            getPredio($('#id_predio.select2').val());
+                            getPredio($('#id_predio.select2').val(), false, true);
                         } else if (suffix === 'da') {
                             if (DTAbonos !== null) {
                                 $('#tr_predio_' + $('#id_edit').val()).attr('data-da', JSON.stringify(response.obj));
@@ -1756,7 +1752,7 @@ function saveEliminarPropietario(id_predio_propietario) {
                 DTPropietarios.$('tr:eq(' + first_row + ')').toggleClass('row-selected');
                 DTPropietarios.$('tr:first').find('.editPropietario').trigger('click');
             }
-            getPredio($('#id_predio.select2').val());
+            getPredio($('#id_predio.select2').val(), false, true);
             $.unblockUI();
         },
         error: function(xhr) {
@@ -1968,7 +1964,6 @@ function ejecutarCalculoBatch(id_predio_inicial, id_predio_final, anio) {
             form: JSON.stringify(jsonObj)
         },
         success: function(response) {
-            console.log(response.data);
             if(response.data !== null) {
                 if (response.data?.id ) {
                     $('#td_por_calcular').html(response.data?.por_calcular);

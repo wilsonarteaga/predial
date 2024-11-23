@@ -737,7 +737,7 @@ $(document).ready(function() {
             else {
                 if($('#id_predio.select2').hasClass('json')) {
                     if($('#id_predio.select2').hasClass('pagos')) {
-                        getPredio($('#id_predio.select2').val(), true);
+                        getPredio($('#id_predio.select2').val(), true, false);
                     } else if($('#id_predio.select2').hasClass('basico')) {
                         getPredioPrescripcionExencion($('#id_predio.select2').val(), true, $('#interfaz').val());
                     }
@@ -1275,19 +1275,15 @@ function downloadFacturaRowProcesar(btn) {
             $('#btn_modificar_anios').css('display', 'none');
             $('#div_fecha_max_pago').css('display', '');
             setTimeout(function() {
-                getPredio(id_predio, false);
+                getPredio(id_predio, false, false);
             }, 2000);
         });
         $('#modal-impresion-factura').off('show.bs.modal').on('show.bs.modal', function() {
             if (moment($('#fecha_actual').val()) > moment($('#max_fecha_descuentos').val())) {
                 var today = new Date();
-                console.log('📌 - file: controlsite.js:1268 - $ - today:', today);
                 var year = today.toLocaleString("default", { year: "numeric" });
-                console.log('📌 - file: controlsite.js:1270 - $ - year:', year);
                 var month = today.toLocaleString("default", { month: "2-digit" });
-                console.log('📌 - file: controlsite.js:1272 - $ - month:', month);
                 var day = today.toLocaleString("default", { day: "2-digit" });
-                console.log('📌 - file: controlsite.js:1274 - $ - day:', day);
                 if (month === '11') {
                     if (day === '01') day = '1';
                 }
@@ -1557,7 +1553,7 @@ function startImpresion(url_download, message_toast, type_icon, modal) {
     }
 }
 
-function getPredio(id_predio, showBlock) {
+function getPredio(id_predio, showBlock, getData) {
     if (showBlock) {
         $.blockUI({
             message: "Ejecutando b&uacute;squeda de predio. Espere un momento.",
@@ -1742,6 +1738,9 @@ function getPredio(id_predio, showBlock) {
                     $('#div_edit_predio').fadeIn(function() {
                         $.unblockUI();
                     });
+                    if (getData) {
+                        getJsonPrediosDatos();
+                    }
                 }, 500);
             } else {
                 $.unblockUI();
@@ -2544,7 +2543,6 @@ function checkFormPaz() {
 
 function setDataAcuerdoPagoModalForm() {
     if (global_acuerdo_pago) {
-        console.log('📌 - file: controlsite.js:2308 - setDataAcuerdoPagoModalForm - global_acuerdo_pago:', global_acuerdo_pago);
         setFormData('form-predios-datos-acuerdos-pago', global_acuerdo_pago);
         if (Number(global_acuerdo_pago.responsable_propietario_acuerdo) > 0) {
             $('#identificacion_acuerdo').attr('readonly', true);
@@ -2689,7 +2687,7 @@ function saveAniosFactura(uncheckedAnios) {
                                     $('#div_anios_factura').css('display', 'none');
                                     $('#lista_anios_factura').empty();
                                     $('#btn_modificar_anios').css('display', 'none');
-                                    getPredio($('#id_predio.select2').val(), false);
+                                    getPredio($('#id_predio.select2').val(), false, false);
                                     $('#modal-impresion-factura').modal('hide');
                                 }
                             }

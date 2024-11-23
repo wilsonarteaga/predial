@@ -1496,16 +1496,29 @@ class PrediosController extends Controller
 
                 if(!$facturaYaPagada) {
                     // Obtener informacion de los pagos pendientes por año
-                    $pagos_pendientes = DB::table('predios_pagos')
+                    if ($ultimo_anio_pagar->factura_pago == null) {
+                        $pagos_pendientes = DB::table('predios_pagos')
                                         ->where('id_predio', $id)
                                         ->where('pagado', 0)
                                         ->where('ultimo_anio', '<=', $anio_ini)
                                         ->where(function($query) use($tmp, $numero_factura, $ultimo_anio_pagar) {
-                                            $query->whereNull('factura_pago')
-                                                ->orWhere('factura_pago', (intval($tmp) == 0) ? $numero_factura : $ultimo_anio_pagar->factura_pago);
+                                            $query->whereNull('factura_pago');
                                         })
                                         ->orderBy('ultimo_anio', 'asc')
                                         ->get();
+                    } else {
+                        $pagos_pendientes = DB::table('predios_pagos')
+                                            ->where('id_predio', $id)
+                                            ->where('pagado', 0)
+                                            ->where('ultimo_anio', '<=', $anio_ini)
+                                            ->where(function($query) use($tmp, $numero_factura, $ultimo_anio_pagar) {
+                                                $query->//whereNull('factura_pago')
+                                                    //->orWhere
+                                                    where('factura_pago', (intval($tmp) == 0) ? $numero_factura : $ultimo_anio_pagar->factura_pago);
+                                            })
+                                            ->orderBy('ultimo_anio', 'asc')
+                                            ->get();
+                    }
                 }
                 else {
                     // Obtener informacion de los registros que coinciden con la factura
@@ -1521,7 +1534,16 @@ class PrediosController extends Controller
                     $predio->anios_a_pagar = $anio_ini;
                 }
                 else {
-                    $predio->anios_a_pagar = ($ultimo_anio_pagado->ultimo_anio + 1) . ' A ' . $anio_ini;
+                    if ($ultimo_anio_pagar->factura_pago == null) {
+                        $predio->anios_a_pagar = ($ultimo_anio_pagado->ultimo_anio + 1) . ' A ' . $anio_ini;
+                    } else {
+                        $minAnioCalculado = DB::table('predios_pagos')
+                                ->select(DB::raw('min(ultimo_anio) as min_anio_calculo'))
+                                ->where('predios_pagos.id_predio', $id)
+                                ->where('predios_pagos.factura_pago', $ultimo_anio_pagar->factura_pago)
+                                ->first();
+                        $predio->anios_a_pagar = $minAnioCalculado->min_anio_calculo . ' A ' . $anio_ini;
+                    }
                 }
 
                 $suma_total[0] = 0;
@@ -2063,7 +2085,16 @@ class PrediosController extends Controller
                 if ($anio_ini == $anio_fin) {
                     $predio->anios_a_pagar = $anio_ini;
                 } else {
-                    $predio->anios_a_pagar = $anio_ini . ' A ' . $anio_fin;
+                    if ($ultimo_anio_pagar->factura_pago == null) {
+                        $predio->anios_a_pagar = $anio_ini . ' A ' . $anio_fin;
+                    } else {
+                        $minAnioCalculado = DB::table('predios_pagos')
+                                ->select(DB::raw('min(ultimo_anio) as min_anio_calculo'))
+                                ->where('predios_pagos.id_predio', $id)
+                                ->where('predios_pagos.factura_pago', $ultimo_anio_pagar->factura_pago)
+                                ->first();
+                        $predio->anios_a_pagar = $minAnioCalculado->min_anio_calculo . ' A ' . $anio_fin;
+                    }
                 }
                 // }
 
@@ -2081,7 +2112,8 @@ class PrediosController extends Controller
 
                 if(!$facturaYaPagada) {
                     // Obtener informacion de los pagos pendientes por año
-                    $pagos_pendientes = DB::table('predios_pagos')
+                    if ($ultimo_anio_pagar->factura_pago == null) {
+                        $pagos_pendientes = DB::table('predios_pagos')
                                         ->where('id_predio', $id)
                                         ->where('pagado', 0)
                                         ->whereBetween('ultimo_anio', array(
@@ -2089,11 +2121,26 @@ class PrediosController extends Controller
                                             $anio_fin
                                         ))
                                         ->where(function($query) use($tmp, $numero_factura, $ultimo_anio_pagar) {
-                                            $query->whereNull('factura_pago')
-                                                ->orWhere('factura_pago', (intval($tmp) == 0) ? $numero_factura : $ultimo_anio_pagar->factura_pago);
+                                            $query->whereNull('factura_pago');
                                         })
                                         ->orderBy('ultimo_anio', 'asc')
                                         ->get();
+                    } else {
+                        $pagos_pendientes = DB::table('predios_pagos')
+                                            ->where('id_predio', $id)
+                                            ->where('pagado', 0)
+                                            ->whereBetween('ultimo_anio', array(
+                                                $anio_ini,
+                                                $anio_fin
+                                            ))
+                                            ->where(function($query) use($tmp, $numero_factura, $ultimo_anio_pagar) {
+                                                $query->//whereNull('factura_pago')
+                                                    //->orWhere
+                                                    where('factura_pago', (intval($tmp) == 0) ? $numero_factura : $ultimo_anio_pagar->factura_pago);
+                                            })
+                                            ->orderBy('ultimo_anio', 'asc')
+                                            ->get();
+                    }
                 }
                 else {
                     // Obtener informacion de los registros que coinciden con la factura
