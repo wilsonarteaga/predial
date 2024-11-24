@@ -163,9 +163,6 @@
                     <td style="width: auto;">{{ $predio_pago->ultimo_anio }}</td>
                     <td colspan="6"></td>
                 </tr>
-                <tr>
-
-                </tr>
             </table>
             <table class="info-predio" style="width: 100%; margin-top: 10px;">
                 <tr>

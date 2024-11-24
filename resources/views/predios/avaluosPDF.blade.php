@@ -180,7 +180,7 @@
                 <tr class="totales">
                     <th class="text-right" colspan="3">TOTAL PAGO</th>
                     <th class="text-right">@money($suma_impuesto)</th>
-                    <th colspan="3" style="background-color: #FFFFFF; border-right: 0px; border-bottom: 0px;"></th>
+                    <th colspan="5" style="background-color: #FFFFFF; border-right: 0px; border-bottom: 0px;"></th>
                 </tr>
             </table>
         </div>

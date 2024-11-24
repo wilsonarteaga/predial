@@ -149,6 +149,8 @@ Route::post('/update_anios_factura', [PrediosController::class, 'update_anios_fa
 Route::get('/export-cartera',[PrediosController::class,'exportCartera']);
 Route::get('/export-excel-exenciones/{fechainicial}/{fechafinal}',[PrediosController::class, 'exportExcelExenciones']);
 Route::get('/export-excel-prescripciones/{fechainicial}/{fechafinal}',[PrediosController::class, 'exportExcelPrescripciones']);
+Route::get('/export-excel-avaluos/{idpredio}',[PrediosController::class, 'exportExcelAvaluos']);
+Route::get('/export-excel-estado-cuenta/{idpredio}',[PrediosController::class, 'exportExcelEstadoCuenta']);
 
 //datos_basicos
 Route::post('/store/predios_datos_basicos', [PrediosController::class, 'store_predios_datos_basicos']);

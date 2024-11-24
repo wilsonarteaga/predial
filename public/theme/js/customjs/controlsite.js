@@ -1098,6 +1098,51 @@ $(document).ready(function() {
         });
     }
 
+    if ($('.excel_avaluos_estado')) {
+        $('.excel_avaluos_estado').off('click').on('click', function() {
+            var btn = $(this);
+            $('.btn_excel').attr('disabled', true);
+            var tipo = $(btn).attr('tipo');
+
+            $.blockUI({
+                message: `Generando archivo EXCEL de ${tipo.replace(/_/g, ' ')}.<br />Espere un momento.`,
+                css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: '#fff',
+                    zIndex: 9999
+                },
+                overlayCSS:  {
+                    zIndex: 1100
+                },
+            });
+            fetch(`/export-excel-${tipo.replace(/_/g, '-')}/${$('#id_edit').val()}`)
+            .then(resp => resp.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                // the filename you want
+                a.download = `reporte-${tipo.replace(/_/g, '-')}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                $.unblockUI();
+                $('.btn_excel').attr('disabled', false);
+            })
+            .catch((err) => {
+                $.unblockUI();
+                $('.btn_excel').attr('disabled', false);
+                console.log(err);
+            });
+        });
+    }
+
 });
 
 function clearFormCreatePredio() {
@@ -1926,6 +1971,7 @@ function getEstadoCuentaPredio(id_predio, btn) {
     var jsonObj = {};
     jsonObj.id_predio = id_predio;
     $('#print_estado_cuenta').css('display', 'none');
+    $('#excel_estado_cuenta').css('display', 'none');
     $.ajax({
         type: 'POST',
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -1940,6 +1986,7 @@ function getEstadoCuentaPredio(id_predio, btn) {
             }
             if (response.predio.length > 0) {
                 $('#print_estado_cuenta').css('display', '');
+                $('#excel_estado_cuenta').css('display', '');
                 if (DTEstadoCuenta !== null) {
                     DTEstadoCuenta.clear().draw();
                     DTEstadoCuenta.rows.add(response.predio).draw();

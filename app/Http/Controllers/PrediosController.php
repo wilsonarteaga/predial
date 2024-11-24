@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Events\CalculoBatch;
+use App\Exports\ExportAvaluos;
 use App\Exports\ExportCartera;
+use App\Exports\ExportEstadoCuenta;
 use App\Exports\ExportExenciones;
 use App\Exports\ExportPrescripciones;
 use Illuminate\Http\Request;
@@ -3358,5 +3360,13 @@ class PrediosController extends Controller
         return response()->json([
             'data' => $result,
         ]);
+    }
+
+    public function exportExcelAvaluos(Request $request, $idpredio) {
+        return Excel::download(new ExportAvaluos($idpredio, $request->session()->get('useremail')), 'avaluos.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    public function exportExcelEstadoCuenta(Request $request, $idpredio) {
+        return Excel::download(new ExportEstadoCuenta($idpredio, $request->session()->get('useremail')), 'estado_cuenta.xlsx', \Maatwebsite\Excel\Excel::XLSX);
     }
 }

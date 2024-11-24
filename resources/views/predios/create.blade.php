@@ -1622,6 +1622,7 @@
             </div>
             <div class="modal-footer">
                 <button id="print_avaluos" url="/generate_avaluos_predio_pdf/" type="button" class="btn btn-youtube pull-left btn_pdf"> <i class="fa fa-file-pdf-o"></i> Descargar PDF</button>
+                <button id="excel_avaluos" tipo="avaluos" type="button" class="btn btn-success pull-left btn_excel excel_avaluos_estado"> <i class="fa fa-file-excel-o"></i> Generar EXCEL</button>
                 <button type="button" class="btn btn-default waves-effect text-left" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
@@ -1639,6 +1640,7 @@
             </div>
             <div class="modal-footer">
                 <button id="print_estado_cuenta" url="/generate_estado_cuenta_predio_pdf/" type="button" class="btn btn-youtube pull-left btn_pdf" style="display: none;"> <i class="fa fa-file-pdf-o"></i> Descargar PDF</button>
+                <button id="excel_estado_cuenta" tipo="estado_cuenta" type="button" class="btn btn-success pull-left btn_excel excel_avaluos_estado" style="display: none;"> <i class="fa fa-file-excel-o"></i> Generar EXCEL</button>
                 <button type="button" class="btn btn-default waves-effect text-left" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
