@@ -418,13 +418,11 @@
                                         @if($numero_codigos == 1)
                                         <table class="info-persona-barras" style="width: 100%; margin-top: 10px;">
                                             <tr><th colspan="2">PUNTOS DE PAGO:</th></tr>
-                                            {{-- <tr><th>AGRARIO</th><td>1511-007245-4</td></tr>
-                                            <tr><th>BANCOLOMBIA</th><td>038-851044-27</td></tr>
-                                            <tr><th>BBVA</th><td>001380660100000027</td></tr> --}}
-                                            <tr><th>BANCO DE BOGOTA</th><td>57600004-6</td></tr>
-                                            {{-- <tr><th>CONFIAR COOP</th><td>450006242</td></tr>
-                                            <tr><th>DAVIVIENDA</th><td>41600000803-5</td></tr>
-                                            <tr><th>POPULAR</th><td>261-72007-2</td></tr> --}}
+                                            <tr><th>BANCO POPULAR</th><td>11025102041-8</td></tr>
+                                            <tr><th>BANCO AGRARIO</th><td>01546000050-6</td></tr>
+                                            <tr><th>BANCO DAVIVIENDA</th><td>177769999893</td></tr>
+                                            <tr><th>BANCOLOMBIA</th><td>258334866-43</td></tr>
+                                            <tr><th>BANCO DE BOGOTA</th><td>61655401-0</td></tr>
                                         </table>
                                         @endif
                                     </td>
@@ -432,13 +430,11 @@
                                     <td>
                                         <table class="info-persona-barras" style="width: 100%; margin-top: 0px;">
                                             <tr><th colspan="2">PUNTOS DE PAGO:</th></tr>
-                                            {{-- <tr><th>AGRARIO</th><td>1511-007245-4</td></tr>
-                                            <tr><th>BANCOLOMBIA</th><td>038-851044-27</td></tr>
-                                            <tr><th>BBVA</th><td>001380660100000027</td></tr> --}}
-                                            <tr><th>BANCO DE BOGOTA</th><td>57600004-6</td></tr>
-                                            {{-- <tr><th>CONFIAR COOP</th><td>450006242</td></tr>
-                                            <tr><th>DAVIVIENDA</th><td>41600000803-5</td></tr>
-                                            <tr><th>POPULAR</th><td>261-72007-2</td></tr> --}}
+                                            <tr><th>BANCO POPULAR</th><td>11025102041-8</td></tr>
+                                            <tr><th>BANCO AGRARIO</th><td>01546000050-6</td></tr>
+                                            <tr><th>BANCO DAVIVIENDA</th><td>177769999893</td></tr>
+                                            <tr><th>BANCOLOMBIA</th><td>258334866-43</td></tr>
+                                            <tr><th>BANCO DE BOGOTA</th><td>61655401-0</td></tr>
                                         </table>
                                     </td>
                                     @endif
