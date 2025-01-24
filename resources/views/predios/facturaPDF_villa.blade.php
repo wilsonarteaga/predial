@@ -176,8 +176,9 @@
                             <tr>
                                 <td style="text-align: justify; font-size: 85%;">
                                     <p>
-                                        {{-- La Direcci&oacute;n de Impuestos del Municipio de Santa Rosa de Viterbo seg&uacute;n el Acuerdo 019 de 2022, Decreto 009 de 2017, Decreto 011 de 2017, Resoluci&oacute;n 090 de 2017 y Resoluci&oacute;n 004 de 2024, determina oficialmente los siguientes periodos gravables del Impuesto Predial Unificado, seg&uacute;n los valores e informaci&oacute;n siguiente: --}}
-                                        <br /><br /><br />
+                                        MUNICIPIO DE VILLA DE LEYVA - BOYACA<br />
+                                        NIT {{ $nit }}<br />
+                                        MONUMENTO NACIONAL<br />
                                     </p>
                                 </td>
                             </tr>
