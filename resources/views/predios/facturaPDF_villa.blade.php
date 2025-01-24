@@ -394,7 +394,7 @@
                                         <table class="info-persona-barras" style="width: 100%; margin-top: 0px;">
                                             <tr>
                                                 <td colspan="2" style="padding-bottom: 10px;">
-                                                    <img style="width: 20%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/santa-rosa-de-viterbo-factura-horizontal-color.png'))) }}" alt="Logo1" />
+                                                    <img style="width: 20%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/villa-de-leyva-h.png'))) }}" alt="Logo1" />
                                                 </td>
                                             </tr>
                                             <tr>
