@@ -174,7 +174,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="text-align: center; font-size: 85%;">
+                                <td style="text-align: center; font-weight: bold;">
                                     <p>
                                         MUNICIPIO DE VILLA DE LEYVA - BOYACA<br />
                                         NIT {{ $nit }}<br />
