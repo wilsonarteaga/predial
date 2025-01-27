@@ -214,7 +214,7 @@
                     <th class="text-right">@money($suma_descuento)</th>
                     <th class="text-right">@money($suma_otros)</th>
                     <th class="text-right">@money($suma_total)</th>
-                    <th class="text-right"></th>
+                    <th class="text-right" style="background-color: #FFFFFF; border-right: 0px; border-bottom: 0px;"></th>
                 </tr>
             </table>
         </div>

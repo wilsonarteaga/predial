@@ -237,6 +237,7 @@
                     <th>INT.<br />CAR</th>
                     @endif
                     <th>TASA<br />BOMBERIL</th>
+                    <th>DESCUENTO<br />IMP</th>
                     <th>Otros</th>
                     <th>TOTAL</th>
                 </tr>
@@ -248,6 +249,7 @@
                     @php($suma_car = 0)
                     @php($suma_car_interes = 0)
                     @php($suma_dieciseis = 0)
+                    @php($suma_trece = 0)
                     @php($suma_dieciocho = 0)
                     @php($suma_total = 0)
                     @foreach($lista_pagos as $pago)
@@ -265,6 +267,7 @@
                         <td>@money($pago->car_interes)</td>
                         @endif
                         <td>@money($pago->dieciocho)</td>
+                        <td>@money($pago->trece)</td>
                         <td>@money($pago->dieciseis)</td>
                         <td>@money($pago->total)</td>
                     </tr>
@@ -278,6 +281,7 @@
                         @php($suma_car_interes += $pago->car_interes)
                     @endif
                     @php($suma_dieciseis += $pago->dieciseis)
+                    @php($suma_trece += $pago->trece)
                     @php($suma_dieciocho += $pago->dieciocho)
                     @php($suma_total += $pago->total)
                     @endforeach
@@ -294,15 +298,16 @@
                             <th>@money($suma_car_interes)</th>
                         @endif
                         <th>@money($suma_dieciocho)</th>
+                        <th>@money($suma_trece)</th>
                         <th>@money($suma_dieciseis)</th>
                         <th>@money($suma_total)</th>
                     </tr>
                 @else
                 <tr>
                     @if(intval($unir_impuesto_car) == 1)
-                    <td colspan="8" style="text-align: center;">No hay informaci&oacute;n disponible</td>
+                    <td colspan="9" style="text-align: center;">No hay informaci&oacute;n disponible</td>
                     @else
-                    <td colspan="10" style="text-align: center;">No hay informaci&oacute;n disponible</td>
+                    <td colspan="11" style="text-align: center;">No hay informaci&oacute;n disponible</td>
                     @endif
                 </tr>
                 @endif
