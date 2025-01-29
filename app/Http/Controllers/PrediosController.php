@@ -1432,7 +1432,7 @@ class PrediosController extends Controller
                 $ean = $parametro_ean->valor;
                 $alcaldia = $parametro_alcaldia->valor;
                 $formato_factura = $parametro_formato_factura->valor;
-                $unir_impuesto_car = str_contains(strtolower($alcaldia), 'leyva') && intval($tmp) == 0 ? 1 : $parametro_unir_impuesto_car->valor;
+                $unir_impuesto_car = $parametro_unir_impuesto_car->valor;
                 $lista_pagos = new Collection();
                 $lista_pagos_depurada = new Collection();
                 $ultimo_anio_pagado = new Collection();
@@ -2046,7 +2046,7 @@ class PrediosController extends Controller
                 $ean = $parametro_ean->valor;
                 $alcaldia = $parametro_alcaldia->valor;
                 $formato_factura = $parametro_formato_factura->valor;
-                $unir_impuesto_car = str_contains(strtolower($alcaldia), 'leyva') && intval($tmp) == 0 ? 1 : $parametro_unir_impuesto_car->valor;
+                $unir_impuesto_car = $parametro_unir_impuesto_car->valor;
                 $lista_pagos = new Collection();
                 $lista_pagos_depurada = new Collection();
                 $ultimo_anio_pagado = new Collection();
