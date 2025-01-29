@@ -138,7 +138,7 @@
         <div id="header">
             <table class="table-header">
                 <tr>
-                    <td style="width: 15%; text-align: left; vertical-align: bottom; border: 0px solid black;">
+                    <td style="width: 20%; text-align: left; vertical-align: bottom; border: 0px solid black;">
                         <img class="logo" style="width: 100%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/villa-de-leyva-h.png'))) }}" alt="Logo" />
                         {{-- <div style="padding-left: 80px; padding-right: 20px;">
                             @if($temporal > 0)
