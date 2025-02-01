@@ -327,7 +327,7 @@
                 Los intereses deber&aacute;n ser cancelados de acuerdo al valor causado por cada d&iacute;a calendario de retardo hasta la fecha efectiva de pago.
             </div>
             @if(count($lista_pagos) > 0)
-                @if(count($lista_pagos) == 2)
+                @if(count($lista_pagos) <= 2)
                 <div class="div-codigos" style="position: absolute; top: 28%;">
                 @else
                 <div class="div-codigos">
@@ -453,7 +453,7 @@
                             @endfor
                         </table>
                     @endif
-                    @if($labels[$boletas] == '-ENTIDAD-')
+                    @if($labels[$boletas] == '-ENTIDAD-' && count($lista_pagos) > 2)
                     <div class="page-break"></div>
                     @endif
                 @endfor
