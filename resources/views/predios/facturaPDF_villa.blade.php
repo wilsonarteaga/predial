@@ -120,16 +120,14 @@
 		.negrilla {font-weight: bold;}
 		.marca-agua { color: #c0c0c0;}
 
-        .div-codigos {
-            position: absolute;
-            top: 37%;
-        }
-
         .logo {
             position: absolute;
             top: 0px;
         }
 
+        .page-break {
+            page-break-after: always;
+        }
     </style>
 </head>
 @php($numero_codigos = count($valores_factura) > 2 ? count($valores_factura) - 1 : count($valores_factura))
@@ -187,8 +185,8 @@
                 </tr>
             </table>
         </div>
-        <div id="body">
-            <table class="info-predio" style="width: 100%; margin-top: 15px;">
+        <div id="body" style="padding-top: 0px;">
+            <table class="info-predio" style="width: 100%; margin-top: 10px;">
                 <tr>
                     <th style="width: 15%;">C&Oacute;DIGO CATASTRAL:</th>
                     <td style="width: 35%;">{{ $predio->codigo_predio }}</td>
@@ -236,25 +234,16 @@
             </table>
             <table class="info-pagos" style="width: 100%; margin-top: 10px;">
                 <tr>
-                    @if(intval($unir_impuesto_car) == 1)
-                    <th colspan="10" style="text-align: center;">DETALLE DE PAGO</th>
-                    @else
                     <th colspan="12" style="text-align: center;">DETALLE DE PAGO</th>
-                    @endif
                 </tr>
                 <tr>
                     <th>A&Ntilde;O</th>
                     <th>%Mil<br />TAR</th>
                     <th>AVAL&Uacute;O</th>
-                    @if(intval($unir_impuesto_car) == 1)
-                    <th>IMPUESTO</th>
-                    <th>INTER&Eacute;S</th>
-                    @else
                     <th>IMP.<br />PREDIAL</th>
                     <th>INT.<br />PREDIAL</th>
                     <th>CAR</th>
                     <th>INT.<br />CAR</th>
-                    @endif
                     <th>DESC.</th>
                     <th>DESC.<br />CAR</th>
                     <th>BOMBEROS</th>
@@ -273,14 +262,20 @@
                     @php($suma_dieciseis = 0)
                     @php($suma_diecisiete = 0)
                     @php($suma_total = 0)
+                    {{-- @php($fila = 0) --}}
                     @foreach($lista_pagos as $pago)
+                    {{-- @if($fila > 1)
+                    @continue
+                    @endif --}}
                     <tr>
                         <td>{{ $pago->anio }}</td>
                         <td>{{ $pago->m_tar }}</td>
                         <td>@money($pago->avaluo)</td>
-                        @if(intval($unir_impuesto_car) == 1)
+                        @if(!str_contains($pago->anio, '< '))
                         <td>@money($pago->impuesto + $pago->car)</td>
+                        <td>@money(0)</td>
                         <td>@money($pago->impuesto_interes + $pago->car_interes)</td>
+                        <td>@money(0)</td>
                         @else
                         <td>@money($pago->impuesto)</td>
                         <td>@money($pago->impuesto_interes)</td>
@@ -293,7 +288,7 @@
                         <td>@money($pago->diecisiete)</td>
                         <td>@money($pago->total)</td>
                     </tr>
-                    @if(intval($unir_impuesto_car) == 1)
+                    @if(!str_contains($pago->anio, '< '))
                         @php($suma_impuesto += ($pago->impuesto + $pago->car))
                         @php($suma_interes += ($pago->impuesto_interes + $pago->car_interes))
                     @else
@@ -307,19 +302,15 @@
                     @php($suma_dieciseis += ($pago->dieciseis))
                     @php($suma_diecisiete += $pago->diecisiete)
                     @php($suma_total += $pago->total)
+                    {{-- @php($fila += 1) --}}
                     @endforeach
                     <!----------------------------->
                     <tr class="totales">
                         <th colspan="3">TOTALES</th>
-                        @if(intval($unir_impuesto_car) == 1)
-                            <th>@money($suma_impuesto)</th>
-                            <th>@money($suma_interes)</th>
-                        @else
-                            <th>@money($suma_impuesto)</th>
-                            <th>@money($suma_impuesto_interes)</th>
-                            <th>@money($suma_car)</th>
-                            <th>@money($suma_car_interes)</th>
-                        @endif
+                        <th>@money($suma_impuesto)</th>
+                        <th>@money($suma_impuesto_interes)</th>
+                        <th>@money($suma_car)</th>
+                        <th>@money($suma_car_interes)</th>
                         <th>@money($suma_trece)</th>
                         <th>@money($suma_quince)</th>
                         <th>@money($suma_dieciseis)</th>
@@ -328,34 +319,19 @@
                     </tr>
                 @else
                 <tr>
-                    @if(intval($unir_impuesto_car) == 1)
-                    <td colspan="10" style="text-align: center;">No hay informaci&oacute;n disponible</td>
-                    @else
                     <td colspan="12" style="text-align: center;">No hay informaci&oacute;n disponible</td>
-                    @endif
                 </tr>
                 @endif
             </table>
-            <div style="padding-top: 0px; padding-bottom: 60px; width: 100%; text-align: left; font-size: 70%;">
+            <div style="padding-top: 0px; padding-bottom: 10px; width: 100%; text-align: left; font-size: 70%;">
                 Los intereses deber&aacute;n ser cancelados de acuerdo al valor causado por cada d&iacute;a calendario de retardo hasta la fecha efectiva de pago.
-                {{-- <div style="font-size: 130%;">
-                    @if($temporal > 0)
-                    <p class="previa">
-                        VISTA PREVIA FACTURA DE COBRO
-                    </p>
-                    @endif
-                    @if($temporal > 0 || $facturaYaPagada)
-                        <h3 class="title" style="color: tomato; text-align: left; font-weight: normal;">
-                            @if($temporal > 0)
-                            Documento no v&aacute;lido para la ejecuci&oacute;n del pago de impuesto predial.
-                            @elseif($facturaYaPagada && $informativa != '1')
-                            PAGO DE FACTURA YA REGISTRADO.<br />El predio se encuentra a paz y salvo.
-                            @endif
-                        </h3>
-                    @endif
-                </div> --}}
             </div>
             @if(count($lista_pagos) > 0)
+                @if(count($lista_pagos) == 2)
+                <div class="div-codigos" style="position: absolute; top: 28%;">
+                @else
+                <div class="div-codigos">
+                @endif
                 <div class="div-codigos">
                 @php($labels = ['-ENTIDAD-', '-BANCO-'])
                 @php($numero_boletas = count($valores_factura) == 1 ? 2 : count($valores_factura))
@@ -476,6 +452,9 @@
                                 </tr>
                             @endfor
                         </table>
+                    @endif
+                    @if($labels[$boletas] == '-ENTIDAD-')
+                    <div class="page-break"></div>
                     @endif
                 @endfor
                 </div>

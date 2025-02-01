@@ -1628,9 +1628,10 @@ class PrediosController extends Controller
                     }
                 }
                 else if(count($lista_pagos) > 1 && $ultimo_anio_pagar->primer_fecha != null) {
-                    if(count($lista_pagos) > 5 && !str_contains(strtolower($alcaldia), 'guateque') && !str_contains(strtolower($alcaldia), 'sutatenza')) {
+                    $offset = str_contains(strtolower($alcaldia), 'de leyva') ? $currentYear - 2009 : 5;
+                    if(count($lista_pagos) > $offset && !str_contains(strtolower($alcaldia), 'guateque') && !str_contains(strtolower($alcaldia), 'sutatenza')) {
                         $obj = new StdClass();
-                        $obj->anio = '< ' . $lista_pagos[count($lista_pagos) - 5]->anio;
+                        $obj->anio = '< ' . $lista_pagos[count($lista_pagos) - $offset]->anio;
                         $obj_m_tar = 0;
                         $obj_avaluo = 0;
                         $obj_impuesto = 0;
@@ -1647,7 +1648,7 @@ class PrediosController extends Controller
                         $obj_otros = 0;
                         $obj_total = 0;
 
-                        for ($x = 0; $x < count($lista_pagos) - 5; $x++) {
+                        for ($x = 0; $x < count($lista_pagos) - $offset; $x++) {
                             $obj_m_tar += $lista_pagos[$x]->m_tar == null ? 0 : $lista_pagos[$x]->m_tar;
                             $obj_avaluo += $lista_pagos[$x]->avaluo == null ? 0 : $lista_pagos[$x]->avaluo;
                             $obj_impuesto += $lista_pagos[$x]->impuesto == null ? 0 : $lista_pagos[$x]->impuesto;
@@ -1682,7 +1683,7 @@ class PrediosController extends Controller
                         $obj->total = $obj_total;
 
                         $lista_pagos_depurada->push($obj);
-                        for ($x = count($lista_pagos) - 5; $x < count($lista_pagos); $x++) {
+                        for ($x = count($lista_pagos) - $offset; $x < count($lista_pagos); $x++) {
                             $lista_pagos_depurada->push($lista_pagos[$x]);
                         }
 
@@ -2234,9 +2235,10 @@ class PrediosController extends Controller
                     }
                 }
                 else if(count($lista_pagos) > 1 && $ultimo_anio_pagar->primer_fecha != null) {
-                    if(count($lista_pagos) > 5 && !str_contains(strtolower($alcaldia), 'guateque') && !str_contains(strtolower($alcaldia), 'sutatenza')) {
+                    $offset = str_contains(strtolower($alcaldia), 'de leyva') ? $currentYear - 2009 : 5;
+                    if(count($lista_pagos) > $offset && !str_contains(strtolower($alcaldia), 'guateque') && !str_contains(strtolower($alcaldia), 'sutatenza')) {
                         $obj = new StdClass();
-                        $obj->anio = '< ' . $lista_pagos[count($lista_pagos) - 5]->anio;
+                        $obj->anio = '< ' . $lista_pagos[count($lista_pagos) - $offset]->anio;
                         $obj_m_tar = 0;
                         $obj_avaluo = 0;
                         $obj_impuesto = 0;
@@ -2253,7 +2255,7 @@ class PrediosController extends Controller
                         $obj_otros = 0;
                         $obj_total = 0;
 
-                        for ($x = 0; $x < count($lista_pagos) - 5; $x++) {
+                        for ($x = 0; $x < count($lista_pagos) - $offset; $x++) {
                             $obj_m_tar += $lista_pagos[$x]->m_tar == null ? 0 : $lista_pagos[$x]->m_tar;
                             $obj_avaluo += $lista_pagos[$x]->avaluo == null ? 0 : $lista_pagos[$x]->avaluo;
                             $obj_impuesto += $lista_pagos[$x]->impuesto == null ? 0 : $lista_pagos[$x]->impuesto;
@@ -2288,7 +2290,7 @@ class PrediosController extends Controller
                         $obj->total = $obj_total;
 
                         $lista_pagos_depurada->push($obj);
-                        for ($x = count($lista_pagos) - 5; $x < count($lista_pagos); $x++) {
+                        for ($x = count($lista_pagos) - $offset; $x < count($lista_pagos); $x++) {
                             $lista_pagos_depurada->push($lista_pagos[$x]);
                         }
 
