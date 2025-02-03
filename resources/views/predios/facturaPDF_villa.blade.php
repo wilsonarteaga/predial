@@ -276,14 +276,16 @@
                         <td>@money(0)</td>
                         <td>@money($pago->impuesto_interes + $pago->car_interes)</td>
                         <td>@money(0)</td>
+                        <td>@money($pago->trece + $pago->quince)</td>
+                        <td>@money(0)</td>
                         @else
                         <td>@money($pago->impuesto)</td>
                         <td>@money($pago->impuesto_interes)</td>
                         <td>@money($pago->car)</td>
                         <td>@money($pago->car_interes)</td>
-                        @endif
                         <td>@money($pago->trece)</td>
                         <td>@money($pago->quince)</td>
+                        @endif
                         <td>@money($pago->dieciseis)</td>
                         <td>@money($pago->diecisiete)</td>
                         <td>@money($pago->total)</td>
@@ -291,14 +293,15 @@
                     @if(!str_contains($pago->anio, '< '))
                         @php($suma_impuesto += ($pago->impuesto + $pago->car))
                         @php($suma_interes += ($pago->impuesto_interes + $pago->car_interes))
+                        @php($suma_trece += ($pago->trece + $pago->quince))
                     @else
                         @php($suma_impuesto += $pago->impuesto)
                         @php($suma_impuesto_interes += $pago->impuesto_interes)
                         @php($suma_car += $pago->car)
                         @php($suma_car_interes += $pago->car_interes)
+                        @php($suma_trece += ($pago->trece))
+                        @php($suma_quince += ($pago->quince))
                     @endif
-                    @php($suma_trece += ($pago->trece))
-                    @php($suma_quince += ($pago->quince))
                     @php($suma_dieciseis += ($pago->dieciseis))
                     @php($suma_diecisiete += $pago->diecisiete)
                     @php($suma_total += $pago->total)
