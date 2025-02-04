@@ -273,8 +273,8 @@
                         <td>@money($pago->avaluo)</td>
                         @if(!str_contains($pago->anio, '< ') && $temporal == 0)
                         <td>@money($pago->impuesto + $pago->car)</td>
-                        <td>@money(0)</td>
                         <td>@money($pago->impuesto_interes + $pago->car_interes)</td>
+                        <td>@money(0)</td>
                         <td>@money(0)</td>
                         <td>@money($pago->trece + $pago->quince)</td>
                         <td>@money(0)</td>
