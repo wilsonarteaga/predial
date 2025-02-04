@@ -128,7 +128,10 @@
                             REP&Uacute;BLICA DE COLOMBIA
                         </p>
                         <p class="header">
-                            {{ strtoupper($alcaldia) }}
+                            DEPARTAMENTO DE BOYAC&Aacute;
+                        </p>
+                        <p class="header">
+                            MUNICIPIO DE VILLA DE LEYVA
                         </p>
                         <p class="header">
                             SECRETAR&Iacute;A DE HACIENDA
@@ -167,7 +170,7 @@
                 <tr>
                     <td>
                         <p>
-                            Que en los archivos de la tesorer&iacute;a municipal aparece inscrito el predio con c&oacute;digo catastral n&uacute;mero: <b>{{ $predio->codigo_predio }}</b> el cual figura a nombre de <b>{{ $propietario_ppal->nombre }}</b>, documento de identidad n&uacute;mero <b>{{ $propietario_ppal->identificacion }}</b> con las siguientes especificaciones.
+                            Que en los archivos de la secretar&iacute;a de hacienda aparece inscrito el predio con c&oacute;digo catastral n&uacute;mero: <b>{{ $predio->codigo_predio }}</b> el cual figura a nombre de <b>{{ $propietario_ppal->nombre }}</b>, documento de identidad n&uacute;mero <b>{{ $propietario_ppal->identificacion }}</b> con las siguientes especificaciones.
                             <br /><b>&Uacute;ltimo pago con factura No.:</b> {{ $ultimo_anio_pagado->factura_pago }}
                             <br /><b>Fecha:</b> {{ substr($ultimo_anio_pagado->fecha_pago, 0, 10) }}
                         </p>
@@ -235,13 +238,13 @@
                 <tr>
                     <td>Valor <b>{{ $valor }}</b> Pesos m/cte.</td>
                     <td style="text-align: center;">
-                        <span><b>HELEN XIOMARA ORREGO TENZA</b></span><br />
+                        <span><b>LUZ H. QUINTERO CARDENAS</b></span><br />
                         SECRETARIO(A) DE HACIENDA
                     </td>
                 </tr>
-                <tr>
+                {{-- <tr>
                     <td style="padding-top: 00px;" colspan="2">NO SE COBRA IMPUESTO POR VALORIZACI&Oacute;N.</td>
-                </tr>
+                </tr> --}}
                 <tr>
                     <td class="text-small" colspan="2">P&aacute;gina 1 de 1</td>
                 </tr>
