@@ -292,7 +292,7 @@
                     </tr>
                     @if(!str_contains($pago->anio, '< ') && $temporal == 0)
                         @php($suma_impuesto += ($pago->impuesto + $pago->car))
-                        @php($suma_interes += ($pago->impuesto_interes + $pago->car_interes))
+                        @php($suma_impuesto_interes += ($pago->impuesto_interes + $pago->car_interes))
                         @php($suma_trece += ($pago->trece + $pago->quince))
                     @else
                         @php($suma_impuesto += $pago->impuesto)
