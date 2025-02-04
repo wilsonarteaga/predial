@@ -290,7 +290,7 @@
                         <td>@money($pago->diecisiete)</td>
                         <td>@money($pago->total)</td>
                     </tr>
-                    @if(!str_contains($pago->anio, '< '))
+                    @if(!str_contains($pago->anio, '< ') && $temporal == 0)
                         @php($suma_impuesto += ($pago->impuesto + $pago->car))
                         @php($suma_interes += ($pago->impuesto_interes + $pago->car_interes))
                         @php($suma_trece += ($pago->trece + $pago->quince))
@@ -299,10 +299,10 @@
                         @php($suma_impuesto_interes += $pago->impuesto_interes)
                         @php($suma_car += $pago->car)
                         @php($suma_car_interes += $pago->car_interes)
-                        @php($suma_trece += ($pago->trece))
-                        @php($suma_quince += ($pago->quince))
+                        @php($suma_trece += $pago->trece)
+                        @php($suma_quince += $pago->quince)
                     @endif
-                    @php($suma_dieciseis += ($pago->dieciseis))
+                    @php($suma_dieciseis += $pago->dieciseis)
                     @php($suma_diecisiete += $pago->diecisiete)
                     @php($suma_total += $pago->total)
                     {{-- @php($fila += 1) --}}
