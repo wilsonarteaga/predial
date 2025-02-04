@@ -253,7 +253,6 @@
                 <!----------------------------->
                 @if(count($lista_pagos) > 0)
                     @php($suma_impuesto = 0)
-                    @php($suma_interes = 0)
                     @php($suma_impuesto_interes = 0)
                     @php($suma_car = 0)
                     @php($suma_car_interes = 0)
