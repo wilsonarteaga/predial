@@ -81,7 +81,7 @@
             height:35px;   /* Height of the footer */
             text-align: center;
             font-size: 80%;
-            border-top: 1px solid #c0c0c0;
+            /* border-top: 1px solid #c0c0c0; */
         }
 
 		/* div.page { width:100%; padding-top: 5%; padding-bottom: 100px; margin: 0 auto; } */
@@ -119,6 +119,7 @@
         .info { font-size: 70%; }
 		.negrilla {font-weight: bold;}
 		.marca-agua { color: #c0c0c0;}
+        .text-small { font-size: 40%; }
 
         .logo {
             position: absolute;
@@ -334,7 +335,6 @@
                 @else
                 <div class="div-codigos">
                 @endif
-                <div class="div-codigos">
                 @php($labels = ['-ENTIDAD-', '-BANCO-'])
                 @php($numero_boletas = count($valores_factura) == 1 ? 2 : count($valores_factura))
                 @for ($boletas = 0; $boletas < $numero_boletas; $boletas++)
@@ -400,7 +400,7 @@
                                             <tr><th>BANCO AGRARIO</th><td>01546000050-6</td></tr>
                                             <tr><th>BANCO DAVIVIENDA</th><td>177769999893</td></tr>
                                             <tr><th>BANCOLOMBIA</th><td>258334866-43</td></tr>
-                                            <tr><th>BANCO DE BOGOTA</th><td>61655401-0</td></tr>
+                                            <tr><th>BANCO COOLMULDESA</th><td>29-00002710-1</td></tr>
                                         </table>
                                         @endif
                                     </td>
@@ -412,7 +412,7 @@
                                             <tr><th>BANCO AGRARIO</th><td>01546000050-6</td></tr>
                                             <tr><th>BANCO DAVIVIENDA</th><td>177769999893</td></tr>
                                             <tr><th>BANCOLOMBIA</th><td>258334866-43</td></tr>
-                                            <tr><th>BANCO DE BOGOTA</th><td>61655401-0</td></tr>
+                                            <tr><th>BANCO COOLMULDESA</th><td>29-00002710-1</td></tr>
                                         </table>
                                     </td>
                                     @endif
@@ -454,6 +454,9 @@
                                 </tr>
                             @endfor
                         </table>
+                        @if($labels[$boletas] == '-BANCO-')
+                        <div style="width: 30%; margin-top: 5px; font-size: 60%; border-top: 1px solid #000; border-bottom: 1px solid #000; ">Elabor&oacute;: <b>{{ $usuario }}</b></div>
+                        @endif
                     @endif
                     @if($labels[$boletas] == '-ENTIDAD-' && count($lista_pagos) > 2)
                     <div class="page-break"></div>
