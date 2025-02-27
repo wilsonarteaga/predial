@@ -397,7 +397,7 @@
                                             </tr>
                                             <tr>
                                                 <th>PROPIETARIO:</th>
-                                                <td>{{ $predio->propietarios }}</td>
+                                                <td style="word-wrap: break-word;">{{ $predio->propietarios }}</td>
                                             </tr>
                                             <tr>
                                                 <th>C.C. O NIT:</th>
@@ -405,7 +405,7 @@
                                             </tr>
                                             <tr>
                                                 <th>DIRECCI&Oacute;N DE COBRO</th>
-                                                <td>{{ $predio->direccion }}</td>
+                                                <td style="word-wrap: break-word;">{{ $predio->direccion }}</td>
                                             </tr>
                                         </table>
                                         @if($numero_codigos == 1)
