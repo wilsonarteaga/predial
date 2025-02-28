@@ -122,7 +122,7 @@
 
         .div-codigos {
             position: absolute;
-            top: 34%;
+            top: 33%;
         }
 
         .logo {
@@ -436,7 +436,7 @@
                                     </td>
                                     @endif
                                     <td style="width: 53%; padding-top: 0px; border: 0px solid #000; text-align: center;">
-                                        <table style="width: 100%; font-size: 100%;">
+                                        <table style="width: 100%; font-size: 100%; padding-top: 135px;">
                                             <tr>
                                                 <td class="negrilla">Pague hasta {{ $fechas_pago_hasta[$x] }}</td>
                                                 <td>Descuento {{ intval($porcentajes_descuento[$x]) }}%</td>
@@ -445,11 +445,11 @@
                                         </table>
                                         {{-- {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!} --}}
                                         @if($temporal == 0)
-                                        <img style="padding-left: 5px; padding-top: 5px;" src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras[$x], 'C128') }}" height="77" width="371" />
+                                        <img style="padding-left: 5px; padding-top: 5px;" src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras[$x], 'C128') }}" height="60" width="371" />
                                         <span style="width: 100%; font-size: 80%;">{{ $barras_texto[$x] }}</span>
                                         @endif
                                         @if($x + 1 == $numero_codigos)
-                                        <table style="width: 100%; font-size: 100%; padding-top: 10px;">
+                                        <table style="width: 100%; font-size: 100%; padding-top: 5px;">
                                             <tr>
                                                 <td class="negrilla">{{ $labels[$boletas] }}</td>
                                                 <td class="negrilla">
