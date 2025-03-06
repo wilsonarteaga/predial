@@ -69,7 +69,7 @@ class PrediosTarifaController extends Controller
             $tab_current = 'li-section-bar-1';
             DB::beginTransaction();
             try {
-                if (intval(str_replace("%", "", $request->tarifa_anterior)) != intval(str_replace("%", "", $request->tarifa_nueva))) {
+                if (floatval(str_replace("%", "", $request->tarifa_anterior)) != floatval(str_replace("%", "", $request->tarifa_nueva))) {
                     $dt = Carbon::now();
 
                     $predio = new Predio();

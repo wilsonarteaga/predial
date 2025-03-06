@@ -18,7 +18,7 @@ class CreatePrediosCambiosTarifasTable extends Migration
             $table->unsignedBigInteger('id_predio');
             $table->decimal('tarifa_anterior', $total = 5, $places = 2);
             $table->decimal('tarifa_nueva', $total = 5, $places = 2);
-            $table->string('file_name', 1024);
+            $table->string('file_name', 1024)->nullable();
             $table->timestamps();
 
             $table->foreign('id_predio')->references('id')->on('predios');
