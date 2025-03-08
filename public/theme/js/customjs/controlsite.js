@@ -133,6 +133,10 @@ $(document).ready(function() {
                         $('#span_cambio_tarifa').empty();
                     }
                 }
+
+                if ($('#interfaz').val() === 'notas') {
+                    cleanNotas();
+                }
             }
         });
     }
@@ -771,26 +775,7 @@ $(document).ready(function() {
                 if($('#id_predio.select2').hasClass('json')) {
                     $('.predio_row').remove();
                     if($('#interfaz').val() === 'notas') {
-                        $('#load_resolucion').css('display', 'none');
-                        $('#select_factura').css('display', 'none');
-                        $('#select_anios').css('display', 'none');
-                        $('#valores_factura').css('display', 'none');
-                        $('#numero_factura').empty();
-                        $('#numero_factura').selectpicker('refresh');
-                        $('#ultimo_anio').empty();
-                        $('#ultimo_anio').selectpicker('refresh');
-                        AutoNumeric.set('#valor_concepto1', 0);
-                        AutoNumeric.set('#valor_concepto2', 0);
-                        AutoNumeric.set('#valor_concepto3', 0);
-                        AutoNumeric.set('#valor_concepto4', 0);
-                        AutoNumeric.set('#valor_concepto13', 0);
-                        AutoNumeric.set('#valor_concepto14', 0);
-                        AutoNumeric.set('#valor_concepto15', 0);
-                        AutoNumeric.set('#valor_concepto16', 0);
-                        AutoNumeric.set('#valor_concepto17', 0);
-                        AutoNumeric.set('#valor_concepto18', 0);
-                        AutoNumeric.set('#total_calculo', 0);
-                        $('#btn_save_create').attr('disabled', true);
+                        cleanNotas();
                     }
                 }
             }
@@ -2939,4 +2924,27 @@ function getPredioPago(id_predio, numero_factura, ultimo_anio) {
             console.log(xhr.responseText);
         }
     });
+}
+
+function cleanNotas() {
+    $('#load_resolucion').css('display', 'none');
+    $('#select_factura').css('display', 'none');
+    $('#select_anios').css('display', 'none');
+    $('#valores_factura').css('display', 'none');
+    $('#numero_factura').empty();
+    $('#numero_factura').selectpicker('refresh');
+    $('#ultimo_anio').empty();
+    $('#ultimo_anio').selectpicker('refresh');
+    AutoNumeric.set('#valor_concepto1', 0);
+    AutoNumeric.set('#valor_concepto2', 0);
+    AutoNumeric.set('#valor_concepto3', 0);
+    AutoNumeric.set('#valor_concepto4', 0);
+    AutoNumeric.set('#valor_concepto13', 0);
+    AutoNumeric.set('#valor_concepto14', 0);
+    AutoNumeric.set('#valor_concepto15', 0);
+    AutoNumeric.set('#valor_concepto16', 0);
+    AutoNumeric.set('#valor_concepto17', 0);
+    AutoNumeric.set('#valor_concepto18', 0);
+    AutoNumeric.set('#total_calculo', 0);
+    $('#btn_save_create').attr('disabled', true);
 }
