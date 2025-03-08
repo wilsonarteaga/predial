@@ -59,6 +59,7 @@ class CreatePrediosTable extends Migration
             $table->string('descripcion_eliminacion', 100)->nullable();
             $table->tinyInteger('ind_ley1995')->default(0);
             $table->tinyInteger('ind_plusvalia')->default(0);
+            $table->tinyInteger('ind_invalidez')->default(0);
 
             $table->foreign('id_zona')->references('id')->on('zonas');
 

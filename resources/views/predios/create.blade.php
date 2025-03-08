@@ -306,33 +306,64 @@
                                                                 <span class="text-danger">@error('ultimo_anio_pago') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                                            <div class="form-group" style="margin-bottom: 0px;">
-                                                                <input type="checkbox" id="ind_ley1995" name="ind_ley1995" value="{{ old('ind_ley1995') }}">
-                                                                <label for="ind_ley1995_check" class="control-label" style="padding-left: 10px;">¿Aplica ley 1995?</label>
+                                                    </div>
+                                                    <div class="row">
+                                                        <hr style="margin-top: 0px;" >
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <div class="form-group" style="margin-bottom: 0px;">
+                                                                        <input type="checkbox" id="ind_ley1995" name="ind_ley1995" value="{{ old('ind_ley1995') }}">
+                                                                        <label for="ind_ley1995_check" class="control-label" style="padding-left: 10px;">¿Aplica ley 1995?</label>
+                                                                    </div>
+                                                                    <span id="span_ind_ley1995" class="text-muted">
+                                                                        NO
+                                                                    </span>
+                                                                </div>
                                                             </div>
-                                                            <span id="span_ind_ley1995" class="text-muted">
-                                                                NO
-                                                            </span>
                                                         </div>
-                                                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                                            <div class="form-group" style="margin-bottom: 0px;">
-                                                                <input type="checkbox" id="ind_excento_impuesto" name="ind_excento_impuesto" value="{{ old('ind_excento_impuesto') }}">
-                                                                <label for="ind_excento_impuesto_check" class="control-label" style="padding-left: 10px;">¿Exento impuesto?</label>
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <div class="form-group" style="margin-bottom: 0px;">
+                                                                        <input type="checkbox" id="ind_excento_impuesto" name="ind_excento_impuesto" value="{{ old('ind_excento_impuesto') }}">
+                                                                        <label for="ind_excento_impuesto_check" class="control-label" style="padding-left: 10px;">¿Exento impuesto?</label>
+                                                                    </div>
+                                                                    <span id="span_ind_excento_impuesto" class="text-muted">
+                                                                        NO
+                                                                    </span>
+                                                                </div>
                                                             </div>
-                                                            <span id="span_ind_excento_impuesto" class="text-muted">
-                                                                NO
-                                                            </span>
                                                         </div>
-                                                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                                            <div class="form-group" style="margin-bottom: 0px;">
-                                                                <input type="checkbox" id="ind_plusvalia" name="ind_plusvalia" value="{{ old('ind_plusvalia') }}">
-                                                                <label for="ind_plusvalia_check" class="control-label" style="padding-left: 10px;">¿Plusvalia?</label>
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <div class="form-group" style="margin-bottom: 0px;">
+                                                                        <input type="checkbox" id="ind_plusvalia" name="ind_plusvalia" value="{{ old('ind_plusvalia') }}">
+                                                                        <label for="ind_plusvalia_check" class="control-label" style="padding-left: 10px;">¿Plusvalia?</label>
+                                                                    </div>
+                                                                    <span id="span_ind_plusvalia" class="text-muted">
+                                                                        NO
+                                                                    </span>
+                                                                </div>
                                                             </div>
-                                                            <span id="span_ind_plusvalia" class="text-muted">
-                                                                NO
-                                                            </span>
                                                         </div>
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <div class="form-group" style="margin-bottom: 0px;">
+                                                                        <input type="checkbox" id="ind_invalidez" name="ind_invalidez" value="{{ old('ind_invalidez') }}">
+                                                                        <label for="ind_invalidez_check" class="control-label" style="padding-left: 10px;">¿Discapacidad?</label>
+                                                                    </div>
+                                                                    <span id="span_ind_invalidez" class="text-muted">
+                                                                        NO
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <hr style="margin-bottom: 0px;" >
                                                     </div>
                                                 </div>
                                                 <div class="form-actions m-t-20">
@@ -684,33 +715,64 @@
                                                                 <span class="text-danger">@error('ultimo_anio_pago_edit') {{ $message }} @enderror</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                                            <div class="form-group" style="margin-bottom: 0px;">
-                                                                <input type="checkbox" id="ind_ley1995_edit" name="ind_ley1995_edit" class="res-validate" value="{{ old('ind_ley1995_edit') }}">
-                                                                <label for="ind_ley1995_check_edit" class="control-label" style="padding-left: 10px;">¿Aplica ley 1995?</label>
+                                                    </div>
+                                                    <div class="row">
+                                                        <hr style="margin-top: 0px;" >
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <div class="form-group" style="margin-bottom: 0px;">
+                                                                        <input type="checkbox" id="ind_ley1995_edit" name="ind_ley1995_edit" class="res-validate" value="{{ old('ind_ley1995_edit') }}">
+                                                                        <label for="ind_ley1995_check_edit" class="control-label" style="padding-left: 10px;">¿Aplica ley 1995?</label>
+                                                                    </div>
+                                                                    <span id="span_ind_ley1995_edit" class="text-muted">
+                                                                        NO
+                                                                    </span>
+                                                                </div>
                                                             </div>
-                                                            <span id="span_ind_ley1995_edit" class="text-muted">
-                                                                NO
-                                                            </span>
                                                         </div>
-                                                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                                            <div class="form-group" style="margin-bottom: 0px;">
-                                                                <input type="checkbox" id="ind_excento_impuesto_edit" name="ind_excento_impuesto_edit" value="{{ old('ind_excento_impuesto_edit') }}">
-                                                                <label for="ind_excento_impuesto_check_edit" class="control-label" style="padding-left: 10px;">¿Exento impuesto?</label>
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <div class="form-group" style="margin-bottom: 0px;">
+                                                                        <input type="checkbox" id="ind_excento_impuesto_edit" name="ind_excento_impuesto_edit" value="{{ old('ind_excento_impuesto_edit') }}">
+                                                                        <label for="ind_excento_impuesto_check_edit" class="control-label" style="padding-left: 10px;">¿Exento impuesto?</label>
+                                                                    </div>
+                                                                    <span id="span_ind_excento_impuesto_edit" class="text-muted">
+                                                                        NO
+                                                                    </span>
+                                                                </div>
                                                             </div>
-                                                            <span id="span_ind_excento_impuesto_edit" class="text-muted">
-                                                                NO
-                                                            </span>
                                                         </div>
-                                                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
-                                                            <div class="form-group" style="margin-bottom: 0px;">
-                                                                <input type="checkbox" id="ind_plusvalia_edit" name="ind_plusvalia_edit" value="{{ old('ind_plusvalia_edit') }}">
-                                                                <label for="ind_plusvalia_check_edit" class="control-label" style="padding-left: 10px;">¿Plusvalia?</label>
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <div class="form-group" style="margin-bottom: 0px;">
+                                                                        <input type="checkbox" id="ind_plusvalia_edit" name="ind_plusvalia_edit" value="{{ old('ind_plusvalia_edit') }}">
+                                                                        <label for="ind_plusvalia_check_edit" class="control-label" style="padding-left: 10px;">¿Plusvalia?</label>
+                                                                    </div>
+                                                                    <span id="span_ind_plusvalia_edit" class="text-muted">
+                                                                        NO
+                                                                    </span>
+                                                                </div>
                                                             </div>
-                                                            <span id="span_ind_plusvalia_edit" class="text-muted">
-                                                                NO
-                                                            </span>
                                                         </div>
+                                                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <div class="form-group" style="margin-bottom: 0px;">
+                                                                        <input type="checkbox" id="ind_invalidez_edit" name="ind_invalidez_edit" value="{{ old('ind_invalidez_edit') }}">
+                                                                        <label for="ind_invalidez_check_edit" class="control-label" style="padding-left: 10px;">¿Discapacidad?</label>
+                                                                    </div>
+                                                                    <span id="span_ind_invalidez_edit" class="text-muted">
+                                                                        NO
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <hr style="margin-bottom: 0px;" >
                                                     </div>
                                                 </div>
                                                 <div class="form-actions m-t-20">

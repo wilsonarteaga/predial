@@ -535,6 +535,28 @@ $(document).ready(function() {
         });
     }
 
+    if ($('#ind_invalidez').length > 0) {
+        $('#ind_invalidez').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_ind_invalidez').html('SI');
+                $(this).val(1);
+            } else {
+                $('#span_ind_invalidez').html('NO');
+                $(this).val(0);
+            }
+        });
+
+        $('#ind_invalidez_edit').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_ind_invalidez_edit').html('SI');
+                $(this).val(1);
+            } else {
+                $('#span_ind_invalidez_edit').html('NO');
+                $(this).val(0);
+            }
+        });
+    }
+
     if ($('#tipo_factura').length > 0) {
         $('#tipo_factura').off('click').on('click', function() {
             if ($(this).is(':checked')) {

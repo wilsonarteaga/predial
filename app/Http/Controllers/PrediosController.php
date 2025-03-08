@@ -159,6 +159,7 @@ class PrediosController extends Controller
             $predio->ind_ley1995 = $request->filled('ind_ley1995') ? intval($request->ind_ley1995) * -1 : 0;
             $predio->ind_excento_impuesto = $request->filled('ind_excento_impuesto') ? intval($request->ind_excento_impuesto) * -1 : 0;
             $predio->ind_plusvalia = $request->filled('ind_plusvalia') ? intval($request->ind_plusvalia) * -1 : 0;
+            $predio->ind_invalidez = $request->filled('ind_invalidez') ? intval($request->ind_invalidez) * -1 : 0;
             $query = $predio->save();
 
             if($query) {
@@ -257,6 +258,7 @@ class PrediosController extends Controller
                 $predio->ind_ley1995 = $request->filled('ind_ley1995_edit') ? intval($request->ind_ley1995_edit) * -1 : 0;
                 $predio->ind_excento_impuesto = $request->filled('ind_excento_impuesto_edit') ? intval($request->ind_excento_impuesto_edit) * -1 : 0;
                 $predio->ind_plusvalia = $request->filled('ind_plusvalia_edit') ? intval($request->ind_plusvalia_edit) * -1 : 0;
+                $predio->ind_invalidez = $request->filled('ind_invalidez_edit') ? intval($request->ind_invalidez_edit) * -1 : 0;
                 //$query = $predio->save();
                 $predio->save();
 
