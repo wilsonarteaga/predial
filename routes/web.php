@@ -23,6 +23,7 @@ use App\Http\Controllers\PrediosPrescripcionesController;
 use App\Http\Controllers\PrediosTarifaController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\DownloadController;
+use App\Http\Controllers\NotasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +104,18 @@ Route::get('registro_descuentos', [ErrorRequestController::class, 'error_request
 Route::post('create_descuentos', [DescuentosController::class, 'store'])->name('descuentos.create_descuentos')->middleware('checkdb');
 Route::post('update_descuentos', [DescuentosController::class, 'update'])->name('descuentos.update_descuentos')->middleware('checkdb');
 Route::post('delete_descuentos', [DescuentosController::class, 'destroy'])->name('descuentos.delete_descuentos')->middleware('checkdb');
+
+//NotasController
+Route::get('registro_notas/{id}', [NotasController::class, 'create'])->middleware('checkdb');
+Route::get('registro_notas', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
+
+Route::post('create_nota_factura', [NotasController::class, 'store'])->name('notas.create_nota_factura')->middleware('checkdb');
+Route::get('generate_nota_factura_pdf/{id_predio}', [PrediosController::class, 'generate_nota_factura_pdf'])->middleware('checkdb');
+
+Route::post('/get_factura', [NotasController::class, 'get_factura']);
+Route::post('/get_factura_anio', [NotasController::class, 'get_factura_anio']);
+Route::post('/list/notas', [NotasController::class, 'list_notas']);
+Route::get('/export-excel-notas/{fechainicial}/{fechafinal}',[NotasController::class, 'exportExcelNotas']);
 
 //PagosController
 Route::get('registro_pagos/{id}', [PagosController::class, 'create'])->middleware('checkdb');

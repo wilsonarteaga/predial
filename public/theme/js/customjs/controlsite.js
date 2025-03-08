@@ -19,7 +19,7 @@ var globalShowBtnAcuerdos = false;
 var global_facturado = null;
 var arr_autonumeric = ['porcentaje', 'porcentaje_ex', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
     'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_abono',
-    'valor_facturado', 'avaluoigac', 'area', 'valor_paz', 'tasa_diaria', 'tasa_mensual', 'tasa_acuerdo','abono_inicial_acuerdo', 'tarifa_anterior', 'tarifa_nueva'
+    'valor_facturado', 'avaluoigac', 'area', 'valor_paz', 'tasa_diaria', 'tasa_mensual', 'tasa_acuerdo','abono_inicial_acuerdo', 'tarifa_anterior', 'tarifa_nueva', 'valor_concepto1', 'valor_concepto2', 'valor_concepto3', 'valor_concepto4', 'valor_concepto13', 'valor_concepto14', 'valor_concepto15', 'valor_concepto16', 'valor_concepto17', 'valor_concepto18', 'total_calculo'
 ];
 var ROOT_URL = window.location.protocol + "//" + window.location.host;
 $(document).ready(function() {
@@ -186,6 +186,10 @@ $(document).ready(function() {
                         $('#span_cambio_tarifa').empty();
                     }
                 }
+
+                if ($('#interfaz').val() === 'notas') {
+                    getJsonNotas();
+                }
             }
         });
     }
@@ -350,6 +354,12 @@ $(document).ready(function() {
                     modifyValueOnWheel: false,
                     unformatOnSubmit: true,
                     decimalPlaces: "12"
+                });
+            } else if ($('#' + el).hasClass('negativos')) {
+                new AutoNumeric('#' + el, {
+                    emptyInputBehavior: "zero",
+                    modifyValueOnWheel: false,
+                    unformatOnSubmit: true
                 });
             } else {
                 new AutoNumeric('#' + el, {
@@ -739,7 +749,7 @@ $(document).ready(function() {
                     if($('#id_predio.select2').hasClass('pagos')) {
                         getPredio($('#id_predio.select2').val(), true, false);
                     } else if($('#id_predio.select2').hasClass('basico')) {
-                        getPredioPrescripcionExencion($('#id_predio.select2').val(), true, $('#interfaz').val());
+                        getPredioOtros($('#id_predio.select2').val(), true, $('#interfaz').val());
                     }
 
                     if ($('#id_predio.select2').find('option').length > 1) {
@@ -760,6 +770,28 @@ $(document).ready(function() {
             else {
                 if($('#id_predio.select2').hasClass('json')) {
                     $('.predio_row').remove();
+                    if($('#interfaz').val() === 'notas') {
+                        $('#load_resolucion').css('display', 'none');
+                        $('#select_factura').css('display', 'none');
+                        $('#select_anios').css('display', 'none');
+                        $('#valores_factura').css('display', 'none');
+                        $('#numero_factura').empty();
+                        $('#numero_factura').selectpicker('refresh');
+                        $('#ultimo_anio').empty();
+                        $('#ultimo_anio').selectpicker('refresh');
+                        AutoNumeric.set('#valor_concepto1', 0);
+                        AutoNumeric.set('#valor_concepto2', 0);
+                        AutoNumeric.set('#valor_concepto3', 0);
+                        AutoNumeric.set('#valor_concepto4', 0);
+                        AutoNumeric.set('#valor_concepto13', 0);
+                        AutoNumeric.set('#valor_concepto14', 0);
+                        AutoNumeric.set('#valor_concepto15', 0);
+                        AutoNumeric.set('#valor_concepto16', 0);
+                        AutoNumeric.set('#valor_concepto17', 0);
+                        AutoNumeric.set('#valor_concepto18', 0);
+                        AutoNumeric.set('#total_calculo', 0);
+                        $('#btn_save_create').attr('disabled', true);
+                    }
                 }
             }
         });
@@ -1798,7 +1830,7 @@ function getPredio(id_predio, showBlock, getData) {
     });
 }
 
-function getPredioPrescripcionExencion(id_predio, showBlock, interfaz) {
+function getPredioOtros(id_predio, showBlock, interfaz) {
     if (showBlock) {
         $.blockUI({
             message: "Ejecutando b&uacute;squeda de predio. Espere un momento.",
@@ -1824,6 +1856,14 @@ function getPredioPrescripcionExencion(id_predio, showBlock, interfaz) {
     $('.result').empty();
     var jsonObj = {};
     jsonObj.id_predio = id_predio;
+    if (interfaz === 'notas') {
+        jsonObj.notas = 1;
+        $('#select_anios').css('display', 'none');
+        $('#ultimo_anio').empty();
+        $('#ultimo_anio').selectpicker('refresh');
+        var input_predio = $('<input class="res-validate" type="hidden" id="id_predio" name="id_predio" value="' + id_predio + '">');
+        $('#create-form').prepend(input_predio);
+    }
     $.ajax({
         type: 'POST',
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -1833,7 +1873,7 @@ function getPredioPrescripcionExencion(id_predio, showBlock, interfaz) {
             form: JSON.stringify(jsonObj)
         },
         success: function(response) {
-            if (interfaz !== 'cambio_tarifa') {
+            if (interfaz === 'prescribe' || interfaz === 'exencion') {
                 if ($('#create-form').length) {
                     var validatorCreate = $("#create-form").validate();
                     validatorCreate.resetForm();
@@ -1846,7 +1886,7 @@ function getPredioPrescripcionExencion(id_predio, showBlock, interfaz) {
                 }
             }
             if (Object.keys(response.predio).length > 0) {
-                if (interfaz !== 'cambio_tarifa') {
+                if (interfaz === 'prescribe' || interfaz === 'exencion') {
                     if (response.anios_prescripcion.length > 0 || response.anios_exencion.length > 0) {
                         if (interfaz === 'prescribe') {
                             global_anios_prescripcion_exencion = response.anios_prescripcion.map(el => el.ultimo_anio);
@@ -1922,6 +1962,36 @@ function getPredioPrescripcionExencion(id_predio, showBlock, interfaz) {
                     }
                 } else if (interfaz === 'cambio_tarifa') {
                     AutoNumeric.set('#tarifa_anterior', Number(response.predio.tarifa_actual));
+                }  else if (interfaz === 'notas') {
+                    var facturas_pendientes = response.facturas_pendientes;
+                    $('#numero_factura').empty();
+                    $('#valores_factura').fadeOut(function() {
+                        AutoNumeric.set('#valor_concepto1', 0);
+                        AutoNumeric.set('#valor_concepto2', 0);
+                        AutoNumeric.set('#valor_concepto3', 0);
+                        AutoNumeric.set('#valor_concepto4', 0);
+                        AutoNumeric.set('#valor_concepto13', 0);
+                        AutoNumeric.set('#valor_concepto14', 0);
+                        AutoNumeric.set('#valor_concepto15', 0);
+                        AutoNumeric.set('#valor_concepto16', 0);
+                        AutoNumeric.set('#valor_concepto17', 0);
+                        AutoNumeric.set('#valor_concepto18', 0);
+                        AutoNumeric.set('#total_calculo', 0);
+                    });
+                    if (facturas_pendientes.length > 0) {
+                        $.each(facturas_pendientes, function(i, el) {
+                            $('#numero_factura').append('<option value="' + el.factura_pago + '">' + el.factura_pago + '</option>');
+                        });
+                        $('#select_factura').fadeIn();
+                        // $('#load_resolucion').fadeIn();
+                        $('#numero_factura').off('changed.bs.select').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+                            getPredioPago(id_predio, $('#numero_factura').selectpicker('val'), 0);
+                        });
+                    } else {
+                        $('#select_factura').fadeOut();
+                        $('#load_resolucion').fadeOut();
+                    }
+                    $('#numero_factura').selectpicker('refresh');
                 }
 
                 $.unblockUI();
@@ -2745,6 +2815,128 @@ function saveAniosFactura(uncheckedAnios) {
                     console.log(xhr.responseText);
                 }
             });
+        }
+    });
+}
+
+function getPredioPago(id_predio, numero_factura, ultimo_anio) {
+    $.blockUI({
+        message: "Ejecutando b&uacute;squeda de informaci&oacute;n. Espere un momento.",
+        css: {
+            border: 'none',
+            padding: '15px',
+            backgroundColor: '#000',
+            '-webkit-border-radius': '10px',
+            '-moz-border-radius': '10px',
+            opacity: .5,
+            color: '#fff',
+            zIndex: 9999
+        },
+        overlayCSS:  {
+            zIndex: 1100
+        },
+    });
+
+    var jsonObj = {};
+    jsonObj.id_predio = id_predio;
+    jsonObj.numero_factura = numero_factura;
+
+    if ($('#create-form').find('#factura_pago').length > 0) {
+        $('#factura_pago').val(numero_factura);
+    } else {
+        var input_factura_pago = $('<input class="res-validate" type="hidden" id="factura_pago" name="factura_pago" value="' + numero_factura + '">');
+        $('#create-form').prepend(input_factura_pago);
+    }
+
+    if (ultimo_anio > 0) {
+        jsonObj.ultimo_anio = ultimo_anio;
+        if ($('#create-form').find('#ultimo_anio').length > 0) {
+            $('#ultimo_anio').val(ultimo_anio);
+        } else {
+            var input_ultimo_anio = $('<input class="res-validate" type="hidden" id="ultimo_anio" name="ultimo_anio" value="' + ultimo_anio + '">');
+            $('#create-form').prepend(input_ultimo_anio);
+        }
+    }
+    $.ajax({
+        type: 'POST',
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        dataType: 'json',
+        url: ultimo_anio === 0 ? '/get_factura' : '/get_factura_anio',
+        data: {
+            form: JSON.stringify(jsonObj)
+        },
+        success: function(response) {
+            if (response.data !== undefined) {
+                if (Object.keys(response.data).length > 0) {
+                    // console.log('📌 - controlsite.js:2795 - getPredioPago - response:', response.data);
+                    $('#valor_concepto1').attr('prev', Number(response.data.valor_concepto1));
+                    $('#valor_concepto2').attr('prev', Number(response.data.valor_concepto2));
+                    $('#valor_concepto3').attr('prev', Number(response.data.valor_concepto3));
+                    $('#valor_concepto4').attr('prev', Number(response.data.valor_concepto4));
+                    $('#valor_concepto13').attr('prev', Number(response.data.valor_concepto13));
+                    $('#valor_concepto14').attr('prev', Number(response.data.valor_concepto14));
+                    $('#valor_concepto15').attr('prev', Number(response.data.valor_concepto15));
+                    $('#valor_concepto16').attr('prev', Number(response.data.valor_concepto16));
+                    $('#valor_concepto17').attr('prev', Number(response.data.valor_concepto17));
+                    $('#valor_concepto18').attr('prev', Number(response.data.valor_concepto18));
+                    AutoNumeric.set('#valor_concepto1', Number(response.data.valor_concepto1));
+                    AutoNumeric.set('#valor_concepto2', Number(response.data.valor_concepto2));
+                    AutoNumeric.set('#valor_concepto3', Number(response.data.valor_concepto3));
+                    AutoNumeric.set('#valor_concepto4', Number(response.data.valor_concepto4));
+                    AutoNumeric.set('#valor_concepto13', Number(response.data.valor_concepto13));
+                    AutoNumeric.set('#valor_concepto14', Number(response.data.valor_concepto14));
+                    AutoNumeric.set('#valor_concepto15', Number(response.data.valor_concepto15));
+                    AutoNumeric.set('#valor_concepto16', Number(response.data.valor_concepto16));
+                    AutoNumeric.set('#valor_concepto17', Number(response.data.valor_concepto17));
+                    AutoNumeric.set('#valor_concepto18', Number(response.data.valor_concepto18));
+                    AutoNumeric.set('#total_calculo', Number(response.data.total_calculo));
+                    $('#valores_factura').fadeIn();
+                    $('.conceptos').bind('change', function() {
+                        var changed = false;
+                        var total = 0;
+                        $.each($('.conceptos'), function(i, el) {
+                            if (Number($(el).attr('prev')) !== AutoNumeric.getNumber('#' + $(el).attr('id'))) {
+                                changed = true;
+                            }
+                            total += AutoNumeric.getNumber('#' + $(el).attr('id'));
+                        });
+                        AutoNumeric.set('#total_calculo', total);
+
+                        if (changed) {
+                            $('#load_resolucion').fadeIn();
+                            $('#btn_save_create').attr('disabled', false);
+                        } else {
+                            $('#load_resolucion').fadeOut();
+                            $('#btn_save_create').attr('disabled', true);
+                        }
+                    });
+                    $.unblockUI();
+                } else {
+                    $.unblockUI();
+                }
+            } else if (response.anios !== undefined) {
+                // console.log('📌 - controlsite.js:2869 - getPredioPago - response.anios:', response.anios);
+                if (Object.keys(response.anios).length > 0) {
+                    $('#ultimo_anio').empty();
+                    $.each(response.anios, function(i, el) {
+                        $('#ultimo_anio').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
+                    });
+                    $('#ultimo_anio').selectpicker('refresh');
+                    $('#select_anios').fadeIn();
+                    $('#ultimo_anio').off('changed.bs.select').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+                        getPredioPago(id_predio, $('#numero_factura').selectpicker('val'), parseInt($('#ultimo_anio').selectpicker('val')));
+                        $('#load_resolucion').fadeOut();
+                        $('#btn_save_create').attr('disabled', true);
+                    });
+                }
+
+                $.unblockUI();
+            } else {
+                $.unblockUI();
+            }
+        },
+        error: function(xhr) {
+            console.log(xhr.responseText);
         }
     });
 }

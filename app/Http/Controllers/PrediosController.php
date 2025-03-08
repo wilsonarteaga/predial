@@ -1218,11 +1218,12 @@ class PrediosController extends Controller
             // }
 
             // Si no existe un predio_pago para el año actual, entonces EJECUTAR PROCEDIMIENTO DE CALCULO
-            if($ultimo_anio_pagar == null ||
+            if(($ultimo_anio_pagar == null ||
                 ($ultimo_anio_pagar != null &&
                  $ultimo_anio_pagar->valor_pago == 0 &&
                  $ultimo_anio_pagar->fecha_pago == null &&
                  $ultimo_anio_pagar->id_banco == null)
+               ) && intval($informativa) == 0
             ) {
                 // if(intval($tmp) == 0 && $ultimo_anio_pagar != null) {
                     $fecha_emision = $ultimo_anio_pagar->fecha_emision != null && $facturaYaPagada ? Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->fecha_emision) : $fecha_emision;
@@ -1837,11 +1838,12 @@ class PrediosController extends Controller
             // }
 
             // Si no existe un predio_pago para el año actual, entonces EJECUTAR PROCEDIMIENTO DE CALCULO
-            if($ultimo_anio_pagar == null ||
-              ($ultimo_anio_pagar != null &&
-               $ultimo_anio_pagar->valor_pago == 0 &&
-               $ultimo_anio_pagar->fecha_pago == null &&
-               $ultimo_anio_pagar->id_banco == null)
+            if(($ultimo_anio_pagar == null ||
+                ($ultimo_anio_pagar != null &&
+                 $ultimo_anio_pagar->valor_pago == 0 &&
+                 $ultimo_anio_pagar->fecha_pago == null &&
+                 $ultimo_anio_pagar->id_banco == null)
+               ) && intval($informativa) == 0
             ) {
                 // if(intval($tmp) == 0 && $ultimo_anio_pagar != null) {
                     $fecha_emision = $ultimo_anio_pagar->fecha_emision != null && $facturaYaPagada ? Carbon::createFromFormat('Y-m-d H:i:s.u', $ultimo_anio_pagar->fecha_emision) : $fecha_emision;
@@ -2637,11 +2639,6 @@ class PrediosController extends Controller
 
     public function get_predio(Request $request) {
         $data = json_decode($request->form);
-
-        $dt = Carbon::now();
-        $currentYear = $dt->year;
-        $array_anios = [];
-
         $predio =  DB::table('predios')->join('zonas', function ($join) {
                         $join->on('predios.id_zona', '=', 'zonas.id');
                     })
@@ -2650,229 +2647,247 @@ class PrediosController extends Controller
                     ->where('predios.id', $data->{'id_predio'})
                     ->first();
 
-        // seleccionar minimo ultimo_año predios pagos
-        // maximo año seria el actual
-        // verificar si hay años intermedios que no tengan calculo
-        // si hay años intermedios, ejecutar calculo, sino no ejecutar
-        if (property_exists($data, 'calcular')) {
-            $minAnioCalculado = DB::table('predios_pagos')
-                                ->select(DB::raw('min(ultimo_anio) as min_anio_calculo'))
-                                ->where('predios_pagos.id_predio', $data->{'id_predio'})
+        if (!property_exists($data, 'notas')) {
+            $dt = Carbon::now();
+            $currentYear = $dt->year;
+            $array_anios = [];
+
+            // seleccionar minimo ultimo_año predios pagos
+            // maximo año seria el actual
+            // verificar si hay años intermedios que no tengan calculo
+            // si hay años intermedios, ejecutar calculo, sino no ejecutar
+            if (property_exists($data, 'calcular')) {
+                $minAnioCalculado = DB::table('predios_pagos')
+                                    ->select(DB::raw('min(ultimo_anio) as min_anio_calculo'))
+                                    ->where('predios_pagos.id_predio', $data->{'id_predio'})
+                                    // ->where('prescrito', 0)
+                                    // ->where('exencion', 0)
+                                    ->first();
+
+                $listaAnios = [];
+                for($i = intval($minAnioCalculado->min_anio_calculo); $i <= $currentYear; $i++) {
+                    array_push($listaAnios, $i); // implode(",", $listaAnios)
+                }
+
+                $distinct_calcs = DB::table('predios_pagos')
+                    ->select(DB::raw('distinct ultimo_anio as ultimo_anio'))
+                    ->where('predios_pagos.id_predio', $data->{'id_predio'})
+                    // ->where('prescrito', 0)
+                    // ->where('exencion', 0)
+                    ->get();
+
+                // Solo si hay años intermedios sin calculo, se ejecutaria el calculo para poder
+                // tener la lista de años con deuda
+                if (count($distinct_calcs) < count($listaAnios)) {
+                    DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?,?", array(
+                        intval($request->session()->get('userid')),
+                        $currentYear,
+                        0, // vista previa
+                        $data->{'id_predio'},
+                        Carbon::createFromFormat("Y-m-d H:i:s", $dt->format('Y-m-d') . ' 00:00:00')->format('Y-m-d H:i:s')
+                    ));
+                }
+            }
+
+            $lista_propietarios = DB::table('predios')
+                        ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                        ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                        ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
+                ->select(DB::raw('predios_propietarios.id, predios_propietarios.jerarquia, TRIM(propietarios.nombre) as nombre'))
+                ->where('predios.estado', 1)
+                ->where('predios_propietarios.id_predio', $data->{'id_predio'})
+                ->orderBy('predios_propietarios.jerarquia')
+                ->get();
+
+            $propietario_ppal = DB::table('predios')
+                                        ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                                        ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                                        ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
+                    ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(CONCAT(\'(\',predios_propietarios.jerarquia, \') \', TRIM(propietarios.nombre), \' - \', propietarios.identificacion), \'<br />\') AS propietarios'))
+                    ->where('predios.estado', 1)
+                    ->where('predios_propietarios.jerarquia', '001')
+                    ->where('predios_propietarios.id_predio', $data->{'id_predio'})
+                    ->groupBy('predios_propietarios.id_predio')
+                    ->get();
+
+            if($propietario_ppal) {
+                // foreach ($predios as $key => $predio) {
+                $desired_object = self::findInCollection($propietario_ppal, 'id_predio', $predio->id);
+                if($desired_object) {
+                    $predio->propietarios = $desired_object->propietarios;
+                }
+                else {
+                    $predio->propietarios = 'Sin asignar';
+                }
+                // }
+            }
+            else {
+                // foreach ($predios as $key => $predio) {
+                $predio->propietarios = 'Sin asignar';
+                // }
+            }
+
+            $acuerdo_pago = PredioAcuerdoPago::where('id_predio', $data->{'id_predio'})
+                            ->where('estado_acuerdo', 1) // 1 activo, 0 anulado
+                            // ->where('anulado_acuerdo', 0)
+                            ->first();
+
+            $propietario = DB::table('predios')
+                                ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                                ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                            ->select(DB::raw('propietarios.*'))
+                            ->where('predios.estado', 1)
+                            ->where('predios_propietarios.jerarquia', '001')
+                            ->where('predios_propietarios.id_predio', $data->{'id_predio'})
+                            ->first();
+
+            // Para cada factura extraer el maximo año no pagado (Solo para registros que si tienen numero de factura)
+            // Esto debido a que aveces con un mismo numero de factura se liquidan varios años.
+            $anios_con_factura = DB::table('predios_pagos')
+                    ->where('id_predio', $data->{'id_predio'})
+                    ->where('pagado', 0)
+                    ->where('anulada', 0)
+                    // ->where('prescrito', 0)
+                    // ->where('exencion', 0)
+                    ->whereNotNull('factura_pago')
+                    ->select(DB::raw('MAX(predios_pagos.ultimo_anio) AS ultimo_anio, predios_pagos.factura_pago'))
+                    ->groupBy('predios_pagos.factura_pago')
+                    ->orderBy('ultimo_anio', 'desc')
+                    ->get();
+
+            // if(count($anios) == 0) {
+            // Todos los años no pagados y que no tienen numero de factura
+            $anios_sin_factura = DB::table('predios_pagos')
+                ->where('id_predio', $data->{'id_predio'})
+                ->where('pagado', 0)
+                ->where('anulada', 0)
+                // ->where('prescrito', 0)
+                // ->where('exencion', 0)
+                ->whereNull('factura_pago')
+                ->select(DB::raw('predios_pagos.ultimo_anio, predios_pagos.factura_pago, ISNULL(predios_pagos.total_calculo, 0) AS total_calculo'))
+                ->orderBy('ultimo_anio', 'desc')
+                ->get();
+            // }
+
+            $anios = [];
+            $array_anios = [];
+
+            foreach ($anios_con_factura as $anio) {
+                $lista_anios = [];
+                $anios_factura = DB::table('predios_pagos')
+                    ->where('id_predio', $data->{'id_predio'})
+                    ->where('pagado', 0)
+                    ->where('anulada', 0)
+                    ->where('factura_pago', $anio->factura_pago)
+                    ->select('predios_pagos.ultimo_anio')
+                    ->orderBy('ultimo_anio', 'desc')
+                    ->get();
+                if (count($anios_factura) > 1) {
+                    foreach ($anios_factura as $anio_factura) {
+                        array_push($lista_anios, $anio_factura->ultimo_anio);
+                    }
+                    $anio->lista_anios = $lista_anios;
+                } else {
+                    $anio->lista_anios = $lista_anios;
+                }
+                array_push($anios, $anio);
+            }
+            foreach ($anios_sin_factura as $anio) {
+                array_push($anios, $anio);
+            }
+
+            rsort($anios);
+            foreach ($anios as $anio) {
+                array_push($array_anios, $anio);
+            }
+
+            $exists_current_anio = false;
+            foreach ($array_anios as $anio) {
+                if ($anio->ultimo_anio == $currentYear) {
+                    $exists_current_anio = true;
+                }
+            }
+
+            // Verificar si el año actual ya tiene un calculo con o sin pago
+            $ultimo_anio_pagar = DB::table('predios_pagos')
+                                ->where('id_predio', $data->{'id_predio'})
+                                ->where('ultimo_anio', $currentYear)
+                                ->where('anulada', 0)
                                 // ->where('prescrito', 0)
                                 // ->where('exencion', 0)
                                 ->first();
 
-            $listaAnios = [];
-            for($i = intval($minAnioCalculado->min_anio_calculo); $i <= $currentYear; $i++) {
-                array_push($listaAnios, $i); // implode(",", $listaAnios)
-            }
+            if ($ultimo_anio_pagar->exencion != 0) {
+                $exencion = DB::table('predios_exenciones')
+                    ->where('id_predio', $data->{'id_predio'})
+                    ->where('exencion_anio', $currentYear)
+                    ->first();
 
-            $distinct_calcs = DB::table('predios_pagos')
-                ->select(DB::raw('distinct ultimo_anio as ultimo_anio'))
-                ->where('predios_pagos.id_predio', $data->{'id_predio'})
-                // ->where('prescrito', 0)
-                // ->where('exencion', 0)
-                ->get();
-
-            // Solo si hay años intermedios sin calculo, se ejecutaria el calculo para poder
-            // tener la lista de años con deuda
-            if (count($distinct_calcs) < count($listaAnios)) {
-                DB::select("SET NOCOUNT ON; EXEC SP_CALCULO_PREDIAL ?,?,?,?,?", array(
-                    intval($request->session()->get('userid')),
-                    $currentYear,
-                    0, // vista previa
-                    $data->{'id_predio'},
-                    Carbon::createFromFormat("Y-m-d H:i:s", $dt->format('Y-m-d') . ' 00:00:00')->format('Y-m-d H:i:s')
-                ));
-            }
-        }
-
-        $lista_propietarios = DB::table('predios')
-                    ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
-                    ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
-                    ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
-            ->select(DB::raw('predios_propietarios.id, predios_propietarios.jerarquia, TRIM(propietarios.nombre) as nombre'))
-            ->where('predios.estado', 1)
-            ->where('predios_propietarios.id_predio', $data->{'id_predio'})
-            ->orderBy('predios_propietarios.jerarquia')
-            ->get();
-
-        $propietario_ppal = DB::table('predios')
-                                     ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
-                                     ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
-                                     ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
-                ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(CONCAT(\'(\',predios_propietarios.jerarquia, \') \', TRIM(propietarios.nombre), \' - \', propietarios.identificacion), \'<br />\') AS propietarios'))
-                ->where('predios.estado', 1)
-                ->where('predios_propietarios.jerarquia', '001')
-                ->where('predios_propietarios.id_predio', $data->{'id_predio'})
-                ->groupBy('predios_propietarios.id_predio')
-                ->get();
-
-        if($propietario_ppal) {
-            // foreach ($predios as $key => $predio) {
-            $desired_object = self::findInCollection($propietario_ppal, 'id_predio', $predio->id);
-            if($desired_object) {
-                $predio->propietarios = $desired_object->propietarios;
-            }
-            else {
-                $predio->propietarios = 'Sin asignar';
-            }
-            // }
-        }
-        else {
-            // foreach ($predios as $key => $predio) {
-            $predio->propietarios = 'Sin asignar';
-            // }
-        }
-
-        $acuerdo_pago = PredioAcuerdoPago::where('id_predio', $data->{'id_predio'})
-                        ->where('estado_acuerdo', 1) // 1 activo, 0 anulado
-                        // ->where('anulado_acuerdo', 0)
-                        ->first();
-
-        $propietario = DB::table('predios')
-                            ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
-                            ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
-                        ->select(DB::raw('propietarios.*'))
-                        ->where('predios.estado', 1)
-                        ->where('predios_propietarios.jerarquia', '001')
-                        ->where('predios_propietarios.id_predio', $data->{'id_predio'})
-                        ->first();
-
-        // Para cada factura extraer el maximo año no pagado (Solo para registros que si tienen numero de factura)
-        // Esto debido a que aveces con un mismo numero de factura se liquidan varios años.
-        $anios_con_factura = DB::table('predios_pagos')
-                ->where('id_predio', $data->{'id_predio'})
-                ->where('pagado', 0)
-                ->where('anulada', 0)
-                // ->where('prescrito', 0)
-                // ->where('exencion', 0)
-                ->whereNotNull('factura_pago')
-                ->select(DB::raw('MAX(predios_pagos.ultimo_anio) AS ultimo_anio, predios_pagos.factura_pago'))
-                ->groupBy('predios_pagos.factura_pago')
-                ->orderBy('ultimo_anio', 'desc')
-                ->get();
-
-        // if(count($anios) == 0) {
-        // Todos los años no pagados y que no tienen numero de factura
-        $anios_sin_factura = DB::table('predios_pagos')
-            ->where('id_predio', $data->{'id_predio'})
-            ->where('pagado', 0)
-            ->where('anulada', 0)
-            // ->where('prescrito', 0)
-            // ->where('exencion', 0)
-            ->whereNull('factura_pago')
-            ->select(DB::raw('predios_pagos.ultimo_anio, predios_pagos.factura_pago, ISNULL(predios_pagos.total_calculo, 0) AS total_calculo'))
-            ->orderBy('ultimo_anio', 'desc')
-            ->get();
-        // }
-
-        $anios = [];
-        $array_anios = [];
-
-        foreach ($anios_con_factura as $anio) {
-            $lista_anios = [];
-            $anios_factura = DB::table('predios_pagos')
-                ->where('id_predio', $data->{'id_predio'})
-                ->where('pagado', 0)
-                ->where('anulada', 0)
-                ->where('factura_pago', $anio->factura_pago)
-                ->select('predios_pagos.ultimo_anio')
-                ->orderBy('ultimo_anio', 'desc')
-                ->get();
-            if (count($anios_factura) > 1) {
-                foreach ($anios_factura as $anio_factura) {
-                    array_push($lista_anios, $anio_factura->ultimo_anio);
+                if ($exencion != null) {
+                    $ultimo_anio_pagar->exencion_porcentaje = $exencion->porcentaje;
                 }
-                $anio->lista_anios = $lista_anios;
-            } else {
-                $anio->lista_anios = $lista_anios;
             }
-            array_push($anios, $anio);
-        }
-        foreach ($anios_sin_factura as $anio) {
-            array_push($anios, $anio);
-        }
 
-        rsort($anios);
-        foreach ($anios as $anio) {
-            array_push($array_anios, $anio);
-        }
-
-        $exists_current_anio = false;
-        foreach ($array_anios as $anio) {
-            if ($anio->ultimo_anio == $currentYear) {
-                $exists_current_anio = true;
+            // Si no existe un calculo para el año actual o si el calculo existe pero aun no tiene un numero
+            // de factura asignado, entonces, se agrega el año a la lista
+            if($ultimo_anio_pagar->ultimo_anio != $currentYear && !$exists_current_anio && count($array_anios) > 0) {
+                array_unshift($array_anios, ['ultimo_anio' => strval($currentYear), 'factura_pago' => null, 'total_calculo' => 0]);
             }
-        }
 
-        // Verificar si el año actual ya tiene un calculo con o sin pago
-        $ultimo_anio_pagar = DB::table('predios_pagos')
-                            ->where('id_predio', $data->{'id_predio'})
-                            ->where('ultimo_anio', $currentYear)
-                            ->where('anulada', 0)
-                            // ->where('prescrito', 0)
-                            // ->where('exencion', 0)
-                            ->first();
+            // Verificar prescripcion
+            $anios_prescripcion = [];
+            $anios_exencion = [];
+            $count_no_pagos = PredioPago::where('id_predio', $data->{'id_predio'})
+                ->where('pagado', 0)
+                ->where('anulada', 0)
+                ->where('prescrito', 0)
+                ->where('exencion', 0)
+                ->count();
+            if($count_no_pagos > 0) {
+                $anios_prescripcion = DB::select('
+                    select
+                        pp.ultimo_anio
+                    from
+                        predios_pagos pp
+                    where
+                        pp.id_predio = '. $data->{'id_predio'} .' and
+                        pp.pagado = 0 and
+                        pp.anulada = 0 and
+                        pp.prescrito = 0 and
+                        pp.exencion = 0
+                    order by pp.ultimo_anio'
+                );
 
-        if ($ultimo_anio_pagar->exencion != 0) {
-            $exencion = DB::table('predios_exenciones')
-                ->where('id_predio', $data->{'id_predio'})
-                ->where('exencion_anio', $currentYear)
-                ->first();
-
-            if ($exencion != null) {
-                $ultimo_anio_pagar->exencion_porcentaje = $exencion->porcentaje;
+                $anios_exencion = DB::select('
+                    select
+                        pp.ultimo_anio
+                    from
+                        predios_pagos pp
+                    where
+                        pp.id_predio = '. $data->{'id_predio'} .' and
+                        pp.pagado = 0 and
+                        pp.anulada = 0 and
+                        pp.prescrito = 0 and
+                        pp.exencion = 0
+                    order by pp.ultimo_anio'
+                );
             }
-        }
 
-        // Si no existe un calculo para el año actual o si el calculo existe pero aun no tiene un numero
-        // de factura asignado, entonces, se agrega el año a la lista
-        if($ultimo_anio_pagar->ultimo_anio != $currentYear && !$exists_current_anio && count($array_anios) > 0) {
-            array_unshift($array_anios, ['ultimo_anio' => strval($currentYear), 'factura_pago' => null, 'total_calculo' => 0]);
-        }
-
-        // Verificar prescripcion
-        $anios_prescripcion = [];
-        $anios_exencion = [];
-        $count_no_pagos = PredioPago::where('id_predio', $data->{'id_predio'})
-            ->where('pagado', 0)
-            ->where('anulada', 0)
-            ->where('prescrito', 0)
-            ->where('exencion', 0)
-            ->count();
-        if($count_no_pagos > 0) {
-            $anios_prescripcion = DB::select('
-                select
-                    pp.ultimo_anio
-                from
-                    predios_pagos pp
-                where
-                    pp.id_predio = '. $data->{'id_predio'} .' and
-                    pp.pagado = 0 and
-                    pp.anulada = 0 and
-                    pp.prescrito = 0 and
-                    pp.exencion = 0
-                order by pp.ultimo_anio'
+            return response()->json(
+                [
+                    'predio' => $predio,
+                    'acuerdo_pago' => $acuerdo_pago,
+                    'propietario' => $propietario,
+                    'propietarios' => $lista_propietarios,
+                    'anios' => $array_anios,
+                    'anio_actual' => $currentYear,
+                    'ultimo_anio' => $ultimo_anio_pagar,
+                    'anios_prescripcion' => $anios_prescripcion,
+                    'anios_exencion' => $anios_exencion
+                ]
             );
-
-            $anios_exencion = DB::select('
-                select
-                    pp.ultimo_anio
-                from
-                    predios_pagos pp
-                where
-                    pp.id_predio = '. $data->{'id_predio'} .' and
-                    pp.pagado = 0 and
-                    pp.anulada = 0 and
-                    pp.prescrito = 0 and
-                    pp.exencion = 0
-                order by pp.ultimo_anio'
-            );
-        }
-
-        $facturas_pendientes = [];
-        if (property_exists($data, 'pendientes')) {
+        } else {
+            $facturas_pendientes = [];
             $count_facturas_no_pagadas = PredioPago::where('id_predio', $data->{'id_predio'})
                 ->where('pagado', 0)
                 ->where('anulada', 0)
@@ -2891,25 +2906,16 @@ class PrediosController extends Controller
                     ->whereNotNull('factura_pago')
                     ->select(DB::raw('predios_pagos.factura_pago AS factura_pago'))
                     ->groupBy('predios_pagos.factura_pago')
-                    ->orderBy('ultimo_anio', 'desc')
                     ->get();
             }
-        }
 
-        return response()->json(
-            [
-                'predio' => $predio,
-                'acuerdo_pago' => $acuerdo_pago,
-                'propietario' => $propietario,
-                'propietarios' => $lista_propietarios,
-                'anios' => $array_anios,
-                'anio_actual' => $currentYear,
-                'ultimo_anio' => $ultimo_anio_pagar,
-                'anios_prescripcion' => $anios_prescripcion,
-                'anios_exencion' => $anios_exencion,
-                'facturas_pendientes' => $facturas_pendientes
-            ]
-        );
+            return response()->json(
+                [
+                    'predio' => $predio,
+                    'facturas_pendientes' => $facturas_pendientes
+                ]
+            );
+        }
     }
 
     public function avaluos_predio(Request $request) {

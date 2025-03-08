@@ -183,7 +183,7 @@
                                                         </div>
                                                     @endif
                                                 </div>
-                                                <h2 style="width: 100%;">Lista de prescripciones <i style="color: #14813a; float: right; cursor: pointer;" onMouseOver="this.style.color='#14813a'" onMouseOut="this.style.color='#c0c0c0'" class="fa fa-print" id="print_prescripciones" url="/generate_prescripciones_pdf/"></i></h2>
+                                                <h2 style="width: 100%;">Lista de prescripciones <i style="color: #14813a; float: right; cursor: pointer;" onMouseOver="this.style.color='#14813a'" onMouseOut="this.style.color='#c0c0c0'" class="fa fa-print" id="print_prescripciones"></i></h2>
                                                 <table id="myTable" class="table table-hover table-striped table-bordered">
                                                     <thead>
                                                         <tr>
@@ -233,7 +233,7 @@
 
 @section('modales')
 <div id="modal-impresion" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="modal-impresion-label" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-sm" style="width: 24%;">
+    <div class="modal-dialog modal-sm" style="width: 25%;">
         <div class="modal-content">
             <div class="modal-header">
                 {{-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> --}}

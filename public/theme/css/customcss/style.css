@@ -139,3 +139,12 @@ span.span_predio {
     position: absolute;
     top: 38px;
 }
+.form-control-static {
+    padding-top: 0;
+}
+.nota-row {
+    cursor: pointer;
+}
+.nota-noclick-row {
+    cursor: pointer;
+}

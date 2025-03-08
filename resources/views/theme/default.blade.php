@@ -15,6 +15,8 @@
     <link href="{!! asset('theme/bootstrap/dist/css/bootstrap.min.css') !!}" rel="stylesheet">
     <link href="{!! asset('theme/plugins/bower_components/datatables/jquery.dataTables.min.css') !!}" rel="stylesheet" type="text/css" />
     <link href="https://cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.datatables.net/select/1.3.4/css/select.bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.datatables.net/select/1.3.4/css/select.dataTables.min.css" rel="stylesheet" type="text/css" />
 
     <!-- Menu CSS -->
     <link href="{!! asset('theme/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css') !!}" rel="stylesheet">
@@ -164,6 +166,9 @@
     <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.3.4/js/dataTables.select.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.3.4/js/select.bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.3.4/js/select.dataTables.min.js"></script>
 
     <!-- Custom Theme JavaScript -->
     <script src="{!! asset('theme/js/custom.min.js') !!}"></script>
