@@ -1205,6 +1205,27 @@ class PrediosController extends Controller
                                     // ->where('pagado', '<>', 0) // 0: Pendiente, -1: Pagado
                                     ->first();
 
+            if (intval($informativa) == 1) {
+                if ($ultimo_anio_pagar->factura_pago != null) {
+                    $temp_factura_pago = $ultimo_anio_pagar->factura_pago;
+                    $count_factura_pago = DB::table('predios_pagos')
+                                        ->where('id_predio', $id)
+                                        ->where('factura_pago', $temp_factura_pago)
+                                        ->where('pagado', 0)
+                                        ->where('anulada', 0)
+                                        ->count();
+                    if ($count_factura_pago > 1) {
+                        $ultimo_anio_pagar = DB::table('predios_pagos')
+                                            ->where('id_predio', $id)
+                                            ->where('factura_pago', $temp_factura_pago)
+                                            ->orderBy('ultimo_anio', 'desc')
+                                            ->first();
+
+                        $anio_ini = $ultimo_anio_pagar->ultimo_anio;
+                    }
+                }
+            }
+
             if($ultimo_anio_pagar != null && intval($ultimo_anio_pagar->pagado) != 0) {
                 $facturaYaPagada = true;
             }
