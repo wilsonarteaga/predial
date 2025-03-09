@@ -181,6 +181,7 @@ class ExportNotas implements FromView, WithTitle
                 ->join('predios_pagos', 'predios_pagos.id', '=', 'notas.id_predio_pago')
                 ->join('predios', 'predios.id', '=', 'predios_pagos.id_predio')
                 ->select('notas.*', 'predios.codigo_predio', 'usuarios.nombres', 'usuarios.apellidos')
+                ->where('notas.estado', 1)
                 ->whereRaw(DB::raw("notas.created_at >= CONVERT(datetime, '" . $this->fechaInicial . " 00:00:00.000')"))
                 ->whereRaw(DB::raw("notas.created_at <= CONVERT(datetime, '" . $this->fechaFinal . " 23:59:59.999')"))
                 ->orderBy('notas.created_at', 'desc')

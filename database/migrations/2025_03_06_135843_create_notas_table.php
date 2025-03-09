@@ -15,7 +15,7 @@ class CreateNotasTable extends Migration
     {
         Schema::create('notas', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_predio_pago');
+            $table->integer('id_predio_pago');
             $table->unsignedBigInteger('id_usuario');
             $table->smallInteger('anio');
             $table->string('factura_pago', 128);
@@ -87,6 +87,7 @@ class CreateNotasTable extends Migration
             $table->float('total_tres')->default(0);
             $table->string('file_name', 1024)->nullable();
             $table->timestamps();
+            $table->boolean('estado')->default(1);
 
             $table->foreign('id_predio_pago')->references('id')->on('predios_pagos');
             $table->foreign('id_usuario')->references('id')->on('usuarios');

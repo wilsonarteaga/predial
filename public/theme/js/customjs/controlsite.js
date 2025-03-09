@@ -1866,6 +1866,7 @@ function getPredioOtros(id_predio, showBlock, interfaz) {
     if (interfaz === 'notas') {
         jsonObj.notas = 1;
         $('#select_anios').css('display', 'none');
+        $('#select_anio').css('display', 'none');
         $('#ultimo_anio').empty();
         $('#ultimo_anio').selectpicker('refresh');
         var input_predio = $('<input class="res-validate" type="hidden" id="id_predio" name="id_predio" value="' + id_predio + '">');
@@ -2917,6 +2918,8 @@ function getPredioPago(id_predio, numero_factura, ultimo_anio) {
                             $('#btn_save_create').attr('disabled', true);
                         }
                     });
+                    $('#p_ultimo_anio').html(response.data.ultimo_anio);
+                    $('#select_anio').fadeIn();
                     $.unblockUI();
                 } else {
                     $.unblockUI();
@@ -2952,6 +2955,7 @@ function cleanNotas() {
     $('#load_resolucion').css('display', 'none');
     $('#select_factura').css('display', 'none');
     $('#select_anios').css('display', 'none');
+    $('#select_anio').css('display', 'none');
     $('#valores_factura').css('display', 'none');
     $('#numero_factura').empty();
     $('#numero_factura').selectpicker('refresh');

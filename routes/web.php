@@ -116,6 +116,7 @@ Route::post('/get_factura', [NotasController::class, 'get_factura']);
 Route::post('/get_factura_anio', [NotasController::class, 'get_factura_anio']);
 Route::post('/list/notas', [NotasController::class, 'list_notas']);
 Route::get('/export-excel-notas/{fechainicial}/{fechafinal}',[NotasController::class, 'exportExcelNotas']);
+Route::post('/store/notas_delete', [NotasController::class, 'store_notas_delete']);
 
 //PagosController
 Route::get('registro_pagos/{id}', [PagosController::class, 'create'])->middleware('checkdb');

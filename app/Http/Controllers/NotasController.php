@@ -121,7 +121,7 @@ class NotasController extends Controller
                     $resolucion_predio->id_predio = $predio->id;
                     $resolucion_predio->id_resolucion = $resolucion->id;
                     $resolucion_predio->id_usuario = $request->session()->get('userid');
-                    $resolucion_predio->descripcion = 'Nota debito-credito predio ' . $predio->codigo_predio . ', tarifa anterior: ' . $request->tarifa_anterior . ', tarifa nueva: ' . $request->tarifa_nueva;
+                    $resolucion_predio->descripcion = 'Nota debito-credito predio ' . $predio->codigo_predio;
                     $query = $resolucion_predio->save();
                     // if($query) {
                     $nota = new Nota();
@@ -299,12 +299,88 @@ class NotasController extends Controller
                 ->join('predios_pagos', 'predios_pagos.id', '=', 'notas.id_predio_pago')
                 ->join('predios', 'predios.id', '=', 'predios_pagos.id_predio')
                 ->select('notas.*', 'predios_pagos.id_predio', 'predios.codigo_predio', 'usuarios.nombres', 'usuarios.apellidos')
+                ->where('notas.estado', 1)
                 ->orderBy('notas.created_at', 'desc')
                 ->get();
 
         return response()->json([
             'notas' => $notas
         ]);
+    }
+
+    public function store_notas_delete(Request $request) {
+        $data = json_decode($request->form);
+
+        DB::beginTransaction();
+        try {
+            $prev_nota = DB::table('notas')
+                                    ->select('notas.*')
+                                    ->where('notas.id', $data->{'id'})
+                                    ->first();
+
+            // Eliminar el nota
+            $deleted = Nota::where('id', $prev_nota->id)
+                        ->update([
+                            'estado' => 0
+                        ]);
+
+            if($deleted) {
+                $predio_pago = DB::table('predios_pagos')
+                                ->where('id', $prev_nota->id_predio_pago)
+                                ->first();
+
+                if ($predio_pago->total_calculo == $prev_nota->total_calculo) {
+                    $updated = PredioPago::where('id', $prev_nota->id_predio_pago)
+                    ->update([
+                        'valor_concepto1' => $prev_nota->prev_valor_concepto1,
+                        'valor_concepto2' => $prev_nota->prev_valor_concepto2,
+                        'valor_concepto3' => $prev_nota->prev_valor_concepto3,
+                        'valor_concepto4' => $prev_nota->prev_valor_concepto4,
+                        'valor_concepto13' => $prev_nota->prev_valor_concepto13,
+                        'valor_concepto14' => $prev_nota->prev_valor_concepto14,
+                        'valor_concepto15' => $prev_nota->prev_valor_concepto15,
+                        'valor_concepto16' => $prev_nota->prev_valor_concepto16,
+                        'valor_concepto17' => $prev_nota->prev_valor_concepto17,
+                        'valor_concepto18' => $prev_nota->prev_valor_concepto18,
+                        'total_calculo' => $prev_nota->prev_total_calculo,
+                        'total_dos' => $prev_nota->prev_total_dos,
+                        'total_tres' => $prev_nota->prev_total_tres
+                    ]);
+                }
+
+                DB::commit();
+
+                $notas = DB::table('notas')
+                        ->join('usuarios', 'usuarios.id', '=', 'notas.id_usuario')
+                        ->join('predios_pagos', 'predios_pagos.id', '=', 'notas.id_predio_pago')
+                        ->join('predios', 'predios.id', '=', 'predios_pagos.id_predio')
+                        ->select('notas.*', 'predios_pagos.id_predio', 'predios.codigo_predio', 'usuarios.nombres', 'usuarios.apellidos')
+                        ->where('notas.estado', 1)
+                        ->orderBy('notas.created_at', 'desc')
+                        ->get();
+
+                return response()->json([
+                    'notas' => $notas,
+                    'message' => 'La información del pago se eliminó satisfactoriamente.',
+                    'error' => false
+                ]);
+            }
+            else {
+                DB::rollback();
+                return response()->json([
+                    'message' => 'No se pudo eliminar la información de la nota a factura. Contacte al administrador del sistema.',
+                    'error' => true
+                ]);
+            }
+        }
+        catch(\Exception $e) {
+            DB::rollback();
+            dd($e);
+            return response()->json([
+                'message' => $e,
+                'error' => true
+            ]);
+        }
     }
 
     public function exportExcelNotas(Request $request, $fechainicial, $fechafinal) {

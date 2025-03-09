@@ -123,6 +123,13 @@
                                                             <span class="text-danger">@error('ultimo_anio') {{ $message }} @enderror</span>
                                                         </div>
                                                     </div>
+                                                    <div id="select_anio" class="col-lg-1 col-md-1 col-sm-3 col-xs-12" style="display: none;">
+                                                        <div class="form-group">
+                                                            <label class="control-label">A&ntilde;o:</label>
+                                                            <span id="p_ultimo_anio" style="color: #898f9d; font-size: 150%; display: block; padding-top: 8px; font-weight: bold;"></span>
+                                                            <span class="text-danger">@error('ultimo_anio') {{ $message }} @enderror</span>
+                                                        </div>
+                                                    </div>
                                                     <div id="load_resolucion" class="col-lg-offset-1 col-lg-5 col-md-5 col-sm-6 col-xs-12" style="display: none;">
                                                         {{-- <input type="hidden" id="filename" value=""> --}}
                                                         {{-- <input type="hidden" id="fileid" value=""> --}}

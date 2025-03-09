@@ -62,11 +62,35 @@ $(document).ready(function() {
             {
                 title: "Acción",
                 render: function (data, type, row, meta) {
-                    return '<a href="javascript:void(0)" url="/generate_factura_pdf/" data-toggle="tooltip" data-placement="top" title="Imprimir factura" class="imprimir print_factura" style="color: red;"> <i style="color: red;" class="fa fa-print"></i> </a>';
+                    return '<a href="javascript:void(0)" url="/generate_factura_pdf/" data-toggle="tooltip" data-placement="top" title="Imprimir factura" class="imprimir print_factura" style="color: red; padding-left: 15px; padding-right: 15px;"> <i style="color: red;" class="fa fa-print"></i> </a>' +
+                    '<a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Eliminar nota" class="deleteNota" style="padding-left: 15px; padding-right: 15px;"> <i class="fa fa-trash text-danger"></i> </a>';
                 },
             },
         ],
         drawCallback: function(settings) {
+            $(".deleteNota")
+                .off("click")
+                .on("click", function () {
+                    var tr = $(this).closest("tr");
+                    var data = DTNotas.row(tr).data();
+                    swal({
+                        title: "Atención",
+                        text: '¿Está seguro que desea eliminar la información de la nota a factura?',
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Si",
+                        cancelButtonText: "No",
+                        closeOnConfirm: true,
+                        closeOnCancel: true
+                    }, function(isConfirm) {
+                        if (isConfirm) {
+                            saveEliminarNota(data.id);
+                        }
+                        $('[data-toggle="tooltip"]').tooltip();
+                    });
+                });
+
             $(".nota-row")
                 .off("click")
                 .on("click", function () {
@@ -275,5 +299,63 @@ function getJsonNotas() {
             $.unblockUI();
             console.log(xhr.responseText);
         },
+    });
+}
+
+function saveEliminarNota(id_nota) {
+    $.blockUI({
+        message: "Ejecutando operaci&oacute;n. Espere un momento.",
+        css: {
+            border: 'none',
+            padding: '15px',
+            backgroundColor: '#000',
+            '-webkit-border-radius': '10px',
+            '-moz-border-radius': '10px',
+            opacity: .5,
+            color: '#fff',
+            zIndex: 9999
+        }
+    });
+    var jsonObj = {};
+    jsonObj.id = id_nota;
+    $.ajax({
+        type: 'POST',
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        dataType: 'json',
+        url: '/store/notas_delete',
+        data: {
+            form: JSON.stringify(jsonObj)
+        },
+        success: function(response) {
+            if(!response.error) {
+                if (response.notas !== undefined && response.notas !== null) {
+                    if (response.notas.length > 0) {
+                        if (DTNotas !== null) {
+                            DTNotas.clear().draw();
+                            DTNotas.rows.add(response.notas).draw();
+                        }
+                    } else {
+                        DTNotas.clear().draw();
+                    }
+                } else {
+                    DTNotas.clear().draw();
+                }
+            }
+
+            swal({
+                title: "Atención",
+                text: response.message,
+                type: "warning",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Aceptar",
+                closeOnConfirm: true
+            });
+
+            $.unblockUI();
+        },
+        error: function(xhr) {
+            console.log(xhr.responseText);
+            $.unblockUI();
+        }
     });
 }
