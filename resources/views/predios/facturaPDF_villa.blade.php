@@ -472,12 +472,11 @@
             @endif
         </div>
         <div id="footer">
+            <span style="display: block; font-size: 70%;">Dise&ntilde;ado e impreso por SISTEMAS ERPSOFT SAS</span>
             @if($temporal > 0 || $facturaYaPagada)
-                <br />
-                <span style="color: tomato; font-size: 70%;">
+                <span style="color: tomato; font-size: 70%; display: block;">
                     @if($temporal > 0)
-                    VISTA PREVIA FACTURA DE COBRO<br>
-                    Documento no v&aacute;lido para la ejecuci&oacute;n del pago de impuesto predial.
+                    VISTA PREVIA FACTURA DE COBRO - Documento no v&aacute;lido para la ejecuci&oacute;n del pago de impuesto predial.
                     @elseif ($facturaYaPagada && $informativa != '1')
                     PAGO DE FACTURA YA REGISTRADO. El predio se encuentra a paz y salvo.
                     @endif

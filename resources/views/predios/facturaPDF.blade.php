@@ -389,10 +389,10 @@
             @endif
         </div>
         <div id="footer">
-            SECRETAR&Iacute;A DE HACIENDA
+            <span style="display: block; font-size: 80%;">SECRETAR&Iacute;A DE HACIENDA</span>
+            <span style="display: block; font-size: 70%;">Dise&ntilde;ado e impreso por SISTEMAS ERPSOFT SAS</span>
             @if($temporal > 0 || $facturaYaPagada)
-                <br />
-                <span style="color: tomato; font-size: 70%;">
+                <span style="color: tomato; font-size: 70%; display: block;">
                     @if($temporal > 0)
                     VISTA PREVIA FACTURA DE COBRO
                     @elseif ($facturaYaPagada && $informativa != '1')
