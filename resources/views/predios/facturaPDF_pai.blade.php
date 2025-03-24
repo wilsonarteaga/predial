@@ -118,7 +118,7 @@
 
         .info { font-size: 70%; }
 		.negrilla {font-weight: bold;}
-		.marca-agua { color: #c0c0c0;}
+        .marca-agua { color: #c0c0c0;}
 
         .div-codigos {
             position: absolute;
@@ -190,8 +190,10 @@
                 <tr>
                     <th style="width: 15%;">C&Oacute;DIGO CATASTRAL:</th>
                     <td style="width: 35%;">{{ $predio->codigo_predio }}</td>
-                    <th style="width: 15%;">C&Oacute;DIGO ANTERIOR:</th>
-                    <td style="width: 35%;">{{ $predio->codigo_predio_anterior != null ? $predio->codigo_predio_anterior : '' }}</td>
+                    {{-- <th style="width: 15%;">C&Oacute;DIGO ANTERIOR:</th>
+                    <td style="width: 35%;">{{ $predio->codigo_predio_anterior != null ? $predio->codigo_predio_anterior : '' }}</td> --}}
+                    <th style="width: 15%;"></th>
+                    <td style="width: 35%;"></td>
                 </tr>
                 <tr>
                     <th>PROPIETARIO:</th>
@@ -421,6 +423,9 @@
                                         </table>
                                         @endif
                                     </td>
+                                    {{-- <td style="border: 1px solid #000;">
+                                        <p class="negrilla">A&Ntilde;OS A PAGAR: {{ $predio->anios_a_pagar }}</p>
+                                    </td> --}}
                                     @else
                                     <td>
                                         <table class="info-persona-barras" style="width: 100%; margin-top: 0px;">
@@ -436,11 +441,14 @@
                                     </td>
                                     @endif
                                     <td style="width: 53%; padding-top: 0px; border: 0px solid #000; text-align: center;">
-                                        <table style="width: 100%; font-size: 100%; padding-top: 135px;">
+                                        <p class="negrilla" style="position: absolute; width: 100%; text-align: left; padding-top: 10px; padding-left: 22px;">
+                                            A&Ntilde;OS A PAGAR: {{ $predio->anios_a_pagar }}
+                                        </p>
+                                        <table style="width: 100%; font-size: 100%; padding-top: 130px;">
                                             <tr>
                                                 <td class="negrilla">Pague hasta {{ $fechas_pago_hasta[$x] }}</td>
                                                 <td>Descuento {{ intval($porcentajes_descuento[$x]) }}%</td>
-                                                <td class="negrilla">@money($valores_factura[$x])</td>
+                                                <td class="negrilla" style="font-size: 120%;">@money($valores_factura[$x])</td>
                                             </tr>
                                         </table>
                                         {{-- {!! DNS1D::getBarcodeHTML($barras[$x], 'C128', 1, 80) !!} --}}
