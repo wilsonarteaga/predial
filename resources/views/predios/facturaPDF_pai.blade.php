@@ -442,7 +442,7 @@
                                     @endif
                                     <td style="width: 53%; padding-top: 0px; border: 0px solid #000; text-align: center;">
                                         <p class="negrilla" style="position: absolute; width: 100%; text-align: left; padding-top: 10px; padding-left: 22px;">
-                                            A&Ntilde;OS A PAGAR: {{ $predio->anios_a_pagar }}
+                                            A&Ntilde;OS A PAGAR:<br /><span style="font-weight: normal;">{{ $predio->anios_a_pagar }}</span>
                                         </p>
                                         <table style="width: 100%; font-size: 100%; padding-top: 130px;">
                                             <tr>
