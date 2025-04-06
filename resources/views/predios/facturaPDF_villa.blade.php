@@ -326,9 +326,9 @@
                 </tr>
                 @endif
             </table>
-            <div style="padding-top: 0px; padding-bottom: 10px; width: 100%; text-align: justify; font-size: 70%;">
-                {{-- Los intereses deber&aacute;n ser cancelados de acuerdo al valor causado por cada d&iacute;a calendario de retardo hasta la fecha efectiva de pago. --}}
-                Contra la presente liquidación oficial procede el recurso de reconsideración, dentro de los dos (2) meses siguientes a su notificación, ante la Secretaría de Hacienda Municipal de Villa de Leyva de conformidad con lo establecido en el artículo 720 del Estatuto Tributario Nacional.
+            <div style="padding-top: 0px; padding-bottom: 10px; width: 100%; text-align: justify; font-size: 55%;">
+                <p>Los intereses deber&aacute;n ser cancelados de acuerdo al valor causado por cada d&iacute;a calendario de retardo hasta la fecha efectiva de pago.</p>
+                <p>Contra la presente liquidación oficial procede el recurso de reconsideración, dentro de los dos (2) meses siguientes a su notificación, ante la Secretaría de Hacienda Municipal de Villa de Leyva de conformidad con lo establecido en el artículo 720 del Estatuto Tributario Nacional.</p>
             </div>
             @if(count($lista_pagos) > 0)
                 @if(count($lista_pagos) <= 2)
@@ -339,7 +339,7 @@
                 @php($labels = ['-ENTIDAD-', '-BANCO-'])
                 @php($numero_boletas = count($valores_factura) == 1 ? 2 : count($valores_factura))
                 @for ($boleta = 0; $boleta < $numero_boletas; $boleta++)
-                    {{-- @if($boleta == 0)
+                    @if($boleta == 0)
                     <div class="negrilla" style="padding-top: 0px; padding-bottom: 0px; width: 100%; text-align: center; font-size: 54%;">
                         <span style="width: 50%;">-USUARIO-</span>
                         <span style="width: 50%; text-align: center; position: relative; float: right;">
@@ -350,7 +350,7 @@
                             @endif
                         </span>
                     </div>
-                    @endif --}}
+                    @endif
                     @if($numero_codigos > 0 && !$facturaYaPagada)
                         <hr style="border: 1px dashed #000;
                             padding-top: 5px;
@@ -374,7 +374,7 @@
                                         <table class="info-persona-barras" style="width: 100%; margin-top: 0px;">
                                             <tr>
                                                 <td colspan="2" style="padding-bottom: 10px;">
-                                                    <img style="width: 20%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/villa-de-leyva-h.png'))) }}" alt="Logo1" />
+                                                    <img style="width: 15%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/villa-de-leyva-h.png'))) }}" alt="Logo1" />
                                                 </td>
                                             </tr>
                                             <tr>
