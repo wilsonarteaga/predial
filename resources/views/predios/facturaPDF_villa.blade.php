@@ -326,8 +326,9 @@
                 </tr>
                 @endif
             </table>
-            <div style="padding-top: 0px; padding-bottom: 10px; width: 100%; text-align: left; font-size: 70%;">
-                Los intereses deber&aacute;n ser cancelados de acuerdo al valor causado por cada d&iacute;a calendario de retardo hasta la fecha efectiva de pago.
+            <div style="padding-top: 0px; padding-bottom: 10px; width: 100%; text-align: justify; font-size: 70%;">
+                {{-- Los intereses deber&aacute;n ser cancelados de acuerdo al valor causado por cada d&iacute;a calendario de retardo hasta la fecha efectiva de pago. --}}
+                Contra la presente liquidación oficial procede el recurso de reconsideración, dentro de los dos (2) meses siguientes a su notificación, ante la Secretaría de Hacienda Municipal de Villa de Leyva de conformidad con lo establecido en el artículo 720 del Estatuto Tributario Nacional.
             </div>
             @if(count($lista_pagos) > 0)
                 @if(count($lista_pagos) <= 2)
@@ -337,8 +338,8 @@
                 @endif
                 @php($labels = ['-ENTIDAD-', '-BANCO-'])
                 @php($numero_boletas = count($valores_factura) == 1 ? 2 : count($valores_factura))
-                @for ($boletas = 0; $boletas < $numero_boletas; $boletas++)
-                    @if($boletas == 0)
+                @for ($boleta = 0; $boleta < $numero_boletas; $boleta++)
+                    {{-- @if($boleta == 0)
                     <div class="negrilla" style="padding-top: 0px; padding-bottom: 0px; width: 100%; text-align: center; font-size: 54%;">
                         <span style="width: 50%;">-USUARIO-</span>
                         <span style="width: 50%; text-align: center; position: relative; float: right;">
@@ -349,7 +350,7 @@
                             @endif
                         </span>
                     </div>
-                    @endif
+                    @endif --}}
                     @if($numero_codigos > 0 && !$facturaYaPagada)
                         <hr style="border: 1px dashed #000;
                             padding-top: 5px;
@@ -432,7 +433,7 @@
                                         @if($x + 1 == $numero_codigos)
                                         <table style="width: 100%; font-size: 110%; padding-top: 10px;">
                                             <tr>
-                                                <td class="negrilla">{{ $labels[$boletas] }}</td>
+                                                <td class="negrilla">{{ $labels[$boleta] }}</td>
                                                 <td class="negrilla">
                                                     @if($fecha == 'INDEFINIDA')
                                                     {{ $fecha }}
@@ -454,11 +455,11 @@
                                 </tr>
                             @endfor
                         </table>
-                        @if($labels[$boletas] == '-BANCO-')
+                        @if($labels[$boleta] == '-BANCO-')
                         <div style="width: 30%; margin-top: 5px; font-size: 60%; border-top: 1px solid #000; border-bottom: 1px solid #000; ">Elabor&oacute;: <b>{{ $usuario }}</b></div>
                         @endif
                     @endif
-                    @if($labels[$boletas] == '-ENTIDAD-' && count($lista_pagos) > 2)
+                    @if($labels[$boleta] == '-ENTIDAD-' && count($lista_pagos) > 2)
                     <div class="page-break"></div>
                     @endif
                 @endfor
