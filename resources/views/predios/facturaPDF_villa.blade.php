@@ -333,7 +333,7 @@
             </div>
             @if(count($lista_pagos) > 0)
                 @if(count($lista_pagos) <= 2)
-                <div class="div-codigos" style="position: absolute; top: 30%;">
+                <div class="div-codigos" style="position: absolute; top: 31%;">
                 @else
                 <div class="div-codigos">
                 @endif
