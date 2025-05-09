@@ -361,9 +361,9 @@
                         <table class="no-border" style="width: 100%; font-size: 70%;">
                             <tr>
                                 <td style="width: 50%;"></td>
-                                <td class="negrilla" style="font-size: 90%;">Formulario No</td>
+                                <td class="negrilla" style="font-size: 70%;">Formulario No</td>
                                 <td>{{ $numero_factura }}</td>
-                                <td class="negrilla" style="font-size: 90%;">Referencia No</td>
+                                <td class="negrilla" style="font-size: 70%;">Referencia No</td>
                                 <td>{{ str_pad($numero_factura, 24, "0", STR_PAD_LEFT) }}</td>
                             </tr>
                         </table>
@@ -375,7 +375,7 @@
                                         <table class="info-persona-barras" style="width: 100%; margin-top: 0px;">
                                             <tr>
                                                 <td colspan="2" style="padding-bottom: 10px;">
-                                                    <img style="width: 15%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/villa-de-leyva-h.png'))) }}" alt="Logo1" />
+                                                    <img style="width: 12%; height: auto;" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/theme/plugins/images/villa-de-leyva-h.png'))) }}" alt="Logo1" />
                                                 </td>
                                             </tr>
                                             <tr>
