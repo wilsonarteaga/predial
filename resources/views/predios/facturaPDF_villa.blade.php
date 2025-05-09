@@ -326,9 +326,10 @@
                 </tr>
                 @endif
             </table>
-            <div style="padding-top: 0px; padding-bottom: 10px; width: 100%; text-align: justify; font-size: 55%;">
+            <div style="padding-top: 0px; padding-bottom: 8px; width: 100%; text-align: justify; font-size: 54%;">
                 <p>Los intereses deber&aacute;n ser cancelados de acuerdo al valor causado por cada d&iacute;a calendario de retardo hasta la fecha efectiva de pago.</p>
                 <p>Contra la presente liquidación oficial procede el recurso de reconsideración, dentro de los dos (2) meses siguientes a su notificación, ante la Secretaría de Hacienda Municipal de Villa de Leyva de conformidad con lo establecido en el artículo 720 del Estatuto Tributario Nacional.</p>
+                <p><b>"Lo anterior, en virtud del Decreto No. 055 del 23 de junio de 2016, por medio del cual la Secretar&iacute;a de Hacienda es competente para proferir la presente liquidaci&oacute;n."</b></p>
             </div>
             @if(count($lista_pagos) > 0)
                 @if(count($lista_pagos) <= 2)
@@ -401,7 +402,8 @@
                                             <tr><th>BANCO AGRARIO</th><td>01546000050-6</td></tr>
                                             <tr><th>BANCO DAVIVIENDA</th><td>177769999893</td></tr>
                                             <tr><th>BANCOLOMBIA</th><td>258334866-43</td></tr>
-                                            <tr><th>BANCO COOLMULDESA</th><td>29-00002710-1</td></tr>
+                                            <tr><th>COOMULDESA</th><td>29-00002710-1</td></tr>
+                                            <tr><th>BANCO DE BOGOT&Aacute;</th><td>616019501</td></tr>
                                         </table>
                                         @endif
                                     </td>
@@ -413,7 +415,8 @@
                                             <tr><th>BANCO AGRARIO</th><td>01546000050-6</td></tr>
                                             <tr><th>BANCO DAVIVIENDA</th><td>177769999893</td></tr>
                                             <tr><th>BANCOLOMBIA</th><td>258334866-43</td></tr>
-                                            <tr><th>BANCO COOLMULDESA</th><td>29-00002710-1</td></tr>
+                                            <tr><th>COOMULDESA</th><td>29-00002710-1</td></tr>
+                                            <tr><th>BANCO DE BOGOT&Aacute;</th><td>616019501</td></tr>
                                         </table>
                                     </td>
                                     @endif
