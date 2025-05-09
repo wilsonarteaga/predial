@@ -361,9 +361,9 @@
                         <table class="no-border" style="width: 100%; font-size: 70%;">
                             <tr>
                                 <td style="width: 50%;"></td>
-                                <td class="negrilla">Formulario No</td>
+                                <td class="negrilla" style="font-size: 90%;">Formulario No</td>
                                 <td>{{ $numero_factura }}</td>
-                                <td class="negrilla">Referencia No</td>
+                                <td class="negrilla" style="font-size: 90%;">Referencia No</td>
                                 <td>{{ str_pad($numero_factura, 24, "0", STR_PAD_LEFT) }}</td>
                             </tr>
                         </table>
