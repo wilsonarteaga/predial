@@ -329,11 +329,11 @@
             <div style="padding-top: 0px; padding-bottom: 8px; width: 100%; text-align: justify; font-size: 54%;">
                 <p>Los intereses deber&aacute;n ser cancelados de acuerdo al valor causado por cada d&iacute;a calendario de retardo hasta la fecha efectiva de pago.</p>
                 <p>Contra la presente liquidación oficial procede el recurso de reconsideración, dentro de los dos (2) meses siguientes a su notificación, ante la Secretaría de Hacienda Municipal de Villa de Leyva de conformidad con lo establecido en el artículo 720 del Estatuto Tributario Nacional.</p>
-                <p><b>"Lo anterior, en virtud del Decreto No. 055 del 23 de junio de 2016, por medio del cual la Secretar&iacute;a de Hacienda es competente para proferir la presente liquidaci&oacute;n."</b></p>
+                <p>Lo anterior, en virtud del Decreto No. 055 del 23 de junio de 2016, por medio del cual la Secretar&iacute;a de Hacienda es competente para proferir la presente liquidaci&oacute;n.</p>
             </div>
             @if(count($lista_pagos) > 0)
                 @if(count($lista_pagos) <= 2)
-                <div class="div-codigos" style="position: absolute; top: 28%;">
+                <div class="div-codigos" style="position: absolute; top: 30%;">
                 @else
                 <div class="div-codigos">
                 @endif
