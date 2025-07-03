@@ -257,7 +257,7 @@
                 </tr>
                 <tr>
                     <td>Valor <b>{{ $valor }}</b> Pesos m/cte.</td>
-                    <td style="text-align: center;">TESORERO(A) MUNICIPAL</td>
+                    <td style="text-align: center;">SECRETARIO(A) DE HACIENDA MUNICIPAL</td>
                 </tr>
                 {{-- <tr>
                     <td style="padding-top: 20px;" colspan="2">NO SE COBRA IMPUESTO POR VALORIZACI&Oacute;N.</td>
