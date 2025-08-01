@@ -108,7 +108,7 @@ return array(
     'App\\Models\\Pago' => $baseDir . '/app/Models/Pago.php',
     'App\\Models\\PagosAud' => $baseDir . '/app/Models/PagosAud.php',
     'App\\Models\\Parametro' => $baseDir . '/app/Models/Parametro.php',
-    'App\\Models\\PredialAcuerdoPagoDetalle' => $baseDir . '/app/Models/PredialAcuerdoPagoDetalle.php',
+    'App\\Models\\PredioAcuerdoPagoDetalle' => $baseDir . '/app/Models/PredioAcuerdoPagoDetalle.php',
     'App\\Models\\Predio' => $baseDir . '/app/Models/Predio.php',
     'App\\Models\\PredioAbono' => $baseDir . '/app/Models/PredioAbono.php',
     'App\\Models\\PredioAcuerdoPago' => $baseDir . '/app/Models/PredioAcuerdoPago.php',

@@ -29,7 +29,6 @@ use App\Models\PredioPrescripcion;
 use App\Models\Pago;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 use \stdClass;
@@ -1317,6 +1316,7 @@ class PrediosController extends Controller
 
                     // Maximo numero de factura 99999 cada anio
                     if($ultimo_numero_factura > 99999) {
+                        dd('El número de factura excede el límite permitido de 99999. Valor actual: ' . $ultimo_numero_factura);
                         return null;
                     }
 
@@ -1933,6 +1933,7 @@ class PrediosController extends Controller
 
                     // Maximo numero de factura 99999 cada anio
                     if($ultimo_numero_factura > 99999) {
+                        dd('El número de factura excede el límite permitido de 99999. Valor actual: ' . $ultimo_numero_factura);
                         return null;
                     }
 
@@ -2662,6 +2663,9 @@ class PrediosController extends Controller
 
     public function get_predio(Request $request) {
         $data = json_decode($request->form);
+        $dt = Carbon::now();
+        $currentYear = $dt->year;
+
         $predio =  DB::table('predios')->join('zonas', function ($join) {
                         $join->on('predios.id_zona', '=', 'zonas.id');
                     })
@@ -2670,11 +2674,7 @@ class PrediosController extends Controller
                     ->where('predios.id', $data->{'id_predio'})
                     ->first();
 
-        if (!property_exists($data, 'notas')) {
-            $dt = Carbon::now();
-            $currentYear = $dt->year;
-            $array_anios = [];
-
+        if (!property_exists($data, 'notas') && !property_exists($data, 'acuerdos')) {
             // seleccionar minimo ultimo_año predios pagos
             // maximo año seria el actual
             // verificar si hay años intermedios que no tengan calculo
@@ -2909,7 +2909,7 @@ class PrediosController extends Controller
                     'anios_exencion' => $anios_exencion
                 ]
             );
-        } else {
+        } else if (property_exists($data, 'notas')) {
             $facturas_pendientes = [];
             $count_facturas_no_pagadas = PredioPago::where('id_predio', $data->{'id_predio'})
                 ->where('pagado', 0)
@@ -2936,6 +2936,103 @@ class PrediosController extends Controller
                 [
                     'predio' => $predio,
                     'facturas_pendientes' => $facturas_pendientes
+                ]
+            );
+        } else if (property_exists($data, 'acuerdos')) {
+            $anios = [];
+            $array_anios = [];
+
+            $acuerdo_pago = PredioAcuerdoPago::where('id_predio', $data->{'id_predio'})
+                ->where('estado_acuerdo', 1) // 1 activo, 0 anulado
+                // ->where('anulado_acuerdo', 0)
+                ->first();
+
+            // Para cada factura extraer el maximo año no pagado (Solo para registros que si tienen numero de factura)
+            // Esto debido a que aveces con un mismo numero de factura se liquidan varios años.
+            $anios_con_factura = DB::table('predios_pagos')
+                    ->where('id_predio', $data->{'id_predio'})
+                    ->where('pagado', 0)
+                    ->where('anulada', 0)
+                    // ->where('prescrito', 0)
+                    // ->where('exencion', 0)
+                    ->whereNotNull('factura_pago')
+                    ->select(DB::raw('MAX(predios_pagos.ultimo_anio) AS ultimo_anio, predios_pagos.factura_pago'))
+                    ->groupBy('predios_pagos.factura_pago')
+                    ->orderBy('ultimo_anio', 'desc')
+                    ->get();
+
+            // if(count($anios) == 0) {
+            // Todos los años no pagados y que no tienen numero de factura
+            $anios_sin_factura = DB::table('predios_pagos')
+                ->where('id_predio', $data->{'id_predio'})
+                ->where('pagado', 0)
+                ->where('anulada', 0)
+                // ->where('prescrito', 0)
+                // ->where('exencion', 0)
+                ->whereNull('factura_pago')
+                ->select(DB::raw('predios_pagos.ultimo_anio, predios_pagos.factura_pago, ISNULL(predios_pagos.total_calculo, 0) AS total_calculo'))
+                ->orderBy('ultimo_anio', 'desc')
+                ->get();
+            // }
+
+            foreach ($anios_con_factura as $anio) {
+                $lista_anios = [];
+                $anios_factura = DB::table('predios_pagos')
+                    ->where('id_predio', $data->{'id_predio'})
+                    ->where('pagado', 0)
+                    ->where('anulada', 0)
+                    ->where('factura_pago', $anio->factura_pago)
+                    ->select('predios_pagos.ultimo_anio')
+                    ->orderBy('ultimo_anio', 'desc')
+                    ->get();
+                if (count($anios_factura) > 1) {
+                    foreach ($anios_factura as $anio_factura) {
+                        array_push($lista_anios, $anio_factura->ultimo_anio);
+                    }
+                    $anio->lista_anios = $lista_anios;
+                } else {
+                    $anio->lista_anios = $lista_anios;
+                }
+                array_push($anios, $anio);
+            }
+
+            foreach ($anios_sin_factura as $anio) {
+                array_push($anios, $anio);
+            }
+
+            rsort($anios);
+            foreach ($anios as $anio) {
+                array_push($array_anios, $anio);
+            }
+
+            $exists_current_anio = false;
+            foreach ($array_anios as $anio) {
+                if ($anio->ultimo_anio == $currentYear) {
+                    $exists_current_anio = true;
+                }
+            }
+
+            // Verificar si el año actual ya tiene un calculo con o sin pago
+            $ultimo_anio_pagar = DB::table('predios_pagos')
+                ->where('id_predio', $data->{'id_predio'})
+                ->where('ultimo_anio', $currentYear)
+                ->where('anulada', 0)
+                // ->where('prescrito', 0)
+                // ->where('exencion', 0)
+                ->first();
+
+            // Si no existe un calculo para el año actual o si el calculo existe pero aun no tiene un numero
+            // de factura asignado, entonces, se agrega el año a la lista
+            if($ultimo_anio_pagar->ultimo_anio != $currentYear && !$exists_current_anio && count($array_anios) > 0) {
+                array_unshift($array_anios, ['ultimo_anio' => strval($currentYear), 'factura_pago' => null, 'total_calculo' => 0]);
+            }
+
+            return response()->json(
+                [
+                    'predio' => $predio,
+                    'acuerdo_pago' => $acuerdo_pago,
+                    'anios' => $array_anios,
+                    'anio_actual' => $currentYear
                 ]
             );
         }

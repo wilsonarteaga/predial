@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\AcuerdosController;
 use App\Http\Controllers\AdministracionController;
 use App\Http\Controllers\AniosController;
 use App\Http\Controllers\BancosController;
@@ -48,6 +49,23 @@ Route::get('profile', [LoginController::class, 'profile'])->middleware('checkdb'
 
 Route::get('cambiar_password', [ChangePasswordController::class, 'index'])->name('auth.index_change_pass')->middleware('checkdb');
 Route::post('changepass', [ChangePasswordController::class, 'changepass'])->name('auth.change_pass')->middleware('checkdb');
+
+//AcuerdosController
+Route::get('registro_acuerdos/{id}', [AcuerdosController::class, 'create'])->middleware('checkdb');
+Route::get('registro_acuerdos', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
+
+Route::post('create_acuerdos', [AcuerdosController::class, 'store'])->name('acuerdos.create_acuerdo')->middleware('checkdb');
+Route::post('update_acuerdos', [AcuerdosController::class, 'update'])->name('acuerdos.update_acuerdos')->middleware('checkdb');
+// Route::post('delete_acuerdos', [AcuerdosController::class, 'destroy'])->name('acuerdos.delete_acuerdos')->middleware('checkdb');
+
+// Route::post('/get_factura', [AcuerdosController::class, 'get_factura']);
+// Route::post('/get_factura_anio', [AcuerdosController::class, 'get_factura_anio']);
+Route::post('/list/acuerdos', [AcuerdosController::class, 'list_acuerdos']);
+Route::post('/list/acuerdo-detalle', [AcuerdosController::class, 'list_acuerdo_detalle']);
+Route::post('/list/acuerdo-anios', [AcuerdosController::class, 'list_acuerdo_anios']);
+// Route::get('/export-excel-acuerdos/{fechainicial}/{fechafinal}',[AcuerdosController::class, 'exportExcelAcuerdos']);
+Route::post('/store/acuerdos_delete', [AcuerdosController::class, 'store_acuerdos_delete']);
+Route::get('generate_factura_acuerdo_pdf/{id}/{tmp}/{lista_cuotas}', [AcuerdosController::class, 'generate_factura_acuerdo_pdf'])->middleware('checkdb');
 
 //Administracion
 Route::get('registro_usuarios/{id}', [AdministracionController::class, 'registro_usuarios'])->middleware('checkdb');
@@ -110,7 +128,7 @@ Route::get('registro_notas/{id}', [NotasController::class, 'create'])->middlewar
 Route::get('registro_notas', [ErrorRequestController::class, 'error_request'])->middleware('checkdb');
 
 Route::post('create_nota_factura', [NotasController::class, 'store'])->name('notas.create_nota_factura')->middleware('checkdb');
-Route::get('generate_nota_factura_pdf/{id_predio}', [PrediosController::class, 'generate_nota_factura_pdf'])->middleware('checkdb');
+// Route::get('generate_nota_factura_pdf/{id_predio}', [PrediosController::class, 'generate_nota_factura_pdf'])->middleware('checkdb');
 
 Route::post('/get_factura', [NotasController::class, 'get_factura']);
 Route::post('/get_factura_anio', [NotasController::class, 'get_factura_anio']);

@@ -19,7 +19,7 @@ var globalShowBtnAcuerdos = false;
 var global_facturado = null;
 var arr_autonumeric = ['porcentaje', 'porcentaje_ex', 'minimo_urbano', 'minimo_rural', 'avaluo_inicial', 'avaluo_final', 'tarifa', 'porcentaje_car',
     'area_metros', 'area_construida', 'area_hectareas', 'tarifa_actual', 'avaluo', 'avaluo_presente_anio', 'valor_abono',
-    'valor_facturado', 'avaluoigac', 'area', 'valor_paz', 'tasa_diaria', 'tasa_mensual', 'tasa_acuerdo','abono_inicial_acuerdo', 'tarifa_anterior', 'tarifa_nueva', 'valor_concepto1', 'valor_concepto2', 'valor_concepto3', 'valor_concepto4', 'valor_concepto13', 'valor_concepto14', 'valor_concepto15', 'valor_concepto16', 'valor_concepto17', 'valor_concepto18', 'total_calculo'
+    'valor_facturado', 'avaluoigac', 'area', 'valor_paz', 'tasa_diaria', 'tasa_mensual', 'tasa_acuerdo','abono_inicial_acuerdo', 'tarifa_anterior', 'tarifa_nueva', 'valor_concepto1', 'valor_concepto2', 'valor_concepto3', 'valor_concepto4', 'valor_concepto13', 'valor_concepto14', 'valor_concepto15', 'valor_concepto16', 'valor_concepto17', 'valor_concepto18', 'total_calculo', 'porcentaje_inicial_acuerdo'
 ];
 var ROOT_URL = window.location.protocol + "//" + window.location.host;
 $(document).ready(function() {
@@ -86,6 +86,19 @@ $(document).ready(function() {
                 $('.result').empty();
                 if ($('#tab').length > 0) {
                     $('#tab').val('li-section-bar-1');
+                }
+                if ($('#cuotas_acuerdo').length > 0) {
+                    $('#cuotas_acuerdo').val('1');
+                    // Create a date object from a date string
+                    var today = new Date();
+                    // Get year, month, and day part from the date
+                    var year = today.toLocaleString("default", { year: "numeric" });
+                    var month = today.toLocaleString("default", { month: "2-digit" });
+                    var day = today.toLocaleString("default", { day: "2-digit" });
+                    // Generate yyyy-mm-dd date string
+                    var formattedDate = year + "-" + month + "-" + day;
+                    $('#fecha_acuerdo').datepicker('setDate', formattedDate);
+                    $('#fecha_inicial_acuerdo').datepicker('setDate', formattedDate);
                 }
                 setTimeout(function() {
                     $('#btn_cancel_edit').trigger('click');
@@ -193,6 +206,8 @@ $(document).ready(function() {
 
                 if ($('#interfaz').val() === 'notas') {
                     getJsonNotas();
+                } else if ($('#interfaz').val() === 'acuerdos') {
+                    getJsonAcuerdos();
                 }
             }
         });
@@ -201,6 +216,20 @@ $(document).ready(function() {
     if ($('#btn_save_edit').length > 0) {
         $('#btn_save_edit').off('click').on('click', function() {
             if($('#update-form').valid()) {
+
+                if($('#abono_inicial_acuerdo_edit').length > 0) {
+                    if (AutoNumeric.getNumber('#abono_inicial_acuerdo_edit') === 0) {
+                        $('#abono_inicial_acuerdo_edit').closest('.form-group').addClass('has-error');
+                        $('#abono_inicial_acuerdo_edit').closest('.form-group').removeClass('has-success');
+                        $('#abono_inicial_acuerdo_edit').closest('.form-group').find('#abono_inicial_acuerdo_edit-error').html('Abono inicial debe ser mayor a 0.');
+                        return;
+                    } else {
+                        $('#abono_inicial_acuerdo_edit').closest('.form-group').addClass('has-success');
+                        $('#abono_inicial_acuerdo_edit').closest('.form-group').removeClass('has-error');
+                        $('#abono_inicial_acuerdo_edit').closest('.form-group').find('#abono_inicial_acuerdo_edit-error').remove();
+                    }
+                }
+
                 checkSaveResolucion($('#update-form'), $('#update-form').attr('desc-to-resolucion-modal'));
             }
         });
@@ -214,6 +243,20 @@ $(document).ready(function() {
                         return;
                     }
                 }
+
+                if($('#abono_inicial_acuerdo').length > 0) {
+                    if (AutoNumeric.getNumber('#abono_inicial_acuerdo') === 0) {
+                        $('#abono_inicial_acuerdo').closest('.form-group').addClass('has-error');
+                        $('#abono_inicial_acuerdo').closest('.form-group').removeClass('has-success');
+                        $('#abono_inicial_acuerdo').closest('.form-group').find('#abono_inicial_acuerdo-error').html('Abono inicial debe ser mayor a 0.');
+                        return;
+                    } else {
+                        $('#abono_inicial_acuerdo').closest('.form-group').addClass('has-success');
+                        $('#abono_inicial_acuerdo').closest('.form-group').removeClass('has-error');
+                        $('#abono_inicial_acuerdo').closest('.form-group').find('#abono_inicial_acuerdo-error').remove();
+                    }
+                }
+
                 checkSaveResolucion($('#create-form'), $('#create-form').attr('desc-to-resolucion-modal'));
             }
         });
@@ -420,6 +463,40 @@ $(document).ready(function() {
                 $(this).val(1);
             } else {
                 $('#span_aplica_interes_edit').html('NO');
+                $(this).val(0);
+            }
+        });
+    }
+
+    if ($('#calcular_intereses').length > 0) {
+        $('#calcular_intereses').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_calcular_intereses').html('SI');
+                $(this).val(1);
+            } else {
+                $('#span_calcular_intereses').html('NO');
+                $(this).val(0);
+            }
+        });
+
+        $('#calcular_intereses_edit').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_calcular_intereses_edit').html('SI');
+                $(this).val(1);
+            } else {
+                $('#span_calcular_intereses_edit').html('NO');
+                $(this).val(0);
+            }
+        });
+    }
+
+    if ($('#estado_acuerdo_edit').length > 0) {
+        $('#estado_acuerdo_edit').off('click').on('click', function() {
+            if ($(this).is(':checked')) {
+                $('#span_estado_acuerdo_edit').html('SI');
+                $(this).val(1);
+            } else {
+                $('#span_estado_acuerdo_edit').html('NO');
                 $(this).val(0);
             }
         });
@@ -798,6 +875,8 @@ $(document).ready(function() {
                     $('.predio_row').remove();
                     if($('#interfaz').val() === 'notas') {
                         cleanNotas();
+                    } else if($('#interfaz').val() === 'acuerdos') {
+                        cleanAcuerdos();
                     }
                 }
             }
@@ -1625,7 +1704,7 @@ function startImpresion(url_download, message_toast, type_icon, modal) {
         swal({
             title: "Atención",
             text: "Se necesita establecer una url para generación de PDF.",
-            type: "danger",
+            type: "error",
             showCancelButton: false,
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "Aceptar",
@@ -1871,6 +1950,10 @@ function getPredioOtros(id_predio, showBlock, interfaz) {
         $('#ultimo_anio').selectpicker('refresh');
         var input_predio = $('<input class="res-validate" type="hidden" id="id_predio" name="id_predio" value="' + id_predio + '">');
         $('#create-form').prepend(input_predio);
+    } else if (interfaz === 'acuerdos') {
+        jsonObj.acuerdos = 1;
+        var input_predio = $('<input class="res-validate" type="hidden" id="id_predio_acuerdo" name="id_predio_acuerdo" value="' + id_predio + '">');
+        $('#create-form').prepend(input_predio);
     }
     $.ajax({
         type: 'POST',
@@ -1970,7 +2053,7 @@ function getPredioOtros(id_predio, showBlock, interfaz) {
                     }
                 } else if (interfaz === 'cambio_tarifa') {
                     AutoNumeric.set('#tarifa_anterior', Number(response.predio.tarifa_actual));
-                }  else if (interfaz === 'notas') {
+                } else if (interfaz === 'notas') {
                     var facturas_pendientes = response.facturas_pendientes;
                     $('#numero_factura').empty();
                     $('#valores_factura').fadeOut(function() {
@@ -2000,6 +2083,60 @@ function getPredioOtros(id_predio, showBlock, interfaz) {
                         $('#load_resolucion').fadeOut();
                     }
                     $('#numero_factura').selectpicker('refresh');
+                } else if (interfaz === 'acuerdos') {
+                    // var predio = response.predio;
+                    var anios = response.anios;
+                    global_anios = response.anios;
+                    global_acuerdo_pago = response.acuerdo_pago;
+
+                    if(anios.length === 0) {
+                        global_ya_pagado = true;
+                    }
+
+                    if (
+                        global_ya_pagado || (anios.length === 1 && response.anio_actual === Number(anios[0].ultimo_anio) && anios[0].factura_pago !== null)
+                    ) {
+                        // $('#no_acuerdo').html('<b>ACUERDO DE PAGO NO PERMITIDO</b>');
+                        // $('#no_acuerdo').fadeIn();
+                        swal({
+                            title: "Atención",
+                            text: "El predio seleccionado no tiene permitido la configuración de un acuerdo de pago.",
+                            type: "error",
+                            showCancelButton: false,
+                            confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "Aceptar",
+                            // cancelButtonText: "Cancelar",
+                            closeOnConfirm: true,
+                            closeOnCancel: true
+                        });
+                        $('#id_predio.select2').empty().trigger('change');
+                    } else if (global_acuerdo_pago) {
+                        // $('#ya_acuerdo').html('<b>EL PREDIO SELECCIONADO YA POSEE UN ACUERDO DE PAGO CONFIGURADO</b>');
+                        // $('#ya_acuerdo').fadeIn();
+                        swal({
+                            title: "Atención",
+                            text: "El predio seleccionado ya posee un acuerdo de pago configurado.",
+                            type: "error",
+                            showCancelButton: false,
+                            confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "Aceptar",
+                            // cancelButtonText: "Cancelar",
+                            closeOnConfirm: true,
+                            closeOnCancel: true
+                        });
+                        $('#id_predio.select2').empty().trigger('change');
+                    } else {
+                        $('#anio_inicial_acuerdo').empty();
+                        $('#anio_final_acuerdo').empty();
+                        $('#anio_inicial_acuerdo').append('<option value="">Seleccione</option>');
+                        $('#anio_final_acuerdo').append('<option value="">Seleccione</option>');
+                        $.each(anios, function(i, el) {
+                            $('#anio_inicial_acuerdo').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
+                            $('#anio_final_acuerdo').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
+                        });
+                        $('#load_resolucion').fadeIn();
+                        $('#valores_acuerdo').fadeIn();
+                    }
                 }
 
                 $.unblockUI();
@@ -2287,35 +2424,51 @@ function formatRepoSelection (repo) {
 }
 
 function setData(jsonObj) {
+    // console.log('📌 - controlsite.js - setData - jsonObj:', jsonObj);
     $('#div_table').fadeOut(function() {
         $.each(jsonObj, function(i, el) {
             if ($('#' + i + '_edit').length > 0) {
-                if ($('#' + i + '_edit').hasClass('selectpicker')) {
-                    $('#' + i + '_edit').selectpicker('val', el);
-                    $('#' + i + '_edit').attr('prev-val', el);
-                } else {
-                    if (el === '.00') {
-                        if ($.inArray(i, arr_autonumeric) >= 0) {
-                            AutoNumeric.set('#' + i + '_edit', 0);
-                        } else {
-                            $('#' + i + '_edit').val('0');
-                        }
-                        $('#' + i + '_edit').attr('prev-val', '0');
+
+                if (!$('#' + i + '_edit').is('[value]')) {
+                    if ($('#' + i + '_edit').hasClass('accounting')) {
+                        $('#' + i + '_edit').html(accounting.formatMoney(el, "$ ", 2, ".", ", "));
                     } else {
-                        if ($.inArray(i, arr_autonumeric) >= 0) {
-                            AutoNumeric.set('#' + i + '_edit', Number(el));
-                            $('#' + i + '_edit').attr('prev-val', Number(el));
+                        $('#' + i + '_edit').html(el);
+                    }
+
+                    if ($('#' + i + '_edit').is('[data-total]')) {
+                        $('#' + i + '_edit').attr('data-total', el);
+                    }
+
+                } else {
+
+                    if ($('#' + i + '_edit').hasClass('selectpicker')) {
+                        $('#' + i + '_edit').selectpicker('val', el);
+                        $('#' + i + '_edit').attr('prev-val', el);
+                    } else {
+                        if (el === '.00') {
+                            if ($.inArray(i, arr_autonumeric) >= 0) {
+                                AutoNumeric.set('#' + i + '_edit', 0);
+                            } else {
+                                $('#' + i + '_edit').val('0');
+                            }
+                            $('#' + i + '_edit').attr('prev-val', '0');
                         } else {
-                            $('#' + i + '_edit').val(el);
-                            $('#' + i + '_edit').attr('prev-val', el);
-                            if ($('#' + i + '_edit').is(':checkbox')) {
-                                if (Number(el) > 0 || Number(el) === -1) {
-                                    if (!$('#' + i + '_edit').is(':checked')) {
-                                        $('#' + i + '_edit').trigger('click');
-                                    }
-                                } else {
-                                    if ($('#' + i + '_edit').is(':checked')) {
-                                        $('#' + i + '_edit').trigger('click');
+                            if ($.inArray(i, arr_autonumeric) >= 0) {
+                                AutoNumeric.set('#' + i + '_edit', Number(el));
+                                $('#' + i + '_edit').attr('prev-val', Number(el));
+                            } else {
+                                $('#' + i + '_edit').val(el);
+                                $('#' + i + '_edit').attr('prev-val', el);
+                                if ($('#' + i + '_edit').is(':checkbox')) {
+                                    if (Number(el) > 0 || Number(el) === -1) {
+                                        if (!$('#' + i + '_edit').is(':checked')) {
+                                            $('#' + i + '_edit').trigger('click');
+                                        }
+                                    } else {
+                                        if ($('#' + i + '_edit').is(':checked')) {
+                                            $('#' + i + '_edit').trigger('click');
+                                        }
                                     }
                                 }
                             }
@@ -2949,28 +3102,4 @@ function getPredioPago(id_predio, numero_factura, ultimo_anio) {
             console.log(xhr.responseText);
         }
     });
-}
-
-function cleanNotas() {
-    $('#load_resolucion').css('display', 'none');
-    $('#select_factura').css('display', 'none');
-    $('#select_anios').css('display', 'none');
-    $('#select_anio').css('display', 'none');
-    $('#valores_factura').css('display', 'none');
-    $('#numero_factura').empty();
-    $('#numero_factura').selectpicker('refresh');
-    $('#ultimo_anio').empty();
-    $('#ultimo_anio').selectpicker('refresh');
-    AutoNumeric.set('#valor_concepto1', 0);
-    AutoNumeric.set('#valor_concepto2', 0);
-    AutoNumeric.set('#valor_concepto3', 0);
-    AutoNumeric.set('#valor_concepto4', 0);
-    AutoNumeric.set('#valor_concepto13', 0);
-    AutoNumeric.set('#valor_concepto14', 0);
-    AutoNumeric.set('#valor_concepto15', 0);
-    AutoNumeric.set('#valor_concepto16', 0);
-    AutoNumeric.set('#valor_concepto17', 0);
-    AutoNumeric.set('#valor_concepto18', 0);
-    AutoNumeric.set('#total_calculo', 0);
-    $('#btn_save_create').attr('disabled', true);
 }

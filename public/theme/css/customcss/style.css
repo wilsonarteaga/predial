@@ -142,9 +142,47 @@ span.span_predio {
 .form-control-static {
     padding-top: 0;
 }
-.nota-row {
+.nota-row, .acuerdo-row, .detalle-row {
     cursor: pointer;
 }
-.nota-noclick-row {
+.detalle-row-selected {
+    background-color: #80a7b9 !important;
+    color: white;
+}
+.detalle-row-selected > td {
+    background-color: #80a7b9 !important;
+    color: white;
+}
+.nota-noclick-row, .acuerdo-noclick-row {
     cursor: pointer;
 }
+.acuerdo-no-permission {
+    text-align: center;
+    font-size: xx-large;
+    color: #a08664;
+}
+.acuerdo-available {
+    text-align: center;
+    font-size: xx-large;
+    color: #3673ed;
+}
+
+
+/*
+SOLUTION 8: CSS fix for modal DataTables (add to your CSS)
+*/
+.modal .dataTables_wrapper {
+    overflow-x: auto;
+}
+
+.modal .dataTables_length,
+.modal .dataTables_filter,
+.modal .dataTables_info,
+.modal .dataTables_paginate {
+    margin-top: 10px;
+}
+
+.modal .table {
+    margin-bottom: 0;
+}
+/***********************************/
