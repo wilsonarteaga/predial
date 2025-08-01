@@ -166,7 +166,7 @@ class AcuerdosController extends Controller
                     $predio_acuerdo_pago->file_name = $request->filled('file_name') ? $request->file_name : NULL;
                     $predio_acuerdo_pago->porcentaje_inicial_acuerdo = $request->filled('porcentaje_inicial_acuerdo') ? floatval(str_replace("%", "", $request->porcentaje_inicial_acuerdo)) : 0;
 
-                    $predio_acuerdo_pago->calcular_intereses = intval($request->calcular_intereses);
+                    $predio_acuerdo_pago->calcular_intereses = intval($request->calcular_intereses) * -1;
 
                     $query = $predio_acuerdo_pago->save();
 
@@ -260,7 +260,7 @@ class AcuerdosController extends Controller
                     $predio_acuerdo_pago->cuotas_acuerdo = $request->cuotas_acuerdo_edit;
                     $predio_acuerdo_pago->numero_resolucion_acuerdo = $request->numero_resolucion;
                     $predio_acuerdo_pago->abono_inicial_acuerdo = floatval(str_replace(",", "", $request->abono_inicial_acuerdo_edit));
-                    $predio_acuerdo_pago->estado_acuerdo = $request->filled('estado_acuerdo_edit') ? $request->estado_acuerdo_edit : 0;
+                    $predio_acuerdo_pago->estado_acuerdo = $request->filled('estado_acuerdo_edit') ? intval($request->estado_acuerdo_edit) : 0;
                     $predio_acuerdo_pago->updated_at = Carbon::now();
 
                     $total = DB::table('predios_pagos')
@@ -295,7 +295,7 @@ class AcuerdosController extends Controller
                     $predio_acuerdo_pago->fecha_acuerdo = Carbon::createFromFormat("Y-m-d", $request->fecha_acuerdo_edit)->format('Y-m-d');
                     $predio_acuerdo_pago->file_name = $request->filled('file_name_edit') ? $request->file_name_edit : NULL;
                     $predio_acuerdo_pago->porcentaje_inicial_acuerdo = $request->filled('porcentaje_inicial_acuerdo_edit') ? floatval(str_replace("%", "", $request->porcentaje_inicial_acuerdo_edit)) : 0;
-                    $predio_acuerdo_pago->calcular_intereses = intval($request->calcular_intereses_edit);
+                    $predio_acuerdo_pago->calcular_intereses = intval($request->calcular_intereses_edit) * -1;
 
                     // $recalcular_acuerdo = false;
                     // if ($predio_acuerdo_pago->porcentaje_inicial_acuerdo != $prev_predio_acuerdo_pago->porcentaje_inicial_acuerdo ||
