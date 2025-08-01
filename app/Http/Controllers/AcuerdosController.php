@@ -383,7 +383,7 @@ class AcuerdosController extends Controller
         $acuerdo_detalle = DB::table('predios_acuerdos_pago_detalle AS acuerdos')
                 ->join('predios_acuerdos_pago', 'predios_acuerdos_pago.id', '=', 'acuerdos.id_acuerdo')
                 ->leftJoin('bancos', 'bancos.id', '=', 'acuerdos.id_banco')
-                ->select(DB::raw('acuerdos.id, predios_acuerdos_pago.id_predio, acuerdos.factura_pago, acuerdos.cuota_numero, acuerdos.valor_cuota, CASE WHEN acuerdos.pagado = 1 THEN \'SI\' ELSE \'NO\' END as pagado, ISNULL(CONVERT(VARCHAR, acuerdos.fecha_pago, 23), \'N/D\') as fecha_pago, ISNULL(bancos.nombre, \'No disponible\') AS banco, ISNULL(acuerdos.valor_concepto1, 0) AS valor_concepto1, ISNULL(acuerdos.valor_concepto2, 0) AS valor_concepto2, ISNULL(acuerdos.valor_concepto3, 0) AS valor_concepto3, ISNULL(acuerdos.valor_concepto4, 0) AS valor_concepto4, ISNULL(acuerdos.valor_concepto5, 0) AS valor_concepto5, ISNULL(acuerdos.valor_concepto18, 0) AS valor_concepto18'))
+                ->select(DB::raw('acuerdos.id, predios_acuerdos_pago.id_predio, acuerdos.factura_pago, acuerdos.cuota_numero, acuerdos.valor_cuota, CASE WHEN acuerdos.pagado = -1 THEN \'SI\' ELSE \'NO\' END as pagado, ISNULL(CONVERT(VARCHAR, acuerdos.fecha_pago, 23), \'N/D\') as fecha_pago, ISNULL(bancos.nombre, \'No disponible\') AS banco, ISNULL(acuerdos.valor_concepto1, 0) AS valor_concepto1, ISNULL(acuerdos.valor_concepto2, 0) AS valor_concepto2, ISNULL(acuerdos.valor_concepto3, 0) AS valor_concepto3, ISNULL(acuerdos.valor_concepto4, 0) AS valor_concepto4, ISNULL(acuerdos.valor_concepto5, 0) AS valor_concepto5, ISNULL(acuerdos.valor_concepto18, 0) AS valor_concepto18'))
                 ->where('predios_acuerdos_pago.id', $request->id_acuerdo)
                 ->where('acuerdos.estado', 1)
                 ->orderBy('acuerdos.cuota_numero', 'asc')
@@ -695,7 +695,7 @@ class AcuerdosController extends Controller
                         ->select(DB::raw('acuerdos.*'))
                         ->where('acuerdos.id_acuerdo', $acuerdo_pago->id)
                         ->where('acuerdos.estado', 1)
-                        ->where('acuerdos.pagado', 1)
+                        ->where('acuerdos.pagado', -1)
                         ->orderBy('acuerdos.cuota_numero', 'desc')
                         ->first();
 
