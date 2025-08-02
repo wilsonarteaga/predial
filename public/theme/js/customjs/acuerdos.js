@@ -268,13 +268,6 @@ $(document).ready(function() {
                 data: "created_at",
                 title: "Fecha creaci&oacute;n",
             },
-            // {
-            //     title: "Acción",
-            //     render: function (data, type, row, meta) {
-            //         return '<a href="javascript:void(0)" url="/generate_factura_pdf/" data-toggle="tooltip" data-placement="top" title="Imprimir factura" class="imprimir print_factura" style="color: red; padding-left: 15px; padding-right: 15px;"> <i style="color: red;" class="fa fa-print"></i> </a>' +
-            //         '<a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Eliminar acuerdo de pago" class="deleteAcuerdo" style="padding-left: 15px; padding-right: 15px;"> <i class="fa fa-trash text-danger"></i> </a>';
-            //     },
-            // },
         ],
         createdRow: function (row, data, dataIndex) {
             $(row).addClass('acuerdo-row');
@@ -310,28 +303,9 @@ $(document).ready(function() {
                     var tr = $(this).closest("tr");
                     var data = DTAcuerdos.row(tr).data();
                     global_acuerdo = JSON.parse(JSON.stringify(data));
-                    // console.log('📌 - acuerdos.js - global_acuerdo:', global_acuerdo);
-                    // console.log('📌 - acuerdos.js:99 - data:', data);
-                    // $('#tbody_acuerdos').empty();
-                    // $('#txt_numero_acuerdo').html(data.numero_acuerdo);
-                    // $('#p_codigo_predio').html(data.codigo_predio);
-                    // $('#p_numero_resolucion').html(data.numero_resolucion_acuerdo);
-                    // $('#p_file_name').html(data.file_name ? `<a href="/downloadFileResolucion/${data.file_name}" style="color: red;"><i style="color: red;" class="fa fa-file-pdf-o"></i></a>` : 'No disponible');
-                    // $('#p_numero_acuerdo').html(data.numero_acuerdo);
-                    // $('#p_fecha_acuerdo').html(data.fecha_acuerdo);
-                    // $('#p_anio_inicial_acuerdo').html(data.anio_inicial_acuerdo);
-                    // $('#p_anio_final_acuerdo').html(data.anio_final_acuerdo);
-                    // $('#p_cuotas_acuerdo').html(data.cuotas_acuerdo);
-                    // $('#p_fecha_inicial_acuerdo').html(data.fecha_inicial_acuerdo);
-                    // $('#p_fecha_final_acuerdo').html(data.fecha_final_acuerdo);
-                    // $('#p_calcular_intereses').html(data.calcular_intereses ? 'Si' : 'No');
-                    // $('#p_porcentaje_inicial_acuerdo').html(data.porcentaje_inicial_acuerdo + '%');
-                    // $('#p_abono_inicial_acuerdo').html(accounting.formatMoney(data.abono_inicial_acuerdo, "$ ", 2, ".", ", "));
-                    // $('#p_total_acuerdo').html(accounting.formatMoney(data.total_acuerdo, "$ ", 2, ".", ", "));
-                    // $('#modal-ver-acuerdo').modal('show');
                     getJsonAcuerdoAnios(global_acuerdo.id, global_acuerdo.anio_inicial_acuerdo, global_acuerdo.anio_final_acuerdo);
-                    global_acuerdo.total_acuerdo = parseFloat(global_acuerdo.total_acuerdo) + parseFloat(global_acuerdo.abono_inicial_acuerdo);
                     setData(global_acuerdo);
+                    $('#total_acuerdo_edit').attr('data-total', parseFloat(global_acuerdo.total_acuerdo) + parseFloat(global_acuerdo.abono_inicial_acuerdo));
                     $('#btn_generar_factura_ap').attr('data-id', global_acuerdo.id);
                 });
 

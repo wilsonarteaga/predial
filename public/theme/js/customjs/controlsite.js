@@ -2444,11 +2444,6 @@ function setData(jsonObj) {
                     } else {
                         $('#' + i + '_edit').html(el);
                     }
-
-                    if ($('#' + i + '_edit').is('[data-total]')) {
-                        $('#' + i + '_edit').attr('data-total', el);
-                    }
-
                 } else {
 
                     if ($('#' + i + '_edit').hasClass('selectpicker')) {
