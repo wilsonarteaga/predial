@@ -803,7 +803,10 @@ class AcuerdosController extends Controller
                         // 'usuario' => $request->session()->get('username') . ' ' . $request->session()->get('userlastname'),
                     ];
 
-                    $pdf = PDF::loadView($formato_acuerdo, $data);
+                    $pdf = PDF::loadView($formato_acuerdo, $data)
+                        ->setOptions([
+                            'encoding' => 'UTF-8'
+                        ]);
 
                     // Nombre del archivo obtenido a partir de la fecha exacta de solicitud de generación del PDF
                     $filename = '';
@@ -1032,7 +1035,10 @@ class AcuerdosController extends Controller
                     'facturaYaPagada' => $facturaYaPagada,
                 ];
 
-                $pdf = PDF::loadView($formato_acuerdo, $data);
+                $pdf = PDF::loadView($formato_acuerdo, $data)
+                    ->setOptions([
+                        'encoding' => 'UTF-8'
+                    ]);
 
                 // Nombre del archivo regenerado
                 $filename = $numero_factura_acuerdo . '_ap_regenerado_' . $dt_emision->toDateString() . '_' . str_replace(':', '-', $dt_emision->toTimeString()) . '.pdf';
