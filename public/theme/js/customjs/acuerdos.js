@@ -906,8 +906,8 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                         if (response.anios.length > 0) {
                             console.log('Populating selects with server data, count:', response.anios.length);
 
-                            $anioInicial.empty().append('<option value="">Seleccione</option>');
-                            $anioFinal.empty().append('<option value="">Seleccione</option>');
+                            // $anioInicial.empty().append('<option value="">Seleccione</option>');
+                            // $anioFinal.empty().append('<option value="">Seleccione</option>');
 
                             $.each(response.anios, function(i, el) {
                                 if (el && el.ultimo_anio) {
