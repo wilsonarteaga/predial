@@ -902,6 +902,7 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                 // Usar setTimeout para asegurar que DOM esté listo
                 setTimeout(function() {
                     if (response.anios !== undefined && response.anios !== null) {
+                        global_anios = response.anios;
                         if (response.anios.length > 0) {
                             console.log('Populating selects with server data, count:', response.anios.length);
 
