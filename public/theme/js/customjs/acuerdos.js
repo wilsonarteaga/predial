@@ -888,35 +888,45 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
         data: jsonObj,
         success: function(response) {
             if (response.anios !== undefined && response.anios !== null) {
-                if (response.anios.length > 50) {
+                if (response.anios.length > 0) {
                     $('#anio_inicial_acuerdo_edit').empty();
                     $('#anio_final_acuerdo_edit').empty();
                     $.each(response.anios, function(i, el) {
                         $('#anio_inicial_acuerdo_edit').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
                         $('#anio_final_acuerdo_edit').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
                     });
-                    // $('#anio_inicial_acuerdo_edit').val(inicial);
-                    // $('#anio_final_acuerdo_edit').val(final);
+                    $('#anio_inicial_acuerdo_edit').val(inicial);
+                    $('#anio_final_acuerdo_edit').val(final);
                 } else {
                     console.log('first');
                     $('#anio_inicial_acuerdo_edit').empty();
                     $('#anio_final_acuerdo_edit').empty();
-                    var option_inicial = $('<option value="' + global_acuerdo.anio_inicial_acuerdo + '">' + global_acuerdo.anio_inicial_acuerdo + '</option>');
-                    $('#anio_inicial_acuerdo_edit').append(option_inicial);
-                    var option_final = $('<option value="' + global_acuerdo.anio_final_acuerdo + '">' + global_acuerdo.anio_final_acuerdo + '</option>');
-                    $('#anio_final_acuerdo_edit').append(option_final);
+                    if (global_acuerdo && global_acuerdo.anio_inicial_acuerdo) {
+                        var option_inicial = $('<option></option>').attr('value', global_acuerdo.anio_inicial_acuerdo).text(global_acuerdo.anio_inicial_acuerdo);
+                        $('#anio_inicial_acuerdo_edit').append(option_inicial);
+                        $('#anio_inicial_acuerdo_edit').val(global_acuerdo.anio_inicial_acuerdo);
+                    }
+                    if (global_acuerdo && global_acuerdo.anio_final_acuerdo) {
+                        var option_final = $('<option></option>').attr('value', global_acuerdo.anio_final_acuerdo).text(global_acuerdo.anio_final_acuerdo);
+                        $('#anio_final_acuerdo_edit').append(option_final);
+                        $('#anio_final_acuerdo_edit').val(global_acuerdo.anio_final_acuerdo);
+                    }
                 }
             } else {
                 console.log('second');
                 $('#anio_inicial_acuerdo_edit').empty();
                 $('#anio_final_acuerdo_edit').empty();
-                var option_inicial = $('<option value="' + global_acuerdo.anio_inicial_acuerdo + '">' + global_acuerdo.anio_inicial_acuerdo + '</option>');
-                $('#anio_inicial_acuerdo_edit').append(option_inicial);
-                var option_final = $('<option value="' + global_acuerdo.anio_final_acuerdo + '">' + global_acuerdo.anio_final_acuerdo + '</option>');
-                $('#anio_final_acuerdo_edit').append(option_final);
+                if (global_acuerdo && global_acuerdo.anio_inicial_acuerdo) {
+                    var option_inicial = $('<option></option>').attr('value', global_acuerdo.anio_inicial_acuerdo).text(global_acuerdo.anio_inicial_acuerdo);
+                    $('#anio_inicial_acuerdo_edit').append(option_inicial);
+                    $('#anio_inicial_acuerdo_edit').val(global_acuerdo.anio_inicial_acuerdo);
+                }
+                if (global_acuerdo && global_acuerdo.anio_final_acuerdo) {
+                    var option_final = $('<option></option>').attr('value', global_acuerdo.anio_final_acuerdo).text(global_acuerdo.anio_final_acuerdo);
+                    $('#anio_final_acuerdo_edit').append(option_final);
+                    $('#anio_final_acuerdo_edit').val(global_acuerdo.anio_final_acuerdo);
+                }
             }
-            $('#anio_inicial_acuerdo_edit').val(inicial);
-            $('#anio_final_acuerdo_edit').val(final);
             setTimeout(function() {
                 getJsonAcuerdoDetalle(id_acuerdo);
             }, 100);
