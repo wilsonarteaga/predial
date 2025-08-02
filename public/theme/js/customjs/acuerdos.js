@@ -906,8 +906,9 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                         if (response.anios.length > 0) {
                             console.log('Populating selects with server data, count:', response.anios.length);
 
-                            // $anioInicial.empty().append('<option value="">Seleccione</option>');
-                            // $anioFinal.empty().append('<option value="">Seleccione</option>');
+                            // Vaciar y poblar selects
+                            $anioInicial.empty().append('<option value="">Seleccione</option>');
+                            $anioFinal.empty().append('<option value="">Seleccione</option>');
 
                             $.each(response.anios, function(i, el) {
                                 if (el && el.ultimo_anio) {
@@ -917,11 +918,31 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                                 }
                             });
 
-                            // Establecer valores después de poblar
+                            // CRÍTICO: Refrescar Bootstrap Select si existe
+                            if (typeof $anioInicial.selectpicker === 'function') {
+                                console.log('Refreshing Bootstrap Select for anio_inicial_acuerdo_edit');
+                                $anioInicial.selectpicker('refresh');
+                            }
+                            if (typeof $anioFinal.selectpicker === 'function') {
+                                console.log('Refreshing Bootstrap Select for anio_final_acuerdo_edit');
+                                $anioFinal.selectpicker('refresh');
+                            }
+
+                            // Establecer valores después de poblar y refrescar
                             setTimeout(function() {
-                                if (inicial) $anioInicial.val(inicial);
-                                if (final) $anioFinal.val(final);
-                            }, 50);
+                                if (inicial) {
+                                    $anioInicial.val(inicial);
+                                    if (typeof $anioInicial.selectpicker === 'function') {
+                                        $anioInicial.selectpicker('render');
+                                    }
+                                }
+                                if (final) {
+                                    $anioFinal.val(final);
+                                    if (typeof $anioFinal.selectpicker === 'function') {
+                                        $anioFinal.selectpicker('render');
+                                    }
+                                }
+                            }, 100);
 
                         } else {
                             console.log('No server data available, using global_acuerdo data');
@@ -935,6 +956,14 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                             if (global_acuerdo && global_acuerdo.anio_final_acuerdo) {
                                 $anioFinal.append('<option value="' + global_acuerdo.anio_final_acuerdo + '">' + global_acuerdo.anio_final_acuerdo + '</option>');
                                 $anioFinal.val(global_acuerdo.anio_final_acuerdo);
+                            }
+
+                            // Refrescar Bootstrap Select después de agregar opciones
+                            if (typeof $anioInicial.selectpicker === 'function') {
+                                $anioInicial.selectpicker('refresh');
+                            }
+                            if (typeof $anioFinal.selectpicker === 'function') {
+                                $anioFinal.selectpicker('refresh');
                             }
                         }
                     } else {
@@ -950,6 +979,14 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                         if (global_acuerdo && global_acuerdo.anio_final_acuerdo) {
                             $anioFinal.append('<option value="' + global_acuerdo.anio_final_acuerdo + '">' + global_acuerdo.anio_final_acuerdo + '</option>');
                             $anioFinal.val(global_acuerdo.anio_final_acuerdo);
+                        }
+
+                        // Refrescar Bootstrap Select después de agregar opciones
+                        if (typeof $anioInicial.selectpicker === 'function') {
+                            $anioInicial.selectpicker('refresh');
+                        }
+                        if (typeof $anioFinal.selectpicker === 'function') {
+                            $anioFinal.selectpicker('refresh');
                         }
                     }
 

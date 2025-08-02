@@ -336,7 +336,7 @@
                                                         <div class="col-lg-2 col-md-3 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Vigencia inicial:</label>
-                                                                <select id="anio_inicial_acuerdo_edit" name="anio_inicial_acuerdo_edit" class="form-control" style="width: 100%">
+                                                                <select id="anio_inicial_acuerdo_edit" name="anio_inicial_acuerdo_edit" class="form-control" data-size="4" title="Seleccione a&ntilde;o..." style="width: 100%">
                                                                 </select>
                                                                 <span class="text-danger">@error('anio_inicial_acuerdo_edit') {{ $message }} @enderror</span>
                                                             </div>
@@ -344,7 +344,7 @@
                                                         <div class="col-lg-2 col-md-3 col-sm-4 col-xs-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Vigencia final:</label>
-                                                                <select id="anio_final_acuerdo_edit" name="anio_final_acuerdo_edit" class="form-control" style="width: 100%">
+                                                                <select id="anio_final_acuerdo_edit" name="anio_final_acuerdo_edit" class="form-control" data-size="4" title="Seleccione a&ntilde;o..." style="width: 100%">
                                                                 </select>
                                                                 <span class="text-danger">@error('anio_final_acuerdo_edit') {{ $message }} @enderror</span>
                                                             </div>
