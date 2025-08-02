@@ -938,6 +938,7 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                             }
                         }
                     } else {
+                        global_anios = [];
                         console.log('Response.anios is undefined or null, using global_acuerdo data');
                         $anioInicial.empty();
                         $anioFinal.empty();
