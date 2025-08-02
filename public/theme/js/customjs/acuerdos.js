@@ -887,49 +887,84 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
         url: "/list/acuerdo-anios",
         data: jsonObj,
         success: function(response) {
-            if (response.anios !== undefined && response.anios !== null) {
-                if (response.anios.length > 0) {
-                    $('#anio_inicial_acuerdo_edit').empty();
-                    $('#anio_final_acuerdo_edit').empty();
-                    $.each(response.anios, function(i, el) {
-                        $('#anio_inicial_acuerdo_edit').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
-                        $('#anio_final_acuerdo_edit').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
-                    });
-                    $('#anio_inicial_acuerdo_edit').val(inicial);
-                    $('#anio_final_acuerdo_edit').val(final);
-                } else {
-                    console.log('first');
-                    $('#anio_inicial_acuerdo_edit').empty();
-                    $('#anio_final_acuerdo_edit').empty();
-                    if (global_acuerdo && global_acuerdo.anio_inicial_acuerdo) {
-                        var option_inicial = $('<option></option>').attr('value', global_acuerdo.anio_inicial_acuerdo).text(global_acuerdo.anio_inicial_acuerdo);
-                        $('#anio_inicial_acuerdo_edit').append(option_inicial);
-                        $('#anio_inicial_acuerdo_edit').val(global_acuerdo.anio_inicial_acuerdo);
+            console.log('Response received:', response);
+
+            try {
+                // Verificar que los elementos select existan
+                var $anioInicial = $('#anio_inicial_acuerdo_edit');
+                var $anioFinal = $('#anio_final_acuerdo_edit');
+
+                if ($anioInicial.length === 0 || $anioFinal.length === 0) {
+                    console.error('Select elements not found in DOM');
+                    return;
+                }
+
+                // Usar setTimeout para asegurar que DOM esté listo
+                setTimeout(function() {
+                    if (response.anios !== undefined && response.anios !== null) {
+                        if (response.anios.length > 0) {
+                            console.log('Populating selects with server data, count:', response.anios.length);
+
+                            $anioInicial.empty().append('<option value="">Seleccione</option>');
+                            $anioFinal.empty().append('<option value="">Seleccione</option>');
+
+                            $.each(response.anios, function(i, el) {
+                                if (el && el.ultimo_anio) {
+                                    var optionHtml = '<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>';
+                                    $anioInicial.append(optionHtml);
+                                    $anioFinal.append(optionHtml);
+                                }
+                            });
+
+                            // Establecer valores después de poblar
+                            setTimeout(function() {
+                                if (inicial) $anioInicial.val(inicial);
+                                if (final) $anioFinal.val(final);
+                            }, 50);
+
+                        } else {
+                            console.log('No server data available, using global_acuerdo data');
+                            $anioInicial.empty();
+                            $anioFinal.empty();
+
+                            if (global_acuerdo && global_acuerdo.anio_inicial_acuerdo) {
+                                $anioInicial.append('<option value="' + global_acuerdo.anio_inicial_acuerdo + '">' + global_acuerdo.anio_inicial_acuerdo + '</option>');
+                                $anioInicial.val(global_acuerdo.anio_inicial_acuerdo);
+                            }
+                            if (global_acuerdo && global_acuerdo.anio_final_acuerdo) {
+                                $anioFinal.append('<option value="' + global_acuerdo.anio_final_acuerdo + '">' + global_acuerdo.anio_final_acuerdo + '</option>');
+                                $anioFinal.val(global_acuerdo.anio_final_acuerdo);
+                            }
+                        }
+                    } else {
+                        console.log('Response.anios is undefined or null, using global_acuerdo data');
+                        $anioInicial.empty();
+                        $anioFinal.empty();
+
+                        if (global_acuerdo && global_acuerdo.anio_inicial_acuerdo) {
+                            $anioInicial.append('<option value="' + global_acuerdo.anio_inicial_acuerdo + '">' + global_acuerdo.anio_inicial_acuerdo + '</option>');
+                            $anioInicial.val(global_acuerdo.anio_inicial_acuerdo);
+                        }
+                        if (global_acuerdo && global_acuerdo.anio_final_acuerdo) {
+                            $anioFinal.append('<option value="' + global_acuerdo.anio_final_acuerdo + '">' + global_acuerdo.anio_final_acuerdo + '</option>');
+                            $anioFinal.val(global_acuerdo.anio_final_acuerdo);
+                        }
                     }
-                    if (global_acuerdo && global_acuerdo.anio_final_acuerdo) {
-                        var option_final = $('<option></option>').attr('value', global_acuerdo.anio_final_acuerdo).text(global_acuerdo.anio_final_acuerdo);
-                        $('#anio_final_acuerdo_edit').append(option_final);
-                        $('#anio_final_acuerdo_edit').val(global_acuerdo.anio_final_acuerdo);
-                    }
-                }
-            } else {
-                console.log('second');
-                $('#anio_inicial_acuerdo_edit').empty();
-                $('#anio_final_acuerdo_edit').empty();
-                if (global_acuerdo && global_acuerdo.anio_inicial_acuerdo) {
-                    var option_inicial = $('<option></option>').attr('value', global_acuerdo.anio_inicial_acuerdo).text(global_acuerdo.anio_inicial_acuerdo);
-                    $('#anio_inicial_acuerdo_edit').append(option_inicial);
-                    $('#anio_inicial_acuerdo_edit').val(global_acuerdo.anio_inicial_acuerdo);
-                }
-                if (global_acuerdo && global_acuerdo.anio_final_acuerdo) {
-                    var option_final = $('<option></option>').attr('value', global_acuerdo.anio_final_acuerdo).text(global_acuerdo.anio_final_acuerdo);
-                    $('#anio_final_acuerdo_edit').append(option_final);
-                    $('#anio_final_acuerdo_edit').val(global_acuerdo.anio_final_acuerdo);
-                }
+
+                    // Forzar actualización del DOM y trigger change events
+                    $anioInicial.trigger('change');
+                    $anioFinal.trigger('change');
+
+                    // Llamar getJsonAcuerdoDetalle después de actualizar los selects
+                    setTimeout(function() {
+                        getJsonAcuerdoDetalle(id_acuerdo);
+                    }, 100);
+
+                }, 10);
+
+            } catch (error) {
+                console.error('Error processing response:', error);
             }
-            setTimeout(function() {
-                getJsonAcuerdoDetalle(id_acuerdo);
-            }, 100);
         },
         error: function(xhr) {
             console.log('AJAX Error:', xhr.responseText);
