@@ -18,6 +18,7 @@ use App\Models\Anio;
 use Carbon\Carbon;
 use PDF;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Collection;
 use StdClass;
 
@@ -383,7 +384,7 @@ class AcuerdosController extends Controller
         $acuerdo_detalle = DB::table('predios_acuerdos_pago_detalle AS acuerdos')
                 ->join('predios_acuerdos_pago', 'predios_acuerdos_pago.id', '=', 'acuerdos.id_acuerdo')
                 ->leftJoin('bancos', 'bancos.id', '=', 'acuerdos.id_banco')
-                ->select(DB::raw('acuerdos.id, predios_acuerdos_pago.id_predio, acuerdos.factura_pago, acuerdos.cuota_numero, acuerdos.valor_cuota, CASE WHEN acuerdos.pagado = -1 THEN \'SI\' ELSE \'NO\' END as pagado, ISNULL(CONVERT(VARCHAR, acuerdos.fecha_pago, 23), \'N/D\') as fecha_pago, ISNULL(bancos.nombre, \'No disponible\') AS banco, ISNULL(acuerdos.valor_concepto1, 0) AS valor_concepto1, ISNULL(acuerdos.valor_concepto2, 0) AS valor_concepto2, ISNULL(acuerdos.valor_concepto3, 0) AS valor_concepto3, ISNULL(acuerdos.valor_concepto4, 0) AS valor_concepto4, ISNULL(acuerdos.valor_concepto5, 0) AS valor_concepto5, ISNULL(acuerdos.valor_concepto18, 0) AS valor_concepto18'))
+                ->select(DB::raw('acuerdos.id, predios_acuerdos_pago.id_predio, acuerdos.factura_pago, acuerdos.cuota_numero, acuerdos.valor_cuota, CASE WHEN acuerdos.pagado = -1 THEN \'SI\' ELSE \'NO\' END as pagado, ISNULL(CONVERT(VARCHAR, acuerdos.fecha_pago, 23), \'N/D\') as fecha_pago, ISNULL(bancos.nombre, \'No disponible\') AS banco, ISNULL(acuerdos.valor_concepto1, 0) AS valor_concepto1, ISNULL(acuerdos.valor_concepto2, 0) AS valor_concepto2, ISNULL(acuerdos.valor_concepto3, 0) AS valor_concepto3, ISNULL(acuerdos.valor_concepto4, 0) AS valor_concepto4, ISNULL(acuerdos.valor_concepto5, 0) AS valor_concepto5, ISNULL(acuerdos.valor_concepto18, 0) AS valor_concepto18, acuerdos.file_factura'))
                 ->where('predios_acuerdos_pago.id', $request->id_acuerdo)
                 ->where('acuerdos.estado', 1)
                 ->orderBy('acuerdos.cuota_numero', 'asc')
@@ -684,12 +685,6 @@ class AcuerdosController extends Controller
                         $predio->identificaciones = 'Sin asignar';
                     }
 
-                    // Para label "cuota n de m"
-                    $count_cuotas = DB::table('predios_acuerdos_pago_detalle AS acuerdos')
-                        ->where('acuerdos.id_acuerdo', $acuerdo_pago->id)
-                        ->where('acuerdos.estado', 1)
-                        ->count();
-
                     $ultima_cuota_pagada = DB::table('predios_acuerdos_pago_detalle AS acuerdos')
                         ->join('bancos', 'bancos.id', '=', 'acuerdos.id_banco')
                         ->select(DB::raw('acuerdos.*'))
@@ -766,6 +761,7 @@ class AcuerdosController extends Controller
                         $concepto_5 = $cuota->valor_concepto5 == null ? 0 : $cuota->valor_concepto5;
                         $concepto_18 = $cuota->valor_concepto18 == null ? 0 : $cuota->valor_concepto18;
 
+                        $obj->cuota_numero = $cuota->cuota_numero;
                         $obj->avaluo = $predio->avaluo;
                         $obj->impuesto = $concepto_1 + $concepto_3;
                         $obj->interes = $concepto_2 + $concepto_4;
@@ -806,11 +802,22 @@ class AcuerdosController extends Controller
                         // 'logo' => $logo,
                         // 'alcaldia' => $alcaldia,
                         // 'usuario' => $request->session()->get('username') . ' ' . $request->session()->get('userlastname'),
-                        'cuota_actual' => $lista_cuotas,
-                        'count_cuotas' => $count_cuotas,
                     ];
 
                     $pdf = PDF::loadView($formato_acuerdo, $data);
+
+                    // Nombre del archivo obtenido a partir de la fecha exacta de solicitud de generación del PDF
+                    $filename = '';
+                    if(intval($tmp) == 0) {
+                        $filename = $numero_factura_acuerdo . '_ap_' . $dt_emision->toDateString() . '_' . str_replace(':', '-', $dt_emision->toTimeString()) . '.pdf';
+                    }
+                    else {
+                        $filename = 'temporal_ap_' . $dt_emision->toDateString() . '_' . str_replace(':', '-', $dt_emision->toTimeString()) . '.pdf';
+                    }
+
+                    // Guardar el PDF en la carpeta storage/app/public/facturacion/acuerdos
+                    $pdfContent = $pdf->output();
+                    Storage::disk('public')->put('facturacion/acuerdos/' . $filename, $pdfContent);
 
                     // Actualizar datos pago: valor_pago, numero_factura, fecha emision
                     // Guardar informacion solo si se realizo un nuevo calculo
@@ -819,18 +826,13 @@ class AcuerdosController extends Controller
                         $pad = PredioAcuerdoPagoDetalle::find($pago_pendiente->id);
                         $pad->factura_pago = $numero_factura_acuerdo;
                         $pad->fecha_emision = Carbon::createFromFormat("Y-m-d H:i:s", $dt_emision->toDateTimeString())->format('Y-m-d H:i:s');
+                        $pad->file_factura = $filename;
                         $pad->save();
                     }
 
                     DB::commit();
 
-                    // Nombre del archivo obtenido a partir de la fecha exacta de solicitud de generación del PDF
-                    if(intval($tmp) == 0) {
-                        return $pdf->download($numero_factura_acuerdo . '_ap_' . $dt_emision->toDateString() . '_' . str_replace(':', '-', $dt_emision->toTimeString()) . '.pdf');
-                    }
-                    else {
-                        return $pdf->download('temporal_ap_' . $dt_emision->toDateString() . '_' . str_replace(':', '-', $dt_emision->toTimeString()) . '.pdf');
-                    }
+                    return $pdf->download($filename);
                 }
                 else {
                     dd('No se encontraron cuotas pendientes para el acuerdo de pago con ID: ' . $id);

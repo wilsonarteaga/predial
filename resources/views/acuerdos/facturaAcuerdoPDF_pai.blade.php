@@ -122,7 +122,7 @@
 
         .div-codigos {
             position: absolute;
-            top: 33%;
+            top: 31%;
         }
 
         .logo {
@@ -177,7 +177,7 @@
             </table>
         </div>
         <div id="body">
-            <table class="info-predio" style="width: 100%; margin-top: 15px;">
+            <table class="info-predio" style="width: 100%; margin-top: 5px;">
                 <tr>
                     <th style="width: 15%;">C&Oacute;DIGO CATASTRAL:</th>
                     <td style="width: 35%;">{{ $predio->codigo_predio }}</td>
@@ -199,7 +199,6 @@
                     <td>{{ $predio->direccion }}</td>
                 </tr>
             </table>
-            <p>{{ str_contains($cuota_actual, ',') ? 'cuotas' : 'cuota' }} {{ $cuota_actual }} de {{ $count_cuotas }}</p>
             <table class="info-predio" style="width: 100%; margin-top: 5px;">
                 <tr>
                     <th style="width: 15%;">No RECIBO ANT</th>
@@ -228,9 +227,10 @@
             </table>
             <table class="info-pagos" style="width: 100%; margin-top: 10px;">
                 <tr>
-                    <th colspan="6" style="text-align: center;">DETALLE DE PAGO</th>
+                    <th colspan="7" style="text-align: center;">DETALLE DE PAGO</th>
                 </tr>
                 <tr>
+                    <th>CUOTA</th>
                     <th>AVAL&Uacute;O</th>
                     <th>IMPUESTO</th>
                     <th>INTER&Eacute;S</th>
@@ -247,6 +247,7 @@
                     @php($suma_total = 0)
                     @foreach($lista_pagos as $pago)
                     <tr>
+                        <td style="text-align: center;">{{ $pago->cuota_numero }}</td>
                         <td>@money($pago->avaluo)</td>
                         <td>@money($pago->impuesto)</td>
                         <td>@money($pago->interes)</td>
@@ -262,7 +263,7 @@
                     @endforeach
                     <!----------------------------->
                     <tr class="totales">
-                        <th>TOTALES</th>
+                        <th colspan="2">TOTALES</th>
                         <th>@money($suma_impuesto)</th>
                         <th>@money($suma_interes)</th>
                         <th>@money($suma_alumbrado)</th>
@@ -271,7 +272,7 @@
                     </tr>
                 @else
                 <tr>
-                    <td colspan="6" style="text-align: center;">No hay informaci&oacute;n disponible</td>
+                    <td colspan="7" style="text-align: center;">No hay informaci&oacute;n disponible</td>
                 </tr>
                 @endif
             </table>
@@ -368,7 +369,7 @@
                                         {{-- <p class="negrilla" style="position: absolute; width: 100%; text-align: left; padding-top: 10px; padding-left: 22px;">
                                             A&Ntilde;OS A PAGAR:<br /><span style="font-weight: normal;">{{ $predio->anios_a_pagar }}</span>
                                         </p> --}}
-                                        <table style="width: 100%; font-size: 100%; padding-top: 130px;">
+                                        <table style="width: 100%; font-size: 100%; padding-top: 120px;">
                                             <tr>
                                                 <td class="negrilla">Pague hasta {{ $fecha_pago_hasta }}</td>
                                                 <td class="negrilla" style="font-size: 120%;">@money($valor_factura)</td>

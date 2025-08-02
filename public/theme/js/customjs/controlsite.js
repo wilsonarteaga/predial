@@ -279,6 +279,10 @@ $(document).ready(function() {
                     $('#estado_tmp_edit').prop('checked', false);
                 }
 
+                if($('#total_acuerdo_edit').length > 0) {
+                    $('#total_acuerdo_edit').attr('data-total', "");
+                }
+
                 if ($("#create-form").length > 0) {
                     var validatorCreate = $("#create-form").validate();
                     validatorCreate.resetForm();

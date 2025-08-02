@@ -42,7 +42,11 @@ $(document).ready(function() {
                     if (row.factura_pago === null) {
                         return '<input type="checkbox" class="cuota-checkbox" data-id="' + row.id + '" data-cuota="' + row.cuota_numero + '">';
                     } else {
-                        return '<a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Descargar factura pagada" class="download-factura-pagada" data-id="' + row.id + '" style="color: red;"><i class="fa fa-file-pdf-o"></i></a>';
+                        if (row.file_factura) {
+                            return '<a data-toggle="tooltip" data-placement="top" title="Descargar factura pagada" class="download-factura-pagada" data-id="' + row.id + '" href="/downloadFileAcuerdo/' + row.file_factura + '" target="_blank" style="color: red;"><i class="fa fa-file-pdf-o"></i></a>';
+                        } else {
+                            return '<span data-toggle="tooltip" data-placement="top" title="Factura no disponible" class="text-muted"><i class="fa fa-file-pdf-o"></i></span>';
+                        }
                     }
                 }
             },
@@ -130,8 +134,10 @@ $(document).ready(function() {
             $(".detalle-row")
                 .off("click")
                 .on("click", function (e) {
-                    // Only trigger checkbox if clicking on unpaid row and not on the PDF icon
-                    if (!$(e.target).closest('.download-factura-pagada').length) {
+                    // Only trigger checkbox if clicking on unpaid row and not on the PDF icon or checkbox itself
+                    if (!$(e.target).closest('.download-factura-pagada').length && 
+                        !$(e.target).hasClass('cuota-checkbox') && 
+                        !$(e.target).closest('.cuota-checkbox').length) {
                         var checkbox = $(this).find(".cuota-checkbox");
                         if (checkbox.length > 0) {
                             checkbox.prop("checked", !checkbox.prop("checked")).trigger("change");
@@ -407,7 +413,7 @@ $(document).ready(function() {
                     $('.result').empty();
                     var tr = $(this).closest("tr");
                     var data = DTAcuerdos.row(tr).data();
-                    global_acuerdo = data;
+                    global_acuerdo = JSON.parse(JSON.stringify(data));
                     // console.log('📌 - acuerdos.js - global_acuerdo:', global_acuerdo);
                     // console.log('📌 - acuerdos.js:99 - data:', data);
                     // $('#tbody_acuerdos').empty();
@@ -488,6 +494,12 @@ $(document).ready(function() {
     // if($('#print_acuerdos').length) {
     //     $('#print_acuerdos').off('click').on('click', function() {
     //         $('#modal-impresion').modal({ backdrop: 'static', keyboard: false }, 'show');
+    //     });
+    // }
+
+    // if ($('#btn_cancel_edit').length > 0) {
+    //     $('#btn_cancel_edit').bind('click', function() {
+    //         DTAcuerdo = null;
     //     });
     // }
 

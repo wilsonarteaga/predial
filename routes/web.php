@@ -264,3 +264,5 @@ Route::post('uploadFileResolucion', [UploadController::class, 'uploadFileResoluc
 
 //DownloadController
 Route::get('/downloadFileResolucion/{filename}', [DownloadController::class, 'downloadFileResolucion'])->name('download-file-resolucion');
+Route::get('/downloadFileAcuerdo/{filename}', [DownloadController::class, 'downloadFileAcuerdo'])->name('download-file-acuerdo');
+
