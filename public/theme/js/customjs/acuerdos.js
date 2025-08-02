@@ -901,15 +901,19 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                     console.log('first');
                     $('#anio_inicial_acuerdo_edit').empty();
                     $('#anio_final_acuerdo_edit').empty();
-                    $('#anio_inicial_acuerdo_edit').append('<option value="' + global_acuerdo.anio_inicial_acuerdo + '">' + global_acuerdo.anio_inicial_acuerdo + '</option>');
-                    $('#anio_final_acuerdo_edit').append('<option value="' + global_acuerdo.anio_final_acuerdo + '">' + global_acuerdo.anio_final_acuerdo + '</option>');
+                    var option_inicial = $('<option value="' + global_acuerdo.anio_inicial_acuerdo + '">' + global_acuerdo.anio_inicial_acuerdo + '</option>');
+                    $('#anio_inicial_acuerdo_edit').append(option_inicial);
+                    var option_final = $('<option value="' + global_acuerdo.anio_final_acuerdo + '">' + global_acuerdo.anio_final_acuerdo + '</option>');
+                    $('#anio_final_acuerdo_edit').append(option_final);
                 }
             } else {
                 console.log('second');
                 $('#anio_inicial_acuerdo_edit').empty();
                 $('#anio_final_acuerdo_edit').empty();
-                $('#anio_inicial_acuerdo_edit').append('<option value="' + global_acuerdo.anio_inicial_acuerdo + '">' + global_acuerdo.anio_inicial_acuerdo + '</option>');
-                $('#anio_final_acuerdo_edit').append('<option value="' + global_acuerdo.anio_final_acuerdo + '">' + global_acuerdo.anio_final_acuerdo + '</option>');
+                var option_inicial = $('<option value="' + global_acuerdo.anio_inicial_acuerdo + '">' + global_acuerdo.anio_inicial_acuerdo + '</option>');
+                $('#anio_inicial_acuerdo_edit').append(option_inicial);
+                var option_final = $('<option value="' + global_acuerdo.anio_final_acuerdo + '">' + global_acuerdo.anio_final_acuerdo + '</option>');
+                $('#anio_final_acuerdo_edit').append(option_final);
             }
             $('#anio_inicial_acuerdo_edit').val(inicial);
             $('#anio_final_acuerdo_edit').val(final);
