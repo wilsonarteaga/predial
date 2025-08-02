@@ -915,7 +915,7 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
         success: function(response) {
             try {
                 if (response.anios !== undefined && response.anios !== null) {
-                    if (response.anios.length > 50) {
+                    if (response.anios.length > 0) {
                         $('#anio_inicial_acuerdo_edit').empty();
                         $('#anio_final_acuerdo_edit').empty();
                         $.each(response.anios, function(i, el) {
