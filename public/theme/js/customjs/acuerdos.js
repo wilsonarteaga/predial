@@ -895,8 +895,8 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                         $('#anio_inicial_acuerdo_edit').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
                         $('#anio_final_acuerdo_edit').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
                     });
-                    $('#anio_inicial_acuerdo_edit').val(inicial);
-                    $('#anio_final_acuerdo_edit').val(final);
+                    // $('#anio_inicial_acuerdo_edit').val(inicial);
+                    // $('#anio_final_acuerdo_edit').val(final);
                 } else {
                     $('#anio_inicial_acuerdo_edit').empty();
                     $('#anio_final_acuerdo_edit').empty();
@@ -909,6 +909,8 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                 $('#anio_inicial_acuerdo_edit').append('<option value="' + global_acuerdo.anio_inicial_acuerdo + '">' + global_acuerdo.anio_inicial_acuerdo + '</option>');
                 $('#anio_final_acuerdo_edit').append('<option value="' + global_acuerdo.anio_final_acuerdo + '">' + global_acuerdo.anio_final_acuerdo + '</option>');
             }
+            $('#anio_inicial_acuerdo_edit').val(inicial);
+            $('#anio_final_acuerdo_edit').val(final);
             setTimeout(function() {
                 getJsonAcuerdoDetalle(id_acuerdo);
             }, 100);
