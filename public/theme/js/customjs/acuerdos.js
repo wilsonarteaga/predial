@@ -907,8 +907,8 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                             console.log('Populating selects with server data, count:', response.anios.length);
 
                             // Vaciar y poblar selects
-                            $anioInicial.empty().append('<option value="">Seleccione</option>');
-                            $anioFinal.empty().append('<option value="">Seleccione</option>');
+                            $anioInicial.empty(); //.append('<option value="">Seleccione</option>');
+                            $anioFinal.empty(); //.append('<option value="">Seleccione</option>');
 
                             $.each(response.anios, function(i, el) {
                                 if (el && el.ultimo_anio) {
@@ -919,28 +919,28 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                             });
 
                             // CRÍTICO: Refrescar Bootstrap Select si existe
-                            if (typeof $anioInicial.selectpicker === 'function') {
-                                console.log('Refreshing Bootstrap Select for anio_inicial_acuerdo_edit');
-                                $anioInicial.selectpicker('refresh');
-                            }
-                            if (typeof $anioFinal.selectpicker === 'function') {
-                                console.log('Refreshing Bootstrap Select for anio_final_acuerdo_edit');
-                                $anioFinal.selectpicker('refresh');
-                            }
+                            // if (typeof $anioInicial.selectpicker === 'function') {
+                            //     console.log('Refreshing Bootstrap Select for anio_inicial_acuerdo_edit');
+                            //     $anioInicial.selectpicker('refresh');
+                            // }
+                            // if (typeof $anioFinal.selectpicker === 'function') {
+                            //     console.log('Refreshing Bootstrap Select for anio_final_acuerdo_edit');
+                            //     $anioFinal.selectpicker('refresh');
+                            // }
 
                             // Establecer valores después de poblar y refrescar
                             setTimeout(function() {
                                 if (inicial) {
                                     $anioInicial.val(inicial);
-                                    if (typeof $anioInicial.selectpicker === 'function') {
-                                        $anioInicial.selectpicker('render');
-                                    }
+                                    // if (typeof $anioInicial.selectpicker === 'function') {
+                                    //     $anioInicial.selectpicker('render');
+                                    // }
                                 }
                                 if (final) {
                                     $anioFinal.val(final);
-                                    if (typeof $anioFinal.selectpicker === 'function') {
-                                        $anioFinal.selectpicker('render');
-                                    }
+                                    // if (typeof $anioFinal.selectpicker === 'function') {
+                                    //     $anioFinal.selectpicker('render');
+                                    // }
                                 }
                             }, 100);
 
@@ -959,12 +959,12 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                             }
 
                             // Refrescar Bootstrap Select después de agregar opciones
-                            if (typeof $anioInicial.selectpicker === 'function') {
-                                $anioInicial.selectpicker('refresh');
-                            }
-                            if (typeof $anioFinal.selectpicker === 'function') {
-                                $anioFinal.selectpicker('refresh');
-                            }
+                            // if (typeof $anioInicial.selectpicker === 'function') {
+                            //     $anioInicial.selectpicker('refresh');
+                            // }
+                            // if (typeof $anioFinal.selectpicker === 'function') {
+                            //     $anioFinal.selectpicker('refresh');
+                            // }
                         }
                     } else {
                         global_anios = [];
@@ -982,12 +982,12 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                         }
 
                         // Refrescar Bootstrap Select después de agregar opciones
-                        if (typeof $anioInicial.selectpicker === 'function') {
-                            $anioInicial.selectpicker('refresh');
-                        }
-                        if (typeof $anioFinal.selectpicker === 'function') {
-                            $anioFinal.selectpicker('refresh');
-                        }
+                        // if (typeof $anioInicial.selectpicker === 'function') {
+                        //     $anioInicial.selectpicker('refresh');
+                        // }
+                        // if (typeof $anioFinal.selectpicker === 'function') {
+                        //     $anioFinal.selectpicker('refresh');
+                        // }
                     }
 
                     // Forzar actualización del DOM y trigger change events
