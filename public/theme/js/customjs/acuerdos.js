@@ -353,52 +353,6 @@ $(document).ready(function() {
         ],
     });
 
-    // // SOLUTION 4: Modal events with proper DataTable handling
-    // $('#modal-ver-acuerdo').on('shown.bs.modal', function() {
-    //     var data = global_acuerdo;
-
-    //     // Wait for modal to be fully rendered
-    //     setTimeout(function() {
-    //         // Initialize DataTable when modal is shown
-    //         var table = initializeModalDataTable();
-
-    //         // Load data after initialization
-    //         setTimeout(function() {
-    //             getJsonAcuerdoDetalle(data.id);
-    //         }, 100);
-    //     }, 500); // Increased delay for modal animation
-    // });
-
-    // SOLUTION 5: Clean up when modal is hidden
-    // $('#modal-ver-acuerdo').on('hidden.bs.modal', function() {
-    //     // Clear stored data
-    //     $(this).removeData('acuerdo-data');
-
-    //     // Optionally destroy the DataTable to free memory
-    //     if (DTAcuerdoDetalle) {
-    //         try {
-    //             DTAcuerdoDetalle.clear();
-    //             // Uncomment the next line if you want to completely destroy the table
-    //             // DTAcuerdoDetalle.destroy();
-    //             // modalTableInitialized = false;
-    //         } catch (error) {
-    //             console.log('Error cleaning up modal table:', error);
-    //         }
-    //     }
-    // });
-
-    // if($('#print_acuerdos').length) {
-    //     $('#print_acuerdos').off('click').on('click', function() {
-    //         $('#modal-impresion').modal({ backdrop: 'static', keyboard: false }, 'show');
-    //     });
-    // }
-
-    // if ($('#btn_cancel_edit').length > 0) {
-    //     $('#btn_cancel_edit').bind('click', function() {
-    //         DTAcuerdo = null;
-    //     });
-    // }
-
     if($('#print_acuerdos').length) {
         $('#print_acuerdos').off('click').on('click', function() {
             var validatorInforme = $("#form-impresion-informe").validate({
@@ -961,17 +915,20 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
         success: function(response) {
             try {
                 if (response.anios !== undefined && response.anios !== null) {
-                    if (response.anios.length > 0) {
+                    if (response.anios.length > 50) {
                         $('#anio_inicial_acuerdo_edit').empty();
                         $('#anio_final_acuerdo_edit').empty();
-                        $('#anio_inicial_acuerdo_edit').append('<option value="">Seleccione</option>');
-                        $('#anio_final_acuerdo_edit').append('<option value="">Seleccione</option>');
                         $.each(response.anios, function(i, el) {
                             $('#anio_inicial_acuerdo_edit').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
                             $('#anio_final_acuerdo_edit').append('<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>');
                         });
                         $('#anio_inicial_acuerdo_edit').val(inicial);
                         $('#anio_final_acuerdo_edit').val(final);
+                    } else {
+                        $('#anio_inicial_acuerdo_edit').empty();
+                        $('#anio_final_acuerdo_edit').empty();
+                        $('#anio_inicial_acuerdo_edit').append('<option value="' + global_acuerdo.anio_inicial_acuerdo + '">' + global_acuerdo.anio_inicial_acuerdo + '</option>');
+                        $('#anio_final_acuerdo_edit').append('<option value="' + global_acuerdo.anio_final_acuerdo + '">' + global_acuerdo.anio_final_acuerdo + '</option>');
                     }
                 }
             } catch (error) {
