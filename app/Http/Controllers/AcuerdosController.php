@@ -697,7 +697,6 @@ class AcuerdosController extends Controller
                     if ($ultima_cuota_pagada == null) {
                         $obj = new StdClass();
                         $obj->factura_pago = '';
-                        $obj->ultimo_anio = '';
                         $obj->fecha_pago = '';
                         $obj->valor_cuota = 0;
                         $obj->cuota_numero = '';
@@ -819,16 +818,16 @@ class AcuerdosController extends Controller
                     $pdfContent = $pdf->output();
                     Storage::disk('public')->put('facturacion/acuerdos/' . $filename, $pdfContent);
 
-                    // Actualizar datos pago: valor_pago, numero_factura, fecha emision
-                    // Guardar informacion solo si se realizo un nuevo calculo
-                    foreach ($acuerdo_cuotas as $pago_pendiente) {
-                        $pad = new PredioAcuerdoPagoDetalle;
-                        $pad = PredioAcuerdoPagoDetalle::find($pago_pendiente->id);
-                        $pad->factura_pago = $numero_factura_acuerdo;
-                        $pad->fecha_emision = Carbon::createFromFormat("Y-m-d H:i:s", $dt_emision->toDateTimeString())->format('Y-m-d H:i:s');
-                        $pad->file_factura = $filename;
-                        $pad->save();
-                    }
+                    // Actualizar datos pago: numero_factura, fecha emision y file_factura
+                    PredioAcuerdoPagoDetalle::where('id_acuerdo', $acuerdo_pago->id)
+                        ->where('estado', 1)
+                        ->where('pagado', 0)
+                        ->whereIn('cuota_numero', explode(',', $lista_cuotas))
+                        ->update([
+                            'factura_pago' => $numero_factura_acuerdo,
+                            'fecha_emision' => Carbon::createFromFormat("Y-m-d H:i:s", $dt_emision->toDateTimeString())->format('Y-m-d H:i:s'),
+                            'file_factura' => $filename
+                        ]);
 
                     DB::commit();
 
@@ -855,6 +854,217 @@ class AcuerdosController extends Controller
 
     public function exportExcelAcuerdos(Request $request, $fechainicial, $fechafinal) {
         return Excel::download(new ExportNotas($request->session()->get('useremail'), $fechainicial, $fechafinal), 'reporte_acuerdos_pago.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    public function regenerate_factura_acuerdo_pdf(Request $request, $id_acuerdo_detalle) {
+        if (!$request->session()->exists('userid')) {
+            return redirect('/');
+        }
+
+        DB::beginTransaction();
+        try {
+            $dt_emision = Carbon::now();
+            $facturaYaPagada = false;
+
+            // Obtener el acuerdo detalle y el número de factura existente
+            $acuerdo_detalle = DB::table('predios_acuerdos_pago_detalle AS acuerdos')
+                ->select('acuerdos.*')
+                ->where('acuerdos.id', $id_acuerdo_detalle)
+                ->where('acuerdos.estado', 1)
+                ->first();
+
+            if($acuerdo_detalle == null || $acuerdo_detalle->factura_pago == null) {
+                dd('No se encontró el detalle del acuerdo o no tiene número de factura asignado. ID: ' . $id_acuerdo_detalle);
+                DB::rollback();
+                return null;
+            }
+
+            // Obtener el acuerdo de pago desde el detalle
+            $acuerdo_pago = DB::table('predios_acuerdos_pago AS acuerdos')
+                ->select('acuerdos.*')
+                ->where('acuerdos.id', $acuerdo_detalle->id_acuerdo)
+                ->first();
+
+            if($acuerdo_pago == null) {
+                dd('No se encontró el acuerdo de pago para el detalle ID: ' . $id_acuerdo_detalle);
+                DB::rollback();
+                return null;
+            }
+
+            // Obtener todas las cuotas con el mismo número de factura
+            $acuerdo_cuotas = DB::table('predios_acuerdos_pago_detalle AS acuerdos')
+                ->select('acuerdos.*')
+                ->where('acuerdos.id_acuerdo', $acuerdo_pago->id)
+                ->where('acuerdos.estado', 1)
+                ->where('acuerdos.factura_pago', $acuerdo_detalle->factura_pago)
+                ->orderBy('acuerdos.cuota_numero', 'asc')
+                ->get();
+
+            if (count($acuerdo_cuotas) > 0) {
+                // Usar el número de factura existente (sin incrementar)
+                $numero_factura_acuerdo = $acuerdo_detalle->factura_pago;
+
+                $predio = DB::table('predios')->join('zonas', function ($join) {
+                        $join->on('predios.id_zona', '=', 'zonas.id');
+                    })
+                    ->select(DB::raw('predios.*, zonas.descripcion'))
+                    ->where('predios.estado', 1)
+                    ->where('predios.id', $acuerdo_pago->id_predio)
+                    ->first();
+
+                $propietarios = DB::table('predios')
+                                    ->join('predios_propietarios', 'predios.id', '=', 'predios_propietarios.id_predio')
+                                    ->join('propietarios', 'propietarios.id', '=', 'predios_propietarios.id_propietario')
+                                    ->join('zonas', 'zonas.id', '=', 'predios.id_zona')
+                    ->select(DB::raw('predios_propietarios.id_predio, STRING_AGG(TRIM(propietarios.nombre), \'<br />\') AS propietarios, STRING_AGG(propietarios.identificacion, \'<br />\') AS identificaciones'))
+                    ->where('predios.estado', 1)
+                    ->where('predios.id', $predio->id)
+                    ->where('predios_propietarios.jerarquia', '001')
+                    ->groupBy('predios_propietarios.id_predio')
+                    ->get();
+
+                if($propietarios) {
+                    $desired_object = self::findInCollection($propietarios, 'id_predio', $predio->id);
+                    if($desired_object) {
+                        $predio->propietarios = $desired_object->propietarios;
+                        $predio->identificaciones = $desired_object->identificaciones;
+                    }
+                    else {
+                        $predio->propietarios = 'Sin asignar';
+                        $predio->identificaciones = 'Sin asignar';
+                    }
+                }
+                else {
+                    $predio->propietarios = 'Sin asignar';
+                    $predio->identificaciones = 'Sin asignar';
+                }
+
+                $ultima_cuota_pagada = DB::table('predios_acuerdos_pago_detalle AS acuerdos')
+                    ->join('bancos', 'bancos.id', '=', 'acuerdos.id_banco')
+                    ->select(DB::raw('acuerdos.*'))
+                    ->where('acuerdos.id_acuerdo', $acuerdo_pago->id)
+                    ->where('acuerdos.estado', 1)
+                    ->where('acuerdos.pagado', -1)
+                    ->orderBy('acuerdos.cuota_numero', 'desc')
+                    ->first();
+
+                if ($ultima_cuota_pagada == null) {
+                    $obj = new StdClass();
+                    $obj->factura_pago = '';
+                    $obj->fecha_pago = '';
+                    $obj->valor_cuota = 0;
+                    $obj->cuota_numero = '';
+                    $ultima_cuota_pagada = $obj;
+                }
+                else {
+                    $ultima_cuota_pagada->fecha_pago = $ultima_cuota_pagada->fecha_pago !== null ? Carbon::createFromFormat("Y-m-d", substr($ultima_cuota_pagada->fecha_pago, 0, 10))->format('d/m/Y') : 'N/D';
+                }
+
+                if ($acuerdo_pago->anio_inicial_acuerdo == $acuerdo_pago->anio_final_acuerdo) {
+                    $predio->anios_a_pagar = $acuerdo_pago->anio_inicial_acuerdo;
+                } else {
+                    $predio->anios_a_pagar = $acuerdo_pago->anio_inicial_acuerdo . ' A ' . $acuerdo_pago->anio_final_acuerdo;
+                }
+
+                $parametro_ean = DB::table('parametros')
+                                ->select('parametros.valor')
+                                ->where('parametros.nombre', 'ean')
+                                ->first();
+
+                $parametro_formato_acuerdo = DB::table('parametros')
+                                ->select('parametros.valor')
+                                ->where('parametros.nombre', 'formato-acuerdo')
+                                ->first();
+
+                $ean = $parametro_ean->valor;
+                $formato_acuerdo = $parametro_formato_acuerdo->valor;
+
+                $barras = new Collection();
+                $barras_texto = new Collection();
+                $lista_pagos = new Collection();
+                $suma_total = 0;
+
+                foreach ($acuerdo_cuotas as $cuota) {
+                    $obj = new StdClass();
+
+                    $concepto_1 = $cuota->valor_concepto1 == null ? 0 : $cuota->valor_concepto1;
+                    $concepto_2 = $cuota->valor_concepto2 == null ? 0 : $cuota->valor_concepto2;
+                    $concepto_3 = $cuota->valor_concepto3 == null ? 0 : $cuota->valor_concepto3;
+                    $concepto_4 = $cuota->valor_concepto4 == null ? 0 : $cuota->valor_concepto4;
+                    $concepto_5 = $cuota->valor_concepto5 == null ? 0 : $cuota->valor_concepto5;
+                    $concepto_18 = $cuota->valor_concepto18 == null ? 0 : $cuota->valor_concepto18;
+
+                    $obj->cuota_numero = $cuota->cuota_numero;
+                    $obj->avaluo = $predio->avaluo;
+                    $obj->impuesto = $concepto_1 + $concepto_3;
+                    $obj->interes = $concepto_2 + $concepto_4;
+                    $obj->alumbrado = $concepto_18;
+                    $obj->interes_acuerdo = $concepto_5;
+                    $obj->total = $cuota->valor_cuota;
+
+                    $suma_total += $cuota->valor_cuota;
+
+                    $lista_pagos->push($obj);
+                }
+
+                $valor_factura = round($suma_total);
+                $fecha_pago_hasta = $dt_emision->format('Y-m-d H:i:s.u'); // TODO: Pilas esta fecha
+
+                // String para generar el BARCODE
+                $barras = (chr(241) . '415' . $ean . '8020' . str_pad($numero_factura_acuerdo , 24, "0", STR_PAD_LEFT) . chr(241) . '3900' . str_pad($valor_factura, 14, "0", STR_PAD_LEFT) . chr(241) . '96' . str_replace('-', '', $fecha_pago_hasta));
+
+                // String para el label inferior del BARCODE
+                $barras_texto = ('(415)' . $ean . '(8020)' . str_pad($numero_factura_acuerdo , 24, "0", STR_PAD_LEFT) . '(3900)' . str_pad($valor_factura, 14, "0", STR_PAD_LEFT) . '(96)' . str_replace('-', '', $fecha_pago_hasta));
+
+                $data = [
+                    'fecha' => $dt_emision->format('d/m/Y'),
+                    'hora' => $dt_emision->isoFormat('h:mm:ss a'),
+                    'numero_factura_acuerdo' => $numero_factura_acuerdo,
+                    'predio' => $predio,
+                    'acuerdo_pago' => $acuerdo_pago,
+                    'ultima_cuota_pagada' => $ultima_cuota_pagada,
+                    'lista_pagos' => $lista_pagos,
+                    'barras' => $barras,
+                    'barras_texto' => $barras_texto,
+                    'fecha_pago_hasta' => $fecha_pago_hasta,
+                    'valor_factura' => $valor_factura,
+                    'temporal' => 0,
+                    'facturaYaPagada' => $facturaYaPagada,
+                ];
+
+                $pdf = PDF::loadView($formato_acuerdo, $data);
+
+                // Nombre del archivo regenerado
+                $filename = $numero_factura_acuerdo . '_ap_regenerado_' . $dt_emision->toDateString() . '_' . str_replace(':', '-', $dt_emision->toTimeString()) . '.pdf';
+
+                // Guardar el PDF en la carpeta storage/app/public/facturacion/acuerdos
+                $pdfContent = $pdf->output();
+                Storage::disk('public')->put('facturacion/acuerdos/' . $filename, $pdfContent);
+
+                // Actualizar todas las cuotas con el mismo número de factura con el nuevo archivo
+                PredioAcuerdoPagoDetalle::where('factura_pago', $numero_factura_acuerdo)
+                    ->where('id_acuerdo', $acuerdo_pago->id)
+                    ->where('estado', 1)
+                    ->update([
+                        'file_factura' => $filename,
+                        'fecha_emision' => Carbon::createFromFormat("Y-m-d H:i:s", $dt_emision->toDateTimeString())->format('Y-m-d H:i:s')
+                    ]);
+
+                DB::commit();
+
+                return $pdf->download($filename);
+            }
+            else {
+                dd('No se encontraron cuotas para el número de factura: ' . $acuerdo_detalle->factura_pago);
+                DB::rollback();
+                return null;
+            }
+        }
+        catch(\Exception $e) {
+            dd('Error al regenerar el PDF: ' . $e->getMessage());
+            DB::rollback();
+            return null;
+        }
     }
 
     public static function findInCollection(Collection $collection, $key, $value) {

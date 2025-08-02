@@ -66,6 +66,7 @@ Route::post('/list/acuerdo-anios', [AcuerdosController::class, 'list_acuerdo_ani
 // Route::get('/export-excel-acuerdos/{fechainicial}/{fechafinal}',[AcuerdosController::class, 'exportExcelAcuerdos']);
 Route::post('/store/acuerdos_delete', [AcuerdosController::class, 'store_acuerdos_delete']);
 Route::get('generate_factura_acuerdo_pdf/{id}/{tmp}/{lista_cuotas}', [AcuerdosController::class, 'generate_factura_acuerdo_pdf'])->middleware('checkdb');
+Route::get('regenerate_factura_acuerdo_pdf/{id_acuerdo_detalle}', [AcuerdosController::class, 'regenerate_factura_acuerdo_pdf'])->middleware('checkdb');
 
 //Administracion
 Route::get('registro_usuarios/{id}', [AdministracionController::class, 'registro_usuarios'])->middleware('checkdb');

@@ -990,7 +990,7 @@ $(document).ready(function() {
             var max_fecha = $('#fecha_max_pago').val().length > 0 ? $('#fecha_max_pago').val() : '-';
             var propietario_facturar = $('#propietario_facturar').val();
             var vigencias = $('#tipo_factura').val() || 0;
-            startImpresion(global_url_print + '/0/' + anios + '/' + max_fecha + '/0/' + propietario_facturar + '/' + vigencias, 'Iniciando generación factura definitiva de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
+            startImpresion(global_url_print + '/0/' + anios + '/' + max_fecha + '/0/' + propietario_facturar + '/' + vigencias, 'Iniciando generación factura definitiva de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura', undefined);
         }
     });
 
@@ -1009,14 +1009,14 @@ $(document).ready(function() {
             var max_fecha = $('#fecha_max_pago').val().length > 0 ? $('#fecha_max_pago').val() : '-';
             var propietario_facturar = $('#propietario_facturar').val();
             var vigencias = $('#tipo_factura').val() || 0;
-            startImpresion(global_url_print + '/1/' + anios + '/' + max_fecha + '/0/' + propietario_facturar + '/' + vigencias, 'Iniciando generación factura vista previa de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura');
+            startImpresion(global_url_print + '/1/' + anios + '/' + max_fecha + '/0/' + propietario_facturar + '/' + vigencias, 'Iniciando generación factura vista previa de impuesto predial. Espere un momento por favor.', 'warning', 'modal-impresion-factura', undefined);
         }
     });
 
     $('#generate_paz').off('click').on('click', function() {
         $('.btn_pdf').attr('disabled', true);
         if(checkFormPaz()) {
-            startImpresion(global_url_print + '/' + $('#destino_paz').val() + '/' + $('#fecha_paz').val() + '/' + $('#valor_paz').val(), 'Iniciando generación de documento de paz y salvo. Espere un momento por favor.', 'warning', 'modal-impresion-paz');
+            startImpresion(global_url_print + '/' + $('#destino_paz').val() + '/' + $('#fecha_paz').val() + '/' + $('#valor_paz').val(), 'Iniciando generación de documento de paz y salvo. Espere un momento por favor.', 'warning', 'modal-impresion-paz', undefined);
         }
     });
 
@@ -1521,7 +1521,7 @@ function downloadFacturaRowProcesar(btn) {
     else {
         var max_fecha = $('#fecha_max_pago').val().length > 0 ? $('#fecha_max_pago').val() : '-';
         var propietario_facturar = $('#propietario_facturar').val();
-        startImpresion(global_url_print + '/0/' + global_anio_actual + '/' + max_fecha + '/0/' + propietario_facturar + '/0', 'Pago ya registrado. Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
+        startImpresion(global_url_print + '/0/' + global_anio_actual + '/' + max_fecha + '/0/' + propietario_facturar + '/0', 'Pago ya registrado. Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '', undefined);
         $(btn).attr('disabled', false);
         $('[data-toggle="tooltip"]').tooltip();
     }
@@ -1677,7 +1677,7 @@ function setDownloadPazRow() {
     }
 }
 
-function startImpresion(url_download, message_toast, type_icon, modal) {
+function startImpresion(url_download, message_toast, type_icon, modal, callback) {
     if(url_download.length > 0) {
         $.toast({
             heading: 'Atención',
@@ -1702,6 +1702,11 @@ function startImpresion(url_download, message_toast, type_icon, modal) {
             var iframe = $('<iframe id="iframe_reporte" style="display:none;"></iframe>');
             iframe.attr('src', url_download);
             $('body').append(iframe);
+            if (callback === undefined) {
+                setTimeout(function() {
+                    callback();
+                }, 1000);
+            }
         }, 1000);
     }
     else {

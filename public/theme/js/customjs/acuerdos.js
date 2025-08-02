@@ -43,9 +43,9 @@ $(document).ready(function() {
                         return '<input type="checkbox" class="cuota-checkbox" data-id="' + row.id + '" data-cuota="' + row.cuota_numero + '">';
                     } else {
                         if (row.file_factura) {
-                            return '<a data-toggle="tooltip" data-placement="top" title="Descargar factura pagada" class="download-factura-pagada" data-id="' + row.id + '" href="/downloadFileAcuerdo/' + row.file_factura + '" target="_blank" style="color: red;"><i class="fa fa-file-pdf-o"></i></a>';
+                            return '<a data-toggle="tooltip" data-placement="top" title="Descargar factura ' + row.factura_pago + '" class="download-factura-pagada" data-id="' + row.id + '" href="/downloadFileAcuerdo/' + row.file_factura + '" target="_blank" style="color: red;"><i class="fa fa-file-pdf-o"></i></a>';
                         } else {
-                            return '<span data-toggle="tooltip" data-placement="top" title="Factura no disponible" class="text-muted"><i class="fa fa-file-pdf-o"></i></span>';
+                            return '<a data-toggle="tooltip" data-placement="top" title="Descargar factura ' + row.factura_pago + '" class="download-factura-reprocesar" href="/regenerate_factura_acuerdo_pdf/' + row.id + '" target="_blank" style="color: red;"><i class="fa fa-file-pdf-o"></i></a>';
                         }
                     }
                 }
@@ -73,7 +73,6 @@ $(document).ready(function() {
                 data: "banco",
                 title: "Banco"
             },
-
             {
                 // data: "valor_concepto1",
                 title: "Predial",
@@ -116,14 +115,6 @@ $(document).ready(function() {
                     return accounting.formatMoney(Number(row.valor_concepto18), "$ ", 0, ".", ",");
                 }
             },
-            // {
-            //     title: "Acción",
-            //     render: function (data, type, row, meta) {
-            //         return '<a href="javascript:void(0)" url="/generate_factura_pdf/" data-toggle="tooltip" data-placement="top" title="Imprimir factura" class="imprimir print_factura" style="color: red; padding-left: 15px; padding-right: 15px;"> <i style="color: red;" class="fa fa-file-pdf-o"></i> </a>';
-            //         //  +
-            //         // '<a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Eliminar acuerdo de pago" class="deleteAcuerdo" style="padding-left: 15px; padding-right: 15px;"> <i class="fa fa-trash text-danger"></i> </a>';
-            //     },
-            // },
         ],
         createdRow: function (row, data, dataIndex) {
             if (data.factura_pago === null) {
@@ -135,8 +126,8 @@ $(document).ready(function() {
                 .off("click")
                 .on("click", function (e) {
                     // Only trigger checkbox if clicking on unpaid row and not on the PDF icon or checkbox itself
-                    if (!$(e.target).closest('.download-factura-pagada').length && 
-                        !$(e.target).hasClass('cuota-checkbox') && 
+                    if (!$(e.target).closest('.download-factura-pagada').length &&
+                        !$(e.target).hasClass('cuota-checkbox') &&
                         !$(e.target).closest('.cuota-checkbox').length) {
                         var checkbox = $(this).find(".cuota-checkbox");
                         if (checkbox.length > 0) {
@@ -201,107 +192,12 @@ $(document).ready(function() {
                     }
                 });
 
-            // Handle PDF download for paid cuotas
-            $(".download-factura-pagada")
+            $(".download-factura-reprocesar")
                 .off("click")
                 .on("click", function(e) {
                     e.stopPropagation(); // Prevent row click
-                    var cuotaId = $(this).data('id');
-                    // Here you can implement the PDF download logic for paid cuotas
-                    console.log('Download PDF for paid cuota ID:', cuotaId);
-                    // Example: window.open('/download-paid-cuota-pdf/' + cuotaId, '_blank');
+                    downloadFacturaRowReprocesar(this);
                 });
-
-            // $(".deleteAcuerdo")
-            //     .off("click")
-            //     .on("click", function () {
-            //         var tr = $(this).closest("tr");
-            //         var data = DTAcuerdos.row(tr).data();
-            //         swal({
-            //             title: "Atención",
-            //             text: '¿Está seguro que desea eliminar la información del acuerdo de pago?',
-            //             type: "warning",
-            //             showCancelButton: true,
-            //             confirmButtonColor: "#DD6B55",
-            //             confirmButtonText: "Si",
-            //             cancelButtonText: "No",
-            //             closeOnConfirm: true,
-            //             closeOnCancel: true
-            //         }, function(isConfirm) {
-            //             if (isConfirm) {
-            //                 saveEliminarAcuerdo(data.id);
-            //             }
-            //             $('[data-toggle="tooltip"]').tooltip();
-            //         });
-            //     });
-
-            // $(".acuerdo-row")
-            //     .off("click")
-            //     .on("click", function () {
-            //         var tr = $(this).closest("tr");
-            //         var data = DTAcuerdos.row(tr).data();
-            //         // console.log('📌 - acuerdos.js:99 - data:', data);
-            //         $('#tbody_acuerdos').empty();
-            //         $('#txt_numero_acuerdo').html(data.numero_acuerdo);
-            //         $('#p_codigo_predio').html(data.codigo_predio);
-            //         $('#p_numero_resolucion').html(data.numero_resolucion_acuerdo);
-            //         $('#p_file_name').html(data.file_name ? `<a href="/downloadFileResolucion/${data.file_name}" style="color: red;"><i style="color: red;" class="fa fa-file-pdf-o"></i></a>` : 'No disponible');
-            //         $('#p_numero_acuerdo').html(data.numero_acuerdo);
-            //         $('#p_fecha_acuerdo').html(data.fecha_acuerdo);
-            //         $('#p_anio_inicial_acuerdo').html(data.anio_inicial_acuerdo);
-            //         $('#p_anio_final_acuerdo').html(data.anio_final_acuerdo);
-            //         $('#p_cuotas_acuerdo').html(data.cuotas_acuerdo);
-            //         $('#p_fecha_inicial_acuerdo').html(data.fecha_inicial_acuerdo);
-            //         $('#p_fecha_final_acuerdo').html(data.fecha_final_acuerdo);
-            //         $('#p_calcular_intereses').html(data.calcular_intereses ? 'Si' : 'No');
-            //         $('#p_porcentaje_inicial_acuerdo').html(data.porcentaje_inicial_acuerdo + '%');
-            //         $('#p_abono_inicial_acuerdo').html(accounting.formatMoney(data.abono_inicial_acuerdo, "$ ", 2, ".", ", "));
-            //         $('#p_total_acuerdo').html(accounting.formatMoney(data.total_acuerdo, "$ ", 2, ".", ", "));
-
-            //         //for each key in data generate a tr and append to tbody_acuerdos table
-            //         var conceptos_titulos = {
-            //             "valor_concepto1": "Impuesto predial",
-            //             "valor_concepto2": "Intereses predial",
-            //             "valor_concepto3": "Impuesto CAR",
-            //             "valor_concepto4": "Intereses CAR",
-            //             "valor_concepto13": "Descuento predial",
-            //             "valor_concepto14": "Sobretasa predial",
-            //             "valor_concepto15": "Descuento CAR",
-            //             "valor_concepto16": "Sobretasa bomberil",
-            //             "valor_concepto17": "Saldos a favor y devoluciones",
-            //             "valor_concepto18": "Alumbrado p&uacute;blico",
-            //             "total_calculo": "Total factura",
-            //         };
-
-            //         for (const key of Object.keys(conceptos_titulos)) {
-            //             var diferentes = data[`prev_${key}`] !== data[key];
-            //             var color_anterior = diferentes ? '#f1d7d7' : '#eee';
-            //             var color_nuevo = diferentes ? '#e8f1d7' : '#eee';
-            //             var val_anterior = $('<div><div class="col-lg-6 col-md-6 col-sm-12 col-xs-12"><div class="form-group" style="margin-bottom: 0px;">' +
-            //                 '<label for="prev_'+ key + '">Valor anterior</label>' +
-            //                 '<div class="input-group">' +
-            //                 '    <div class="input-group-addon" style="background-color: ' + color_anterior + '">$</div>' +
-            //                 '    <input id="prev_'+ key + '" type="text" class="form-control" style="background-color: ' + color_anterior + '" readonly="readonly" value="' + data[`prev_${key}`] + '"> </div>' +
-            //             '</div></div></div>');
-            //             var val_nuevo = $('<div><div class="col-lg-6 col-md-6 col-sm-12 col-xs-12"><div class="form-group" style="margin-bottom: 0px;">' +
-            //                 '<label for="'+ key + '">Valor nuevo</label>' +
-            //                 '<div class="input-group">' +
-            //                 '    <div class="input-group-addon" style="background-color: ' + color_nuevo + '">$</div>' +
-            //                 '    <input id="'+ key + '" type="text" class="form-control" style="background-color: ' + color_nuevo + '" readonly="readonly" value="' + data[key] + '"> </div>' +
-            //             '</div></div></div>');
-            //             $('#tbody_acuerdos').append(`<tr><td>${conceptos_titulos[key]}</td><td><div class="row">${$(val_anterior).html()}${$(val_nuevo).html()}</div></td></tr>`);
-            //         }
-
-            //         $('#modal-ver-acuerdo').modal('show');
-            //     });
-
-            // $('.print_factura').off("click").on("click", function() {
-            //     var tr = $(this).closest("tr");
-            //     var data = DTAcuerdos.row(tr).data();
-            //     // console.log('📌 - acuerdos.js:151 - data:', data);
-            //     var btn = $(this);
-            //     startImpresion($(btn).attr('url') + data.id_predio + '/0/' + data.anio + '/-/1/-1/0', 'Generación de factura informativa de impuesto predial. Espere un momento por favor.', 'success', '');
-            // });
         },
         columnDefs: [
             { className: "text-center", targets: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
@@ -433,7 +329,7 @@ $(document).ready(function() {
                     // $('#p_abono_inicial_acuerdo').html(accounting.formatMoney(data.abono_inicial_acuerdo, "$ ", 2, ".", ", "));
                     // $('#p_total_acuerdo').html(accounting.formatMoney(data.total_acuerdo, "$ ", 2, ".", ", "));
                     // $('#modal-ver-acuerdo').modal('show');
-                    getJsonAcuerdoAnios(global_acuerdo.id, data.anio_inicial_acuerdo, data.anio_final_acuerdo);
+                    getJsonAcuerdoAnios(global_acuerdo.id, global_acuerdo.anio_inicial_acuerdo, global_acuerdo.anio_final_acuerdo);
                     global_acuerdo.total_acuerdo = parseFloat(global_acuerdo.total_acuerdo) + parseFloat(global_acuerdo.abono_inicial_acuerdo);
                     setData(global_acuerdo);
                     $('#btn_generar_factura_ap').attr('data-id', global_acuerdo.id);
@@ -1148,6 +1044,14 @@ function downloadFacturaRowProcesar(btn) {
     var tmp = 0;
     global_url_print = url_download;
     $(btn).attr('disabled', true);
-    startImpresion(global_url_print + '/' + id_acuerdo + '/' + tmp + '/' + selectedCuotasString, 'Generación de factura cuota(s) acuerdo de pago. Espere un momento por favor.', 'success', '');
+    startImpresion(global_url_print + '/' + id_acuerdo + '/' + tmp + '/' + selectedCuotasString, 'Generación de factura cuota(s) acuerdo de pago. Espere un momento por favor.', 'success', '', getJsonAcuerdoAnios(global_acuerdo.id, global_acuerdo.anio_inicial_acuerdo, global_acuerdo.anio_final_acuerdo));
+    $(btn).attr('disabled', false);
+}
+
+function downloadFacturaRowReprocesar(btn) {
+    var url_download = $(btn).attr('url');
+    global_url_print = url_download;
+    $(btn).attr('disabled', true);
+    startImpresion(global_url_print, 'Generación de factura cuota(s) acuerdo de pago. Espere un momento por favor.', 'success', '', getJsonAcuerdoAnios(global_acuerdo.id, global_acuerdo.anio_inicial_acuerdo, global_acuerdo.anio_final_acuerdo));
     $(btn).attr('disabled', false);
 }
