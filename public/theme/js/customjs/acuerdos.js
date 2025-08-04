@@ -4,6 +4,7 @@ var PAGE_LENGTH = 5;
 var MAX_FILE_SIZE = 10;
 var ROOT_URL = window.location.protocol + "//" + window.location.host;
 var global_acuerdo = null;
+var global_anios = null;
 var modalTableInitialized = false;
 var selectedCuotasString = '';
 var selectedCuotasIds = [];
@@ -981,7 +982,7 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
 
                 // Verificar que global_anios existe
                 if (typeof global_anios === 'undefined') {
-                    window.global_anios = [];
+                    global_anios = [];
                 }
 
                 var aniosData = [];
@@ -996,6 +997,7 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                 } else {
                     // Fallback a datos de global_acuerdo
                     debugLog('No server data, using fallback');
+                    global_anios = [];
                     if (typeof global_acuerdo !== 'undefined' && global_acuerdo) {
                         if (global_acuerdo.anio_inicial_acuerdo) {
                             aniosData.push({ultimo_anio: global_acuerdo.anio_inicial_acuerdo});
