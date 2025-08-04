@@ -301,6 +301,8 @@ $(document).ready(function() {
                 .off("click")
                 .on("click", function () {
                     $('.result').empty();
+                    $('#anio_inicial_acuerdo_edit').attr('readonly', false);
+                    $('#anio_final_acuerdo_edit').attr('readonly', false);
                     var tr = $(this).closest("tr");
                     var data = DTAcuerdos.row(tr).data();
                     global_acuerdo = JSON.parse(JSON.stringify(data));
@@ -985,27 +987,29 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                     global_anios = [];
                 }
 
-                var aniosData = [];
+                var aniosDataInit = [];
+                var aniosDataEnd = [];
                 var inicialValue = inicial || null;
                 var finalValue = final || null;
 
                 // Procesar datos de respuesta
                 if (response.anios && $.isArray(response.anios) && response.anios.length > 0) {
                     global_anios = response.anios;
-                    aniosData = response.anios;
-                    debugLog('Using server data, count: ' + aniosData.length);
+                    aniosDataInit = response.anios;
+                    aniosDataEnd = response.anios;
+                    debugLog('Using server data, count: ' + aniosDataInit.length);
                 } else {
                     // Fallback a datos de global_acuerdo
                     debugLog('No server data, using fallback');
                     global_anios = [];
                     if (typeof global_acuerdo !== 'undefined' && global_acuerdo) {
                         if (global_acuerdo.anio_inicial_acuerdo) {
-                            aniosData.push({ultimo_anio: global_acuerdo.anio_inicial_acuerdo});
+                            aniosDataInit.push({ultimo_anio: global_acuerdo.anio_inicial_acuerdo});
                             inicialValue = global_acuerdo.anio_inicial_acuerdo;
                         }
                         if (global_acuerdo.anio_final_acuerdo &&
                             global_acuerdo.anio_final_acuerdo !== global_acuerdo.anio_inicial_acuerdo) {
-                            aniosData.push({ultimo_anio: global_acuerdo.anio_final_acuerdo});
+                            aniosDataEnd.push({ultimo_anio: global_acuerdo.anio_final_acuerdo});
                             finalValue = global_acuerdo.anio_final_acuerdo;
                         }
                     }
@@ -1013,15 +1017,20 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
 
                 // Poblar ambos selects usando Promises para mejor control
                 Promise.all([
-                    populateSelect('#anio_inicial_acuerdo_edit', aniosData, inicialValue),
-                    populateSelect('#anio_final_acuerdo_edit', aniosData, finalValue)
+                    populateSelect('#anio_inicial_acuerdo_edit', aniosDataInit, inicialValue),
+                    populateSelect('#anio_final_acuerdo_edit', aniosDataEnd, finalValue)
                 ]).then(function() {
                     debugLog('Both selects populated successfully');
 
                     // Trigger change events después de poblar (jQuery 2.1.4 compatible)
                     setTimeout(function() {
-                        $('#anio_inicial_acuerdo_edit').trigger('change');
-                        $('#anio_final_acuerdo_edit').trigger('change');
+                        if (global_anios.length > 0) {
+                            $('#anio_inicial_acuerdo_edit').trigger('change');
+                            $('#anio_final_acuerdo_edit').trigger('change');
+                        } else {
+                            $('#anio_inicial_acuerdo_edit').attr('readonly', true);
+                            $('#anio_final_acuerdo_edit').attr('readonly', true);
+                        }
 
                         // Llamar función de detalle con delay adicional
                         setTimeout(function() {
