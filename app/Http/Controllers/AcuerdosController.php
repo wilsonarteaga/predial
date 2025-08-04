@@ -53,9 +53,12 @@ class AcuerdosController extends Controller
 
         //$request->session()->put('search', '1');
         $dt = Carbon::now();
+        $current_time = $dt->timestamp;
 
         return view('acuerdos.create', ['opcion' => $opcion,
                                         'datenow' => $dt->toDateString(),
+                                        'current_time' => $current_time,
+                                        'tab_current' => $tab_current,
                                         'tab_current' => $tab_current]);
     }
 

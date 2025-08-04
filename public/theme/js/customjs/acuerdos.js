@@ -876,6 +876,7 @@ function cleanAcuerdos() {
 }
 
 function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
+    $.blockUI({ message: null });
     var jsonObj = {};
     jsonObj.id_acuerdo = id_acuerdo;
     $.ajax({
@@ -887,126 +888,157 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
         url: "/list/acuerdo-anios",
         data: jsonObj,
         success: function(response) {
-            console.log('Response received:', response);
+            // Función de debugging segura para producción
+            function debugLog(msg, data) {
+                try {
+                    if (typeof console !== 'undefined' && console.log) {
+                        console.log('[ACUERDOS] ' + msg, data || '');
+                    }
+                } catch(e) {}
+            }
 
-            try {
-                // Verificar que los elementos select existan
-                var $anioInicial = $('#anio_inicial_acuerdo_edit');
-                var $anioFinal = $('#anio_final_acuerdo_edit');
+            // Función para verificar si el elemento está realmente listo
+            function isElementReady(selector) {
+                var $elem = $(selector);
+                return $elem.length > 0 && $elem.is(':visible') && !$elem.prop('disabled');
+            }
 
-                if ($anioInicial.length === 0 || $anioFinal.length === 0) {
-                    console.error('Select elements not found in DOM');
-                    return;
-                }
+            // Función para poblar select de forma segura
+            function populateSelect(selector, options, selectedValue) {
+                return new Promise(function(resolve, reject) {
+                    var attempts = 0;
+                    var maxAttempts = 10;
 
-                // Usar setTimeout para asegurar que DOM esté listo
-                setTimeout(function() {
-                    if (response.anios !== undefined && response.anios !== null) {
-                        global_anios = response.anios;
-                        if (response.anios.length > 0) {
-                            console.log('Populating selects with server data, count:', response.anios.length);
+                    function tryPopulate() {
+                        attempts++;
+                        var $select = $(selector);
 
-                            // Vaciar y poblar selects
-                            $anioInicial.empty(); //.append('<option value="">Seleccione</option>');
-                            $anioFinal.empty(); //.append('<option value="">Seleccione</option>');
+                        if ($select.length === 0) {
+                            if (attempts < maxAttempts) {
+                                setTimeout(tryPopulate, 100);
+                                return;
+                            }
+                            reject('Element not found: ' + selector);
+                            return;
+                        }
 
-                            $.each(response.anios, function(i, el) {
-                                if (el && el.ultimo_anio) {
-                                    var optionHtml = '<option value="' + el.ultimo_anio + '">' + el.ultimo_anio + '</option>';
-                                    $anioInicial.append(optionHtml);
-                                    $anioFinal.append(optionHtml);
+                        try {
+                            // Limpiar select
+                            $select.empty();
+
+                            // Verificar que tenemos datos
+                            if (!options || !$.isArray(options)) {
+                                debugLog('No valid options for ' + selector);
+                                resolve();
+                                return;
+                            }
+
+                            // Poblar opciones usando jQuery 2.1.4 compatible
+                            $.each(options, function(index, item) {
+                                if (item && item.ultimo_anio) {
+                                    var $option = $('<option></option>')
+                                        .attr('value', item.ultimo_anio)
+                                        .text(item.ultimo_anio);
+                                    $select.append($option);
                                 }
                             });
 
-                            // CRÍTICO: Refrescar Bootstrap Select si existe
-                            // if (typeof $anioInicial.selectpicker === 'function') {
-                            //     console.log('Refreshing Bootstrap Select for anio_inicial_acuerdo_edit');
-                            //     $anioInicial.selectpicker('refresh');
-                            // }
-                            // if (typeof $anioFinal.selectpicker === 'function') {
-                            //     console.log('Refreshing Bootstrap Select for anio_final_acuerdo_edit');
-                            //     $anioFinal.selectpicker('refresh');
-                            // }
-
-                            // Establecer valores después de poblar y refrescar
-                            setTimeout(function() {
-                                if (inicial) {
-                                    $anioInicial.val(inicial);
-                                    // if (typeof $anioInicial.selectpicker === 'function') {
-                                    //     $anioInicial.selectpicker('render');
-                                    // }
-                                }
-                                if (final) {
-                                    $anioFinal.val(final);
-                                    // if (typeof $anioFinal.selectpicker === 'function') {
-                                    //     $anioFinal.selectpicker('render');
-                                    // }
-                                }
-                            }, 100);
-
-                        } else {
-                            console.log('No server data available, using global_acuerdo data');
-                            $anioInicial.empty();
-                            $anioFinal.empty();
-
-                            if (global_acuerdo && global_acuerdo.anio_inicial_acuerdo) {
-                                $anioInicial.append('<option value="' + global_acuerdo.anio_inicial_acuerdo + '">' + global_acuerdo.anio_inicial_acuerdo + '</option>');
-                                $anioInicial.val(global_acuerdo.anio_inicial_acuerdo);
-                            }
-                            if (global_acuerdo && global_acuerdo.anio_final_acuerdo) {
-                                $anioFinal.append('<option value="' + global_acuerdo.anio_final_acuerdo + '">' + global_acuerdo.anio_final_acuerdo + '</option>');
-                                $anioFinal.val(global_acuerdo.anio_final_acuerdo);
+                            // Establecer valor seleccionado después de poblar
+                            if (selectedValue) {
+                                $select.val(selectedValue);
                             }
 
-                            // Refrescar Bootstrap Select después de agregar opciones
-                            // if (typeof $anioInicial.selectpicker === 'function') {
-                            //     $anioInicial.selectpicker('refresh');
-                            // }
-                            // if (typeof $anioFinal.selectpicker === 'function') {
-                            //     $anioFinal.selectpicker('refresh');
-                            // }
-                        }
-                    } else {
-                        global_anios = [];
-                        console.log('Response.anios is undefined or null, using global_acuerdo data');
-                        $anioInicial.empty();
-                        $anioFinal.empty();
+                            // Forzar repaint (crítico para jQuery 2.1.4)
+                            $select.hide().show();
 
-                        if (global_acuerdo && global_acuerdo.anio_inicial_acuerdo) {
-                            $anioInicial.append('<option value="' + global_acuerdo.anio_inicial_acuerdo + '">' + global_acuerdo.anio_inicial_acuerdo + '</option>');
-                            $anioInicial.val(global_acuerdo.anio_inicial_acuerdo);
-                        }
-                        if (global_acuerdo && global_acuerdo.anio_final_acuerdo) {
-                            $anioFinal.append('<option value="' + global_acuerdo.anio_final_acuerdo + '">' + global_acuerdo.anio_final_acuerdo + '</option>');
-                            $anioFinal.val(global_acuerdo.anio_final_acuerdo);
-                        }
+                            debugLog('Successfully populated ' + selector + ' with ' + options.length + ' options');
+                            resolve();
 
-                        // Refrescar Bootstrap Select después de agregar opciones
-                        // if (typeof $anioInicial.selectpicker === 'function') {
-                        //     $anioInicial.selectpicker('refresh');
-                        // }
-                        // if (typeof $anioFinal.selectpicker === 'function') {
-                        //     $anioFinal.selectpicker('refresh');
-                        // }
+                        } catch (error) {
+                            debugLog('Error populating ' + selector + ':', error);
+                            if (attempts < maxAttempts) {
+                                setTimeout(tryPopulate, 100);
+                            } else {
+                                reject(error);
+                            }
+                        }
                     }
 
-                    // Forzar actualización del DOM y trigger change events
-                    $anioInicial.trigger('change');
-                    $anioFinal.trigger('change');
-
-                    // Llamar getJsonAcuerdoDetalle después de actualizar los selects
-                    setTimeout(function() {
-                        getJsonAcuerdoDetalle(id_acuerdo);
-                    }, 100);
-
-                }, 10);
-
-            } catch (error) {
-                console.error('Error processing response:', error);
+                    tryPopulate();
+                });
             }
+
+            debugLog('AJAX Success - Response received');
+
+            // Validación de respuesta
+            if (!response) {
+                debugLog('Empty response received');
+                return;
+            }
+
+            // Usar setTimeout más largo para producción (jQuery 2.1.4 necesita más tiempo)
+            setTimeout(function() {
+
+                // Verificar que global_anios existe
+                if (typeof global_anios === 'undefined') {
+                    window.global_anios = [];
+                }
+
+                var aniosData = [];
+                var inicialValue = inicial || null;
+                var finalValue = final || null;
+
+                // Procesar datos de respuesta
+                if (response.anios && $.isArray(response.anios) && response.anios.length > 0) {
+                    global_anios = response.anios;
+                    aniosData = response.anios;
+                    debugLog('Using server data, count: ' + aniosData.length);
+                } else {
+                    // Fallback a datos de global_acuerdo
+                    debugLog('No server data, using fallback');
+                    if (typeof global_acuerdo !== 'undefined' && global_acuerdo) {
+                        if (global_acuerdo.anio_inicial_acuerdo) {
+                            aniosData.push({ultimo_anio: global_acuerdo.anio_inicial_acuerdo});
+                            inicialValue = global_acuerdo.anio_inicial_acuerdo;
+                        }
+                        if (global_acuerdo.anio_final_acuerdo &&
+                            global_acuerdo.anio_final_acuerdo !== global_acuerdo.anio_inicial_acuerdo) {
+                            aniosData.push({ultimo_anio: global_acuerdo.anio_final_acuerdo});
+                            finalValue = global_acuerdo.anio_final_acuerdo;
+                        }
+                    }
+                }
+
+                // Poblar ambos selects usando Promises para mejor control
+                Promise.all([
+                    populateSelect('#anio_inicial_acuerdo_edit', aniosData, inicialValue),
+                    populateSelect('#anio_final_acuerdo_edit', aniosData, finalValue)
+                ]).then(function() {
+                    debugLog('Both selects populated successfully');
+
+                    // Trigger change events después de poblar (jQuery 2.1.4 compatible)
+                    setTimeout(function() {
+                        $('#anio_inicial_acuerdo_edit').trigger('change');
+                        $('#anio_final_acuerdo_edit').trigger('change');
+
+                        // Llamar función de detalle con delay adicional
+                        setTimeout(function() {
+                            if (typeof getJsonAcuerdoDetalle === 'function') {
+                                getJsonAcuerdoDetalle(id_acuerdo);
+                            }
+                        }, 200);
+                    }, 150);
+
+                }).catch(function(error) {
+                    debugLog('Error populating selects:', error);
+                    $.unblockUI();
+                });
+
+            }, 300); // Delay inicial más largo para producción
         },
         error: function(xhr) {
             console.log('AJAX Error:', xhr.responseText);
+            $.unblockUI();
         },
     });
 }
@@ -1043,21 +1075,24 @@ function getJsonAcuerdoDetalle(id_acuerdo) {
                         // Force column adjustment after data load
                         setTimeout(function() {
                             DTAcuerdoDetalle.columns.adjust();
+                            $.unblockUI();
                         }, 100);
                     } else {
                         DTAcuerdoDetalle.clear().draw();
+                        $.unblockUI();
                     }
                 } else {
                     DTAcuerdoDetalle.clear().draw();
+                    $.unblockUI();
                 }
             } catch (error) {
                 console.error('Error updating modal DataTable:', error);
+                $.unblockUI();
             }
-            // $.unblockUI();
         },
         error: function(xhr) {
-            // $.unblockUI();
             console.log('AJAX Error:', xhr.responseText);
+            $.unblockUI();
         },
     });
 }
