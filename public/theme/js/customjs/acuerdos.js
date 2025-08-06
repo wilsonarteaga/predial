@@ -103,10 +103,10 @@ $(document).ready(function() {
                 }
             },
             {
-                // data: "valor_concepto5",
+                // data: "valor_concepto14",
                 title: "Interes<br />financiaci&oacute;n",
                 render: function(data, type, row, meta) {
-                    return accounting.formatMoney(Number(row.valor_concepto5), "$ ", 0, ".", ",");
+                    return accounting.formatMoney(Number(row.valor_concepto14), "$ ", 0, ".", ",");
                 }
             },
             {

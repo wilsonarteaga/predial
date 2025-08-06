@@ -387,7 +387,7 @@ class AcuerdosController extends Controller
         $acuerdo_detalle = DB::table('predios_acuerdos_pago_detalle AS acuerdos')
                 ->join('predios_acuerdos_pago', 'predios_acuerdos_pago.id', '=', 'acuerdos.id_acuerdo')
                 ->leftJoin('bancos', 'bancos.id', '=', 'acuerdos.id_banco')
-                ->select(DB::raw('acuerdos.id, predios_acuerdos_pago.id_predio, acuerdos.factura_pago, acuerdos.cuota_numero, acuerdos.valor_cuota, CASE WHEN acuerdos.pagado = -1 THEN \'SI\' ELSE \'NO\' END as pagado, ISNULL(CONVERT(VARCHAR, acuerdos.fecha_pago, 23), \'N/D\') as fecha_pago, ISNULL(bancos.nombre, \'No disponible\') AS banco, ISNULL(acuerdos.valor_concepto1, 0) AS valor_concepto1, ISNULL(acuerdos.valor_concepto2, 0) AS valor_concepto2, ISNULL(acuerdos.valor_concepto3, 0) AS valor_concepto3, ISNULL(acuerdos.valor_concepto4, 0) AS valor_concepto4, ISNULL(acuerdos.valor_concepto5, 0) AS valor_concepto5, ISNULL(acuerdos.valor_concepto18, 0) AS valor_concepto18, acuerdos.file_factura'))
+                ->select(DB::raw('acuerdos.id, predios_acuerdos_pago.id_predio, acuerdos.factura_pago, acuerdos.cuota_numero, acuerdos.valor_cuota, CASE WHEN acuerdos.pagado = -1 THEN \'SI\' ELSE \'NO\' END as pagado, ISNULL(CONVERT(VARCHAR, acuerdos.fecha_pago, 23), \'N/D\') as fecha_pago, ISNULL(bancos.nombre, \'No disponible\') AS banco, ISNULL(acuerdos.valor_concepto1, 0) AS valor_concepto1, ISNULL(acuerdos.valor_concepto2, 0) AS valor_concepto2, ISNULL(acuerdos.valor_concepto3, 0) AS valor_concepto3, ISNULL(acuerdos.valor_concepto4, 0) AS valor_concepto4, ISNULL(acuerdos.valor_concepto14, 0) AS valor_concepto14, ISNULL(acuerdos.valor_concepto18, 0) AS valor_concepto18, acuerdos.file_factura'))
                 ->where('predios_acuerdos_pago.id', $request->id_acuerdo)
                 ->where('acuerdos.estado', 1)
                 ->orderBy('acuerdos.cuota_numero', 'asc')
@@ -760,7 +760,7 @@ class AcuerdosController extends Controller
                         $concepto_2 = $cuota->valor_concepto2 == null ? 0 : $cuota->valor_concepto2;
                         $concepto_3 = $cuota->valor_concepto3 == null ? 0 : $cuota->valor_concepto3;
                         $concepto_4 = $cuota->valor_concepto4 == null ? 0 : $cuota->valor_concepto4;
-                        $concepto_5 = $cuota->valor_concepto5 == null ? 0 : $cuota->valor_concepto5;
+                        $concepto_14 = $cuota->valor_concepto14 == null ? 0 : $cuota->valor_concepto14;
                         $concepto_18 = $cuota->valor_concepto18 == null ? 0 : $cuota->valor_concepto18;
 
                         $obj->cuota_numero = $cuota->cuota_numero;
@@ -768,7 +768,7 @@ class AcuerdosController extends Controller
                         $obj->impuesto = $concepto_1 + $concepto_3;
                         $obj->interes = $concepto_2 + $concepto_4;
                         $obj->alumbrado = $concepto_18;
-                        $obj->interes_acuerdo = $concepto_5;
+                        $obj->interes_acuerdo = $concepto_14;
                         $obj->total = $cuota->valor_cuota;
 
                         $suma_total += $cuota->valor_cuota;
@@ -997,7 +997,7 @@ class AcuerdosController extends Controller
                     $concepto_2 = $cuota->valor_concepto2 == null ? 0 : $cuota->valor_concepto2;
                     $concepto_3 = $cuota->valor_concepto3 == null ? 0 : $cuota->valor_concepto3;
                     $concepto_4 = $cuota->valor_concepto4 == null ? 0 : $cuota->valor_concepto4;
-                    $concepto_5 = $cuota->valor_concepto5 == null ? 0 : $cuota->valor_concepto5;
+                    $concepto_14 = $cuota->valor_concepto14 == null ? 0 : $cuota->valor_concepto14;
                     $concepto_18 = $cuota->valor_concepto18 == null ? 0 : $cuota->valor_concepto18;
 
                     $obj->cuota_numero = $cuota->cuota_numero;
@@ -1005,7 +1005,7 @@ class AcuerdosController extends Controller
                     $obj->impuesto = $concepto_1 + $concepto_3;
                     $obj->interes = $concepto_2 + $concepto_4;
                     $obj->alumbrado = $concepto_18;
-                    $obj->interes_acuerdo = $concepto_5;
+                    $obj->interes_acuerdo = $concepto_14;
                     $obj->total = $cuota->valor_cuota;
 
                     $suma_total += $cuota->valor_cuota;
