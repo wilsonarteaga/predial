@@ -931,7 +931,7 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
 
                             // Verificar que tenemos datos
                             if (!options || !$.isArray(options)) {
-                                debugLog('No valid options for ' + selector);
+                                // debugLog('No valid options for ' + selector);
                                 resolve();
                                 return;
                             }
@@ -954,11 +954,11 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                             // Forzar repaint (crítico para jQuery 2.1.4)
                             $select.hide().show();
 
-                            debugLog('Successfully populated ' + selector + ' with ' + options.length + ' options');
+                            // debugLog('Successfully populated ' + selector + ' with ' + options.length + ' options');
                             resolve();
 
                         } catch (error) {
-                            debugLog('Error populating ' + selector + ':', error);
+                            // debugLog('Error populating ' + selector + ':', error);
                             if (attempts < maxAttempts) {
                                 setTimeout(tryPopulate, 100);
                             } else {
@@ -971,11 +971,11 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                 });
             }
 
-            debugLog('AJAX Success - Response received');
+            // debugLog('AJAX Success - Response received');
 
             // Validación de respuesta
             if (!response) {
-                debugLog('Empty response received');
+                // debugLog('Empty response received');
                 return;
             }
 
@@ -997,10 +997,10 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                     global_anios = response.anios;
                     aniosDataInit = response.anios;
                     aniosDataEnd = response.anios;
-                    debugLog('Using server data, count: ' + aniosDataInit.length);
+                    // debugLog('Using server data, count: ' + aniosDataInit.length);
                 } else {
                     // Fallback a datos de global_acuerdo
-                    debugLog('No server data, using fallback');
+                    // debugLog('No server data, using fallback');
                     global_anios = [];
                     if (typeof global_acuerdo !== 'undefined' && global_acuerdo) {
                         if (global_acuerdo.anio_inicial_acuerdo) {
@@ -1020,7 +1020,7 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                     populateSelect('#anio_inicial_acuerdo_edit', aniosDataInit, inicialValue),
                     populateSelect('#anio_final_acuerdo_edit', aniosDataEnd, finalValue)
                 ]).then(function() {
-                    debugLog('Both selects populated successfully');
+                    // debugLog('Both selects populated successfully');
 
                     // Trigger change events después de poblar (jQuery 2.1.4 compatible)
                     setTimeout(function() {
@@ -1041,7 +1041,7 @@ function getJsonAcuerdoAnios(id_acuerdo, inicial, final) {
                     }, 150);
 
                 }).catch(function(error) {
-                    debugLog('Error populating selects:', error);
+                    // debugLog('Error populating selects:', error);
                     $.unblockUI();
                 });
 

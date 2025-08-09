@@ -2437,8 +2437,7 @@ function setData(jsonObj) {
     $('#div_table').fadeOut(function() {
         $.each(jsonObj, function(i, el) {
             if ($('#' + i + '_edit').length > 0) {
-
-                if (!$('#' + i + '_edit').is('[value]')) {
+                if (!$('#' + i + '_edit').is('[value]') && !$('#' + i + '_edit').hasClass('selectpicker')) {
                     if ($('#' + i + '_edit').hasClass('accounting')) {
                         $('#' + i + '_edit').html(accounting.formatMoney(el, "$ ", 2, ".", ", "));
                     } else {
