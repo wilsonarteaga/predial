@@ -765,12 +765,14 @@ class AcuerdosController extends Controller
                         $concepto_3 = $cuota->valor_concepto3 == null ? 0 : $cuota->valor_concepto3;
                         $concepto_4 = $cuota->valor_concepto4 == null ? 0 : $cuota->valor_concepto4;
                         $concepto_14 = $cuota->valor_concepto14 == null ? 0 : $cuota->valor_concepto14;
+                        $concepto_16 = $cuota->valor_concepto16 == null ? 0 : $cuota->valor_concepto16;
                         $concepto_18 = $cuota->valor_concepto18 == null ? 0 : $cuota->valor_concepto18;
 
                         $obj->cuota_numero = $cuota->cuota_numero;
                         $obj->avaluo = $predio->avaluo;
                         $obj->impuesto = $concepto_1 + $concepto_3;
                         $obj->interes = $concepto_2 + $concepto_4;
+                        $obj->bomberos = $concepto_16;
                         $obj->alumbrado = $concepto_18;
                         $obj->interes_acuerdo = $concepto_14;
                         $obj->total = $cuota->valor_cuota;
@@ -1002,12 +1004,14 @@ class AcuerdosController extends Controller
                     $concepto_3 = $cuota->valor_concepto3 == null ? 0 : $cuota->valor_concepto3;
                     $concepto_4 = $cuota->valor_concepto4 == null ? 0 : $cuota->valor_concepto4;
                     $concepto_14 = $cuota->valor_concepto14 == null ? 0 : $cuota->valor_concepto14;
+                    $concepto_16 = $cuota->valor_concepto16 == null ? 0 : $cuota->valor_concepto16;
                     $concepto_18 = $cuota->valor_concepto18 == null ? 0 : $cuota->valor_concepto18;
 
                     $obj->cuota_numero = $cuota->cuota_numero;
                     $obj->avaluo = $predio->avaluo;
                     $obj->impuesto = $concepto_1 + $concepto_3;
                     $obj->interes = $concepto_2 + $concepto_4;
+                    $obj->bomberos = $concepto_16;
                     $obj->alumbrado = $concepto_18;
                     $obj->interes_acuerdo = $concepto_14;
                     $obj->total = $cuota->valor_cuota;

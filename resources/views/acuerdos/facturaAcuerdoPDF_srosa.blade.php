@@ -232,7 +232,7 @@
                     <th>AVAL&Uacute;O</th>
                     <th>IMPUESTO</th>
                     <th>INTER&Eacute;S</th>
-                    <th>ALUMBRADO</th>
+                    <th>BOMBEROS</th>
                     <th>INTER&Eacute;S AP</th>
                     <th>TOTAL</th>
                 </tr>
@@ -240,7 +240,7 @@
                 @if(count($lista_pagos) > 0)
                     @php($suma_impuesto = 0)
                     @php($suma_interes = 0)
-                    @php($suma_alumbrado = 0)
+                    @php($suma_bomberos = 0)
                     @php($suma_interes_acuerdo = 0)
                     @php($suma_total = 0)
                     @foreach($lista_pagos as $pago)
@@ -249,13 +249,13 @@
                         <td>@money($pago->avaluo)</td>
                         <td>@money($pago->impuesto)</td>
                         <td>@money($pago->interes)</td>
-                        <td>@money($pago->alumbrado)</td>
+                        <td>@money($pago->bomberos)</td>
                         <td>@money($pago->interes_acuerdo)</td>
                         <td>@money($pago->total)</td>
                     </tr>
                     @php($suma_impuesto += $pago->impuesto)
                     @php($suma_interes += $pago->interes)
-                    @php($suma_alumbrado += $pago->alumbrado)
+                    @php($suma_bomberos += $pago->bomberos)
                     @php($suma_interes_acuerdo += $pago->interes_acuerdo)
                     @php($suma_total += $pago->total)
                     @endforeach
@@ -264,7 +264,7 @@
                         <th colspan="2">TOTALES</th>
                         <th>@money($suma_impuesto)</th>
                         <th>@money($suma_interes)</th>
-                        <th>@money($suma_alumbrado)</th>
+                        <th>@money($suma_bomberos)</th>
                         <th>@money($suma_interes_acuerdo)</th>
                         <th>@money($suma_total)</th>
                     </tr>
