@@ -720,10 +720,10 @@ class AcuerdosController extends Controller
                     }
 
                     // Obtener parametros de la aplicacion
-                    // $parametro_logo = DB::table('parametros')
-                    //                 ->select('parametros.valor')
-                    //                 ->where('parametros.nombre', 'logo')
-                    //                 ->first();
+                    $parametro_logo = DB::table('parametros')
+                                    ->select('parametros.valor')
+                                    ->where('parametros.nombre', 'logo')
+                                    ->first();
 
                     // $parametro_nit = DB::table('parametros')
                     //                 ->select('parametros.valor')
@@ -746,7 +746,7 @@ class AcuerdosController extends Controller
                                     ->first();
 
 
-                    // $logo = $parametro_logo->valor;
+                    $logo = $parametro_logo->valor;
                     // $nit = $parametro_nit->valor;
                     $ean = $parametro_ean->valor;
                     // $alcaldia = $parametro_alcaldia->valor;
@@ -805,7 +805,7 @@ class AcuerdosController extends Controller
                         'temporal' => $tmp,
                         'facturaYaPagada' => $facturaYaPagada,
                         // 'nit' => $nit,
-                        // 'logo' => $logo,
+                        'logo' => $logo,
                         // 'alcaldia' => $alcaldia,
                         // 'usuario' => $request->session()->get('username') . ' ' . $request->session()->get('userlastname'),
                     ];
