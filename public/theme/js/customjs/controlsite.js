@@ -1944,7 +1944,7 @@ function getPredioOtros(id_predio, showBlock, interfaz) {
             },
         });
     }
-    // global_ya_pagado = false;
+    global_ya_pagado = false;
     // global_anio_actual = 0;
     // global_predio_con_deuda = false;
     global_anios_prescripcion_exencion = [];
