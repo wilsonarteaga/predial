@@ -978,6 +978,11 @@ class AcuerdosController extends Controller
                     $predio->anios_a_pagar = $acuerdo_pago->anio_inicial_acuerdo . ' A ' . $acuerdo_pago->anio_final_acuerdo;
                 }
 
+                $parametro_logo = DB::table('parametros')
+                                    ->select('parametros.valor')
+                                    ->where('parametros.nombre', 'logo')
+                                    ->first();
+
                 $parametro_ean = DB::table('parametros')
                                 ->select('parametros.valor')
                                 ->where('parametros.nombre', 'ean')
@@ -988,6 +993,7 @@ class AcuerdosController extends Controller
                                 ->where('parametros.nombre', 'formato-acuerdo')
                                 ->first();
 
+                $logo = $parametro_logo->valor;
                 $ean = $parametro_ean->valor;
                 $formato_acuerdo = $parametro_formato_acuerdo->valor;
 
@@ -1044,6 +1050,7 @@ class AcuerdosController extends Controller
                     'valor_factura' => $valor_factura,
                     'temporal' => 0,
                     'facturaYaPagada' => $facturaYaPagada,
+                    'logo' => $logo,
                 ];
 
                 $pdf = PDF::loadView($formato_acuerdo, $data)
