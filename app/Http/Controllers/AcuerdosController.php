@@ -445,16 +445,20 @@ class AcuerdosController extends Controller
                 ->where('pagado', 0)
                 ->where('anulada', 0)
                 ->where('factura_pago', $anio->factura_pago)
-                ->select('predios_pagos.ultimo_anio')
+                ->select('predios_pagos.ultimo_anio', 'predios_pagos.total_calculo')
                 ->orderBy('ultimo_anio', 'desc')
                 ->get();
             if (count($anios_factura) > 1) {
+                $total = 0;
                 foreach ($anios_factura as $anio_factura) {
                     array_push($lista_anios, $anio_factura->ultimo_anio);
+                    $total += $anio_factura->total_calculo;
                 }
                 $anio->lista_anios = $lista_anios;
+                $anio->total_calculo = $total;
             } else {
                 $anio->lista_anios = $lista_anios;
+                $anio->total_calculo = $anios_factura[0]->total_calculo;
             }
             array_push($anios, $anio);
         }
