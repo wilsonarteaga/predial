@@ -213,7 +213,7 @@
                 <tr>
                     <td>{{ $ultima_cuota_pagada->factura_pago }}</td>
                     <td>{{ $predio->anios_a_pagar }}</td>
-                    <td>{{ $fecha_pago_hasta }}</td>
+                    <td>{{ substr($fecha_pago_hasta, 0, 10) }}</td>
                     <td></td>
                     <th>&Uacute;LT CUOTA PAG</th>
                     <td>{{ $ultima_cuota_pagada->cuota_numero }}</td>
@@ -355,7 +355,7 @@
                                     <td style="width: 53%; padding-top: 0px; border: 0px solid #000; text-align: center;">
                                         <table style="width: 100%; font-size: 110%;">
                                             <tr>
-                                                <td class="negrilla">Pague hasta {{ $fecha_pago_hasta }}</td>
+                                                <td class="negrilla">Pague hasta {{ substr($fecha_pago_hasta, 0, 10) }}</td>
                                                 <td class="negrilla" style="font-size: 120%;">@money($valor_factura)</td>
                                             </tr>
                                         </table>
