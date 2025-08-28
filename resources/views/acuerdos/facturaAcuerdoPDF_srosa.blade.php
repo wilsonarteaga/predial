@@ -360,7 +360,7 @@
                                             </tr>
                                         </table>
                                         @if($temporal == 0)
-                                        <img style="padding-left: 5px; padding-top: 5px;" src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras, 'C128') }}" height="60" width="371" />
+                                        <img style="padding-left: 5px; padding-top: 5px;" src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras, 'C128') }}" height="77" width="371" />
                                         <span style="width: 100%; font-size: 80%;">{{ $barras_texto }}</span>
                                         @endif
                                         {{-- @if($x + 1 == $numero_codigos)
