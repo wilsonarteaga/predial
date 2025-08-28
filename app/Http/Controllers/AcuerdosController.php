@@ -418,54 +418,55 @@ class AcuerdosController extends Controller
                 ->where('anulada', 0)
                 // ->where('prescrito', 0)
                 // ->where('exencion', 0)
-                ->whereNotNull('factura_pago')
-                ->select(DB::raw('MAX(predios_pagos.ultimo_anio) AS ultimo_anio, predios_pagos.factura_pago'))
-                ->groupBy('predios_pagos.factura_pago')
+                // ->whereNotNull('factura_pago')
+                // ->select(DB::raw('MAX(predios_pagos.ultimo_anio) AS ultimo_anio, predios_pagos.factura_pago'))
+                // ->groupBy('predios_pagos.factura_pago')
+                ->select(DB::raw('predios_pagos.ultimo_anio, predios_pagos.factura_pago, ISNULL(predios_pagos.total_calculo, 0) AS total_calculo'))
                 ->orderBy('ultimo_anio', 'desc')
                 ->get();
 
-        // if(count($anios) == 0) {
-        // Todos los años no pagados y que no tienen numero de factura
-        $anios_sin_factura = DB::table('predios_pagos')
-            ->where('id_predio', $acuerdo_pago->id_predio)
-            ->where('pagado', 0)
-            ->where('anulada', 0)
-            // ->where('prescrito', 0)
-            // ->where('exencion', 0)
-            ->whereNull('factura_pago')
-            ->select(DB::raw('predios_pagos.ultimo_anio, predios_pagos.factura_pago, ISNULL(predios_pagos.total_calculo, 0) AS total_calculo'))
-            ->orderBy('ultimo_anio', 'desc')
-            ->get();
-        // }
+        // // if(count($anios) == 0) {
+        // // Todos los años no pagados y que no tienen numero de factura
+        // $anios_sin_factura = DB::table('predios_pagos')
+        //     ->where('id_predio', $acuerdo_pago->id_predio)
+        //     ->where('pagado', 0)
+        //     ->where('anulada', 0)
+        //     // ->where('prescrito', 0)
+        //     // ->where('exencion', 0)
+        //     ->whereNull('factura_pago')
+        //     ->select(DB::raw('predios_pagos.ultimo_anio, predios_pagos.factura_pago, ISNULL(predios_pagos.total_calculo, 0) AS total_calculo'))
+        //     ->orderBy('ultimo_anio', 'desc')
+        //     ->get();
+        // // }
 
         foreach ($anios_con_factura as $anio) {
-            $lista_anios = [];
-            $anios_factura = DB::table('predios_pagos')
-                ->where('id_predio', $acuerdo_pago->id_predio)
-                ->where('pagado', 0)
-                ->where('anulada', 0)
-                ->where('factura_pago', $anio->factura_pago)
-                ->select('predios_pagos.ultimo_anio', 'predios_pagos.total_calculo')
-                ->orderBy('ultimo_anio', 'desc')
-                ->get();
-            if (count($anios_factura) > 1) {
-                $total = 0;
-                foreach ($anios_factura as $anio_factura) {
-                    array_push($lista_anios, $anio_factura->ultimo_anio);
-                    $total += $anio_factura->total_calculo;
-                }
-                $anio->lista_anios = $lista_anios;
-                $anio->total_calculo = $total;
-            } else {
-                $anio->lista_anios = $lista_anios;
-                $anio->total_calculo = $anios_factura[0]->total_calculo;
-            }
+            // $lista_anios = [];
+            // $anios_factura = DB::table('predios_pagos')
+            //     ->where('id_predio', $acuerdo_pago->id_predio)
+            //     ->where('pagado', 0)
+            //     ->where('anulada', 0)
+            //     ->where('factura_pago', $anio->factura_pago)
+            //     // ->select('predios_pagos.ultimo_anio', 'predios_pagos.total_calculo')
+            //     ->orderBy('ultimo_anio', 'desc')
+            //     ->get();
+            // if (count($anios_factura) > 1) {
+            //     $total = 0;
+            //     foreach ($anios_factura as $anio_factura) {
+            //         array_push($lista_anios, $anio_factura->ultimo_anio);
+            //         $total += $anio_factura->total_calculo;
+            //     }
+            //     $anio->lista_anios = $lista_anios;
+            //     $anio->total_calculo = $total;
+            // } else {
+            //     $anio->lista_anios = $lista_anios;
+            //     $anio->total_calculo = $anios_factura[0]->total_calculo;
+            // }
             array_push($anios, $anio);
         }
 
-        foreach ($anios_sin_factura as $anio) {
-            array_push($anios, $anio);
-        }
+        // foreach ($anios_sin_factura as $anio) {
+        //     array_push($anios, $anio);
+        // }
 
         rsort($anios);
         foreach ($anios as $anio) {
