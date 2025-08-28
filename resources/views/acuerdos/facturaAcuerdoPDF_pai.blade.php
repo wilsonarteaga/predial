@@ -215,7 +215,7 @@
                 <tr>
                     <td>{{ $ultima_cuota_pagada->factura_pago }}</td>
                     <td>{{ $predio->anios_a_pagar }}</td>
-                    <td>{{ $fecha_pago_hasta }}</td>
+                    <td>{{ substr($fecha_pago_hasta, 0, 10) }}</td>
                     <td></td>
                     <th>&Uacute;LT CUOTA PAG</th>
                     <td>{{ $ultima_cuota_pagada->cuota_numero }}</td>
@@ -371,17 +371,16 @@
                                         </p> --}}
                                         <table style="width: 100%; font-size: 100%; padding-top: 120px;">
                                             <tr>
-                                                <td class="negrilla">Pague hasta {{ $fecha_pago_hasta }}</td>
+                                                <td class="negrilla">Pague hasta {{ substr($fecha_pago_hasta, 0, 10) }}</td>
                                                 <td class="negrilla" style="font-size: 120%;">@money($valor_factura)</td>
                                             </tr>
                                         </table>
-                                        {{-- {!! DNS1D::getBarcodeHTML($barras, 'C128', 1, 80) !!} --}}
                                         @if($temporal == 0)
                                         <img style="padding-left: 5px; padding-top: 5px;" src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras, 'C128') }}" height="60" width="371" />
                                         <span style="width: 100%; font-size: 80%;">{{ $barras_texto }}</span>
                                         @endif
-                                        @if($x + 1 == $numero_codigos)
-                                        <table style="width: 100%; font-size: 100%; padding-top: 5px;">
+                                        {{-- @if($x + 1 == $numero_codigos)
+                                        <table style="width: 100%; font-size: 100%; padding-top: 10px;">
                                             <tr>
                                                 <td class="negrilla">{{ $labels[$boletas] }}</td>
                                                 <td class="negrilla">
@@ -389,7 +388,7 @@
                                                 </td>
                                             </tr>
                                         </table>
-                                        @endif
+                                        @endif --}}
                                     </td>
                                 </tr>
                             @endfor

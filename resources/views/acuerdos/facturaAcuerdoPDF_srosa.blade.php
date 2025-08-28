@@ -353,30 +353,26 @@
                                     </td>
                                     @endif
                                     <td style="width: 53%; padding-top: 0px; border: 0px solid #000; text-align: center;">
-                                        <table style="width: 100%; font-size: 110%;">
+                                        <table style="width: 100%; font-size: 100%;">
                                             <tr>
                                                 <td class="negrilla">Pague hasta {{ substr($fecha_pago_hasta, 0, 10) }}</td>
                                                 <td class="negrilla" style="font-size: 120%;">@money($valor_factura)</td>
                                             </tr>
                                         </table>
                                         @if($temporal == 0)
-                                        <img style="padding-left: 5px; padding-top: 5px;" src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras, 'C128') }}" height="77" width="371" />
+                                        <img style="padding-left: 5px; padding-top: 5px;" src="data:image/png;base64,{{ DNS1D::getBarcodePNG($barras, 'C128') }}" height="60" width="371" />
                                         <span style="width: 100%; font-size: 80%;">{{ $barras_texto }}</span>
                                         @endif
-                                        @if($x + 1 == $numero_codigos)
-                                        <table style="width: 100%; font-size: 110%; padding-top: 10px;">
+                                        {{-- @if($x + 1 == $numero_codigos)
+                                        <table style="width: 100%; font-size: 100%; padding-top: 10px;">
                                             <tr>
                                                 <td class="negrilla">{{ $labels[$boletas] }}</td>
                                                 <td class="negrilla">
-                                                    @if($fecha == 'INDEFINIDA')
-                                                    {{ $fecha }}
-                                                    @else
                                                     {{ $fecha }}, {{ $hora }}
-                                                    @endif
                                                 </td>
                                             </tr>
                                         </table>
-                                        @endif
+                                        @endif --}}
                                     </td>
                                 </tr>
                             @endfor
