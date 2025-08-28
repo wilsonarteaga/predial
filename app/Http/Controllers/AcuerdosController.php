@@ -783,7 +783,7 @@ class AcuerdosController extends Controller
                     }
 
                     $valor_factura = round($suma_total);
-                    $fecha_pago_hasta = $dt_emision->format('Y-m-d H:i:s.u');
+                    $fecha_pago_hasta = (Carbon::now()->toDateString());
 
                     // String para generar el BARCODE
                     $barras = (chr(241) . '415' . $ean . '8020' . str_pad($numero_factura_acuerdo , 24, "0", STR_PAD_LEFT) . chr(241) . '3900' . str_pad($valor_factura, 14, "0", STR_PAD_LEFT) . chr(241) . '96' . str_replace('-', '', $fecha_pago_hasta));
@@ -1028,7 +1028,7 @@ class AcuerdosController extends Controller
                 }
 
                 $valor_factura = round($suma_total);
-                $fecha_pago_hasta = $dt_emision->format('Y-m-d H:i:s.u'); // TODO: Pilas esta fecha
+                $fecha_pago_hasta = (Carbon::now()->toDateString()); // TODO: Pilas esta fecha
 
                 // String para generar el BARCODE
                 $barras = (chr(241) . '415' . $ean . '8020' . str_pad($numero_factura_acuerdo , 24, "0", STR_PAD_LEFT) . chr(241) . '3900' . str_pad($valor_factura, 14, "0", STR_PAD_LEFT) . chr(241) . '96' . str_replace('-', '', $fecha_pago_hasta));
