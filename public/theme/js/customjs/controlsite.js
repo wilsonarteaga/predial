@@ -1702,7 +1702,7 @@ function startImpresion(url_download, message_toast, type_icon, modal, callback)
             var iframe = $('<iframe id="iframe_reporte" style="display:none;"></iframe>');
             iframe.attr('src', url_download);
             $('body').append(iframe);
-            if (callback === undefined) {
+            if (callback !== undefined) {
                 setTimeout(function() {
                     callback();
                 }, 1000);

@@ -139,6 +139,14 @@
                             CERTIFICADO DE PAZ Y SALVO - IMPUESTO PREDIAL
                         </p>
                     </td>
+                    <td style="width: 20%; text-align: center; vertical-align: top; padding-top: 10px;">
+                        @if(isset($qr_token))
+                        <div style="border: 1px solid #000; padding: 5px; display: inline-block;">
+                            <img src="data:image/png;base64,{{ $qr_code }}" style="width: 80px; height: 80px;" alt="QR Code" />
+                            <div style="font-size: 40%; margin-top: 2px;">Verificar autenticidad</div>
+                        </div>
+                        @endif
+                    </td>
                 </tr>
             </table>
         </div>

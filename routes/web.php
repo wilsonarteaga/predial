@@ -25,6 +25,7 @@ use App\Http\Controllers\PrediosTarifaController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\NotasController;
+use App\Http\Controllers\QrValidationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,9 @@ use App\Http\Controllers\NotasController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+// QR Validation Route - Public access
+Route::get('validate-qr/{token}', [QrValidationController::class, 'validateQr'])->name('qr.validate');
 
 // Route::get('/', function () {
 //     return view('auth.login');

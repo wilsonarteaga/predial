@@ -32,6 +32,9 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 use \stdClass;
+use App\Models\QrValidation;
+use Illuminate\Support\Str;
+use App\Http\Controllers\QrCodeHelper;
 
 class PrediosController extends Controller
 {
@@ -2506,6 +2509,26 @@ class PrediosController extends Controller
         $nit = $parametro_nit->valor;
         $codigo_postal = $parametro_codigo_postal != null ? $parametro_codigo_postal->valor : '';
 
+        // Generate QR Code for validation
+        $qr_token = Str::random(32) . hash('sha256', $id . $str_numero_certificado . time());
+        $validation_url = url('validate-qr/' . $qr_token);
+
+        // QR code is valid until December 31st of current year
+        $qr_expiry_date = Carbon::create($currentYear, 12, 31);
+
+        // Create QR validation record
+        $qr_validation = QrValidation::create([
+            'token' => $qr_token,
+            'id_predio' => $id,
+            'certificado_numero' => $str_numero_certificado,
+            'propietario_principal' => $propietario_ppal->nombre,
+            'fecha_expedicion' => $dt->toDateString(),
+            'fecha_validez' => $qr_expiry_date->toDateString(),
+        ]);
+
+        // Generate QR code as base64 encoded PNG
+        $qr_code = QrCodeHelper::generateQrCode($validation_url, 100);
+
         $data = [
             'title' => 'Paz y salvo',
             'fecha_expedicion' => $dt->translatedFormat('l j \d\e F \d\e Y'),
@@ -2522,7 +2545,9 @@ class PrediosController extends Controller
             'valor' => $valor,
             'logo' => $logo,
             'alcaldia' => $alcaldia,
-            "nit" => $nit
+            "nit" => $nit,
+            'qr_token' => $qr_token,
+            'qr_code' => $qr_code
         ];
 
         $pdf = PDF::loadView($formato_paz, $data);
