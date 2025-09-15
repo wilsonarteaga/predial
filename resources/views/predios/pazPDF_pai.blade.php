@@ -141,9 +141,11 @@
                     </td>
                     <td style="width: 20%; text-align: center; vertical-align: top; padding-top: 10px;">
                         @if(isset($qr_token))
-                        <div style="border: 1px solid #000; padding: 5px; display: inline-block;">
-                            <img src="data:image/png;base64,{{ $qr_code }}" style="width: 80px; height: 80px;" alt="QR Code" />
-                            <div style="font-size: 40%; margin-top: 2px;">Verificar autenticidad</div>
+                        <div style="border: 1px solid #000; width: 90px; height: 90px; text-align: center; padding: 10px; box-sizing: border-box;">
+                            <div style="margin-top: 5px;">
+                                <img src="data:image/png;base64,{{ $qr_code }}" style="width: 80px; height: 80px; padding-top: 10px;" alt="QR Code" />
+                                <div style="font-size: 50%; margin-top: -15px;">Verificar autenticidad</div>
+                            </div>
                         </div>
                         @endif
                     </td>
