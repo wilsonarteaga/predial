@@ -21,7 +21,9 @@ class QrValidation extends Model
         'is_validated',
         'validated_at',
         'validated_ip',
-        'validated_user_agent'
+        'validated_user_agent',
+        'max_validations',
+        'validation_count'
     ];
 
     protected $casts = [
@@ -38,8 +40,8 @@ class QrValidation extends Model
 
     public function markAsValidated($request)
     {
+        $this->increment('validation_count');
         $this->update([
-            'is_validated' => true,
             'validated_at' => now(),
             'validated_ip' => $request->ip(),
             'validated_user_agent' => $request->userAgent()
@@ -53,6 +55,16 @@ class QrValidation extends Model
 
     public function isValid()
     {
-        return !$this->is_validated && !$this->isExpired();
+        return $this->validation_count < $this->max_validations && !$this->isExpired();
+    }
+
+    public function hasRemainingValidations()
+    {
+        return $this->validation_count < $this->max_validations;
+    }
+
+    public function getRemainingValidations()
+    {
+        return max(0, $this->max_validations - $this->validation_count);
     }
 }

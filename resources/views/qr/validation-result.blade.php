@@ -185,6 +185,26 @@
                         </div>
                         @endif
 
+                        @if(isset($validation_data['validation_count']) && isset($validation_data['max_validations']))
+                        <div class="info-row">
+                            <span class="info-label">Validaciones Realizadas:</span>
+                            <span class="info-value"><strong>{{ $validation_data['validation_count'] }} de {{ $validation_data['max_validations'] }}</strong></span>
+                        </div>
+                        @endif
+
+                        @if(isset($validation_data['remaining_validations']))
+                        <div class="info-row">
+                            <span class="info-label">Validaciones Restantes:</span>
+                            <span class="info-value">
+                                @if($validation_data['remaining_validations'] > 0)
+                                    <span class="text-success"><strong>{{ $validation_data['remaining_validations'] }}</strong></span>
+                                @else
+                                    <span class="text-danger"><strong>0 - Límite alcanzado</strong></span>
+                                @endif
+                            </span>
+                        </div>
+                        @endif
+
                         @if(isset($validation_data['predio']))
                         <div class="info-row">
                             <span class="info-label">Código Catastral:</span>
@@ -202,9 +222,14 @@
                     <i class="fa fa-info-circle"></i>
                     <strong>Importante:</strong>
                     @if($status === 'valid')
-                        Este certificado ha sido validado exitosamente. Por seguridad, cada código QR solo puede validarse una vez para prevenir el uso fraudulento de copias.
+                        Este certificado ha sido validado exitosamente.
+                        @if(isset($validation_data['remaining_validations']) && $validation_data['remaining_validations'] > 0)
+                            Puede validar este código QR {{ $validation_data['remaining_validations'] }} vez(es) más.
+                        @else
+                            Este código QR ha alcanzado su límite máximo de validaciones.
+                        @endif
                     @elseif($status === 'already_used')
-                        Este código QR ya fue utilizado. Cada QR tiene validación única para evitar el uso de certificados copiados o falsificados.
+                        Este código QR ha alcanzado el límite máximo de validaciones permitidas. Para nuevas validaciones, solicite un certificado actualizado.
                     @elseif($status === 'expired')
                         Este certificado ha expirado. Los códigos QR son válidos hasta el 31 de diciembre del año de expedición.
                     @else
@@ -217,9 +242,10 @@
                     <strong>Política de Seguridad:</strong>
                     <ul class="mb-0 mt-2">
                         <li>Cada código QR es válido hasta el 31 de diciembre del año de expedición</li>
-                        <li>Solo se permite una validación por código QR</li>
+                        <li>Se permite un número limitado de validaciones por código QR (por defecto: 5 validaciones)</li>
                         <li>Esta medida previene el uso fraudulento de certificados copiados</li>
-                        <li>Para nuevas validaciones, solicite un certificado actualizado</li>
+                        <li>Una vez alcanzado el límite máximo, solicite un certificado actualizado</li>
+                        <li>Cada validación se registra con fecha, hora e IP para auditoría</li>
                     </ul>
                 </div>
 

@@ -20,14 +20,17 @@ class QrValidationController extends Controller
             ]);
         }
 
-        if ($qrValidation->is_validated) {
+        if (!$qrValidation->hasRemainingValidations()) {
             return view('qr.validation-result', [
                 'status' => 'already_used',
-                'message' => 'Este código QR ya ha sido validado anteriormente. Para evitar el uso fraudulento de certificados copiados, cada QR solo puede validarse una vez.',
-                'title' => 'PAZ Y SALVO Ya Validado',
+                'message' => 'Este código QR ha alcanzado el límite máximo de validaciones permitidas.',
+                'title' => 'PAZ Y SALVO Sin Validaciones Restantes',
                 'validation_data' => [
-                    'validated_at' => $qrValidation->validated_at->format('d/m/Y H:i:s'),
-                    'certificado_numero' => $qrValidation->certificado_numero
+                    'validated_at' => $qrValidation->validated_at ? $qrValidation->validated_at->format('d/m/Y H:i:s') : null,
+                    'certificado_numero' => $qrValidation->certificado_numero,
+                    'validation_count' => $qrValidation->validation_count,
+                    'max_validations' => $qrValidation->max_validations,
+                    'remaining_validations' => 0
                 ]
             ]);
         }
@@ -49,7 +52,7 @@ class QrValidationController extends Controller
 
         return view('qr.validation-result', [
             'status' => 'valid',
-            'message' => 'El PAZ Y SALVO es válido y auténtico. Este código QR ha sido marcado como validado y no podrá ser usado nuevamente.',
+            'message' => 'El PAZ Y SALVO es válido y auténtico. Esta validación ha sido registrada exitosamente.',
             'title' => 'PAZ Y SALVO Válido',
             'validation_data' => [
                 'certificado_numero' => $qrValidation->certificado_numero,
@@ -57,6 +60,9 @@ class QrValidationController extends Controller
                 'fecha_expedicion' => $qrValidation->fecha_expedicion->format('d/m/Y'),
                 'fecha_validez' => $qrValidation->fecha_validez->format('d/m/Y'),
                 'validated_at' => now()->format('d/m/Y H:i:s'),
+                'validation_count' => $qrValidation->validation_count,
+                'max_validations' => $qrValidation->max_validations,
+                'remaining_validations' => $qrValidation->getRemainingValidations(),
                 'predio' => $qrValidation->predio
             ]
         ]);

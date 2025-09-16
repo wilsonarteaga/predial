@@ -27,6 +27,10 @@ class CreatePrediosValidacionesQrTable extends Migration
             $table->text('validated_user_agent')->nullable();
             $table->timestamps();
             $table->boolean('estado')->default(1);
+            // add field that represents the max number of validations allowed
+            $table->unsignedSmallInteger('max_validations')->default(5);
+            // add field that counts the number of validations done
+            $table->unsignedSmallInteger('validation_count')->default(0);
 
             $table->index('token');
             $table->index('id_predio');
